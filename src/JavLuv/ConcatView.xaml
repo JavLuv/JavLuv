@@ -1,0 +1,76 @@
+﻿<Window 
+    x:Class="JavLuv.ConcatView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:local="clr-namespace:JavLuv"
+    mc:Ignorable="d"
+    Background="{StaticResource UserControl.Background}"
+    WindowStartupLocation="CenterOwner"
+    ResizeMode="NoResize"
+    Title="{DynamicResource Text.ConcatMovies}" 
+    Height="470" 
+    Width="800"
+    Initialized="Window_Initialized"
+    Closing="Window_Closing"
+    >
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="20" />
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="20" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="20" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="18" />
+            <RowDefinition Height="28" />
+            <RowDefinition Height="20" />
+        </Grid.RowDefinitions>
+
+        <StackPanel Grid.Column="1" Grid.Row="1">
+            <Button 
+                x:Name="m_selectButton" 
+                Command="{Binding SelectPartsCommand}" 
+                HorizontalAlignment="Left" 
+                Width="180" 
+                Height="28" 
+                Content="{DynamicResource Text.SelectMovieParts}"
+                />
+            <ScrollViewer Margin="0, 10, 0, 10" Height="100" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+                <ItemsControl   
+                    HorizontalAlignment="Stretch" 
+                    ItemsSource="{Binding Files}"
+                    >
+                </ItemsControl>
+            </ScrollViewer>
+            <Button 
+                x:Name="m_concatButton" 
+                Command="{Binding ConcatenateCommand}"  
+                Margin="0, 0, 0, 10" 
+                HorizontalAlignment="Left" 
+                Width="180" 
+                Height="28"
+                Content="{DynamicResource Text.Concatenate}"
+                />
+            <ScrollViewer x:Name="m_output" Margin="0, 10, 0, 10" Height="140" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+                <ItemsControl   
+                    HorizontalAlignment="Stretch" 
+                    ItemsSource="{Binding Lines}"
+                    >
+                </ItemsControl>
+            </ScrollViewer>
+        </StackPanel>
+
+        <Button 
+            x:Name="m_closeButton" 
+            Grid.Column="1" 
+            Grid.Row="3" 
+            HorizontalAlignment="Right" 
+            Width="100" 
+            Click="CloseButton_Click"
+            Content="{DynamicResource Text.Close}"
+            />
+    </Grid>
+</Window>

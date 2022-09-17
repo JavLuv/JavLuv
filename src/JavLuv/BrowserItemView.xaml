@@ -1,0 +1,65 @@
+﻿<UserControl 
+    x:Class="JavLuv.BrowserItemView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+    xmlns:local="clr-namespace:JavLuv"
+    mc:Ignorable="d" 
+    Width="158"
+    Height="276"
+    >
+    <Grid>
+        <Border 
+            
+            BorderThickness="2" 
+            CornerRadius="10,10,10,10" 
+            BorderBrush="#FF555555" 
+            Background="#FF222222"
+
+            >
+            <Border.InputBindings>
+            <MouseBinding MouseAction="LeftDoubleClick"
+                    Command="{Binding DetailViewCommand}"
+                    CommandParameter="{Binding}" />
+            </Border.InputBindings>
+
+            <Border.ContextMenu>
+                <ContextMenu>
+                    <MenuItem Header="{DynamicResource Text.PlayMovie}" Visibility="{Binding Parent.PlayMovieVisibility}" Command="{Binding Parent.PlayMovieCommand}"/>
+                    <MenuItem Header="{DynamicResource Text.PlayRandomMovie}" Visibility="{Binding Parent.PlayRandomMovieVisibility}" Command="{Binding Parent.PlayMovieCommand}"/>
+                    <MenuItem Header="{DynamicResource Text.MoveRename}" Command="{Binding Parent.MoveRenameCommand}" Visibility="{Binding Parent.EnableMoveRenameVisibility}"/>
+                    <MenuItem Header="{DynamicResource Text.MoveToFolder}" Command="{Binding Parent.MoveToFolderCommand}"/>
+                    <MenuItem Header="{DynamicResource Text.RescanFiles}" Command="{Binding Parent.RescanFilesCommand}"/>
+                    <MenuItem Header="{DynamicResource Text.RemoveFromLibrary}" Command="{Binding Parent.RemoveFromLibraryCommand}"/>
+                    <MenuItem Header="{DynamicResource Text.FilterMetadata}" Command="{Binding Parent.FilterMetadataCommand}"/>
+                    <MenuItem Header="{DynamicResource Text.ImportCoverImage}" Command="{Binding Parent.ImportCoverImageCommand}"  Visibility="{Binding Parent.ShowAdvancedOptionsVisibility}"/>
+                    <MenuItem Header="{DynamicResource Text.RegenerateMetadata}" Command="{Binding Parent.RegenerateMetadataCommand}"  Visibility="{Binding Parent.ShowAdvancedOptionsVisibility}"/>
+                    <MenuItem Header="{DynamicResource Text.DeleteMetadata}" Command="{Binding Parent.DeleteMetadataCommand}" Visibility="{Binding Parent.ShowAdvancedOptionsVisibility}"/>
+                    <MenuItem Header="{DynamicResource Text.FindSubtitles}" Command="{Binding Parent.FindSubtitlesCommand}" Visibility="{Binding Parent.FindSubtitlesVisibility}"/>
+                </ContextMenu>
+            </Border.ContextMenu>
+            
+            <Grid Margin="5, 5, 5, 5">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="4*" />
+                    <RowDefinition Height="1*" />
+                </Grid.RowDefinitions>
+
+                <ContentControl Width="328" HorizontalAlignment="Right">
+                    <Image 
+                        HorizontalAlignment="Right"
+                        Source="{Binding Image}" 
+                        />
+                </ContentControl>
+
+                <TextBlock 
+                    Margin="0, 5, 0, 0" 
+                    Grid.Row="1"
+                    TextWrapping="Wrap"
+                    Text="{Binding DisplayTitle}"
+                    />
+            </Grid>
+        </Border>
+    </Grid>
+</UserControl>

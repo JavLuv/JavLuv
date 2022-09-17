@@ -1,0 +1,150 @@
+﻿<ResourceDictionary 
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:system="clr-namespace:System;assembly=mscorlib"
+    >
+
+    <!-- Settings -->
+    <system:String x:Key="Text.Settings">設定</system:String>
+    <system:String x:Key="Text.General">全般的</system:String>
+    <system:String x:Key="Text.Language">言語</system:String>
+    <system:String x:Key="Text.English">英語</system:String>
+    <system:String x:Key="Text.Japanese">日本語</system:String>
+    <system:String x:Key="Text.ShowAdvanced">Show advanced options</system:String>
+    <system:String x:Key="Text.Subtitles">Subtitle</system:String>
+    <system:String x:Key="Text.HideMetadata">Hide metadata and cover files</system:String>
+    <system:String x:Key="Text.Scanning">Scanning</system:String>
+    <system:String x:Key="Text.GenerateMetadata">Generate metadata from local files if no online resources are found</system:String>
+    <system:String x:Key="Text.UseFolderName">Use folder name as title</system:String>
+    <system:String x:Key="Text.UseMovieFileName">Use movie filename as title</system:String>
+    <system:String x:Key="Text.AutoRestoreMetadata">Automatically restore metadata from backup</system:String>
+    <system:String x:Key="Text.CoverNames">Cover Names</system:String>
+    <system:String x:Key="Text.ThumbnailNames">Thumbnail Names</system:String>
+    <system:String x:Key="Text.MovieExclusions">Movie Exclusions</system:String>
+    <system:String x:Key="Text.SubtitleExtensions">Subtitle Extensions</system:String>
+    <system:String x:Key="Text.MovingRenaming">Moving / Renaming</system:String>
+    <system:String x:Key="Text.EnableAutoMove">Enable automatic move / rename</system:String>
+    <system:String x:Key="Text.Library">Library</system:String>
+    <system:String x:Key="Text.ChooseFolder">Choose folder...</system:String>
+    <system:String x:Key="Text.Folder">Folder</system:String>
+    <system:String x:Key="Text.Movie">Movie</system:String>
+    <system:String x:Key="Text.Cover">Cover</system:String>
+    <system:String x:Key="Text.Thumbnail">Thumbnail</system:String>
+    <system:String x:Key="Text.Metadata">Metadata</system:String>
+    <system:String x:Key="Text.Filtering">Filtering</system:String>
+    <system:String x:Key="Text.StudioFilters">Studio Filters</system:String>
+    <system:String x:Key="Text.LabelFilters">Label Filters</system:String>
+    <system:String x:Key="Text.DirectorFilters">Director Filters</system:String>
+    <system:String x:Key="Text.GenreFilters">Genre Filters</system:String>
+    <system:String x:Key="Text.ActressFilters">Actress Filters</system:String>
+    <system:String x:Key="Text.ResetDefaults">Reset to defaults</system:String>
+    <system:String x:Key="Text.CopyLogFile">Copy log file to...</system:String>
+    <system:String x:Key="Text.LicenseInformation">License information:</system:String>
+    <system:String x:Key="Text.JavLuvDistributed">JavLuv is distributed under the MIT Open Source License:</system:String>
+    <system:String x:Key="Text.ffmpeg">ffmpeg is distributed under the GNU General Public License::</system:String>
+
+    <!-- Movie details -->
+    <system:String x:Key="Text.MovieDetails">Movie Details</system:String>
+    <system:String x:Key="Text.ID">品番:</system:String>
+    <system:String x:Key="Text.Released">発売日:</system:String>
+    <system:String x:Key="Text.Runtime">収録時間:</system:String>
+    <system:String x:Key="Text.Minutes">分</system:String>
+    <system:String x:Key="Text.Studio">メーカー:</system:String>
+    <system:String x:Key="Text.Label">レーベル:</system:String>
+    <system:String x:Key="Text.Director">監督:</system:String>
+    <system:String x:Key="Text.UserRating">平均評価:</system:String>
+    <system:String x:Key="Text.Genres">ジャンル:</system:String>
+    <system:String x:Key="Text.Actresses">出演者:</system:String>
+    <system:String x:Key="Text.Resolution">Resolution:</system:String>
+    <system:String x:Key="Text.Notes">Notes:</system:String>
+    <system:String x:Key="Text.CopyTitle">Copy title and metadata</system:String>
+
+    <!-- Miscellaneous -->
+    <system:String x:Key="Text.JavLuvTitle">JavLuv - あなたのJAVムービーオーガナイザー</system:String>
+    <system:String x:Key="Text.Back">Back</system:String>
+    <system:String x:Key="Text.Browse">Browse...</system:String>
+    <system:String x:Key="Text.Close">Close</system:String>
+    <system:String x:Key="Text.Cancel">Cancel</system:String>
+    <system:String x:Key="Text.CancellingOperation">Cancelling operation.  Plese wait...</system:String>
+    <system:String x:Key="Text.ImportCoverImage">Import cover image...</system:String>
+    <system:String x:Key="Text.DownloadingMetadata">Downloading metadata {0}/{1}</system:String>
+    <system:String x:Key="Text.ScanningFolders">Scanning {0} folders</system:String>
+    <system:String x:Key="Text.DisplayingMovies">Displaying {0} of {1} movies</system:String>
+    <system:String x:Key="Text.ExitJavLuvScanningFiles">JavLuv is currently scanning files.\nWould you like to exit anyways and cancel this operation?</system:String>
+    <system:String x:Key="Text.ExitAndCancelScan">Exit and cancel scan?</system:String>
+    <system:String x:Key="Text.JavLuvScanningFiles">JavLuv is currently scanning files.\nWould you like to cancel this operation?</system:String>
+    <system:String x:Key="Text.CancelScan">Cancel scan?</system:String>
+    <system:String x:Key="Text.ErrorPlayingMovie">Error playing movie</system:String>
+    <system:String x:Key="Text.LibraryFolderInSettings">Library folder in settings must be valid to perform move/rename operation.</system:String>
+    <system:String x:Key="Text.MoveRenameError">Move / Rename Error</system:String>
+    <system:String x:Key="Text.ErrorMovingFolder">Error moving folder or files</system:String>
+    <system:String x:Key="Text.ErrorMovieScanner">Unexpected error in movie scanner</system:String>
+    <system:String x:Key="Text.JavLuvDeleteCache">JavLuv will delete the local cache.  This operation\nwill not delete any movies or metadata files.\n\nWould you like to proceed?</system:String>
+    <system:String x:Key="Text.DeleteLocalCache">Delete local cache?</system:String>
+    <system:String x:Key="Text.MovingMoviesTitle">Moving Movies</system:String>
+    <system:String x:Key="Text.MovingMoviesMessage">Moving movies to new location:</system:String>
+    <system:String x:Key="Text.MovingRenamingMoviesTitle">Moving / Renaming Movies</system:String>
+    <system:String x:Key="Text.MovingRenamingMoviesMessage">Moving / renaming movies and related files / folders:</system:String>
+
+    <!-- Side Panel View -->
+    <system:String x:Key="Text.ConcatenateMovies">Concatenate movies...</system:String>
+    <system:String x:Key="Text.OrganizeSubtitles">Organize subtitles...</system:String>
+    <system:String x:Key="Text.ScanMovies">Scan movies...</system:String>
+    <system:String x:Key="Text.DeleteLocalCacheEx">Delete local cache...</system:String>
+    <system:String x:Key="Text.SearchCollection">Search Collection</system:String>
+    <system:String x:Key="Text.SortBy">Sort by:</system:String>
+    <system:String x:Key="Text.SortByTitle">Title</system:String>
+    <system:String x:Key="Text.SortByID">品番</system:String>
+    <system:String x:Key="Text.SortByActress">Actress</system:String>
+    <system:String x:Key="Text.SortByDateNewest">Date (newest)</system:String>
+    <system:String x:Key="Text.SortByDateOldest">Date (oldest)</system:String>
+    <system:String x:Key="Text.SortByUserRating">User Rating</system:String>
+    <system:String x:Key="Text.ShowID">Show ID</system:String>
+    <system:String x:Key="Text.ShowUnratedOnly">Show unrated only</system:String>
+    <system:String x:Key="Text.ShowSubtitlesOnly">Show subtitles only</system:String>
+
+    <!-- Browser Item View -->
+    <system:String x:Key="Text.PlayMovie">Play movie</system:String>
+    <system:String x:Key="Text.PlayRandomMovie">Play random movie</system:String>
+    <system:String x:Key="Text.MoveRename">Move / rename...</system:String>
+    <system:String x:Key="Text.MoveToFolder">Move to folder...</system:String>
+    <system:String x:Key="Text.RescanFiles">Rescan files</system:String>
+    <system:String x:Key="Text.RemoveFromLibrary">Remove from library</system:String>
+    <system:String x:Key="Text.FilterMetadata">Filter metadata</system:String>
+    <system:String x:Key="Text.RegenerateMetadata">Regenerate metadata</system:String>
+    <system:String x:Key="Text.DeleteMetadata">Delete metadata</system:String>
+    <system:String x:Key="Text.FindSubtitles">Find subtitles...</system:String>
+
+    <!-- Scan Movies View -->
+    <system:String x:Key="Text.ScanMoviesTitle">Scan Movies</system:String>
+    <system:String x:Key="Text.ScanSubfolders">Scan subfolders</system:String>
+    <system:String x:Key="Text.MoveRenameAfterScan">Move / rename after scan</system:String>
+    <system:String x:Key="Text.FolderToScan">Folder to scan</system:String>
+    <system:String x:Key="Text.Scan">Scan</system:String>
+
+    <!-- Concat View -->
+    <system:String x:Key="Text.ConcatMovies">Concatenate Movies</system:String>
+    <system:String x:Key="Text.SelectMovieParts">Select Movies Parts...</system:String>
+    <system:String x:Key="Text.Concatenate">Concatenate</system:String>
+    <system:String x:Key="Text.CancelConcat">Cancel Concatenate?</system:String>
+    <system:String x:Key="Text.CancelConcatInProgress">Cancel concatenation in progress?</system:String>
+    <system:String x:Key="Text.FileAlreadyExists">This file already exists.  Overwrite?</system:String>
+    <system:String x:Key="Text.OverwriteFile">Overwrite File?</system:String>
+    <system:String x:Key="Text.UnexpectConcatError">Unexpected Concatenating Error</system:String>
+
+    <!-- Organize Subtitles View -->
+    <system:String x:Key="Text.OrganizeSubtitleTitle">Organize Subtitles</system:String>
+    <system:String x:Key="Text.OrganizeMode">Organize mode</system:String>
+    <system:String x:Key="Text.OrganizeModeCopy">Copy subtitles</system:String>
+    <system:String x:Key="Text.OrganizeModeMove">Move subtitles</system:String>
+    <system:String x:Key="Text.SubtitleImportFolder">Import folder</system:String>
+    <system:String x:Key="Text.SubtitleExportFolder">Export folder</system:String>
+    <system:String x:Key="Text.SubtitleSort">Sort</system:String>
+    <system:String x:Key="Text.SubtitleFilesProcessed">{0} subtitle files processed</system:String>
+    <system:String x:Key="Text.SubtitleFilesDuplicate">{0} duplicate subtitle files skipped</system:String>
+    <system:String x:Key="Text.SubtitleFilesNoID">{0} subtitle files with unknown ID</system:String>
+    <system:String x:Key="Text.SubtitleFilesEncodingFixed">{0} subtitle files converted to UTF-8</system:String>
+    <system:String x:Key="Text.SubtitleFilesExtensionFixed">{0} subtitle files with incorrect extensions</system:String>
+    <system:String x:Key="Text.SubtitleFilesImported">{0} subtitle files imported</system:String>
+
+</ResourceDictionary>

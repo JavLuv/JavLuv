@@ -1,0 +1,131 @@
+﻿<Window 
+    x:Class="JavLuv.MainWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:p="clr-namespace:JavLuv.Properties"
+    xmlns:local="clr-namespace:JavLuv"
+    mc:Ignorable="d"
+    d:DesignWidth="850"
+    d:DesignHeight="450"
+    MinWidth="850"
+    MinHeight="450"    
+    Height="{Binding Settings.Data.MainWindowHeight, Mode=TwoWay}"
+    Width="{Binding Settings.Data.MainWindowWidth, Mode=TwoWay}"
+    Left="{Binding Settings.Data.MainWindowLeft, Mode=TwoWay}"
+    Top="{Binding Settings.Data.MainWindowTop, Mode=TwoWay}"
+    WindowState="{Binding Settings.Data.MainWindowState, Mode=TwoWay}"   
+    Title="{DynamicResource Text.JavLuvTitle}" 
+    Style="{DynamicResource DefaultWindowStyle}"
+    KeyboardNavigation.DirectionalNavigation="None"
+    Initialized="Window_Initialized"
+    Closing="Window_Closing"
+    Closed="Window_Closed"
+    >
+    <Window.Resources>
+        
+        <DataTemplate DataType="{x:Type local:SettingsViewModel}">
+            <local:SettingsView/>
+        </DataTemplate>
+
+        <DataTemplate DataType="{x:Type local:ReportViewModel}">
+            <local:ReportView/>
+        </DataTemplate>
+
+        <DataTemplate 
+            DataType="{x:Type local:DetailViewModel}">
+            <local:DetailView/>
+        </DataTemplate>
+
+    </Window.Resources>
+
+    <Window.InputBindings>
+        <KeyBinding Command="{Binding CloseOverlayCommand}" Key="Esc" />
+        <KeyBinding Command="{Binding Browser.NavigateLeftCommand}" Key="Left" />
+        <KeyBinding Command="{Binding Browser.NavigateRightCommand}" Key="Right" />
+    </Window.InputBindings>
+    
+    <Window.TaskbarItemInfo>
+        <TaskbarItemInfo ProgressState="{Binding ProgressState}" ProgressValue="{Binding ProgressValue}" />
+    </Window.TaskbarItemInfo>
+    
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="26" />
+        </Grid.RowDefinitions>
+
+        <Grid Grid.Row="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="{Binding Path=SearchViewWidth, Mode=TwoWay}" />
+                <ColumnDefinition Width="4.5" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+            <!-- Search view -->
+            <Grid Grid.Column="0">
+                <local:SidePanelView 
+                DataContext="{Binding Path=SidePanel}"
+                />
+            </Grid>
+
+            <GridSplitter Grid.Column="1" Grid.ColumnSpan="1" HorizontalAlignment="Stretch"/>
+
+            <!-- Browser view -->
+            <Grid Grid.Column="2">
+                <local:BrowserView 
+                    DataContext="{Binding Browser}"
+                   />
+                <ContentControl 
+                    DataContext="{Binding Overlay}"
+                    Content="{Binding}"
+                    />
+            </Grid>
+        </Grid>
+        
+        <Grid Grid.Row="1">
+            <StatusBar>
+                <StatusBar.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="80" />
+                                <ColumnDefinition Width="200" />
+                                <ColumnDefinition Width="26" />
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="200" />
+                            </Grid.ColumnDefinitions>
+                        </Grid>
+                    </ItemsPanelTemplate>
+                </StatusBar.ItemsPanel>
+                <StatusBarItem Grid.Column="0" >
+                    <ProgressBar Visibility="{Binding ScanVisibility}" Value="{Binding PercentComplete}" Width="70" Height="16" />
+                </StatusBarItem>
+                <StatusBarItem Grid.Column="1" >
+                    <TextBlock Visibility="{Binding ScanVisibility}" Text="{Binding ScanStatus}" />
+                </StatusBarItem>
+                <StatusBarItem Grid.Column="2" >
+                    <Button Width="20" Height="20" Visibility="{Binding ScanVisibility}" Command="{Binding CancelScanCommand}">
+                        <Grid>
+                            <Polyline StrokeThickness="2" Stroke="WhiteSmoke" Points="2, 2 10, 10" />
+                            <Polyline StrokeThickness="2" Stroke="WhiteSmoke" Points="10, 2 2, 10" />
+                        </Grid>
+                    </Button>
+                </StatusBarItem>
+                <Separator Grid.Column="3" />
+                <StatusBarItem Grid.Column="4">
+                    <TextBlock Text="{Binding Browser.SelectedDescription}" />
+                </StatusBarItem>
+                <Separator Grid.Column="5" />
+                <StatusBarItem Grid.Column="6">
+                    <TextBlock Text="{Binding DisplayCountText}" />
+                </StatusBarItem>
+
+            </StatusBar>
+        </Grid>
+
+    </Grid>
+</Window>

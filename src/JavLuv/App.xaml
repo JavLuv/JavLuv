@@ -1,0 +1,24 @@
+﻿<Application 
+    x:Class="JavLuv.App"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="clr-namespace:JavLuv"
+    StartupUri="MainWindow.xaml"
+    >
+    <Application.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                
+                <!--If we ever want to add multiple themes, we can do it here-->
+                <ResourceDictionary Source="Themes/Default.xaml" />
+                
+                <!--Add all localized language text resources here-->
+                <ResourceDictionary Source="Localization/StringResources.jp-JP.xaml" />
+                
+                <!--Add default English dictionary last, so it's chosen by default in design view-->
+                <ResourceDictionary Source="Localization/StringResources.xaml" />
+                
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Application.Resources>
+</Application>

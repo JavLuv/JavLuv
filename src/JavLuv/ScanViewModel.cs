@@ -1,0 +1,147 @@
+﻿using Common;
+using MovieInfo;
+using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Input;
+
+namespace JavLuv
+{
+    public class ScanViewModel : ObservableObject
+    {
+        #region Constructors
+
+        public ScanViewModel(SidePanelViewModel parent)
+        {
+            m_parent = parent;
+            ScanFolder = Settings.Get().LastFolder;
+            ScanRecursively = Settings.Get().ScanRecursively;
+            MoveRenameAfterScan = Settings.Get().MoveRenameAfterScan;
+        }
+
+        #endregion
+
+        #region Properties
+
+        public SidePanelViewModel Parent { get { return m_parent; } }
+
+        public bool ScanRecursively
+        {
+            get
+            {
+                return m_scanRecursively;
+            }
+            set
+            {
+                if (value != m_scanRecursively)
+                {
+                    m_scanRecursively = value;
+                    NotifyPropertyChanged("ScanRecursively");
+                }
+            }
+        }
+
+        public bool MoveRenameAfterScan
+        {
+            get
+            {
+                return m_moveRenameAfterScan;
+            }
+            set
+            {
+                if (value != m_moveRenameAfterScan)
+                {
+                    m_moveRenameAfterScan = value;
+                    NotifyPropertyChanged("MoveRenameAfterScan");
+                }
+            }
+        }
+
+        public System.Windows.Visibility MoveRenameAfterScanVisibility
+        {
+            get
+            {
+                if (Settings.Get().EnableMoveRename)
+                    return System.Windows.Visibility.Visible;
+                else
+                    return System.Windows.Visibility.Collapsed;
+            }
+        }
+
+        public string ScanFolder
+        {
+            get
+            {
+                return m_scanFolder;
+            }
+            set
+            {
+                if (value != m_scanFolder)
+                {
+                    m_scanFolder = value;
+                    NotifyPropertyChanged("ScanFolder");
+                }
+            }
+        }
+
+
+        #endregion
+
+        #region Commands
+
+        #region Browse Folder Command
+
+        private void BrowseFolderExecute()
+        {
+
+            System.Windows.Forms.FolderBrowserDialog dlg = new System.Windows.Forms.FolderBrowserDialog();
+            dlg.SelectedPath = Utilities.GetValidSubFolder(Settings.Get().LastFolder);
+            System.Windows.Forms.DialogResult result = dlg.ShowDialog();
+            if (result != System.Windows.Forms.DialogResult.OK)
+                return;
+            ScanFolder = dlg.SelectedPath;
+        }
+
+        private bool CanBrowseFolderExecute()
+        {
+            return true;
+        }
+
+        public ICommand BrowseFolderCommand { get { return new RelayCommand(BrowseFolderExecute, CanBrowseFolderExecute); } }
+
+        #endregion
+
+        #region Scan Movies Command
+
+        private void ScanMoviesExecute()
+        {
+            Settings.Get().LastFolder = ScanFolder;
+            Settings.Get().ScanRecursively = ScanRecursively;
+            Settings.Get().MoveRenameAfterScan = MoveRenameAfterScan;
+            Parent.Parent.StartScan(ScanFolder);
+        }
+
+        private bool CanScanMoviesExecute()
+        {
+            return true;
+        }
+
+        public ICommand ScanMoviesCommand { get { return new RelayCommand(ScanMoviesExecute, CanScanMoviesExecute); } }
+
+        #endregion
+
+        #endregion
+
+        #region Private Members
+
+        private SidePanelViewModel m_parent;
+        private bool m_scanRecursively;
+        private bool m_moveRenameAfterScan;
+        private string m_scanFolder;
+
+        #endregion
+    }
+}

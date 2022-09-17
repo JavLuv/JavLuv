@@ -1,0 +1,749 @@
+﻿using Common;
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
+using System.Linq;
+using System.Text;
+using System.Text.RegularExpressions;
+
+namespace MovieInfo
+{
+    public static class MovieUtils
+    {
+        #region Public Functions
+
+        public static MovieData MoveRenameMovieData(MovieData movieData, string library, string folder, string movie, string cover, string preview, string metadata)
+        {
+            if (String.IsNullOrEmpty(library))
+                return movieData;
+
+            // Create new movie data, copying existing fields as default
+            MovieData newMovieData = new MovieData(movieData);
+
+            // Create new paths and filenames based on rename / move strings and embedded tokens 
+            // associated with specific types of metadata.
+            string newFolder = MoveRenameGetFolder(movieData, folder);
+            if (String.IsNullOrEmpty(newFolder) == false)
+                newMovieData.Path = Path.Combine(library, newFolder);
+            else
+                newMovieData.Path = library;
+            newMovieData.SharedPath = String.IsNullOrEmpty(newFolder) ? true : false;
+            newMovieData.Folder = Path.GetFileName(newMovieData.Path);
+
+            for (int i = 0; i < movieData.MovieFileNames.Count; ++i)
+            {
+                string newMovie = MoveRenameGetFilename(movieData, movie, movieData.MovieFileNames.Count == 1 ? -1 : i);
+                if (String.IsNullOrEmpty(newMovie) == false)
+                {
+                    newMovieData.MovieFileNames[i] = Path.ChangeExtension(newMovie, Path.GetExtension(movieData.MovieFileNames[i]));
+
+                    // Subtitles, if they exist, should match corresponding movie names
+                    if (movieData.SubtitleFileNames.Count > i && String.IsNullOrEmpty(movieData.SubtitleFileNames[i]) == false)
+                        newMovieData.SubtitleFileNames[i] = Path.ChangeExtension(newMovieData.MovieFileNames[i], Path.GetExtension(movieData.SubtitleFileNames[i]));
+                }
+            }
+            string newCover = MoveRenameGetFilename(movieData, cover);
+            if (String.IsNullOrEmpty(newCover) == false)
+                newMovieData.CoverFileName = Path.ChangeExtension(newCover, Path.GetExtension(movieData.CoverFileName));
+            for (int i = 0; i < movieData.ThumbnailsFileNames.Count; ++i)
+            {
+                string newPreview = MoveRenameGetFilename(movieData, preview, movieData.ThumbnailsFileNames.Count == 1 ? -1 : i);
+                if (String.IsNullOrEmpty(newPreview) == false)
+                    newMovieData.ThumbnailsFileNames[i] = Path.ChangeExtension(newPreview, Path.GetExtension(movieData.ThumbnailsFileNames[i]));
+            }
+            string newMetadata = MoveRenameGetFilename(movieData, metadata);
+            if (String.IsNullOrEmpty(newMetadata) == false)
+                newMovieData.MetadataFileName = Path.ChangeExtension(newMetadata, Path.GetExtension(movieData.MetadataFileName));
+
+            // Peform actual file and folder move/rename operation based on movie data and current settings
+            MoveRenameFoldersAndFiles(movieData, newMovieData);
+
+            return newMovieData;
+        }
+
+        public static void RemoveEmptyLibraryFolder(string library, string folder)
+        {
+            // Stop removing folders when we hit the root library folder
+            if (Path.Equals(library, folder))
+                return;
+
+            if (Directory.Exists(folder) == false)
+            {
+                // Move up the tree and recursively try again
+                RemoveEmptyLibraryFolder(library, Path.GetDirectoryName(folder));
+            }
+            else
+            {
+                // Check to see if the directory is empty
+                try
+                {
+                    if (Directory.EnumerateFileSystemEntries(folder).Any() == false)
+                    {
+                        try
+                        {
+                            // Delete the empty folder
+                            Directory.Delete(folder);
+                        }
+                        catch (Exception ex)
+                        {
+                            Logger.WriteWarning("Issue deleting folder " + folder, ex);
+                            return;
+                        }
+                        // Move up the tree and recursively try again
+                        RemoveEmptyLibraryFolder(library, Path.GetDirectoryName(folder));
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Logger.WriteWarning("Issue enumerating files " + folder, ex);
+                }
+            }
+        }
+
+        public static bool FilterMetadata(MovieMetadata metadata, List<FilterPair> studioFilter, List<FilterPair> labelFilter, List<FilterPair> directorFilter, List<FilterPair> genreFilter, List<FilterPair> actorFilter)
+        {
+            bool changed = false;
+            metadata.Title = metadata.Title.Trim();
+            if (metadata.Title.StartsWith(metadata.UniqueID.Value))
+                metadata.Title = metadata.Title.Substring(metadata.UniqueID.Value.Length).Trim();
+            metadata.Studio = FilterField(metadata.Studio, studioFilter, ref changed);
+            metadata.Label = FilterField(metadata.Label, labelFilter, ref changed);
+            string director = metadata.Director.Trim();
+            if (director != metadata.Director)
+            {
+                changed = true;
+                metadata.Director = director;
+            }
+            metadata.Director = FilterField(metadata.Director, directorFilter, ref changed);
+            metadata.Actors = FilterActors(metadata.Actors, actorFilter, ref changed);
+            metadata.Genres = Utilities.FilterWordList(metadata.Genres, genreFilter, ref changed);
+            return changed;
+        }
+
+        public static int TitleCompare(string leftTitle, string rightTitle)
+        {
+            return Utilities.TitleNormalize(leftTitle).CompareTo(Utilities.TitleNormalize(rightTitle));
+        }
+
+        public static int MovieIDCompare(UniqueID leftID, UniqueID rightID)
+        {
+            int retVal = MovieIDCompareAlpha(leftID.Value, rightID.Value);
+            if (retVal != 0)
+                return retVal;
+            return MovieIDCompareNumeric(leftID.Value, rightID.Value);
+        }
+
+        public static int ActressCompare(List<ActorData> leftActors, List<ActorData> rightActors)
+        {
+            for (int i = 0; i < Math.Min(leftActors.Count, rightActors.Count); ++i)
+            {
+                int retVal = String.Compare(leftActors[i].Name, rightActors[i].Name);
+                if (retVal != 0)
+                    return retVal;
+            }
+            if (leftActors.Count > rightActors.Count)
+                return -1;
+            else if (leftActors.Count < rightActors.Count)
+                return 1;
+            return 0;
+        }
+
+         public static string GenresToString(MovieData movieData)
+        {
+            var str = new StringBuilder();
+            foreach (var s in movieData.Metadata.Genres)
+            {
+                str.Append(s);
+                if (movieData.Metadata.Genres.IndexOf(s) < movieData.Metadata.Genres.Count - 1)
+                    str.Append(", ");
+            }
+            return str.ToString();
+        }
+
+        public static bool StringToGenres(MovieData movieData, string stringValue)
+        {
+            var genres = stringValue.Split(',');
+            bool genresChanged = false;
+            if (genres.Length != movieData.Metadata.Genres.Count)
+                genresChanged = true;
+            else
+            {
+                foreach (var g in genres)
+                {
+                    var genre = g.Trim();
+                    if (movieData.Metadata.Genres.Contains(genre) == false)
+                    {
+                        genresChanged = true;
+                        break;
+                    }
+                }
+            }
+            if (genresChanged)
+            {
+                movieData.Metadata.Genres.Clear();
+                foreach (var g in genres)
+                {
+                    var genre = g.Trim();
+                    movieData.Metadata.Genres.Add(genre);
+                }
+                movieData.MetadataChanged = true;
+            }
+            return genresChanged;
+        }
+
+        public static string ActorsToString(List<ActorData> actors)
+        {
+            var str = new StringBuilder();
+            foreach (var actor in actors)
+            {
+                str.Append(actor.Name.Trim());
+                if (actors.IndexOf(actor) < actors.Count - 1)
+                    str.Append(", ");
+            }
+            return str.ToString();
+        }
+
+        public static bool StringToActors(string stringValue, ref List<ActorData> actors)
+        {
+            // Split all strings by comma separator and insert into a set, trimming whitespace
+            var stringNames = stringValue.Split(',');
+            var nameSet = new HashSet<string>();
+            foreach (var stringName in stringNames)
+                nameSet.Add(stringName.Trim());
+
+            // Check for no changes
+            if (nameSet.Count == actors.Count)
+            {
+                bool noChanges = true;
+                foreach (var actor in actors)
+                {
+                    if (nameSet.Contains(actor.Name) == false)
+                    {
+                        noChanges = false;
+                        break;
+                    }
+                }
+                if (noChanges)
+                    return false;
+            }
+
+            // Remove names and re-add them if a match in the set is found
+            var newActors = new List<ActorData>();
+
+            // First look for substitutions
+            foreach (var actor in actors)
+            {
+                if (nameSet.Contains(actor.Name))
+                {
+                    newActors.Add(actor);
+                    nameSet.Remove(actor.Name);
+                }
+                else
+                {
+                    // Check for reversed name
+                    if (nameSet.Contains(Utilities.ReverseNames(actor.Name)))
+                    {
+                        newActors.Add(actor);
+                        nameSet.Remove(actor.Name);
+                    }
+                    else
+                    {
+                        // Next, let's see if the names are similar - in which case is probably an edit
+                        bool isSimilar = false;
+                        string similarName = String.Empty;
+                        foreach (var checkedName in nameSet)
+                        {
+                            if (Utilities.GetSimilarity(checkedName, actor.Name) > s_nameSimilarityThreshold)
+                            {
+                                isSimilar = true;
+                                similarName = checkedName;
+                                break;
+                            }
+                            if (Utilities.GetSimilarity(checkedName, Utilities.ReverseNames(actor.Name)) > s_nameSimilarityThreshold)
+                            {
+                                isSimilar = true;
+                                similarName = checkedName;
+                                break;
+                            }
+                        }
+                        if (isSimilar)
+                        {
+                            actor.Name = similarName;
+                            newActors.Add(actor);
+                            nameSet.Remove(similarName);
+                        }
+                    }
+                }
+            }
+
+            // Add any leftover names
+            foreach (var addedName in nameSet)
+            {
+                var addedActor = new ActorData();
+                addedActor.Name = addedName;
+                newActors.Add(addedActor);
+            }
+
+            actors = newActors;
+
+            return true;
+        }
+
+        public static string GetMovieResolution(string filename)
+        {
+            string resolution = String.Empty;
+
+            // Create arguments for asfbin
+            var args = new StringBuilder(1024);
+            args.Append("-i ");
+            args.Append("\"");
+            args.Append(filename);
+            args.Append("\"");
+
+            try
+            {
+                // Create process
+                using (var process = new Process
+                {
+                    StartInfo = new ProcessStartInfo
+                    {
+                        FileName = "ffmpeg.exe",
+                        Arguments = args.ToString(),
+                        UseShellExecute = false,
+                        RedirectStandardError = true,
+                        CreateNoWindow = true
+                    }
+                })
+                {
+                    StringBuilder sb = new StringBuilder(5000);
+
+                    // Start process and capture output by line
+                    process.Start();
+                    while (!process.StandardError.EndOfStream)
+                        sb.Append(process.StandardError.ReadLine());
+
+                    Regex regex = new Regex(@"\d{2,5}x\d{2,5}");
+                    string s = sb.ToString();
+                    var matches = regex.Matches(s);
+                    if (matches.Count > 0)
+                    {
+                        resolution = matches[0].ToString();
+                    }
+                }
+            }
+            catch (Exception)
+            {
+            }
+
+            return resolution;
+        }
+
+        #endregion
+
+        #region Private Functions    
+
+        private static string MoveRenameGetFilename(MovieData movieData, string filename, int sequenceIndex = -1)
+        {
+            if (String.IsNullOrEmpty(filename))
+                return String.Empty;
+
+            // Always ensure there is a valid sequence signature if there is a valid sequence index
+            if (sequenceIndex != -1)
+            {
+                if (filename.Contains("SEQUENCE") == false)
+                    filename += "{SEQUENCE \"-\" ALPHA}";
+            }
+
+            // Getting a filename is identical to getting a folder, with the exception that
+            // directory delimiters are not allowed.
+            string fn = MoveRenameGetFolder(movieData, filename, sequenceIndex);
+            if (fn.Contains('\\') || fn.Contains('/'))
+                throw new Exception("Filename fields cannot contain directory delimiters");
+
+            return fn;
+        }
+
+        private static string MoveRenameGetFolder(MovieData movieData, string folder, int sequenceIndex = -1)
+        {
+            if (String.IsNullOrEmpty(folder))
+                return String.Empty;
+
+            // Search for tokens to substitute for movie-specific paths
+            List<string> tokens = new List<string>();
+            string[] tokenPairs = folder.Split('{');
+            foreach (string tp in tokenPairs)
+            {
+                string[] tokenSplit = tp.Split('}');
+                foreach (string ts in tokenSplit)
+                {
+                    tokens.Add(ts);
+                }
+            }
+
+            StringBuilder sb = new StringBuilder(200);
+            while (tokens.Count > 0)
+            {
+                sb.Append(tokens.First());
+                tokens.RemoveAt(0);
+                if (tokens.Count > 0)
+                {
+                    sb.Append(MoveRenameParseToken(movieData, sequenceIndex, tokens.First()));
+                    tokens.RemoveAt(0);
+                }
+            }
+
+            return sb.ToString();
+        }
+
+        private static string MoveRenameParseToken(MovieData movieData, int sequenceIndex, string token)
+        {
+            StringBuilder sb = new StringBuilder(200);
+            string originalToken = token;
+
+            token.TrimStart();
+            if (token.StartsWith("DVD-ID"))
+            {
+                token = token.Substring(6);
+                sb.Append(movieData.Metadata.UniqueID.Value);
+            }
+            else if (token.StartsWith("STUDIO"))
+            {
+                token = token.Substring(6);
+                if (String.IsNullOrEmpty(movieData.Metadata.Studio))
+                    sb.Append("(Unknown)");
+                else
+                    sb.Append(FilterFileName(movieData.Metadata.Studio));
+            }
+            else if (token.StartsWith("TITLE"))
+            {
+                token = token.Substring(5).Trim();
+                if (String.IsNullOrEmpty(movieData.Metadata.Title))
+                    sb.Append("(Unknown)");
+                else
+                    sb.Append(FilterFileName(movieData.Metadata.Title, Math.Min(200, Utilities.ParseInitialDigits(token))));
+            }
+            else if (token.StartsWith("YEAR"))
+            {
+                token = token.Substring(4);
+                if (movieData.Metadata.Year == 0)
+                    sb.Append("(Unknown)");
+                else
+                    sb.Append(FilterFileName(movieData.Metadata.Year.ToString()));
+            }
+            else if (token.StartsWith("ACTRESS"))
+            {
+                token = token.Substring(7).TrimStart();
+                int num = Math.Min(4, Math.Max(1, Utilities.ParseInitialDigits(token)));
+                List<string> names = new List<string>();
+                foreach (var actor in movieData.Metadata.Actors)
+                    names.Add(actor.Name);
+                names.Sort();
+                if (names.Count == 0)
+                {
+                    sb.Append("(unknown actresses)");
+                }
+                else if (names.Count > num)
+                {
+                    sb.Append("(");
+                    sb.Append((++num).ToString());
+                    sb.Append(" or more actresses)");
+                }
+                else
+                {
+                    for (int i = 0; i < names.Count; ++i)
+                    {
+                        sb.Append(names[i]);
+                        if (i == names.Count - 2)
+                            sb.Append(names.Count == 2 ? " & " : ", & ");
+                        else if (i < names.Count - 2)
+                            sb.Append(", ");
+                    }
+                }
+            }
+            else if (token.StartsWith("USER_RATING"))
+            {
+                token = token.Substring(11);
+                token = token.TrimStart();
+
+                List<string> tokens = new List<string>();
+                string[] tokenPairs = token.Split('=', '"');
+                bool numeric = true;
+                foreach (string tp in tokenPairs)
+                {
+                    if (String.IsNullOrEmpty(tp))
+                        continue;
+                    if (numeric)
+                        tokens.Add(tp.Trim());
+                    else
+                        tokens.Add(tp);
+                    numeric = !numeric;
+                }
+
+                if (tokens.Count % 2 != 0)
+                    throw new Exception("Error in USER_RATING terms");
+
+                for (int i = 0; i < tokens.Count; i += 2)
+                {
+                    string[] numbers = tokens[i].Split('-');
+                    int numMin = Utilities.ParseInitialDigits(numbers[0].Trim());
+                    int numMax = (numbers.Length == 1) ? numMin : Utilities.ParseInitialDigits(numbers[1].Trim());
+                    if (numMax < numMin)
+                    {
+                        int temp = numMin;
+                        numMin = numMax;
+                        numMax = temp;
+                    }
+                    string dirPart = tokens[i + 1];
+                    if (movieData.Metadata.UserRating >= numMin && movieData.Metadata.UserRating <= numMax)
+                    {
+                        sb.Append(FilterFileName(dirPart));
+                        break;
+                    }
+                }
+            }
+            else if (token.StartsWith("SEQUENCE") && sequenceIndex != -1)
+            {
+                token = token.Substring(8).Trim();
+                string[] subtokens = token.Split('\"');               
+                foreach (string subtoken in subtokens)
+                {
+                    if (String.IsNullOrEmpty(subtoken))
+                        continue;
+                    else if (subtoken.Contains("ALPHA_LOWER"))
+                        sb.Append((char)((int)('a') + sequenceIndex));
+                    else if (subtoken.Contains("ALPHA"))
+                        sb.Append((char)((int)('A') + sequenceIndex));
+                    else if (subtoken.Contains("NUMBER"))
+                        sb.Append(sequenceIndex.ToString());
+                    else
+                        sb.Append(subtoken);
+                }
+            }
+
+            return sb.ToString();
+        }
+
+        private static string FilterFileName(string s, int maxNumber = -1)
+        {
+            // According to what I know about UTF-16, searching for single characters
+            // like this should still work even on surrogate pairs, since they're disjoint.
+            // Thus, no account need be made for the variable width nature when searching
+            // for single characters in the Basic Multilingual Plane (BPM).
+
+            bool lengthBreak = false;
+            StringBuilder sb = new StringBuilder(200);
+            char[] invalidChars = Path.GetInvalidFileNameChars();
+            foreach (char c in s)
+            {
+                bool legal = true;
+                char substitution = (char)0;
+                foreach (char ic in invalidChars)
+                {
+                    if (c == ic)
+                    {
+                        // Where possible, substitute with lookalike characters,
+                        // which are legal in filenames.  Sneaky, eh?
+                        switch (c)
+                        {
+                            case '?':
+                                substitution = '？';
+                                break;
+                            case ':':
+                                substitution = '˸';
+                                break;
+                            case '"':
+                                substitution = '＂';
+                                break;
+                            case '<':
+                                substitution = '＜';
+                                break;
+                            case '>':
+                                substitution = '＞';
+                                break;
+                            case '*':
+                                substitution = '⁎';
+                                break;
+                            case '(':
+                                substitution = '(';
+                                break;
+                            case '}':
+                                substitution = ')';
+                                break;
+                            case '/':
+                                substitution = '⁄';
+                                break;
+                            case '\\':
+                                substitution = '⑊';
+                                break;
+                            case '|':
+                                substitution = '❘';
+                                break;
+                            default:
+                                legal = false;
+                                break;
+                        }
+                    }
+                }
+                if (legal)
+                {
+                    if (substitution != (char)0)
+                        sb.Append(substitution);
+                    else
+                        sb.Append(c);
+                    if (maxNumber != -1)
+                    {
+                        if (sb.Length >= maxNumber)
+                        {
+                            lengthBreak = true;
+                            break;
+                        }
+                    }
+                }
+            }
+
+            string name = sb.ToString();
+
+            // If we're trimming based on length, try to trim neatly at a space and append an elipse
+            if (lengthBreak == true)
+            {
+                int index = name.LastIndexOf(' ');
+                if (index != -1 && (name.Length - index) < (name.Length * .75))
+                    name = name.Substring(0, index);
+            }
+
+            // Folder names can't end with a period.
+            name = name.TrimEnd('.', ' ');
+
+            // If the length was trimmed, add an ellipse
+            if (lengthBreak == true)
+                name += "…";
+
+            return name;
+        }
+
+        private static string FilterField(string text, List<FilterPair> filters, ref bool changed)
+        {
+            foreach(var filter in filters)
+            {
+                if (String.Compare(text, filter.Original, true) == 0)
+                {
+                    // Check to see if we're only changing case.  If so, we should first do a case-sensitive compare
+                    if (String.Compare(filter.Original, filter.Filtered, true) == 0)
+                    {
+                        if (String.Compare(filter.Original, filter.Filtered, true) == 0)
+                        {
+                            changed = true;
+                            return filter.Filtered;
+                        }
+                    }
+                    else
+                    {
+                        changed = true;
+                        return filter.Filtered;
+                    }
+                }
+            }
+            return text;
+        }
+
+        private static List<ActorData> FilterActors(List<ActorData> actorData, List<FilterPair> actorFilter, ref bool changed)
+        {
+            if (actorData.Count == 0)
+                return actorData;
+            string actorsString = ActorsToString(actorData);
+            string[] actors = actorsString.Split(',');
+            List<string> actorList = new List<string>();
+            foreach (var actor in actors)
+                actorList.Add(actor.Trim());
+            actorList = Utilities.FilterWordList(actorList, actorFilter, ref changed);
+            StringBuilder sb = new StringBuilder(actorData.Count * 30);
+            foreach (var actor in actorList)
+            {
+                sb.Append(actor);
+                if (actorList.IndexOf(actor) != actorList.Count - 1)
+                    sb.Append(", ");
+            }
+            StringToActors(sb.ToString(), ref actorData);
+            return actorData;
+        }
+
+        private static void MoveRenameFoldersAndFiles(MovieData movieData, MovieData newMovieData)
+        {
+            string sourceFolder = movieData.Path;
+
+            if (newMovieData.SharedPath == false)
+            {
+                if (movieData.SharedPath == false)
+                {
+                    // In case of a folder collision, the destination path may be adjusted
+                    newMovieData.Path = Utilities.MoveFolder(movieData.Path, newMovieData.Path);
+
+                    // Since we're moving all files in the folder, we'll change the source folder as well.
+                    sourceFolder = newMovieData.Path;
+                }
+                else
+                {
+                    // In case of a folder collision, the new folder path may be adjusted
+                    newMovieData.Path = Utilities.CreateFolder(newMovieData.Path);
+                }
+            }
+
+            // Move/rename individual files as needed
+            for (int i = 0; i < movieData.MovieFileNames.Count; ++i)
+                Utilities.MoveFile(Path.Combine(sourceFolder, movieData.MovieFileNames[i]), Path.Combine(newMovieData.Path, newMovieData.MovieFileNames[i]));
+            Utilities.MoveFile(Path.Combine(sourceFolder, movieData.CoverFileName), Path.Combine(newMovieData.Path, newMovieData.CoverFileName));
+            for (int i = 0; i < movieData.ThumbnailsFileNames.Count; ++i)
+                Utilities.MoveFile(Path.Combine(sourceFolder, movieData.ThumbnailsFileNames[i]), Path.Combine(newMovieData.Path, newMovieData.ThumbnailsFileNames[i]));
+            Utilities.MoveFile(Path.Combine(sourceFolder, movieData.MetadataFileName), Path.Combine(newMovieData.Path, newMovieData.MetadataFileName));
+            for (int i = 0; i < movieData.SubtitleFileNames.Count; ++i)
+                Utilities.MoveFile(Path.Combine(sourceFolder, movieData.SubtitleFileNames[i]), Path.Combine(newMovieData.Path, newMovieData.SubtitleFileNames[i]));
+        }
+
+         private static int MovieIDCompareAlpha(string leftID, string rightID)
+        {
+            for (int i = 0; i < Math.Min(leftID.Length, rightID.Length); ++i)
+            {
+                if (Char.IsDigit(leftID[i]) && Char.IsDigit(rightID[i]))
+                    return 0;
+                int cmp = leftID[i].CompareTo(rightID[i]);
+                if (cmp != 0)
+                    return cmp;
+            }
+            return 0;
+        }
+
+        private static int MovieIDCompareNumeric(string leftID, string rightID)
+        {
+            string leftNum = GetMovieIDNumericPart(leftID);
+            string rightNum = GetMovieIDNumericPart(rightID);
+            return leftNum.CompareTo(rightNum);
+        }
+
+        private static string GetMovieIDNumericPart(string ID)
+        {
+            var parts = ID.Split('-');
+            if (parts.Length == 2)
+            {
+                string p = parts[1];
+                int len = p.Length;
+                if (len == 2)
+                    p = "000" + p;
+                else if (len == 3)
+                    p = "00" + p;
+                else if (len == 4)
+                    p = "0" + p;
+                return p;
+            }
+            return ID;
+        }
+
+        #endregion
+
+        #region Private Members
+
+        private static readonly double s_nameSimilarityThreshold = 0.65;
+
+        #endregion
+    }
+}

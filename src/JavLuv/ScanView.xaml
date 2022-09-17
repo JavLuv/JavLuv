@@ -1,0 +1,83 @@
+﻿<Window 
+    x:Class="JavLuv.ScanView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:local="clr-namespace:JavLuv"
+    mc:Ignorable="d"
+    Title="{DynamicResource Text.ScanMoviesTitle}" 
+    WindowStartupLocation="CenterOwner"
+    ResizeMode="NoResize"
+    Style="{DynamicResource DefaultWindowStyle}"
+    Initialized="Window_Initialized"
+    Height="230" 
+    Width="600"
+    >
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="30" />
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="120" />
+            <ColumnDefinition Width="10" />
+            <ColumnDefinition Width="120" />
+            <ColumnDefinition Width="30" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="30" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="28" />
+            <RowDefinition Height="20" />
+        </Grid.RowDefinitions>
+
+        <StackPanel Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="4">
+            <CheckBox 
+                Margin="0, 2,0, 2" 
+                IsChecked="{Binding ScanRecursively}"
+                Content="{DynamicResource Text.ScanSubfolders}" 
+                />
+
+            <CheckBox 
+                Margin="0, 2,0, 2" 
+                IsChecked="{Binding MoveRenameAfterScan}"
+                Visibility="{Binding MoveRenameAfterScanVisibility}"
+                Content="{DynamicResource Text.MoveRenameAfterScan}" 
+                />
+            <Label Margin="0, 8, 0, 0" Content="{DynamicResource Text.FolderToScan}" />
+            <Grid MinHeight="34">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="10" />
+                    <ColumnDefinition Width="90" />
+                    <ColumnDefinition Width="10" />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="30" />
+                </Grid.RowDefinitions>
+                <TextBox
+                    Height="24"
+                    Text="{Binding ScanFolder}"
+                    />
+                <Button
+                    Height="24"
+                    Grid.Column="2"
+                    Command="{Binding BrowseFolderCommand}"
+                    Content="{DynamicResource Text.Browse}"
+                    />
+            </Grid>
+        </StackPanel>
+
+        <Button
+            Grid.Column="2"
+            Grid.Row="2"
+            Content="{DynamicResource Text.Scan}"
+            Click="Scan_Click"
+            />
+        <Button
+            Grid.Column="4"
+            Grid.Row="2"
+            Content="Cancel"
+            Click="Cancel_Click"
+            />
+    </Grid>
+</Window>

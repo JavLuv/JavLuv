@@ -1,0 +1,104 @@
+﻿<UserControl 
+    x:Class="JavLuv.RatingControl"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+    xmlns:local="clr-namespace:JavLuv"
+    mc:Ignorable="d" 
+    MinHeight="30"
+    Width="155"
+    HorizontalAlignment="Left"
+    MouseEnter="UserControl_MouseEnter"
+    MouseLeave="UserControl_MouseLeave"
+    >
+    <UserControl.Resources>
+
+        <Image x:Key="ImageStarLeftOutline" x:Shared="false" Source="Resources/star_left_outline.png" />
+        <Image x:Key="ImageStarRightOutline" x:Shared="false" Source="Resources/star_right_outline.png" />
+        <Image x:Key="ImageStarLeftFilled" x:Shared="false" Source="Resources/star_left_filled.png" />
+        <Image x:Key="ImageStarRightFilled" x:Shared="false" Source="Resources/star_right_filled.png" />
+
+        <Style x:Key="StarStyle" TargetType="Button" BasedOn="{StaticResource BaseButtonStyle}">
+            <Setter Property="OverridesDefaultStyle" Value="True"/>
+            <Setter Property="Width" Value="15"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Name="border" BorderThickness="0" Background="{TemplateBinding Background}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border" Property="BorderBrush" Value="Black" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </UserControl.Resources>
+    <StackPanel Orientation="Horizontal">
+        <Button x:Name="m_button0" Width="5" Style="{StaticResource StarStyle}" Click="m_button0_Click" MouseMove="m_button0_MouseMove"/>
+        <Button x:Name="m_button1" Style="{StaticResource StarStyle}" Click="m_button1_Click" MouseMove="m_button1_MouseMove" >
+            <Grid>
+                <ContentControl Content="{StaticResource ImageStarLeftOutline}" />
+                <ContentControl x:Name="m_starFilled1" Content="{StaticResource ImageStarLeftFilled}" />
+            </Grid>
+        </Button>
+        <Button x:Name="m_button2" Style="{StaticResource StarStyle}" Click="m_button2_Click" MouseMove="m_button2_MouseMove" >
+            <Grid>
+                <ContentControl Content="{StaticResource ImageStarRightOutline}" />
+                <ContentControl x:Name="m_starFilled2" Content="{StaticResource ImageStarRightFilled}" />
+            </Grid>
+        </Button>
+        <Button x:Name="m_button3" Style="{StaticResource StarStyle}" Click="m_button3_Click" MouseMove="m_button3_MouseMove" >
+            <Grid>
+                <ContentControl Content="{StaticResource ImageStarLeftOutline}" />
+                <ContentControl x:Name="m_starFilled3" Content="{StaticResource ImageStarLeftFilled}" />
+            </Grid>
+        </Button>
+        <Button x:Name="m_button4" Style="{StaticResource StarStyle}" Click="m_button4_Click" MouseMove="m_button4_MouseMove" >
+            <Grid>
+                <ContentControl Content="{StaticResource ImageStarRightOutline}" />
+                <ContentControl x:Name="m_starFilled4" Content="{StaticResource ImageStarRightFilled}" />
+            </Grid>
+        </Button>
+        <Button x:Name="m_button5" Style="{StaticResource StarStyle}" Click="m_button5_Click" MouseMove="m_button5_MouseMove" >
+            <Grid>
+                <ContentControl Content="{StaticResource ImageStarLeftOutline}" />
+                <ContentControl x:Name="m_starFilled5" Content="{StaticResource ImageStarLeftFilled}" />
+            </Grid>
+        </Button>
+        <Button x:Name="m_button6" Style="{StaticResource StarStyle}" Click="m_button6_Click" MouseMove="m_button6_MouseMove" >
+            <Grid>
+                <ContentControl Content="{StaticResource ImageStarRightOutline}" />
+                <ContentControl x:Name="m_starFilled6" Content="{StaticResource ImageStarRightFilled}" />
+            </Grid>
+        </Button>
+        <Button x:Name="m_button7" Style="{StaticResource StarStyle}" Click="m_button7_Click" MouseMove="m_button7_MouseMove" >
+            <Grid>
+                <ContentControl Content="{StaticResource ImageStarLeftOutline}" />
+                <ContentControl x:Name="m_starFilled7" Content="{StaticResource ImageStarLeftFilled}" />
+            </Grid>
+        </Button>
+        <Button x:Name="m_button8" Style="{StaticResource StarStyle}" Click="m_button8_Click" MouseMove="m_button8_MouseMove" >
+            <Grid>
+                <ContentControl Content="{StaticResource ImageStarRightOutline}" />
+                <ContentControl x:Name="m_starFilled8" Content="{StaticResource ImageStarRightFilled}" />
+            </Grid>
+        </Button>
+        <Button x:Name="m_button9" Style="{StaticResource StarStyle}" Click="m_button9_Click" MouseMove="m_button9_MouseMove" >
+            <Grid>
+                <ContentControl Content="{StaticResource ImageStarLeftOutline}" />
+                <ContentControl x:Name="m_starFilled9" Content="{StaticResource ImageStarLeftFilled}" />
+            </Grid>
+        </Button>
+        <Button x:Name="m_button10" Style="{StaticResource StarStyle}" Click="m_button10_Click" MouseMove="m_button10_MouseMove" >
+            <Grid>
+                <ContentControl Content="{StaticResource ImageStarRightOutline}" />
+                <ContentControl x:Name="m_starFilled10" Content="{StaticResource ImageStarRightFilled}" />
+            </Grid>
+        </Button>
+    </StackPanel>
+</UserControl>

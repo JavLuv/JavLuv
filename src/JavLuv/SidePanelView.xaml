@@ -1,0 +1,103 @@
+﻿<UserControl 
+    x:Class="JavLuv.SidePanelView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+    xmlns:local="clr-namespace:JavLuv"
+    mc:Ignorable="d" 
+    d:DesignHeight="450" 
+    d:DesignWidth="250"
+    >
+    <Grid IsEnabled="{Binding IsEnabled}">
+        <StackPanel>
+            <Button
+                Command="{Binding SettingsCommand}"
+                IsEnabled="{Binding SettingsIsEnabled}"
+                Margin="5, 5, 5, 5"
+                HorizontalAlignment="Stretch"
+                Height="24"
+                Content="{DynamicResource Text.Settings}"
+                />
+            <Button
+                Command="{Binding ConcatenateMoviesCommand}"
+                Margin="5, 5, 5, 5"
+                HorizontalAlignment="Stretch"
+                Height="24"
+                Content="{DynamicResource Text.ConcatenateMovies}"
+                />
+            <Button
+                Command="{Binding OrganizeSubtitlesCommand}"
+                Visibility="{Binding AdvancedVisibility}"
+                Margin="5, 5, 5, 5"
+                HorizontalAlignment="Stretch"
+                Height="24"
+                Content="{DynamicResource Text.OrganizeSubtitles}"
+                />
+
+            <Button
+                Command="{Binding ScanMoviesCommand}"
+                Margin="5, 25, 5, 5"
+                HorizontalAlignment="Stretch"
+                Height="24"
+                Content="{DynamicResource Text.ScanMovies}"
+                />
+
+            <Button
+                Command="{Binding DeleteCacheCommand}"
+                Visibility="{Binding AdvancedVisibility}"
+                Margin="5, 5, 5, 5"
+                HorizontalAlignment="Stretch"
+                Height="24"
+                Content="{DynamicResource Text.DeleteLocalCacheEx}"
+                />
+
+            <Label
+                FontSize="15"
+                Margin="5, 20, 5, 5" 
+                Content="{DynamicResource Text.SearchCollection}"
+                />
+            <TextBox
+                TextWrapping="Wrap"
+                Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"                    
+                />
+            <Grid Margin="0, 10, 0, 0" Height="30">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="1*" />
+                    <ColumnDefinition Width="3*" />
+                </Grid.ColumnDefinitions>
+                <Label 
+                    Content="{DynamicResource Text.SortBy}"
+                    HorizontalAlignment="Right"
+                    />
+                <ComboBox 
+                    Grid.Column="1"
+                    HorizontalAlignment="Left"
+                    ItemsSource="{Binding SortByList}"
+                    SelectedItem="{Binding CurrentSortBy}"
+                    Height="24" 
+                    Width="100"
+                    DisplayMemberPath="Name"
+                    />
+            </Grid>
+            <CheckBox 
+                Margin="5, 10, 5, 2"
+                VerticalAlignment="Center"
+                Content="{DynamicResource Text.ShowID}"
+                IsChecked="{Binding ShowID}"
+                />
+            <CheckBox 
+                Margin="5, 2, 5, 2"
+                VerticalAlignment="Center"
+                Content="{DynamicResource Text.ShowUnratedOnly}"
+                IsChecked="{Binding ShowUnratedOnly}"
+                />
+            <CheckBox 
+                Margin="5, 2, 5, 2"
+                VerticalAlignment="Center"
+                Content="{DynamicResource Text.ShowSubtitlesOnly}"
+                IsChecked="{Binding ShowSubtitlesOnly}"
+                />
+        </StackPanel>   
+    </Grid>
+</UserControl>
