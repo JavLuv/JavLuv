@@ -83,6 +83,34 @@ namespace WebScraper
                     return null;
             }
 
+            // If we're any language but Japanese, perform special Japanese-language scrape to get original title
+            if (language != LanguageType.Japanese)
+            {
+                var titleMetadata = new MovieMetadata();
+                titleMetadata.UniqueID.Value = movieID;
+                javDatabase = new ModuleJavDatabase(titleMetadata, LanguageType.Japanese);
+                javDatabase.Scrape();
+                if (String.IsNullOrEmpty(titleMetadata.Title))
+                {
+                    javLibrary = new ModuleJavLibrary(titleMetadata, LanguageType.Japanese);
+                    javLibrary.Scrape();
+                    if (String.IsNullOrEmpty(titleMetadata.Title))
+                    {
+                        var javLand = new ModuleJavLand(titleMetadata, LanguageType.Japanese);
+                        javLand.Scrape();
+                        if (String.IsNullOrEmpty(titleMetadata.Title))
+                        {
+                            var javBus = new ModuleJavBus(titleMetadata, LanguageType.Japanese);
+                            javBus.Scrape();
+                        }
+                    }
+                }
+
+                // We have an original title.  Save it to our merged metata
+                if (String.IsNullOrEmpty(titleMetadata.Title) == false)
+                    mergedMetadata.OriginalTitle = titleMetadata.Title;
+            }
+
             // Return the best metadata we can
             Logger.WriteInfo("Metadata for " + mergedMetadata.UniqueID.Value + " successfully downloaded");
             return mergedMetadata;
