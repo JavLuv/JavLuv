@@ -76,6 +76,7 @@
     </Compile>
     <Compile Include="BrowserViewModel.cs" />
     <Compile Include="CmdFindSubtitles.cs" />
+    <Compile Include="CmdGetOriginalTitle.cs" />
     <Compile Include="CmdGetResolution.cs" />
     <Compile Include="CmdLoadImage.cs" />
     <Compile Include="CmdMoveRename.cs" />
