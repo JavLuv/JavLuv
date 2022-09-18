@@ -74,7 +74,7 @@ namespace JavLuv
             get
             {
                 string[] versions = typeof(SettingsViewModel).Assembly.GetName().Version.ToString().Split('.');
-                return String.Format("v{0}.{1} Build: {2} Rev: {3}", versions[0], versions[1], versions[2], versions[3]);
+                return String.Format("v{0}.{1}.{2}", versions[0], versions[1], versions[2]);
             }
         }
 
