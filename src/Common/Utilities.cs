@@ -626,18 +626,16 @@ namespace Common
                 }
                 catch (IOException)
                 {
-                    Thread.Sleep(500);
+                    Thread.Sleep(s_retryDelayMs);
                     ++retries;
                 }
-                catch (Exception ex)
-                {
-                    Logger.WriteWarning("Issue moving file " + sourceFile + " to " + destFile, ex);
-                    return;
-                }
             }
-            while (success == false && retries < 10);
+            while (success == false && retries < s_numRetries);
             if (success == false)
-                throw new Exception("Issue moving file " + sourceFile + " to " + destFile);
+            {
+                Logger.WriteWarning("IO error moving file " + sourceFile + " to " + destFile);
+                throw new IOException("IO error moving file " + sourceFile + " to " + destFile);
+            }
         }
 
         private static void MoveFileRetry(string sourceFile, string destFile)
@@ -654,18 +652,16 @@ namespace Common
                 }
                 catch (IOException)
                 {
-                    Thread.Sleep(500);
+                    Thread.Sleep(s_retryDelayMs);
                     ++retries;
                 }
-                catch (Exception ex)
-                {
-                    Logger.WriteWarning("Issue moving file " + sourceFile + " to " + destFile, ex);
-                    return;
-                }
             }
-            while (success == false && retries < 10);
+            while (success == false && retries < s_numRetries);
             if (success == false)
-                throw new Exception("Issue moving file " + sourceFile + " to " + destFile);
+            {
+                Logger.WriteWarning("IO error moving file " + sourceFile + " to " + destFile);
+                throw new IOException("IO error moving file " + sourceFile + " to " + destFile);
+            }
         }
 
         private static void MoveFolderRetry(string sourceFolder, string destFolder)
@@ -681,18 +677,16 @@ namespace Common
                 }
                 catch (IOException)
                 {
-                    Thread.Sleep(500);
+                    Thread.Sleep(s_retryDelayMs);
                     ++retries;
                 }
-                catch (Exception ex)
-                {
-                    Logger.WriteWarning("Issue moving folder " + sourceFolder + " to " + destFolder, ex);
-                    return;
-                }
             }
-            while (success == false && retries < 10);
+            while (success == false && retries < s_numRetries);
             if (success == false)
-                throw new Exception("Issue moving folder " + sourceFolder + " to " + destFolder);
+            {
+                Logger.WriteWarning("Issue moving folder " + sourceFolder + " to " + destFolder);
+                throw new IOException("Issue moving folder " + sourceFolder + " to " + destFolder);
+            }
         }
 
         private static void FileDeleteRetry(string fileName)
@@ -714,7 +708,7 @@ namespace Common
                 }
                 catch (IOException)
                 {
-                    Thread.Sleep(500);
+                    Thread.Sleep(s_retryDelayMs);
                     ++retries;
                 }
                 catch (Exception ex)
@@ -723,7 +717,7 @@ namespace Common
                     return;
                 }
             }
-            while (success == false && retries < 10);
+            while (success == false && retries < s_numRetries);
             if (success == false)
                 throw new Exception("Issue deleting file " + file.Name);
         }
@@ -741,7 +735,7 @@ namespace Common
                 }
                 catch (IOException)
                 {
-                    Thread.Sleep(500);
+                    Thread.Sleep(s_retryDelayMs);
                     ++retries;
                 }
                 catch (Exception ex)
@@ -750,7 +744,7 @@ namespace Common
                     return;
                 }
             }
-            while (success == false && retries < 10);
+            while (success == false && retries < s_numRetries);
             if (success == false)
                 throw new Exception("Issue deleting folder " + folderName);
         }
@@ -760,7 +754,8 @@ namespace Common
         #region Private Members
 
         private static readonly string[] s_strippedTitleWords = { "A ", "An ", "The " };
-
+        private static readonly int s_numRetries = 10;
+        private static readonly int s_retryDelayMs = 250;
         #endregion
     }
 }
