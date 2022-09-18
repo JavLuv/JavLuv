@@ -177,6 +177,7 @@ namespace JavLuv
         {
             try
             {
+                m_filesInCache = m_movieCollection.GetAllFileNames();
                 foreach (var dir in m_directoriesToScan)
                     ProcessDirectory(dir);
                 ProcessMetadata();
@@ -238,6 +239,10 @@ namespace JavLuv
                     if (fileInfo.FileType == FileType.Unknown)
                         continue;
 
+                    // Ignore filenames already in the cache
+                    if (m_filesInCache.Contains(fn))
+                        continue;
+
                     // Get file sub-types
                     if (fileInfo.FileType == FileType.Movie)
                         fileInfo.MovieType = GetMovieType(fileInfo.FileName);
@@ -251,10 +256,7 @@ namespace JavLuv
                     // Check to see if if this movie is already in the cache.  
                     if (String.IsNullOrEmpty(fileInfo.ID) == false && m_movieCollection.MovieExists(fileInfo.ID))
                     {
-                        // Check to see if this file already exists inside a registered movie's folder.  If so, we
-                        // silently ignore it.  If not, report an error.
-                        if (!m_movieCollection.FileInCollection(fileInfo.ID, fn))
-                            LogError(String.Format("Error scanning file {0}.  {1} already exists in collection.", fileInfo.FileName, fileInfo.ID), directoryToScan);
+                        LogError(String.Format("Error scanning file {0}.  {1} already exists in collection.", fileInfo.FileName, fileInfo.ID), directoryToScan);
                         continue;
                     }
 
@@ -775,6 +777,7 @@ namespace JavLuv
         private string[] m_thumbnailNames;
         private string[] m_metaDataNames = { "nfo" };
         private string[] m_movieExclusions;
+        private HashSet<string> m_filesInCache;
         private List<MovieData> m_movies = new List<MovieData>();
         private HashSet<MovieMetadata> m_backupMetadata = new HashSet<MovieMetadata>();
         private string m_settingsFolder = String.Empty;
