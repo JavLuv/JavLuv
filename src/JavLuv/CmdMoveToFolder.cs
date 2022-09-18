@@ -108,7 +108,7 @@ namespace JavLuv
                             m_progressWindow.UpdateProgress();
                         }));                    
                     }
-                    catch (Exception ex)
+                    catch (IOException ex)
                     {
                         MessageBox.Show(ex.ToString(), TextManager.GetString("Text.ErrorMovingFolder"));
                     }
