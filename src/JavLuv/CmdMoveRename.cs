@@ -114,6 +114,7 @@ namespace JavLuv
             {
                 Application.Current.Dispatcher.Invoke(DispatcherPriority.Normal, new Action(delegate ()
                 {
+                    m_progressWindow.IsFinished = true;
                     m_progressWindow.Close();
                 }));
                 MessageBox.Show(ex.Message, TextManager.GetString("Text.MoveRenameError"));
