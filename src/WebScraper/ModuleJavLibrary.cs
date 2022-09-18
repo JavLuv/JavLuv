@@ -205,7 +205,7 @@ namespace WebScraper
                     if (nextElement != null && nextElement.TextContent == m_metadata.UniqueID.Value)
                     {
                         string href = element.Attributes["href"].Value;
-                        m_pageLink = "https://www.javlibrary.com/en/" + href;
+                        m_pageLink = "https://www.javlibrary.com/" + GetLanguageString() + "/" + href;
                         return true;            
                     }
                 }
