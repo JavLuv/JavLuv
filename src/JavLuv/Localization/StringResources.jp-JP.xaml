@@ -11,6 +11,7 @@
     <system:String x:Key="Text.English">英語</system:String>
     <system:String x:Key="Text.Japanese">日本語</system:String>
     <system:String x:Key="Text.ShowAdvanced">Show advanced options</system:String>
+    <system:String x:Key="Text.CheckForUpdates">Automatically check for updates</system:String>
     <system:String x:Key="Text.Subtitles">Subtitle</system:String>
     <system:String x:Key="Text.HideMetadata">Hide metadata and cover files</system:String>
     <system:String x:Key="Text.Scanning">Scanning</system:String>
@@ -42,6 +43,13 @@
     <system:String x:Key="Text.LicenseInformation">License information:</system:String>
     <system:String x:Key="Text.JavLuvDistributed">JavLuv is distributed under the MIT Open Source License:</system:String>
     <system:String x:Key="Text.ffmpeg">ffmpeg is distributed under the GNU General Public License::</system:String>
+
+    <!-- Version Check View -->
+    <system:String x:Key="Text.VersionCheckTitle">Version Check</system:String>
+    <system:String x:Key="Text.VersionCheckMessage">A new version of JavLuv is available.</system:String>
+    <system:String x:Key="Text.CurrentVersion">Current version: {0}</system:String>
+    <system:String x:Key="Text.NewVersion">New version: {0}</system:String>
+    <system:String x:Key="Text.VersionDetails">Details</system:String>
 
     <!-- Movie details -->
     <system:String x:Key="Text.MovieDetails">Movie Details</system:String>

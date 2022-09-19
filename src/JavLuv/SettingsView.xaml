@@ -61,6 +61,12 @@
                         Content="{DynamicResource Text.ShowAdvanced}" 
                         />
 
+                    <CheckBox 
+                        Margin="0, 5, 0, 15" 
+                        IsChecked="{Binding CheckForUpdates}"
+                        Content="{DynamicResource Text.CheckForUpdates}" 
+                        />
+
                     <Label Margin="0, 5, 0, 0" Content="{DynamicResource Text.Subtitles}"/>
                     <Grid HorizontalAlignment="Stretch">
                         <Grid.ColumnDefinitions>

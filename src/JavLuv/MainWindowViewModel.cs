@@ -1,7 +1,7 @@
 ﻿using Common;
+using JavLuv.Properties;
 using MovieInfo;
 using System;
-using System.Timers;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Shell;
@@ -44,6 +44,18 @@ namespace JavLuv
             m_movieScanner.PropertyChanged += MovieScanner_PropertyChanged;
             m_movieCollection.MoviesDisplayedChanged += MovieCollection_MoviesDisplayedChanged;
 
+            // Check version
+            var timeToCheck = new TimeSpan(1, 0, 0, 0); // 1 day interval
+            var interval = new TimeSpan(0, 0, 0, 0);
+            if (JavLuv.Settings.Get().LastVersionCheckTime != null)
+                interval = DateTime.Now - JavLuv.Settings.Get().LastVersionCheckTime;
+            if (JavLuv.Settings.Get().CheckForUpdates && interval > timeToCheck)
+            {
+                JavLuv.Settings.Get().LastVersionCheckTime = DateTime.Now;
+                m_checkVersion = new CmdCheckVersion();
+                m_checkVersion.FinishedVersionCheck += CheckVersion_FinishedVersionCheck;
+                CommandQueue.LongTask().Execute(m_checkVersion);
+            }
         }
 
         #endregion
@@ -181,7 +193,7 @@ namespace JavLuv
 
         #endregion
 
-        #region Events
+        #region Event Handlers
 
         private void MovieScanner_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
@@ -242,6 +254,28 @@ namespace JavLuv
                 m_movieCollection.MoviesDisplayed.Count,
                 m_movieCollection.NumMovies
                 );        
+        }
+
+        private void CheckVersion_FinishedVersionCheck(object sender, EventArgs e)
+        {
+            if (m_checkVersion.IsNewVersionAvailable && 
+                m_checkVersion.LatestRelease.tag_name != JavLuv.Settings.Get().LastVersionChecked)
+            {
+
+                // Create and prepare version dialog
+                var versionCheck = new VersionCheckView();
+                versionCheck.Owner = Application.Current.MainWindow;
+                versionCheck.CurrentVersion.Text = String.Format(TextManager.GetString("Text.CurrentVersion"), m_checkVersion.CurrentVersion);
+                versionCheck.NewVersion.Text = String.Format(TextManager.GetString("Text.NewVersion"), m_checkVersion.LatestRelease.tag_name);
+                versionCheck.Details.Text = m_checkVersion.LatestRelease.body;
+
+                // Store new version so we don't bother notifying again
+                JavLuv.Settings.Get().LastVersionChecked = m_checkVersion.LatestRelease.tag_name;
+                
+                // Show the dialog box - hey, we have a new version!
+                versionCheck.ShowDialog();
+            }
+            m_checkVersion = null;
         }
 
         #endregion
@@ -329,6 +363,7 @@ namespace JavLuv
         MovieScanner m_movieScanner;
         MovieCollection m_movieCollection;
         TaskbarItemProgressState m_progressState;
+        CmdCheckVersion m_checkVersion;
         int m_percentComplete = 0;
         string m_scanStatus = String.Empty;
         string m_displayCountText = String.Empty;
