@@ -6,6 +6,8 @@ mkdir build
 )
 
 cd build
+del /Q *.msi
+del /Q *.zip
 
 IF NOT EXIST JavLuv (
 echo Creating JavLuv folder
@@ -54,6 +56,12 @@ tar -a -c -f JavLuv.zip JavLuv  && (
 
 del /q Javluv
 rmdir /q JavLuv
+
+@for /f "tokens=* usebackq" %%f in (`git tag --sort=committerdate`) do @set "tag=%%f"
+echo %tag%
+
+rename "JavLuv.zip" "JavLuv-%tag%.zip"
+rename "Setup JavLuv.msi" "Setup JavLuv-%tag%.msi"
 
 cd ..
 
