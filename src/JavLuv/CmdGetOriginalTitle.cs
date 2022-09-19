@@ -20,6 +20,12 @@ namespace JavLuv
 
         #endregion
 
+        #region Events
+
+        public event EventHandler FinishedScraping;
+
+        #endregion
+
         #region Properties
 
         public string Resolution { get; set; }
@@ -62,6 +68,7 @@ namespace JavLuv
             {
                 m_movieData.Metadata.OriginalTitle = originalTitle;
                 m_movieData.MetadataChanged = true;
+                FinishedScraping?.Invoke(this, new EventArgs());
             }));
         }
 

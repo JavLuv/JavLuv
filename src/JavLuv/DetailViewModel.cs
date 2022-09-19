@@ -103,13 +103,15 @@ namespace JavLuv
             // may not have retrieved this data.
             if (Settings.Get().Language != LanguageType.Japanese && String.IsNullOrEmpty(m_movieData.Metadata.OriginalTitle))
             {
-                CommandQueue.LongTask().Execute(new CmdGetOriginalTitle(ID, m_movieData));
+                var getOrigTitle = new CmdGetOriginalTitle(ID, m_movieData);
+                getOrigTitle.FinishedScraping += GetOriginalTitle_Finished;
+                CommandQueue.LongTask().Execute(getOrigTitle, ShowOriginalTitle ? CommandOrder.First : CommandOrder.Last);
             }
         }
 
         #endregion
 
-        #region Events
+       #region Event Handlers
 
         private void LoadImage_FinishedLoading(object sender, System.EventArgs e)
         {
@@ -123,6 +125,11 @@ namespace JavLuv
         {
             m_movieData.MovieResolution = m_getResolution.Resolution;
             NotifyPropertyChanged("Resolution");
+        }
+
+        private void GetOriginalTitle_Finished(object sender, EventArgs e)
+        {
+            NotifyPropertyChanged("Title");
         }
 
         #endregion
@@ -167,21 +174,68 @@ namespace JavLuv
             }
         }
 
+        public bool ShowOriginalTitle
+        {
+            get 
+            {
+                if (Settings.Get().Language == LanguageType.Japanese)
+                    return false;
+                return Settings.Get().ShowOriginalTitle; 
+            }
+            set
+            {
+                if (value != Settings.Get().ShowOriginalTitle)
+                {
+                    Settings.Get().ShowOriginalTitle = value;
+                    NotifyPropertyChanged("Title");
+                    NotifyPropertyChanged("ShowOriginalTitle");
+                }
+            }
+        }
+
+        public System.Windows.Visibility ShowOriginalTitleVisible
+        {
+            get
+            {
+                if (Settings.Get().Language == LanguageType.Japanese)
+                    return System.Windows.Visibility.Hidden;
+                return System.Windows.Visibility.Visible;
+            }
+        }
+
+
         public BrowserItemViewModel BrowserItem { get { return m_browserItem; } }
 
         public MovieData MovieData { get { return m_movieData; } }
 
         public string Title
         {
-            get { return m_movieData.Metadata.Title; }
+            get 
+            { 
+                if (ShowOriginalTitle)
+                    return m_movieData.Metadata.OriginalTitle; 
+                else
+                    return m_movieData.Metadata.Title;
+            }
             set
             {
-                if (value != m_movieData.Metadata.Title)
+                if (ShowOriginalTitle)
                 {
-                    m_movieData.Metadata.Title = value;
-                    m_movieData.MetadataChanged = true;
-                    NotifyPropertyChanged("Title");
+                    if (value != m_movieData.Metadata.OriginalTitle)
+                    {
+                        m_movieData.Metadata.OriginalTitle = value;
+                        m_movieData.MetadataChanged = true;
+                    }
                 }
+                else
+                {
+                    if (value != m_movieData.Metadata.Title)
+                    {
+                        m_movieData.Metadata.Title = value;
+                        m_movieData.MetadataChanged = true;
+                    }
+                }
+                NotifyPropertyChanged("Title");
             }
         }
 

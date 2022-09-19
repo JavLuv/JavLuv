@@ -114,6 +114,7 @@ namespace JavLuv
         public bool ShowID { get; set; }
         public bool ShowUnratedOnly { get; set; }
         public bool ShowSubtitlesOnly { get; set; }
+        public bool ShowOriginalTitle { get; set; }
 
         // Config settings
         public LanguageType Language { get; set; }

@@ -58,6 +58,8 @@
     <system:String x:Key="Text.Resolution">Resolution:</system:String>
     <system:String x:Key="Text.Notes">Notes:</system:String>
     <system:String x:Key="Text.CopyTitle">Copy title and metadata</system:String>
+    <system:String x:Key="Text.JP">JP</system:String>
+    <system:String x:Key="Text.ShowOriginalJpTitle">Show original Japanese title</system:String>
 
     <!-- Miscellaneous -->
     <system:String x:Key="Text.JavLuvTitle">JavLuv - Your JAV Movie Organizer</system:String>

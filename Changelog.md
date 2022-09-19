@@ -4,6 +4,7 @@ All significant changes are listed in this file.
 ## [1.0.1] - 2022-9-18
 
 - Original Japanese title is now scraped for non-Japanese languages
+- Added toggle in detail view for non-Japanese languages to show original Japanese title
 - Fixed a rescan issue causing duplicate file entries
 - Fixed issue if file is open during auto renaming causing dialog to hang
 

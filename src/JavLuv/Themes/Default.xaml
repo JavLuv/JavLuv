@@ -2084,18 +2084,19 @@
     <SolidColorBrush x:Key="ToggleButton.Default.Background" Color="{DynamicResource Theme.Control.Default.Background}"/>
     <SolidColorBrush x:Key="ToggleButton.Disabled.Foreground" Color="{DynamicResource Theme.Control.Disabled.Foreground}"/>
     <SolidColorBrush x:Key="ToggleButton.Default.Foreground" Color="{DynamicResource Theme.Control.Default.Foreground}"/>
+    <SolidColorBrush x:Key="ToggleButton.Default.Border" Color="{DynamicResource Theme.Control.Default.Background}"/>
     <SolidColorBrush x:Key="ToggleButton.Checked.Background" Color="{DynamicResource Theme.Alternate.Background}"/>
-    <SolidColorBrush x:Key="ToggleButton.Checked.Border" Color="{DynamicResource Theme.Control.Selected.Border}"/>
+    <SolidColorBrush x:Key="ToggleButton.Checked.Border" Color="{DynamicResource Theme.Control.Default.Background}"/>
     <SolidColorBrush x:Key="ToggleButton.Pressed.Background" Color="{DynamicResource Theme.Alternate.Background}"/>
     <SolidColorBrush x:Key="ToggleButton.Pressed.Border" Color="{DynamicResource Theme.Control.Highlighted.Border}"/>
     <SolidColorBrush x:Key="ToggleButton.MouseOver.Background" Color="{DynamicResource Theme.Alternate.Background}"/>
     <SolidColorBrush x:Key="ToggleButton.MouseOver.Border" Color="{DynamicResource Theme.Control.Highlighted.Border}"/>
     <Style TargetType="{x:Type ToggleButton}">
-        <Setter Property="Foreground" Value="{StaticResource ToggleButton.Default.Foreground}"/>
         <Setter Property="Padding" Value="2"/>
         <Setter Property="BorderThickness" Value="1"/>
-        <Setter Property="Background" Value="Transparent"/>
-        <Setter Property="BorderBrush" Value="Transparent"/>
+        <Setter Property="Foreground" Value="{StaticResource ToggleButton.Default.Foreground}"/>
+        <Setter Property="Background" Value="{StaticResource ToggleButton.Default.Background}"/>
+        <Setter Property="BorderBrush" Value="{StaticResource ToggleButton.Default.Border}"/>
         <Setter Property="HorizontalAlignment" Value="Center"/>
         <Setter Property="VerticalAlignment" Value="Center"/>
         <Setter Property="HorizontalContentAlignment" Value="Center"/>
@@ -2115,24 +2116,12 @@
                             <Setter Property="BorderBrush" Value="{StaticResource ToggleButton.MouseOver.Border}"/>
                             <Setter Property="Background" Value="{StaticResource ToggleButton.MouseOver.Background}"/>
                         </Trigger>
-                        <Trigger Property="IsKeyboardFocused" Value="True">
-                            <Setter Property="BorderBrush" Value="{StaticResource ToggleButton.MouseOver.Border}"/>
-                            <Setter Property="Background" Value="{StaticResource ToggleButton.MouseOver.Background}"/>
-                        </Trigger>
                         <MultiTrigger>
                             <MultiTrigger.Conditions>
                                 <Condition Property="IsMouseOver" Value="True"/>
                                 <Condition Property="IsChecked" Value="True"/>
                             </MultiTrigger.Conditions>
-                            <Setter Property="BorderBrush" Value="{StaticResource ToggleButton.Checked.Border}"/>
-                            <Setter Property="Background" Value="{StaticResource ToggleButton.Checked.Background}"/>
-                        </MultiTrigger>
-                        <MultiTrigger>
-                            <MultiTrigger.Conditions>
-                                <Condition Property="IsKeyboardFocused" Value="True"/>
-                                <Condition Property="IsChecked" Value="True"/>
-                            </MultiTrigger.Conditions>
-                            <Setter Property="BorderBrush" Value="{StaticResource ToggleButton.Checked.Border}"/>
+                            <Setter Property="BorderBrush" Value="{StaticResource ToggleButton.MouseOver.Border}"/>
                             <Setter Property="Background" Value="{StaticResource ToggleButton.Checked.Background}"/>
                         </MultiTrigger>
                         <Trigger Property="IsPressed" Value="True">
