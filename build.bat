@@ -45,23 +45,26 @@ copy /y "src\JavLuv\bin\Release\*.exe" "build\JavLuv\"
 copy /y "src\JavLuv\bin\Release\JavLuv.exe.config" "build\JavLuv\"
 copy /y "src\JavLuv\bin\Release\Core14.profile.xml" "build\JavLuv\"
 
-cd Build
+cd build
 
-tar -a -c -f JavLuv.zip JavLuv  && (
+@for /f "tokens=* usebackq" %%f in (`git tag --sort=committerdate`) do @set "tag=%%f"
+echo %tag%
+
+set JavLuv=JavLuv-%tag%
+echo %JavLuv%
+
+rename JavLuv %JavLuv%
+rename "Setup JavLuv.msi" "Setup %JavLuv%.msi"
+
+tar -a -c -f %JavLuv%.zip %JavLuv%  && (
   echo Copied setup file to build folder
 ) || (
   echo JavLuv tar archive failed
   EXIT /B 1
 )
 
-del /q Javluv
-rmdir /q JavLuv
-
-@for /f "tokens=* usebackq" %%f in (`git tag --sort=committerdate`) do @set "tag=%%f"
-echo %tag%
-
-rename "JavLuv.zip" "JavLuv-%tag%.zip"
-rename "Setup JavLuv.msi" "Setup JavLuv-%tag%.msi"
+del /q %JavLuv%
+rmdir /q %JavLuv%
 
 cd ..
 
