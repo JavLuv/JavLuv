@@ -95,6 +95,17 @@
                     <Polyline Margin="8, 8, 0, 0" StrokeThickness="2" Stroke="WhiteSmoke" Points="0,-8 8,0 0,8" />
                 </Grid>
             </Button>
+            <ToggleButton
+                Grid.Column="5"
+                Margin="4, 4, 4, 4"
+                HorizontalAlignment="Right"
+                Visibility="{Binding ShowOriginalTitleVisible}"
+                IsChecked="{Binding ShowOriginalTitle}"
+                Width="28"
+                Height="28"
+                Content="{DynamicResource Text.JP}"
+                ToolTip="{DynamicResource Text.ShowOriginalJpTitle}"
+                />
         </Grid>
         <Grid Grid.Row="1" Grid.ColumnSpan="2" >
             <Grid.InputBindings>

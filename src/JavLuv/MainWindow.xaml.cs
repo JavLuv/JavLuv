@@ -47,7 +47,7 @@ namespace JavLuv
         {
             Logger.WriteInfo("Main window closing");
             var mainWindowModelView = DataContext as MainWindowViewModel;
-            if (mainWindowModelView.Scanner.IsScanning)
+            if (mainWindowModelView.IsScanning)
             {
                 var msgRes = System.Windows.Forms.MessageBox.Show(
                     TextManager.GetString("Text.ExitJavLuvScanningFiles"),

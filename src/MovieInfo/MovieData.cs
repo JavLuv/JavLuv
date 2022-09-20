@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Xml.Linq;
 using System.Xml.Serialization;
 
@@ -110,6 +109,7 @@ namespace MovieInfo
         {
             UniqueID = new UniqueID();
             Title = String.Empty;
+            OriginalTitle = String.Empty;
             Premiered = String.Empty;
             Director = String.Empty;
             Studio = String.Empty;

@@ -1,7 +1,7 @@
 ﻿using Common;
 using MovieInfo;
 using System;
-using System.Timers;
+using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Shell;
@@ -41,20 +41,33 @@ namespace JavLuv
             Overlay = null;
 
             // Get events for property changes
-            m_movieScanner.PropertyChanged += MovieScanner_PropertyChanged;
+            m_movieScanner.ScanUpdate += OnMovieScannerUpdate;
+            m_movieScanner.ScanComplete += OnMovieScannerComplete;
             m_movieCollection.MoviesDisplayedChanged += MovieCollection_MoviesDisplayedChanged;
 
+            // Check version
+            var timeToCheck = new TimeSpan(1, 0, 0, 0); // 1 day interval
+            var interval = new TimeSpan(0, 0, 0, 0);
+            if (JavLuv.Settings.Get().LastVersionCheckTime != null)
+                interval = DateTime.Now - JavLuv.Settings.Get().LastVersionCheckTime;
+            if (JavLuv.Settings.Get().CheckForUpdates && interval > timeToCheck)
+            {
+                JavLuv.Settings.Get().LastVersionCheckTime = DateTime.Now;
+                m_checkVersion = new CmdCheckVersion();
+                m_checkVersion.FinishedVersionCheck += CheckVersion_FinishedVersionCheck;
+                CommandQueue.LongTask().Execute(m_checkVersion);
+            }
         }
 
         #endregion
 
         #region Properties
 
-        public ObservableObject Overlay 
-        { 
-            get 
-            { 
-                return m_mainPanelViewModel; 
+        public ObservableObject Overlay
+        {
+            get
+            {
+                return m_mainPanelViewModel;
             }
             set
             {
@@ -91,15 +104,17 @@ namespace JavLuv
 
         public SettingsViewModel Settings { get { return m_settingsViewModel; } }
 
-        public MovieScanner Scanner { get { return m_movieScanner; } }
+        //public MovieScanner Scanner { get { return m_movieScanner; } }
 
         public MovieCollection Collection { get { return m_movieCollection; } }
+
+        public bool IsScanning { get { return m_movieScanner.Phase != ScanPhase.Finished; } }
 
         public Visibility ScanVisibility
         {
             get
             {
-                if (Scanner.IsScanning)
+                if (IsScanning)
                     return System.Windows.Visibility.Visible;
                 else
                     return System.Windows.Visibility.Hidden;
@@ -181,58 +196,57 @@ namespace JavLuv
 
         #endregion
 
-        #region Events
+        #region Event Handlers
 
-        private void MovieScanner_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        private void OnMovieScannerComplete(object sender, EventArgs e)
         {
+            SidePanel.SettingsIsEnabled = true;
+            ProgressState = TaskbarItemProgressState.None;
+            ScanStatus = String.Empty;
+            NotifyPropertyChanged("IsScanning");
             NotifyPropertyChanged("ScanVisibility");
 
-            if (m_movieScanner.IsScanning)
+            string errorMsg = String.Empty;
+            var moviesAdded = m_movieCollection.AddMovies(m_movieScanner.Movies, out errorMsg);
+            if (m_movieScanner.ErrorLog != String.Empty || errorMsg != String.Empty)
             {
-                if (SidePanel.SettingsIsEnabled)
-                    SidePanel.SettingsIsEnabled = false;
-                if (m_movieScanner.IsDownloadingMetadata)
-                {
-                    ProgressState = TaskbarItemProgressState.Normal;
-                    if (m_movieScanner.MetadataToDownload != 0)
-                    {
-                        PercentComplete = (int)(((float)m_movieScanner.DownloadedMetadata / (float)m_movieScanner.MetadataToDownload) * 100.0);
-                        ScanStatus = string.Format(TextManager.GetString("Text.DownloadingMetadata"), m_movieScanner.DownloadedMetadata, m_movieScanner.MetadataToDownload);
-                    }
-                }
-                else
-                {
-                    ProgressState = TaskbarItemProgressState.Indeterminate;
-                    ScanStatus = string.Format(TextManager.GetString("Text.ScanningFolders"), m_movieScanner.NumFoldersScanned);
-                }
+                m_reportViewModel.ErrorLog = String.Empty;
+                if (m_movieScanner.ErrorLog != String.Empty)
+                    m_reportViewModel.ErrorLog += m_movieScanner.ErrorLog;
+                if (errorMsg != String.Empty)
+                    m_reportViewModel.ErrorLog += errorMsg;
+                Overlay = m_reportViewModel;
+                m_sidePanelViewModel.IsEnabled = false;
+                ProgressState = TaskbarItemProgressState.Error;
             }
-            else
+
+            // Optionally move/rename post-scan
+            if (JavLuv.Settings.Get().EnableMoveRename && JavLuv.Settings.Get().MoveRenameAfterScan && m_movieScanner.IsCancelled == false)
+                m_browserViewModel.MoveRenameMovies(moviesAdded);
+
+            m_movieScanner.Clear();
+        }
+
+        private void OnMovieScannerUpdate(object sender, EventArgs e)
+        {
+            if (m_movieScanner.Phase == ScanPhase.ScanningFolders)
             {
-                SidePanel.SettingsIsEnabled = true;
-                ProgressState = TaskbarItemProgressState.None;
-                string errorMsg = String.Empty;
-                var moviesAdded = m_movieCollection.AddMovies(m_movieScanner.Movies, out errorMsg);
-                if (m_movieScanner.ErrorLog != String.Empty || errorMsg != String.Empty)
-                {
-                    m_reportViewModel.ErrorLog = String.Empty;
-                    if (m_movieScanner.ErrorLog != String.Empty)
-                        m_reportViewModel.ErrorLog += m_movieScanner.ErrorLog;
-                    if (errorMsg != String.Empty)
-                        m_reportViewModel.ErrorLog += errorMsg;
-                    Overlay = m_reportViewModel;
-                    m_sidePanelViewModel.IsEnabled = false;
-                    ProgressState = TaskbarItemProgressState.Error;
-                }
-                                      
-                // Optionally move/rename post-scan
-                if (JavLuv.Settings.Get().EnableMoveRename && JavLuv.Settings.Get().MoveRenameAfterScan && m_movieScanner.IsCancelled == false)
-                {
-                    m_browserViewModel.MoveRenameMovies(moviesAdded);
-                }
-                    
-                m_movieScanner.Clear();
-                
-            }     
+                ProgressState = TaskbarItemProgressState.Indeterminate;
+                PercentComplete = 0;
+                ScanStatus = string.Format(TextManager.GetString("Text.ScanningFolders"), m_movieScanner.ItemsProcessed);
+            }
+            else if (m_movieScanner.Phase == ScanPhase.LoadingMetadata)
+            {
+                ProgressState = TaskbarItemProgressState.Normal;
+                PercentComplete = (int)(((float)m_movieScanner.ItemsProcessed / (float)m_movieScanner.TotalItems) * 100.0);
+                ScanStatus = string.Format(TextManager.GetString("Text.LoadingMetadata"), m_movieScanner.ItemsProcessed, m_movieScanner.TotalItems);
+            }
+            else if (m_movieScanner.Phase == ScanPhase.DownloadMetadata)
+            {
+                ProgressState = TaskbarItemProgressState.Normal;
+                PercentComplete = (int)(((float)m_movieScanner.ItemsProcessed / (float)m_movieScanner.TotalItems) * 100.0);
+                ScanStatus = string.Format(TextManager.GetString("Text.DownloadingMetadata"), m_movieScanner.ItemsProcessed, m_movieScanner.TotalItems);
+            }
         }
 
         private void MovieCollection_MoviesDisplayedChanged(object sender, EventArgs e)
@@ -242,6 +256,28 @@ namespace JavLuv
                 m_movieCollection.MoviesDisplayed.Count,
                 m_movieCollection.NumMovies
                 );        
+        }
+
+        private void CheckVersion_FinishedVersionCheck(object sender, EventArgs e)
+        {
+            if (m_checkVersion.IsNewVersionAvailable && 
+                m_checkVersion.LatestRelease.tag_name != JavLuv.Settings.Get().LastVersionChecked)
+            {
+
+                // Create and prepare version dialog
+                var versionCheck = new VersionCheckView();
+                versionCheck.Owner = Application.Current.MainWindow;
+                versionCheck.CurrentVersion.Text = String.Format(TextManager.GetString("Text.CurrentVersion"), m_checkVersion.CurrentVersion);
+                versionCheck.NewVersion.Text = String.Format(TextManager.GetString("Text.NewVersion"), m_checkVersion.LatestRelease.tag_name);
+                versionCheck.Details.Text = m_checkVersion.LatestRelease.body;
+
+                // Store new version so we don't bother notifying again
+                JavLuv.Settings.Get().LastVersionChecked = m_checkVersion.LatestRelease.tag_name;
+                
+                // Show the dialog box - hey, we have a new version!
+                versionCheck.ShowDialog();
+            }
+            m_checkVersion = null;
         }
 
         #endregion
@@ -306,6 +342,16 @@ namespace JavLuv
         public void StartScan(string scanDirectory)
         {
             m_movieScanner.Start(scanDirectory);
+            SidePanel.SettingsIsEnabled = false;
+            NotifyPropertyChanged("IsScanning");
+            NotifyPropertyChanged("ScanVisibility");
+        }
+
+        public void StartScan(List<string> scanDirectories)
+        {
+            m_movieScanner.Start(scanDirectories);
+            SidePanel.SettingsIsEnabled = false;
+            NotifyPropertyChanged("IsScanning");
             NotifyPropertyChanged("ScanVisibility");
         }
 
@@ -314,6 +360,7 @@ namespace JavLuv
             if (m_movieScanner != null)
                 m_movieScanner.Cancel();
             ProgressState = TaskbarItemProgressState.None;
+            NotifyPropertyChanged("IsScanning");
             NotifyPropertyChanged("ScanVisibility");
         }
 
@@ -329,6 +376,7 @@ namespace JavLuv
         MovieScanner m_movieScanner;
         MovieCollection m_movieCollection;
         TaskbarItemProgressState m_progressState;
+        CmdCheckVersion m_checkVersion;
         int m_percentComplete = 0;
         string m_scanStatus = String.Empty;
         string m_displayCountText = String.Empty;

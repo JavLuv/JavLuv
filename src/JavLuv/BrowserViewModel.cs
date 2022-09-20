@@ -262,7 +262,7 @@ namespace JavLuv
 
         private bool CanMoveRenameExecute()
         {
-            return Parent.Scanner.IsScanning == false;
+            return Parent.IsScanning == false;
         }
 
         public ICommand MoveRenameCommand { get { return new RelayCommand(MoveRenameExecute, CanMoveRenameExecute); } }
@@ -311,7 +311,7 @@ namespace JavLuv
 
         private bool CanMoveToFoldersExecute()
         {
-            return Parent.Scanner.IsScanning == false;
+            return Parent.IsScanning == false;
         }
 
         public ICommand MoveToFolderCommand { get { return new RelayCommand(MoveToFoldersExecute, CanMoveToFoldersExecute); } }
@@ -329,12 +329,12 @@ namespace JavLuv
             HashSet<string> foldersToScan = new HashSet<string>();
             foreach (var item in SelectedItems)
                 foldersToScan.Add(item.MovieData.Path);
-            Parent.Scanner.Start(foldersToScan.ToList());
+            Parent.StartScan(foldersToScan.ToList());
         }
 
         private bool CanRescanFilesExecute()
         {
-            return Parent.Scanner.IsScanning == false;
+            return Parent.IsScanning == false;
         }
 
         public ICommand RescanFilesCommand { get { return new RelayCommand(RescanFilesExecute, CanRescanFilesExecute); } }
@@ -353,7 +353,7 @@ namespace JavLuv
 
         private bool CanRemoveFromLibraryExecute()
         {
-            return Parent.Scanner.IsScanning == false;
+            return Parent.IsScanning == false;
         }
 
         public ICommand RemoveFromLibraryCommand { get { return new RelayCommand(RemoveFromLibraryExecute, CanRemoveFromLibraryExecute); } }
@@ -389,12 +389,12 @@ namespace JavLuv
                 foldersToScan.Add(item.MovieData.Path);
             }
             Parent.Collection.DeleteMetadata(movies);
-            Parent.Scanner.Start(foldersToScan.ToList());
+            Parent.StartScan(foldersToScan.ToList());
         }
 
         private bool CanRegenerateMetadataExecute()
         {
-            return Parent.Scanner.IsScanning == false;
+            return Parent.IsScanning == false;
         }
 
         public ICommand RegenerateMetadataCommand { get { return new RelayCommand(RegenerateMetadataExecute, CanRegenerateMetadataExecute); } }
@@ -414,7 +414,7 @@ namespace JavLuv
 
         private bool CanFilterMetadataExecute()
         {
-            return Parent.Scanner.IsScanning == false;
+            return Parent.IsScanning == false;
         }
 
         public ICommand FilterMetadataCommand { get { return new RelayCommand(FilterMetadataExecute, CanFilterMetadataExecute); } }
@@ -433,7 +433,7 @@ namespace JavLuv
 
         private bool CanDeleteMetadataExecute()
         {
-            return Parent.Scanner.IsScanning == false;
+            return Parent.IsScanning == false;
         }
 
         public ICommand DeleteMetadataCommand { get { return new RelayCommand(DeleteMetadataExecute, CanDeleteMetadataExecute); } }

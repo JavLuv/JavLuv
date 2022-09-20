@@ -2,11 +2,9 @@
 using MovieInfo;
 using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Net;
-using System.Security.Policy;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 
@@ -83,23 +81,91 @@ namespace WebScraper
                     return null;
             }
 
+            // If we're any language but Japanese, perform special Japanese-language scrape to get original title
+            if (language != LanguageType.Japanese)
+                mergedMetadata.OriginalTitle = ScrapeOriginalTitle(movieID);
+
             // Return the best metadata we can
             Logger.WriteInfo("Metadata for " + mergedMetadata.UniqueID.Value + " successfully downloaded");
             return mergedMetadata;
+        }
+
+        public string ScrapeOriginalTitle(string movieID)
+        {
+            var titleMetadata = new MovieMetadata();
+            titleMetadata.UniqueID.Value = movieID;
+            var javDatabase = new ModuleJavDatabase(titleMetadata, LanguageType.Japanese);
+            javDatabase.Scrape();
+            if (String.IsNullOrEmpty(titleMetadata.Title))
+            {
+                var javLibrary = new ModuleJavLibrary(titleMetadata, LanguageType.Japanese);
+                javLibrary.Scrape();
+                if (String.IsNullOrEmpty(titleMetadata.Title))
+                {
+                    var javLand = new ModuleJavLand(titleMetadata, LanguageType.Japanese);
+                    javLand.Scrape();
+                    if (String.IsNullOrEmpty(titleMetadata.Title))
+                    {
+                        var javBus = new ModuleJavBus(titleMetadata, LanguageType.Japanese);
+                        javBus.Scrape();
+                    }
+                }
+            }
+
+            if (String.IsNullOrEmpty(titleMetadata.Title))
+                Logger.WriteWarning(String.Format("Japanese title for movie {0} was not found.", movieID));
+
+            return titleMetadata.Title;
+        }
+
+        public bool DownloadCoverImage(string movieID, ref string coverImagePath)
+        {
+            bool retVal = false;
+
+            var metadata = new MovieMetadata();
+            metadata.UniqueID.Value = movieID;
+
+            // Language doesn't really matter, but English is the most commonly-supported language of
+            // all the sites JavLuv scrapes.
+
+            // Download images from all sites and determine the best quality
+            var javLibrary = new ModuleJavLibrary(metadata, LanguageType.English);
+            javLibrary.Scrape();
+            if (DownloadCoverImage(ref coverImagePath, javLibrary.CoverImageSource))
+                retVal = true;
+
+            var javDatabase = new ModuleJavDatabase(metadata, LanguageType.English);
+            javDatabase.Scrape();
+            if (DownloadCoverImage(ref coverImagePath, javLibrary.CoverImageSource))
+                retVal = true;
+
+            var javLand = new ModuleJavLand(metadata, LanguageType.English);
+            javLand.Scrape();
+            if (DownloadCoverImage(ref coverImagePath, javLibrary.CoverImageSource))
+                retVal = true;
+
+            var javBus = new ModuleJavBus(metadata, LanguageType.English);
+            javBus.Scrape();
+            if (DownloadCoverImage(ref coverImagePath, javLibrary.CoverImageSource))
+                retVal = true;
+
+            return retVal;
         }
 
         #endregion
 
         #region Private Functions
 
-        private void DownloadCoverImage(ref string coverImagePath, string coverImageSource)
+        private bool DownloadCoverImage(ref string coverImagePath, string coverImageSource)
         {
             // Don't continue if we don't have full information
             if (String.IsNullOrEmpty(coverImageSource) || String.IsNullOrEmpty(coverImagePath))
-                return;
+                return false;
 
             // Set the appropriate extension
             string coverImageFilename = Path.ChangeExtension(coverImagePath, Path.GetExtension(coverImageSource));
+
+            bool retVal = false;
 
             // Download cover image
             using (var client = new WebClient())
@@ -129,6 +195,7 @@ namespace WebScraper
                             Logger.WriteInfo("Replacing cover art: " + coverImageFilename);
                             File.Copy(tempFileName, coverImageFilename, true);
                             coverImagePath = coverImageFilename;
+                            retVal = true;
                         }
                         File.Delete(tempFileName);                  
                     }
@@ -149,6 +216,7 @@ namespace WebScraper
                         {
                             Logger.WriteInfo("Saved cover art: " + coverImageFilename);
                             coverImagePath = coverImageFilename;
+                            retVal=true;
                         }                  
                     }
                 }
@@ -157,6 +225,7 @@ namespace WebScraper
                     Logger.WriteError("Error downloading cover image", ex);
                 }
             }
+            return retVal;
         }
 
         private ImageSource LoadImageFromFile(string filename)

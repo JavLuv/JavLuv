@@ -208,26 +208,28 @@ namespace MovieInfo
             }
         }
 
-        public bool FileInCollection(string uniqueID, string fileName)
+        public HashSet<string> GetAllFileNames()
         {
             lock (m_cacheData)
             {
-                MovieData key = new MovieData();
-                key.Metadata.UniqueID.Value = uniqueID;
-                MovieData result = new MovieData();
-                string dirName = Path.GetDirectoryName(fileName);
-                if (m_cacheData.Movies.TryGetValue(key, out result))
-                {
-                    if (result.Path == dirName)
-                        return true;
-                }
+                HashSet<string> fileNames = new HashSet<string>();
                 foreach (MovieData movieData in m_cacheData.Movies)
                 {
-                    if (movieData.Path == dirName)
-                        return true;
+                    foreach (string fn in movieData.MovieFileNames)
+                        fileNames.Add(Path.Combine(movieData.Path, fn));
+                    foreach (string fn in movieData.ThumbnailsFileNames)
+                        fileNames.Add(Path.Combine(movieData.Path, fn));
+                    foreach (string fn in movieData.SubtitleFileNames)
+                        fileNames.Add(Path.Combine(movieData.Path, fn));
+                    foreach (string fn in movieData.ExtraMovieFileNames)
+                        fileNames.Add(Path.Combine(movieData.Path, fn));
+                    if (String.IsNullOrEmpty(movieData.CoverFileName) == false)
+                        fileNames.Add(Path.Combine(movieData.Path, movieData.CoverFileName));
+                    if (String.IsNullOrEmpty(movieData.MetadataFileName) == false)
+                        fileNames.Add(Path.Combine(movieData.Path, movieData.MetadataFileName));
                 }
-                
-                return false;
+
+                return fileNames;
             }
         }
 

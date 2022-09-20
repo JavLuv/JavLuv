@@ -239,7 +239,7 @@ namespace JavLuv
 
         private void ScanMoviesExecute()
         {
-            if (Parent.Scanner.IsScanning)
+            if (Parent.IsScanning)
             {
                 var msgRes = System.Windows.Forms.MessageBox.Show(
                     TextManager.GetString("Text.JavLuvScanningFiles"),

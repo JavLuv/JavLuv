@@ -11,6 +11,7 @@
     <system:String x:Key="Text.English">English</system:String>
     <system:String x:Key="Text.Japanese">Japanese</system:String>
     <system:String x:Key="Text.ShowAdvanced">Show advanced options</system:String>
+    <system:String x:Key="Text.CheckForUpdates">Automatically check for updates</system:String>
     <system:String x:Key="Text.Subtitles">Subtitles</system:String>
     <system:String x:Key="Text.HideMetadata">Hide metadata and cover files</system:String>
     <system:String x:Key="Text.Scanning">Scanning</system:String>
@@ -58,6 +59,8 @@
     <system:String x:Key="Text.Resolution">Resolution:</system:String>
     <system:String x:Key="Text.Notes">Notes:</system:String>
     <system:String x:Key="Text.CopyTitle">Copy title and metadata</system:String>
+    <system:String x:Key="Text.JP">JP</system:String>
+    <system:String x:Key="Text.ShowOriginalJpTitle">Show original Japanese title</system:String>
 
     <!-- Miscellaneous -->
     <system:String x:Key="Text.JavLuvTitle">JavLuv - Your JAV Movie Organizer</system:String>
@@ -67,6 +70,7 @@
     <system:String x:Key="Text.Cancel">Cancel</system:String>
     <system:String x:Key="Text.CancellingOperation">Cancelling operation.  Plese wait...</system:String>
     <system:String x:Key="Text.ImportCoverImage">Import cover image...</system:String>
+    <system:String x:Key="Text.LoadingMetadata">Loading metadata {0}/{1}</system:String>
     <system:String x:Key="Text.DownloadingMetadata">Downloading metadata {0}/{1}</system:String>
     <system:String x:Key="Text.ScanningFolders">Scanning {0} folders</system:String>
     <system:String x:Key="Text.DisplayingMovies">Displaying {0} of {1} movies</system:String>
@@ -85,6 +89,13 @@
     <system:String x:Key="Text.MovingMoviesMessage">Moving movies to new location:</system:String>
     <system:String x:Key="Text.MovingRenamingMoviesTitle">Moving / Renaming Movies</system:String>
     <system:String x:Key="Text.MovingRenamingMoviesMessage">Moving / renaming movies and related files / folders:</system:String>
+
+    <!-- Version Check View -->
+    <system:String x:Key="Text.VersionCheckTitle">Version Check</system:String>
+    <system:String x:Key="Text.VersionCheckMessage">A new version of JavLuv is available.</system:String>
+    <system:String x:Key="Text.CurrentVersion">Current version: {0}</system:String>
+    <system:String x:Key="Text.NewVersion">New version: {0}</system:String>
+    <system:String x:Key="Text.VersionDetails">Details</system:String>
 
     <!-- Side Panel View -->
     <system:String x:Key="Text.ConcatenateMovies">Concatenate movies...</system:String>

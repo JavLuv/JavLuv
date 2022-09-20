@@ -119,6 +119,19 @@ namespace JavLuv
             }
         }
 
+        public bool CheckForUpdates
+        {
+            get { return Settings.Get().CheckForUpdates; }
+            set
+            {
+                if (value != Settings.Get().CheckForUpdates)
+                {
+                    Settings.Get().CheckForUpdates = value;
+                    NotifyPropertyChanged("CheckForUpdates");
+                }
+            }
+        }
+
         public string Subtitles
         {
             get { return Settings.Get().Subtitles; }

@@ -61,6 +61,7 @@ namespace JavLuv
             ScanRecursively = true;
             SearchViewWidth = new GridLength(300);
             SearchText = String.Empty;
+            LastVersionChecked = String.Empty;
             OrganizerMode = Organizer.Mode.Copy;
             IsDefault = true;
 
@@ -114,8 +115,14 @@ namespace JavLuv
         public bool ShowID { get; set; }
         public bool ShowUnratedOnly { get; set; }
         public bool ShowSubtitlesOnly { get; set; }
+        public bool ShowOriginalTitle { get; set; }
+
+        // Misc persistent data
+        public DateTime LastVersionCheckTime { get; set; }
+        public string LastVersionChecked { get; set; }
 
         // Config settings
+        public bool CheckForUpdates { get; set; }
         public LanguageType Language { get; set; }
         public bool ShowAdvancedOptions { get; set; }
         public string Subtitles { get; set; }
@@ -251,13 +258,14 @@ namespace JavLuv
                 m_cultures.Add(new CultureSettings(lang));
 
             ShowAdvancedOptions = false;
+            CheckForUpdates = true;
             Subtitles = "";
             GenerateLocalMetadata = false;
             UseFolderAsTitle = true;
             UseMovieFilenameAsTitle = false;
             HideMetadataAndCovers = false;
             AutoRestoreMetadata = true;
-            AutoRestoreMetadata = true;
+            LastVersionCheckTime = new DateTime(2022, 1, 1);
 
             MovieExts = "mp4; mkv; m4v; avi; wmv; mpg; mov";
             SubtitleExts = "srt; vtt; ssa; ass; smi";
