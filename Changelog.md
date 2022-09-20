@@ -9,6 +9,7 @@ All significant changes are listed in this file.
 - Scan status now shows progres of metadata loaded from disk
 - Fixed a rescan issue causing duplicate file entries
 - Fixed issue if file is open during auto renaming causing dialog to hang
+- Fixed issue causing empty metadata to appear in collection if cancelled while scanning folders
 - Build installer and zip are now named with version number
 
 ## [1.0.0] - 2022-9-17

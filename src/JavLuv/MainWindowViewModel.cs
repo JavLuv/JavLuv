@@ -108,7 +108,7 @@ namespace JavLuv
 
         public MovieCollection Collection { get { return m_movieCollection; } }
 
-        public bool IsScanning { get { return m_movieScanner.Phase != ScanPhase.Finished && m_movieScanner.Phase != ScanPhase.Cancelled; } }
+        public bool IsScanning { get { return m_movieScanner.Phase != ScanPhase.Finished; } }
 
         public Visibility ScanVisibility
         {
@@ -221,10 +221,8 @@ namespace JavLuv
             }
 
             // Optionally move/rename post-scan
-            if (JavLuv.Settings.Get().EnableMoveRename && JavLuv.Settings.Get().MoveRenameAfterScan && m_movieScanner.Phase != ScanPhase.Cancelled)
-            {
+            if (JavLuv.Settings.Get().EnableMoveRename && JavLuv.Settings.Get().MoveRenameAfterScan && m_movieScanner.IsCancelled == false)
                 m_browserViewModel.MoveRenameMovies(moviesAdded);
-            }
 
             m_movieScanner.Clear();
         }
