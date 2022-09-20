@@ -33,7 +33,7 @@ MSBuild Setup.sln /p:Configuration=Release && (
 
 cd ..
 
-copy /y "setup\bin\Release\Setup JavLuv.msi" "build\Setup JavLuv.msi" && (
+copy /y "setup\bin\Release\Setup-JavLuv.msi" "build\Setup-JavLuv.msi" && (
   echo Copied setup file to build folder
 ) || (
   echo JavLuv Setup copy failed
@@ -48,13 +48,11 @@ copy /y "src\JavLuv\bin\Release\Core14.profile.xml" "build\JavLuv\"
 cd build
 
 @for /f "tokens=* usebackq" %%f in (`git tag --sort=committerdate`) do @set "tag=%%f"
-echo %tag%
 
 set JavLuv=JavLuv-%tag%
-echo %JavLuv%
 
 rename JavLuv %JavLuv%
-rename "Setup JavLuv.msi" "Setup %JavLuv%.msi"
+rename "Setup-JavLuv.msi" "Setup-%JavLuv%.msi"
 
 tar -a -c -f %JavLuv%.zip %JavLuv%  && (
   echo Copied setup file to build folder
