@@ -6,6 +6,7 @@ All significant changes are listed in this file.
 - Can now automatically check for new releases
 - Original Japanese title is now scraped for non-Japanese languages
 - Added toggle in detail view for non-Japanese languages to show original Japanese title
+- Scan status now shows progres of metadata loaded from disk
 - Fixed a rescan issue causing duplicate file entries
 - Fixed issue if file is open during auto renaming causing dialog to hang
 - Build installer and zip are now named with version number

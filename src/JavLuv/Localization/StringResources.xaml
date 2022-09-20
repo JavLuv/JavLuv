@@ -70,6 +70,7 @@
     <system:String x:Key="Text.Cancel">Cancel</system:String>
     <system:String x:Key="Text.CancellingOperation">Cancelling operation.  Plese wait...</system:String>
     <system:String x:Key="Text.ImportCoverImage">Import cover image...</system:String>
+    <system:String x:Key="Text.LoadingMetadata">Loading metadata {0}/{1}</system:String>
     <system:String x:Key="Text.DownloadingMetadata">Downloading metadata {0}/{1}</system:String>
     <system:String x:Key="Text.ScanningFolders">Scanning {0} folders</system:String>
     <system:String x:Key="Text.DisplayingMovies">Displaying {0} of {1} movies</system:String>
