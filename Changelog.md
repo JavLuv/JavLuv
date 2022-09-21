@@ -3,7 +3,7 @@ All significant changes are listed in this file.
 
 ## [1.0.2] - 2022-9-20
 
-- 
+- Fixed styling of version check dialog
 
 ## [1.0.1] - 2022-9-19
 
