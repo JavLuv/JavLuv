@@ -261,18 +261,17 @@ namespace JavLuv
         private void CheckVersion_FinishedVersionCheck(object sender, EventArgs e)
         {
             if (m_checkVersion.IsNewVersionAvailable && 
-                m_checkVersion.LatestRelease.tag_name != JavLuv.Settings.Get().LastVersionChecked)
+                m_checkVersion.LatestVersion.CompareTo(JavLuv.Settings.Get().LastVersionChecked) != 0)
             {
-
                 // Create and prepare version dialog
                 var versionCheck = new VersionCheckView();
                 versionCheck.Owner = Application.Current.MainWindow;
-                versionCheck.CurrentVersion.Text = String.Format(TextManager.GetString("Text.CurrentVersion"), m_checkVersion.CurrentVersion);
-                versionCheck.NewVersion.Text = String.Format(TextManager.GetString("Text.NewVersion"), m_checkVersion.LatestRelease.tag_name);
+                versionCheck.CurrentVersion.Text = String.Format(TextManager.GetString("Text.CurrentVersion"), SemanticVersion.Current);
+                versionCheck.NewVersion.Text = String.Format(TextManager.GetString("Text.NewVersion"), m_checkVersion.LatestVersion.ToString());
                 versionCheck.Details.Text = m_checkVersion.LatestRelease.body;
 
                 // Store new version so we don't bother notifying again
-                JavLuv.Settings.Get().LastVersionChecked = m_checkVersion.LatestRelease.tag_name;
+                //JavLuv.Settings.Get().LastVersionChecked = m_checkVersion.LatestVersion;
                 
                 // Show the dialog box - hey, we have a new version!
                 versionCheck.ShowDialog();

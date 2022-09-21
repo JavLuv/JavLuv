@@ -152,6 +152,7 @@
     </Compile>
     <Compile Include="SubtitleOrganizeViewModel.cs" />
     <Compile Include="TextManager.cs" />
+    <Compile Include="SemenaticVersion.cs" />
     <Compile Include="VersionCheckView.xaml.cs">
       <DependentUpon>VersionCheckView.xaml</DependentUpon>
     </Compile>

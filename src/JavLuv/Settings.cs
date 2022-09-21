@@ -61,7 +61,8 @@ namespace JavLuv
             ScanRecursively = true;
             SearchViewWidth = new GridLength(300);
             SearchText = String.Empty;
-            LastVersionChecked = String.Empty;
+            LastVersionRun = SemanticVersion.Current;
+            LastVersionChecked = SemanticVersion.Current;
             OrganizerMode = Organizer.Mode.Copy;
             IsDefault = true;
 
@@ -118,8 +119,9 @@ namespace JavLuv
         public bool ShowOriginalTitle { get; set; }
 
         // Misc persistent data
+        public SemanticVersion LastVersionRun { get; set; }
+        public SemanticVersion LastVersionChecked { get; set; }
         public DateTime LastVersionCheckTime { get; set; }
-        public string LastVersionChecked { get; set; }
 
         // Config settings
         public bool CheckForUpdates { get; set; }
@@ -175,10 +177,18 @@ namespace JavLuv
                 {
                     Logger.WriteError("Error loading settings", ex);
                 }
+
+                // Defaults are applied the first time the app is run
                 if (s_settings.IsDefault)
                 {
                     s_settings.LoadDefaultValues();
                     s_settings.IsDefault = false;
+                }
+
+                // We're upgrading versions!  If we need to set a new default value, here is the place to do it.
+                if (s_settings.LastVersionRun != SemanticVersion.Current)
+                {
+
                 }
             }
         }
@@ -265,6 +275,7 @@ namespace JavLuv
             UseMovieFilenameAsTitle = false;
             HideMetadataAndCovers = false;
             AutoRestoreMetadata = true;
+            LastVersionRun = SemanticVersion.Current;
             LastVersionCheckTime = new DateTime(2022, 1, 1);
 
             MovieExts = "mp4; mkv; m4v; avi; wmv; mpg; mov";
