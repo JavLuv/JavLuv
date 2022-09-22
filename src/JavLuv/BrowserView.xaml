@@ -23,6 +23,7 @@
         <ListView
             ItemTemplate="{StaticResource ItemTemplate}"
             Background="Transparent"
+            BorderBrush="Transparent"
             ItemsSource="{Binding Movies}"
             SelectionChanged="ListView_SelectionChanged"
             VirtualizingPanel.ScrollUnit="Pixel"

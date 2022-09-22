@@ -74,9 +74,15 @@
 
             <!-- Browser view -->
             <Grid Grid.Column="2">
-                <local:BrowserView 
-                    DataContext="{Binding Browser}"
-                   />
+                <TabControl>
+                    <TabItem Header="Movies">
+                        <local:BrowserView 
+                            DataContext="{Binding Browser}"
+                           />
+                    </TabItem>
+                    <TabItem Header="Actresses">
+                    </TabItem>
+                </TabControl>
                 <ContentControl 
                     DataContext="{Binding Overlay}"
                     Content="{Binding}"
