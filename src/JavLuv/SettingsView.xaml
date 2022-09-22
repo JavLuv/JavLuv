@@ -218,13 +218,30 @@
                         Text="{Binding ActorFilters}"
                         TextWrapping="Wrap"
                         />
-                    <Button
-                        Width="120"
-                        HorizontalAlignment="Left"
-                        Margin="0, 25, 0, 0"
-                        Command="{Binding ResetToDefaultsCommand}"
-                        Content="{DynamicResource Text.ResetDefaults}"
-                        />
+                    <StackPanel Margin="0, 25, 0, 0" Orientation="Horizontal">
+                        <Button
+                            Width="120"
+                            HorizontalAlignment="Left"
+                            Margin="0, 0, 15, 0"
+                            Command="{Binding ResetToDefaultsCommand}"
+                            Content="{DynamicResource Text.ResetDefaults}"
+                            />
+                        <Button
+                            Width="120"
+                            HorizontalAlignment="Left"
+                            Margin="0, 0, 15, 0"
+                            Command="{Binding ResetFiltersCommand}"
+                            Content="{DynamicResource Text.ResetFilters}"
+                            />
+                        <Button
+                            Width="120"
+                            HorizontalAlignment="Left"
+                            Margin="0, 0, 15, 0"
+                            Command="{Binding MergeFiltersCommand}"
+                            Content="{DynamicResource Text.MergeFilters}"
+                            />
+
+                    </StackPanel>
                     <Button
                         Width="120"
                         HorizontalAlignment="Left"

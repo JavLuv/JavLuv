@@ -493,6 +493,40 @@ namespace JavLuv
 
         #endregion
 
+        #region Reset Filters Command
+
+        private void ResetFiltersExecute()
+        {
+            Settings.ResetFilters();
+            NotifyAllPropertiesChanged();
+        }
+
+        private bool CanResetFiltersExecute()
+        {
+            return true;
+        }
+
+        public ICommand ResetFiltersCommand { get { return new RelayCommand(ResetFiltersExecute, CanResetFiltersExecute); } }
+
+        #endregion
+
+        #region Merge Filters Command
+
+        private void MergeFiltersExecute()
+        {
+            Settings.MergeFilters();
+            NotifyAllPropertiesChanged();
+        }
+
+        private bool CanMergeFiltersExecute()
+        {
+            return true;
+        }
+
+        public ICommand MergeFiltersCommand { get { return new RelayCommand(MergeFiltersExecute, CanMergeFiltersExecute); } }
+
+        #endregion
+
         #region Copy Log File To Command
 
         private void CopyLogFileToExecute()
