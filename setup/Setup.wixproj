@@ -6,7 +6,7 @@
     <ProductVersion>3.10</ProductVersion>
     <ProjectGuid>91cd1547-00a8-4f53-b72b-8147f3de01c7</ProjectGuid>
     <SchemaVersion>2.0</SchemaVersion>
-    <OutputName>Setup JavLuv</OutputName>
+    <OutputName>Setup-JavLuv</OutputName>
     <OutputType>Package</OutputType>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">

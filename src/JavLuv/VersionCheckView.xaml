@@ -7,11 +7,13 @@
     xmlns:local="clr-namespace:JavLuv"
     mc:Ignorable="d"
     WindowStartupLocation="CenterOwner"
-    ResizeMode="NoResize"
+    ResizeMode="CanResizeWithGrip"
     Style="{DynamicResource DefaultWindowStyle}"
     Title="{DynamicResource Text.VersionCheckTitle}"
-    Height="340" 
-    Width="550"
+    MinHeight="300"
+    MinWidth="400"
+    Height="350" 
+    Width="600"
     >
     <Grid>
         <Grid.ColumnDefinitions>
@@ -53,11 +55,10 @@
             Grid.Row="2" 
             Grid.Column="1" 
             Grid.ColumnSpan="2" 
-            BorderBrush="Transparent"
-            IsHitTestVisible="False"
             Text="Sample" 
             VerticalAlignment="Stretch" 
-            TextWrapping="WrapWithOverflow" 
+            TextWrapping="WrapWithOverflow"
+            VerticalScrollBarVisibility="Auto"
             IsReadOnly="True"
             />
         <Button 

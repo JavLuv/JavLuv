@@ -36,8 +36,6 @@ namespace JavLuv
         public CmdCheckVersion()
         {
             IsNewVersionAvailable = false;
-            string fullVersion = typeof(SettingsViewModel).Assembly.GetName().Version.ToString();
-            CurrentVersion = fullVersion.Substring(0, fullVersion.LastIndexOf('.'));
         }
 
         #endregion
@@ -51,8 +49,8 @@ namespace JavLuv
         #region Properties
 
         public bool IsNewVersionAvailable { get; private set; }
-        public string CurrentVersion { get; private set; }
         public Release LatestRelease { get; private set; }
+        public SemanticVersion LatestVersion { get; private set; }
 
         #endregion
 
@@ -67,12 +65,10 @@ namespace JavLuv
             var task = GetLatestReleaseAsync();
             task.Wait();
 
-            string[] versions = CurrentVersion.Split('.');
-            string currentVersion = String.Format("v{0}.{1}.{2}", versions[0], versions[1], versions[2]);
-
             if (LatestRelease != null)
             {
-                int compare = CompareVersions(LatestRelease.tag_name, currentVersion);
+                LatestVersion = new SemanticVersion(LatestRelease.tag_name);
+                int compare = LatestVersion.CompareTo(SemanticVersion.Current);
                 if (compare > 0)
                 {
                     Logger.WriteInfo("There is a new version of JavLuv available.");
@@ -121,28 +117,6 @@ namespace JavLuv
             {
                 Logger.WriteError("Issue getting latest release infor from: " + siteURL, ex);
             }
-        }
-
-        private int CompareVersions(string v1, string v2)
-        {
-            if (v1 == v2)
-                return 0;
-
-            string[] v1Strings = v1.Split('.');
-            string[] v2Strings = v2.Split('.');
-
-            if (v1Strings.Length >= 3 && v2Strings.Length >= 3)
-            {
-                for (int i = 0; i < 3; i++)
-                {
-                    int cmp = string.Compare(v1Strings[i], v2Strings[i], true);
-                    if (cmp == 0)
-                        continue;
-                    return cmp;
-                }
-            }
-
-            return 0;
         }
 
         #endregion
