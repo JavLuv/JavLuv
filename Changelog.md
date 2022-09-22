@@ -1,9 +1,11 @@
 # Changelog
 All significant changes are listed in this file.
 
-## [1.0.2] - 2022-9-20
+## [1.0.2] - 2022-9-22
 
+- Added buttons to reset or merge filters in settings
 - Fixed styling of version check dialog
+- Fixed mistaken disabling of once-per-version check
 
 ## [1.0.1] - 2022-9-19
 
