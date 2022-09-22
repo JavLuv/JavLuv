@@ -8,7 +8,7 @@ using System.Threading;
 
 namespace Common
 {
-    public class FilterPair
+    public class FilterPair : IEquatable<FilterPair>
     {
         #region Constructors
 
@@ -32,6 +32,20 @@ namespace Common
         {
             Original = original;
             Filtered = filtered;
+        }
+
+        #endregion
+
+        #region Public Functions
+
+        public override int GetHashCode()
+        {
+            return Original.GetHashCode() ^ Filtered.GetHashCode();
+        }
+
+        public bool Equals(FilterPair other)
+        {
+            return Original == other.Original && Filtered == other.Filtered;
         }
 
         #endregion

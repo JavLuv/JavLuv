@@ -4,6 +4,7 @@ using Subtitles;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading;
 using System.Windows;
 using System.Xml.Linq;
@@ -217,6 +218,30 @@ namespace JavLuv
             }
         }
 
+        public static void ResetFilters()
+        {
+            lock (s_settings)
+            {
+                s_settings.Cultures = LoadDefaultFilters();
+            }
+        }
+
+        public static void MergeFilters()
+        {
+            lock (s_settings)
+            {
+                var defaultFilters = LoadDefaultFilters();
+                for (int i = 0; i < s_settings.Cultures.Count; ++i)
+                {
+                    s_settings.Cultures[i].StudioFilters = MergeFilterLists(s_settings.Cultures[i].StudioFilters, defaultFilters[i].StudioFilters);
+                    s_settings.Cultures[i].LabelFilters = MergeFilterLists(s_settings.Cultures[i].LabelFilters, defaultFilters[i].LabelFilters);
+                    s_settings.Cultures[i].DirectorFilters = MergeFilterLists(s_settings.Cultures[i].DirectorFilters, defaultFilters[i].DirectorFilters);
+                    s_settings.Cultures[i].GenreFilters = MergeFilterLists(s_settings.Cultures[i].GenreFilters, defaultFilters[i].GenreFilters);
+                    s_settings.Cultures[i].ActorFilters = MergeFilterLists(s_settings.Cultures[i].ActorFilters, defaultFilters[i].ActorFilters);
+                }
+            }
+        }
+
         public static Settings Get()
         {
             lock(s_settings)
@@ -263,10 +288,6 @@ namespace JavLuv
 
         private void LoadDefaultValues()
         {
-            m_cultures = new List<CultureSettings>();
-            foreach (LanguageType lang in Enum.GetValues(typeof(LanguageType)))
-                m_cultures.Add(new CultureSettings(lang));
-
             ShowAdvancedOptions = false;
             CheckForUpdates = true;
             Subtitles = "";
@@ -311,8 +332,18 @@ namespace JavLuv
             }
             Metadata = "{DVD-ID}";
 
+            // Replace existing culture-specific filters
+            Cultures = LoadDefaultFilters();
+        }
+
+        private static List<CultureSettings> LoadDefaultFilters()
+        {
+            var cultures = new List<CultureSettings>();
+            foreach (LanguageType lang in Enum.GetValues(typeof(LanguageType)))
+                cultures.Add(new CultureSettings(lang));
+
             // Set English defaults
-            CultureSettings cs = Cultures[(int)LanguageType.English];
+            CultureSettings cs = cultures[(int)LanguageType.English];
             cs.StudioFilters = new List<FilterPair>();
             cs.StudioFilters.Add(new FilterPair("Anna to Hanako", "Anna and Hanako"));
 
@@ -322,6 +353,7 @@ namespace JavLuv
             cs.DirectorFilters = new List<FilterPair>();
             cs.DirectorFilters.Add(new FilterPair("Roshilvia Takiguchi", "Silvia Takiguchi"));
             cs.DirectorFilters.Add(new FilterPair("Takiguchi Shiruvia", "Silvia Takiguchi"));
+            cs.DirectorFilters.Add(new FilterPair("Aoi Rena", "Rena Aoi"));
 
             cs.GenreFilters = new List<FilterPair>();
             cs.GenreFilters.Add(new FilterPair("Facesitting", "Face Sitting"));
@@ -403,13 +435,32 @@ namespace JavLuv
             cs.ActorFilters.Add(new FilterPair("Nonoka Satou", "Nonoka Sato"));
 
             // Set Japanese defaults (currently none)
-            cs = Cultures[(int)LanguageType.Japanese];
+            cs = cultures[(int)LanguageType.Japanese];
             cs.StudioFilters = new List<FilterPair>();
             cs.LabelFilters = new List<FilterPair>();
             cs.DirectorFilters = new List<FilterPair>();
             cs.GenreFilters = new List<FilterPair>();
             cs.ActorFilters = new List<FilterPair>();
 
+            return cultures;
+        }
+
+        private static List<FilterPair> MergeFilterLists(List<FilterPair> listA, List<FilterPair> listB)
+        {
+            // Note that we're preserving list order
+            var mergedList = new List<FilterPair>();
+            HashSet<FilterPair> setA = new HashSet<FilterPair>();
+            foreach (FilterPair filterPair in listA)
+            {
+                setA.Add(filterPair);
+                mergedList.Add(filterPair);
+            }
+            foreach (FilterPair filterPair in listB)
+            {
+                if (setA.Contains(filterPair) == false)
+                    mergedList.Add(filterPair);
+            }
+            return mergedList;
         }
 
         #endregion
