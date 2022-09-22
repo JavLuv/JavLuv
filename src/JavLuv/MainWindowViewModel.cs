@@ -104,8 +104,6 @@ namespace JavLuv
 
         public SettingsViewModel Settings { get { return m_settingsViewModel; } }
 
-        //public MovieScanner Scanner { get { return m_movieScanner; } }
-
         public MovieCollection Collection { get { return m_movieCollection; } }
 
         public bool IsScanning { get { return m_movieScanner.Phase != ScanPhase.Finished; } }
@@ -271,7 +269,7 @@ namespace JavLuv
                 versionCheck.Details.Text = m_checkVersion.LatestRelease.body;
 
                 // Store new version so we don't bother notifying again
-                //JavLuv.Settings.Get().LastVersionChecked = m_checkVersion.LatestVersion;
+                JavLuv.Settings.Get().LastVersionChecked = m_checkVersion.LatestVersion;
                 
                 // Show the dialog box - hey, we have a new version!
                 versionCheck.ShowDialog();
