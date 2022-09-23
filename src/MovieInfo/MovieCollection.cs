@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Windows.Threading;
-using System.Xml.Linq;
 
 namespace MovieInfo
 {
@@ -18,9 +17,10 @@ namespace MovieInfo
             CommandQueue.Command().CommandFinished += CommandQueue_CommandFinished;
             var folder = Utilities.GetJavLuvSettingsFolder();
             m_cacheFilename = Path.Combine(folder, "JavLuv.cache");
+            m_actressesFilename = Path.Combine(folder, "Actresses.data");
             m_backupFilename = Path.Combine(folder, "Metadata.backup");
             if (File.Exists(m_cacheFilename))
-                CommandQueue.Command().Execute(new CmdLoad(ref m_cacheData, m_cacheFilename, ref m_backupData, m_backupFilename));
+                CommandQueue.Command().Execute(new CmdLoad(ref m_cacheData, m_cacheFilename, ref m_actresses, m_actressesFilename, ref m_backupData, m_backupFilename));
             else
                 m_loaded = true;
         }
@@ -192,15 +192,15 @@ namespace MovieInfo
 
         public void AddActresses(List<ActressData> actresses)
         {
-            lock(m_actressDB)
+            lock(m_actresses)
             {
                 foreach (var actress in actresses)
                 {
                     ActressData key = new ActressData();
                     key.Name = actress.Name;
-                    if (m_actressDB.Actresses.Contains(key))
+                    if (m_actresses.Actresses.Contains(key))
                         continue;
-                    m_actressDB.Actresses.Add(actress);
+                    m_actresses.Actresses.Add(actress);
                 }
             }
         }
@@ -229,11 +229,11 @@ namespace MovieInfo
 
         public bool ActressExists(string name)
         {
-            lock (m_actressDB)
+            lock (m_actresses)
             {
                 ActressData key = new ActressData();
                 key.Name = name;
-                return m_actressDB.Actresses.Contains(key);
+                return m_actresses.Actresses.Contains(key);
             }
         }
 
@@ -423,7 +423,7 @@ namespace MovieInfo
         public void Save()
         {
             CommandQueue.Command().Execute(new CmdMarkSharedFolders(m_cacheData));
-            CommandQueue.Command().Execute(new CmdSave(m_cacheData, m_cacheFilename, m_backupData, m_backupFilename));
+            CommandQueue.Command().Execute(new CmdSave(m_cacheData, m_cacheFilename, m_actresses, m_actressesFilename, m_backupData, m_backupFilename));
         }
 
         #endregion
@@ -465,8 +465,9 @@ namespace MovieInfo
         private System.Windows.Threading.Dispatcher m_dispatcher;
         private CacheData m_cacheData = new CacheData();
         private BackupData m_backupData = new BackupData();
-        private ActressesData m_actressDB = new ActressesData();
+        private ActressesData m_actresses = new ActressesData();
         private string m_cacheFilename = String.Empty;
+        private string m_actressesFilename = String.Empty;
         private string m_backupFilename = String.Empty;
         private bool m_loaded = false;
 
