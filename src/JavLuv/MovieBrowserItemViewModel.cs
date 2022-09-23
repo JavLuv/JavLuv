@@ -8,11 +8,11 @@ using System.Windows.Media;
 
 namespace JavLuv
 {
-    public class BrowserItemViewModel : ObservableObject
+    public class MovieBrowserItemViewModel : ObservableObject
     {
         #region Constructors
 
-        public BrowserItemViewModel(BrowserViewModel parent, MovieData movieData)
+        public MovieBrowserItemViewModel(MovieBrowserViewModel parent, MovieData movieData)
         {
             Parent = parent;
             m_movieData = movieData;
@@ -23,7 +23,7 @@ namespace JavLuv
 
         #region Properties
 
-        public BrowserViewModel Parent { get; private set; }
+        public MovieBrowserViewModel Parent { get; private set; }
 
         public MovieData MovieData { get { return m_movieData; } }
 

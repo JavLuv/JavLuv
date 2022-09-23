@@ -6,11 +6,11 @@ using Common;
 
 namespace WebScraper
 {
-    public class ModuleJavBus : ModuleBase
+    public class MovieJavBus : ModuleMovie
     {
         #region Constructors
 
-        public ModuleJavBus(MovieMetadata metadata, LanguageType language) : base(metadata, language)
+        public MovieJavBus(MovieMetadata metadata, LanguageType language) : base(metadata, language)
         {
         }
 
@@ -28,7 +28,11 @@ namespace WebScraper
             task.Wait();
         }
 
-        override public void ParseDocument(IHtmlDocument document)
+        #endregion
+
+        #region Protected Functions
+
+        override protected void ParseDocument(IHtmlDocument document)
         {
             // Parse movie info page
             foreach (IElement element in document.All)
@@ -51,7 +55,7 @@ namespace WebScraper
                 {
                     if (CheckAttribute(element, "class", "bigImage"))
                     {
-                        CoverImageSource = "https://www.javbus.com" + element.GetAttribute("Href");
+                        ImageSource = "https://www.javbus.com" + element.GetAttribute("Href");
                     }
                 }
                 else if (element.NodeName == "P")
@@ -126,10 +130,6 @@ namespace WebScraper
                 }
             }
         }
-
-        #endregion
-
-        #region Protected Functions
 
         protected override bool IsLanguageSupported()
         {

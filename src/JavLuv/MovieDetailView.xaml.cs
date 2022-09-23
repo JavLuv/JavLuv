@@ -17,11 +17,11 @@ using System.Windows.Shapes;
 namespace JavLuv
 {
     /// <summary>
-    /// Interaction logic for DetailView.xaml
+    /// Interaction logic for MovieDetailView.xaml
     /// </summary>
-    public partial class DetailView : UserControl
+    public partial class MovieDetailView : UserControl
     {
-        public DetailView()
+        public MovieDetailView()
         {
             InitializeComponent();
         }

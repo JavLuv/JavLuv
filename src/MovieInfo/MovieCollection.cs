@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Windows.Threading;
+using System.Xml.Linq;
 
 namespace MovieInfo
 {
@@ -153,6 +154,9 @@ namespace MovieInfo
                     MovieData existingMovie;
                     if (m_cacheData.Movies.TryGetValue(movie, out existingMovie))
                     {
+                        // TODO: Do I need this anymore?  I think I'm checking for duplicates
+                        // pretty carefully in the scanner at this point.  Will need to look
+                        // into this at a later date.  Maybe I can simplify this function.
                         if (Directory.Exists(existingMovie.Path) && movie.Path != existingMovie.Path)
                         {
                             err.Append("Movie ID: ");
@@ -186,6 +190,21 @@ namespace MovieInfo
             return newMovies;
         }
 
+        public void AddActresses(List<ActressData> actresses)
+        {
+            lock(m_actressDB)
+            {
+                foreach (var actress in actresses)
+                {
+                    ActressData key = new ActressData();
+                    key.Name = actress.Name;
+                    if (m_actressDB.Actresses.Contains(key))
+                        continue;
+                    m_actressDB.Actresses.Add(actress);
+                }
+            }
+        }
+
         public MovieData GetMovie(string uniqueID)
         {
             lock (m_cacheData)
@@ -205,6 +224,16 @@ namespace MovieInfo
                 MovieData key = new MovieData();
                 key.Metadata.UniqueID.Value = uniqueID;
                 return m_cacheData.Movies.Contains(key);
+            }
+        }
+
+        public bool ActressExists(string name)
+        {
+            lock (m_actressDB)
+            {
+                ActressData key = new ActressData();
+                key.Name = name;
+                return m_actressDB.Actresses.Contains(key);
             }
         }
 
@@ -436,6 +465,7 @@ namespace MovieInfo
         private System.Windows.Threading.Dispatcher m_dispatcher;
         private CacheData m_cacheData = new CacheData();
         private BackupData m_backupData = new BackupData();
+        private ActressesData m_actressDB = new ActressesData();
         private string m_cacheFilename = String.Empty;
         private string m_backupFilename = String.Empty;
         private bool m_loaded = false;

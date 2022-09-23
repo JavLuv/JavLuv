@@ -16,18 +16,18 @@ using System.Windows.Shapes;
 namespace JavLuv
 {
     /// <summary>
-    /// Interaction logic for BrowserView.xaml
+    /// Interaction logic for MovieBrowserView.xaml
     /// </summary>
-    public partial class BrowserView : UserControl
+    public partial class MovieBrowserView : UserControl
     {
-        public BrowserView()
+        public MovieBrowserView()
         {
             InitializeComponent();
         }
 
         private void ListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            var viewModel = DataContext as BrowserViewModel;
+            var viewModel = DataContext as MovieBrowserViewModel;
             if (viewModel == null)
                 return;
             var listView = sender as ListView;
@@ -35,7 +35,7 @@ namespace JavLuv
                 return;
             viewModel.SelectedItems.Clear();
             foreach (var item in listView.SelectedItems)
-                viewModel.SelectedItems.Add(item as BrowserItemViewModel);
+                viewModel.SelectedItems.Add(item as MovieBrowserItemViewModel);
         }
     }
 }

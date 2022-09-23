@@ -17,6 +17,7 @@ namespace JavLuv
         ScanningFolders,
         LoadingMetadata,
         DownloadMetadata,
+        DownloadActressData,
         Finished,
     }
 
@@ -29,6 +30,8 @@ namespace JavLuv
             m_movieCollection = movieCollection;
             m_dispatcher = Application.Current.Dispatcher;
             Phase = ScanPhase.Finished;
+            Movies = new List<MovieData>();
+            Actresses = new List<ActressData>();
         }
 
         #endregion
@@ -48,7 +51,10 @@ namespace JavLuv
 
         public bool IsCancelled { get; private set; }
 
-        public List<MovieData> Movies { get { return m_movies; } }
+        public List<MovieData> Movies { get; private set; }
+
+        public List<ActressData> Actresses { get; private set; }
+
 
         public string ErrorLog { get { return m_errorLog; } }
 
@@ -84,7 +90,8 @@ namespace JavLuv
             m_movieExclusions = Utilities.ProcessSettingsList(Settings.Get().MovieExclusions);
             m_errorLog = String.Empty;
             m_moviesToProcess.Clear();
-            m_movies.Clear();
+            Movies.Clear();
+            Actresses.Clear();
             ItemsProcessed = 0;
             TotalItems = 0;
             m_directoriesToScan = scanDirectories;
@@ -103,7 +110,8 @@ namespace JavLuv
         public void Clear()
         {
             Logger.WriteInfo("Clear scanner");
-            m_movies.Clear();
+            Movies.Clear();
+            Actresses.Clear();
         }
 
         #endregion
@@ -118,6 +126,7 @@ namespace JavLuv
                 foreach (var dir in m_directoriesToScan)
                     ProcessDirectory(dir);
                 ProcessMetadata();
+                ProcessActresses();
                 Phase = ScanPhase.Finished;
                 if (m_dispatcher.HasShutdownStarted == false)
                     m_dispatcher.Invoke(DispatcherPriority.Normal, new Action(delegate () { ScanComplete?.Invoke(this, new EventArgs()); }));
@@ -444,7 +453,7 @@ namespace JavLuv
                     if (String.IsNullOrEmpty(movieData.Metadata.UniqueID.Value) && String.IsNullOrEmpty(movieData.Metadata.ID) == false)
                         movieData.Metadata.UniqueID.Value = movieData.Metadata.ID;
 
-                    m_movies.Add(movieData);
+                    Movies.Add(movieData);
                 }
                 catch (Exception ex)
                 {
@@ -469,14 +478,66 @@ namespace JavLuv
 
                 ItemsProcessed++;
 
-                m_movies.Add(movieData);
+                Movies.Add(movieData);
 
                 if (m_dispatcher.HasShutdownStarted == false)
                     m_dispatcher.Invoke(DispatcherPriority.Normal, new Action(delegate () { ScanUpdate?.Invoke(this, new EventArgs()); }));
             }
 
             // Remove any movies that don't have metadata or a valid UniqueID
-            m_movies.RemoveAll(m => m.Metadata == null || String.IsNullOrEmpty(m.MetadataFileName) || String.IsNullOrEmpty(m.Metadata.UniqueID.Value));
+            Movies.RemoveAll(m => m.Metadata == null || String.IsNullOrEmpty(m.MetadataFileName) || String.IsNullOrEmpty(m.Metadata.UniqueID.Value));
+        }
+
+        private void ProcessActresses()
+        {
+            var actorsToProcess = new List<ActorData>();
+            foreach (MovieData movie in Movies)
+            {
+                if (IsCancelled)
+                    break;
+                foreach (ActorData actor in movie.Metadata.Actors)
+                {
+                    if (IsCancelled)
+                        break;
+                    if (m_movieCollection.ActressExists(actor.Name))
+                        continue;
+                    actorsToProcess.Add(actor);
+                }
+            }
+
+            TotalItems = actorsToProcess.Count;
+            ItemsProcessed = 0;
+            Phase = ScanPhase.DownloadActressData;
+            if (m_dispatcher.HasShutdownStarted == false)
+                m_dispatcher.Invoke(DispatcherPriority.Normal, new Action(delegate () { ScanUpdate?.Invoke(this, new EventArgs()); }));
+
+            // Just perform initial test for now
+            foreach (var actor in actorsToProcess)
+            {
+                if (IsCancelled)
+                    break;
+                if (m_movieCollection.ActressExists(actor.Name))
+                    continue;
+                bool foundAlias = false;
+                foreach (var alias in actor.Aliases)
+                {
+                    if (m_movieCollection.ActressExists(actor.Name))
+                    {
+                        foundAlias = true;
+                        break;
+                    }
+                }
+                if (foundAlias)
+                    continue;
+                var scraper = new Scraper();
+                string idolImagePath = String.Empty;
+                var actressData = scraper.ScrapeActress(actor, ref idolImagePath, LanguageType.English);
+                if (actressData != null)
+                    Actresses.Add(actressData); 
+                ItemsProcessed++;
+                if (m_dispatcher.HasShutdownStarted == false)
+                    m_dispatcher.Invoke(DispatcherPriority.Normal, new Action(delegate () { ScanUpdate?.Invoke(this, new EventArgs()); }));
+            }
         }
 
         private FileType GetFileType(string fileName)
@@ -546,7 +607,7 @@ namespace JavLuv
                 }
 
                 // Scrape metadata and optionally download cover image as well
-                metadata = scraper.Scrape(movieID, ref coverImagePath, Settings.Get().Language);
+                metadata = scraper.ScrapeMovie(movieID, ref coverImagePath, Settings.Get().Language);
 
                 if (metadata != null)
                 {
@@ -736,7 +797,6 @@ namespace JavLuv
         private string[] m_movieExclusions;
         private HashSet<string> m_filesInCache;
         private List<MovieData> m_moviesToProcess = new List<MovieData>();
-        private List<MovieData> m_movies = new List<MovieData>();
         private HashSet<MovieMetadata> m_backupMetadata = new HashSet<MovieMetadata>();
         private string m_settingsFolder = String.Empty;
         private bool m_scanRecursively = true;

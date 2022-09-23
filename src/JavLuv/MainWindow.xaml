@@ -34,8 +34,8 @@
         </DataTemplate>
 
         <DataTemplate 
-            DataType="{x:Type local:DetailViewModel}">
-            <local:DetailView/>
+            DataType="{x:Type local:MovieDetailViewModel}">
+            <local:MovieDetailView/>
         </DataTemplate>
 
     </Window.Resources>
@@ -75,12 +75,12 @@
             <!-- Browser view -->
             <Grid Grid.Column="2">
                 <TabControl>
-                    <TabItem Header="Movies">
-                        <local:BrowserView 
+                    <TabItem Header="{DynamicResource Text.MoviesTab}">
+                        <local:MovieBrowserView 
                             DataContext="{Binding Browser}"
                            />
                     </TabItem>
-                    <TabItem Header="Actresses">
+                    <TabItem Header="{DynamicResource Text.ActressesTab}">
                     </TabItem>
                 </TabControl>
                 <ContentControl 

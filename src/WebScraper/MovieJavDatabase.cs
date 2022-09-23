@@ -7,11 +7,11 @@ using System.Collections.ObjectModel;
 
 namespace WebScraper
 {
-    public class ModuleJavDatabase : ModuleBase
+    public class MovieJavDatabase : ModuleMovie
     {
         #region Constructors
 
-        public ModuleJavDatabase(MovieMetadata metadata, LanguageType language) : base(metadata, language)
+        public MovieJavDatabase(MovieMetadata metadata, LanguageType language) : base(metadata, language)
         {
         }
 
@@ -29,7 +29,11 @@ namespace WebScraper
             task.Wait();
         }
 
-        override public void ParseDocument(IHtmlDocument document)
+        #endregion
+
+        #region Protected Functions
+
+        override protected void ParseDocument(IHtmlDocument document)
         {
             foreach (var element in document.All)
             {
@@ -42,11 +46,11 @@ namespace WebScraper
                         if (element.GetAttribute("src").StartsWith("http"))
                         {
                             // Only get the first image.  The second is much smaller.
-                            if (String.IsNullOrEmpty(CoverImageSource))
-                                CoverImageSource = element.GetAttribute("src");
+                            if (String.IsNullOrEmpty(ImageSource))
+                                ImageSource = element.GetAttribute("src");
                         }
                     }
-                }              
+                }
 
                 if (element.TextContent == "Translated Title:")
                 {
@@ -91,7 +95,7 @@ namespace WebScraper
                         {
                             var actor = new ActorData(tagContent);
                             actor.Order = m_metadata.Actors.Count;
-                            m_metadata.Actors.Add(actor);                        
+                            m_metadata.Actors.Add(actor);
                         }
                         else if (tagType == TagType.Genre)
                         {
@@ -118,10 +122,6 @@ namespace WebScraper
                 }
             }
         }
-
-        #endregion
-
-        #region Protected Functions
 
         protected override bool IsLanguageSupported()
         {

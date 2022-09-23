@@ -14,18 +14,17 @@ namespace WebScraper
     {
         #region Constructors
 
-        public ModuleBase(MovieMetadata metadata, LanguageType language)
+        public ModuleBase(LanguageType language)
         {
-            m_metadata = metadata;
             m_language = language;
-            CoverImageSource = String.Empty;
+            ImageSource = String.Empty;
         }
 
         #endregion
 
         #region Properties
 
-        public string CoverImageSource { get; protected set; }
+        public string ImageSource { get; protected set; }
 
         #endregion
 
@@ -33,19 +32,19 @@ namespace WebScraper
 
         abstract public void Scrape();
 
-        abstract public void ParseDocument(IHtmlDocument document);
-
         #endregion
 
         #region Protected Functions
 
         abstract protected bool IsLanguageSupported();
 
+        abstract protected void ParseDocument(IHtmlDocument document);
+
         protected async Task ScrapeAsync(string siteURL)
         {
             try
             {
-                Logger.WriteInfo("Scraping website for metadata and cover art: " + siteURL);
+                Logger.WriteInfo("Scraping website for data: " + siteURL);
 
                 CancellationTokenSource cancellationToken = new CancellationTokenSource();
                 HttpClient httpClient = new HttpClient();
@@ -73,67 +72,10 @@ namespace WebScraper
             return "en";
         }
 
-        protected string GetToken(Token token)
-        {
-            if (m_language == LanguageType.English)
-            {
-                switch (token)
-                {
-                    case Token.ReleaseDate:
-                        return "Release Date:";
-                    case Token.Length:
-                        return "Length:";
-                    case Token.Director:
-                        return "Director:";
-                    case Token.Series:
-                        return "Series:";
-                    case Token.Studio:
-                        return "Studio:";
-                    case Token.Maker:
-                        return "Maker:";
-                    case Token.Label:
-                        return "Label:";
-                }
-            }
-            else if (m_language == LanguageType.Japanese)
-            {
-                switch (token)
-                {
-                    case Token.ReleaseDate:
-                        return "発売日:";
-                    case Token.Length:
-                        return "収録時間:";
-                    case Token.Director:
-                        return "監督:";
-                    case Token.Series:
-                        return "シリーズ:";
-                    case Token.Studio:
-                        return "メーカー:";
-                    case Token.Maker:
-                        return "メーカー:";
-                    case Token.Label:
-                        return "レーベル:";
-                }
-            }
-            return String.Empty;
-        }
-
         #endregion
 
         #region Protected Members
 
-        protected enum Token
-        {
-            ReleaseDate,
-            Length,
-            Director,
-            Series,
-            Studio,
-            Maker,
-            Label,
-        }
-
-        protected MovieMetadata m_metadata;
         protected LanguageType m_language;
 
         #endregion

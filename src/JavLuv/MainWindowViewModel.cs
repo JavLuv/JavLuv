@@ -36,7 +36,7 @@ namespace JavLuv
             m_movieScanner = new MovieScanner(m_movieCollection);
             m_settingsViewModel = new SettingsViewModel(this);
             m_reportViewModel = new ReportViewModel(this);
-            m_browserViewModel = new BrowserViewModel(this);
+            m_browserViewModel = new MovieBrowserViewModel(this);
             m_sidePanelViewModel = new SidePanelViewModel(this);
             Overlay = null;
 
@@ -100,7 +100,7 @@ namespace JavLuv
 
         public SidePanelViewModel SidePanel { get { return m_sidePanelViewModel; } }
 
-        public BrowserViewModel Browser { get { return m_browserViewModel; } }
+        public MovieBrowserViewModel Browser { get { return m_browserViewModel; } }
 
         public SettingsViewModel Settings { get { return m_settingsViewModel; } }
 
@@ -218,6 +218,9 @@ namespace JavLuv
                 ProgressState = TaskbarItemProgressState.Error;
             }
 
+            // Add new actresses to actress database
+            m_movieCollection.AddActresses(m_movieScanner.Actresses);
+
             // Optionally move/rename post-scan
             if (JavLuv.Settings.Get().EnableMoveRename && JavLuv.Settings.Get().MoveRenameAfterScan && m_movieScanner.IsCancelled == false)
                 m_browserViewModel.MoveRenameMovies(moviesAdded);
@@ -244,6 +247,12 @@ namespace JavLuv
                 ProgressState = TaskbarItemProgressState.Normal;
                 PercentComplete = (int)(((float)m_movieScanner.ItemsProcessed / (float)m_movieScanner.TotalItems) * 100.0);
                 ScanStatus = string.Format(TextManager.GetString("Text.DownloadingMetadata"), m_movieScanner.ItemsProcessed, m_movieScanner.TotalItems);
+            }
+            else if (m_movieScanner.Phase == ScanPhase.DownloadActressData)
+            {
+                ProgressState = TaskbarItemProgressState.Normal;
+                PercentComplete = (int)(((float)m_movieScanner.ItemsProcessed / (float)m_movieScanner.TotalItems) * 100.0);
+                ScanStatus = string.Format(TextManager.GetString("Text.DownloadingActressData"), m_movieScanner.ItemsProcessed, m_movieScanner.TotalItems);
             }
         }
 
@@ -326,7 +335,7 @@ namespace JavLuv
         {
             if (Overlay != null)
             {
-                if (Overlay.GetType() == typeof(DetailViewModel))
+                if (Overlay.GetType() == typeof(MovieDetailViewModel))
                 {
                     Collection.Search();
                     Collection.Save();
@@ -368,7 +377,7 @@ namespace JavLuv
         SidePanelViewModel m_sidePanelViewModel;
         SettingsViewModel m_settingsViewModel;
         ReportViewModel m_reportViewModel;
-        BrowserViewModel m_browserViewModel;
+        MovieBrowserViewModel m_browserViewModel;
         ObservableObject m_mainPanelViewModel;
         MovieScanner m_movieScanner;
         MovieCollection m_movieCollection;
