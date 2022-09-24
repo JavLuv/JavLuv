@@ -3,10 +3,6 @@ using AngleSharp.Html.Dom;
 using Common;
 using MovieInfo;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace WebScraper
 {
@@ -30,9 +26,6 @@ namespace WebScraper
             string name = m_actressData.Name.Replace(' ', '-').ToLower();
             var task = ScrapeAsync("https://www.javmodel.com/jav/" + name + "/");
             task.Wait();
-
-            if (m_notFound)
-                Logger.WriteError("Could not find actress: " + m_actressData.Name);
         }
 
         #endregion
@@ -44,6 +37,34 @@ namespace WebScraper
             // Scrape required information from page
             foreach (var element in document.All)
             {
+                // Check for actress image
+                if (element.NodeName == "IMG")
+                {
+                    string srcAttr = element.GetAttribute("src");
+                    if (String.IsNullOrEmpty(srcAttr) == false && srcAttr.StartsWith("http"))
+                    {
+                        if (String.IsNullOrEmpty(ImageSource))
+                        {
+                            string source = element.GetAttribute("src");
+                            if (source.Contains("idolimages/full/") || source.Contains("/javdata/uploads/"))
+                                ImageSource = source.Trim();
+                        }
+                    }
+                }
+
+                // Check for Japanese name
+                else if (element.NodeName == "DIV")
+                {
+                    if (element.ClassName == "geodir-category-location japannametext fl-wrap")
+                    {
+                        var child = element.FirstElementChild;
+                        if (child != null && child.NodeName == "A")
+                        {
+                            m_actressData.JapaneseName = child.TextContent;
+                        }
+                    }
+                }
+
                 if (element.TextContent == " Born : ")
                 {
                     var nextSibling = element.NextSibling;
@@ -140,12 +161,6 @@ namespace WebScraper
                 return false;
             return true;
         }
-
-        #endregion
-
-        #region Private Members
-
-        private bool m_notFound = false;
 
         #endregion
     }

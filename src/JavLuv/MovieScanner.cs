@@ -531,7 +531,8 @@ namespace JavLuv
                     continue;
                 var scraper = new Scraper();
                 string idolImagePath = String.Empty;
-                var actressData = scraper.ScrapeActress(actor, ref idolImagePath, LanguageType.English);
+
+                var actressData = scraper.ScrapeActress(actor, LanguageType.English);
                 if (actressData != null)
                     Actresses.Add(actressData); 
                 ItemsProcessed++;

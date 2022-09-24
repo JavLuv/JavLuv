@@ -26,9 +26,6 @@ namespace WebScraper
             string name = m_actressData.Name.Replace(' ', '-').ToLower();
             var task = ScrapeAsync("https://www.javdatabase.com/idols/" + name + "/");
             task.Wait();
-
-            if (m_notFound)
-                Logger.WriteError("Could not find actress: " + m_actressData.Name);
         }
 
         #endregion
@@ -37,19 +34,25 @@ namespace WebScraper
 
         protected override void ParseDocument(IHtmlDocument document)
         {
-            // First check to see if we need to search for an alternate name
-            foreach (var element in document.All)
-            {
-                if (element.TextContent == "Not Found")
-                {
-                    m_notFound = true;
-                    return;
-                }
-            }
-
             // Scrape required information from page
             foreach (var element in document.All)
             {
+
+                // Check for actress image
+                if (element.NodeName == "IMG")
+                {
+                    string srcAttr = element.GetAttribute("src");
+                    if (String.IsNullOrEmpty(srcAttr) == false && srcAttr.StartsWith("http"))
+                    {
+                        if (String.IsNullOrEmpty(ImageSource))
+                        {
+                            string source = element.GetAttribute("src");
+                            if (source.Contains("idolimages/full/"))
+                                ImageSource = source.Trim();
+                        }
+                    }               
+                }
+
                 if (element.TextContent == "Japanese Name")
                 {
                     var nextSibling = element.NextSibling;
@@ -161,12 +164,6 @@ namespace WebScraper
                 return false;
             return true;
         }
-
-        #endregion
-
-        #region Private Members
-
-        private bool m_notFound = false;
 
         #endregion
     }

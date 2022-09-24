@@ -1,7 +1,6 @@
 ﻿using AngleSharp.Html.Dom;
 using AngleSharp.Html.Parser;
 using Common;
-using MovieInfo;
 using System;
 using System.IO;
 using System.Net.Http;

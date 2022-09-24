@@ -43,7 +43,8 @@ namespace WebScraper
                 {
                     if (m_metadata.UniqueID.Value == element.GetAttribute("alt"))
                     {
-                        if (element.GetAttribute("src").StartsWith("http"))
+                        string srcAttr = element.GetAttribute("src");
+                        if (String.IsNullOrEmpty(srcAttr) == false && srcAttr.StartsWith("http"))
                         {
                             // Only get the first image.  The second is much smaller.
                             if (String.IsNullOrEmpty(ImageSource))

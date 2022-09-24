@@ -17,7 +17,7 @@ namespace MovieInfo
             CommandQueue.Command().CommandFinished += CommandQueue_CommandFinished;
             var folder = Utilities.GetJavLuvSettingsFolder();
             m_cacheFilename = Path.Combine(folder, "JavLuv.cache");
-            m_actressesFilename = Path.Combine(folder, "Actresses.data");
+            m_actressesFilename = Path.Combine(folder, "Actresses.xml");
             m_backupFilename = Path.Combine(folder, "Metadata.backup");
             if (File.Exists(m_cacheFilename))
                 CommandQueue.Command().Execute(new CmdLoad(ref m_cacheData, m_cacheFilename, ref m_actresses, m_actressesFilename, ref m_backupData, m_backupFilename));

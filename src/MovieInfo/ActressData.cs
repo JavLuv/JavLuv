@@ -18,6 +18,7 @@ namespace MovieInfo
             DateOfBirth = new DateTime();
             Cup = String.Empty;
             BloodType = String.Empty;
+            Images = new List<string>();
         }
 
         #endregion
@@ -57,6 +58,9 @@ namespace MovieInfo
         public int Hips { get; set; }
         public string BloodType { get; set; }
         public int NumberOfMovies { get; set; }
+        public List<string> Images { get; set; }
+        public string ThumbnailImage { get; set; }
+        public string DetailImage { get; set; }
 
         #endregion
     }

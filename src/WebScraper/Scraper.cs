@@ -90,17 +90,23 @@ namespace WebScraper
             return mergedMetadata;
         }
 
-        public ActressData ScrapeActress(ActorData actor, ref string coverImagePath, LanguageType language)
+        public ActressData ScrapeActress(ActorData actor, LanguageType language)
         {
             var actressData = new ActressData();
             actressData.Name = actor.Name;
             foreach (string altname in actor.Aliases)
                 actressData.AlternateNames.Add(altname);
-            
+
+            // Create destination filename and path
+            string actressImagefolder = Utilities.GetActressImageFolder();
+            string actressFileName = actor.Name.ToLower().Replace(' ', '-');
+            string actressFullPath = Path.Combine(actressImagefolder, actressFileName);
+
             // Check JavDatabase actresses
             var javDatabase = new ActressJavDatabase(actressData, language);
             javDatabase.Scrape();
-            ScrapeAltNamesIfNotAcceptable(actressData, javDatabase);          
+            ScrapeAltNamesIfNotAcceptable(actressData, javDatabase);
+            DownloadActressImage(actressData, javDatabase, actressFullPath);
 
             // If we don't have a complete set of data, try alternative sites
             if (IsActressDataComplete(actressData) == false)
@@ -108,10 +114,12 @@ namespace WebScraper
                 var javModel = new ActressJavModel(actressData, language);
                 javModel.Scrape();
                 ScrapeAltNamesIfNotAcceptable(actressData, javModel);
+                DownloadActressImage(actressData, javModel, actressFullPath);
             }
 
             return actressData;
         }
+
         public string ScrapeOriginalTitle(string movieID)
         {
             var japaneseMetadata = ScrapeJapaneseMetadata(movieID, CompletionLevel.Minimal);
@@ -197,6 +205,15 @@ namespace WebScraper
                 }
             }
             return combinedMetadata;
+        }
+
+        private void DownloadActressImage(ActressData actressData, ModuleActress module, string imagePath)
+        {
+            if (String.IsNullOrEmpty(module.ImageSource) == false)
+            {
+                if (DownloadImage(ref imagePath, module.ImageSource))
+                    actressData.Images.Add(Path.GetFileName(imagePath));
+            }
         }
 
         private bool DownloadImage(ref string imagePath, string imageSource)
@@ -376,18 +393,26 @@ namespace WebScraper
             return true;
         }
 
-
         private void ScrapeAltNamesIfNotAcceptable(ActressData actressData, ModuleActress module)
         {
             // If failed to find or adequately populate data, try existing aliases
             if (IsActressDataAcceptable(actressData) == false)
             {
-                foreach (string altName in actressData.AlternateNames)
+                for (int i = 0; i < actressData.AlternateNames.Count; ++i)
                 {
+                    string name = actressData.Name;
+                    string altName = actressData.AlternateNames[i];
                     actressData.Name = altName;
                     module.Scrape();
                     if (IsActressDataAcceptable(actressData))
+                    {
+                        // If we found a match, we're going to essentially swap the original
+                        // name and alternate name.
+                        actressData.AlternateNames[i] = name;
                         break;
+                    }
+                    // If no match is found, we revert the name back to the original
+                    actressData.Name = name;
                 }
             }
         }
