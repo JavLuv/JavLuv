@@ -28,8 +28,17 @@ namespace JavLuv
 
         public ImageCache()
         {
-            m_folder = Utilities.GetJavLuvSettingsFolder();
-            m_folder = Path.Combine(m_folder, "images");
+            m_folder = Path.Combine(Utilities.GetJavLuvSettingsFolder(), "thumbnails");
+            string oldfolder = Path.Combine(Utilities.GetJavLuvSettingsFolder(), "images");
+            try
+            {
+                if (Directory.Exists(oldfolder))
+                    Directory.Move(oldfolder, m_folder);
+            }
+            catch (Exception ex)
+            {
+                Logger.WriteError("Error moving image thumbnail folder", ex);
+            }
             if (Directory.Exists(m_folder) == false)
                 Directory.CreateDirectory(m_folder);
         }
