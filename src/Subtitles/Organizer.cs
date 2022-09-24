@@ -155,15 +155,9 @@ namespace Subtitles
 
             // Get filename only without extension for parsing preparation
             string fn = Path.GetFileNameWithoutExtension(fileName);
-            string fnID = fn;
-
-            // Limit ID detection to first ten characters of filename
-            const int MaxNumCharsToCheck = 10;
-            if (fn.Length > MaxNumCharsToCheck)
-                fnID = fn.Substring(0, MaxNumCharsToCheck);
 
             // Parse ID from shortened filename and check results
-            string uniqueID = Utilities.ParseMovieID(fnID);
+            string uniqueID = Utilities.ParseMovieID(fn);
             if (String.IsNullOrEmpty(uniqueID))
             {
                 if (CopyOrMoveUnsorted(fileName))

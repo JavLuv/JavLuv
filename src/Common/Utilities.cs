@@ -67,62 +67,62 @@ namespace Common
             if (String.IsNullOrEmpty(fileName))
                 return String.Empty;
 
+            // Limit initial ID detections to first ten characters of filename
+            const int MaxNumCharsToCheck = 10;
+            string shortFileName = fileName;
+            if (fileName.Length > MaxNumCharsToCheck)
+                shortFileName = fileName.Substring(0, MaxNumCharsToCheck);
+
+            string[] shortChecks =
+            {
+                @"([a-z,A-Z]{1,6}-[0-9]{2,5}[d,D]{0,1})",
+                @"([a-z,A-Z]{1,6}[0-9]{0,2}-[0-9]{2,5}[d,D]{0,1})",
+                @"([a-z,A-Z]{1,6}[0-9]{0,2}-[0-9]{1}[d,D]{0,1})",
+                @"([a-z,A-Z]{1,6}[0-9]{2,5}[d,D]{0,1})",
+                @"([a-z,A-Z]{1,6} [0-9]{2,5}[d,D]{0,1})",
+                @"([a-z,A-Z]{1,6}_[0-9]{2,5}[d,D]{0,1})",
+            };
+
+            Regex regex = null;
+            MatchCollection matches = null;
+            foreach (string check in shortChecks)
+            {
+                regex = new Regex(check);
+                matches = regex.Matches(shortFileName);
+                if (matches.Count != 0)
+                    break;
+            }
+
+            if (matches.Count == 0)
+            {
+                // Search full filename with more explicit matching
+                string[] longChecks =
+                {
+                    @"([a-z,A-Z]{3,6}-[0-9]{3,5}[d,D]{0,1})",
+                    @"(\[[a-z,A-Z]{2,6}-[0-9]{2,5}[d,D]{0,1}\])",
+                    @"(\([a-z,A-Z]{2,6}-[0-9]{2,5}[d,D]{0,1}\))",
+                    @"( [a-z,A-Z]{2,6}[ -][0-9]{3,5}[d,D]{0,1})",
+                    @"( [a-z,A-Z]{2,6}[ -][0-9]{3,5}[d,D]{0,1}[ .])",
+                };
+
+                foreach (string check in longChecks)
+                {
+                    regex = new Regex(check);
+                    matches = regex.Matches(fileName);
+                    if (matches.Count != 0)
+                        break;
+                }
+
+            }
+
+            // Have we finallly found a match?
+            if (matches.Count == 0)
+                return String.Empty;
+
             // After match is found, split apart components for additional processing
             string alpha = String.Empty;
             string numeric = String.Empty;
-
-            // Search for AAA-000 pattern
-            Regex regex = new Regex(@"([a-z,A-Z]{1,6}-[0-9]{2,5}[d,D]{0,1})");
-            var matches = regex.Matches(fileName);
-            if (matches.Count == 0)
-            {
-                // Search for rarer A00-000 pattern
-                regex = new Regex(@"([a-z,A-Z]{1,6}[0-9]{0,2}-[0-9]{2,5}[d,D]{0,1})");
-                matches = regex.Matches(fileName);
-                if (matches.Count == 0)
-                {
-                    // Search for even rarer AAA-0 pattern
-                    regex = new Regex(@"([a-z,A-Z]{1,6}[0-9]{0,2}-[0-9]{1}[d,D]{0,1})");
-                    matches = regex.Matches(fileName);
-                    if (matches.Count == 0)
-                    {
-                        // Search for AAA000 pattern
-                        regex = new Regex(@"([a-z,A-Z]{1,6}[0-9]{2,5}[d,D]{0,1})");
-
-                        matches = regex.Matches(fileName);
-                        if (matches.Count == 0)
-                        {
-                            return String.Empty;
-                        }
-
-                        // In this particular match, we have to split the components based on
-                        // where the numbers actually start, so we'll do that split here.
-
-                        // Get first digit
-                        int alphaCount = 0;
-                        foreach (var c in matches[0].Value)
-                        {
-                            if (Char.IsDigit(c))
-                                break;
-                            ++alphaCount;
-                        }
-
-                        // Split based on the number of alpha characters
-                        alpha = matches[0].Value.Substring(0, alphaCount);
-                        numeric = matches[0].Value.Substring(alphaCount, matches[0].Value.Length - alphaCount);
-                    }
-                }
-            }
-
-            // In most cases, we can split on the dash
-            if (String.IsNullOrEmpty(alpha) || String.IsNullOrEmpty(numeric))
-            {
-                var parts = matches[0].Value.Split('-');
-                alpha = parts[0];
-                numeric = parts[1];
-                if (String.IsNullOrEmpty(alpha) || String.IsNullOrEmpty(numeric))
-                    return String.Empty;
-            }
+            SplitIDMatch(matches[0].Value, out alpha, out numeric);
 
             // Count actual digits
             int digitCount = 0;
@@ -150,6 +150,44 @@ namespace Common
 
             // Return normalized ID
             return alpha.ToUpper() + "-" + numeric.ToUpper();
+        }
+
+        private static void SplitIDMatch(string match, out string alpha, out string numeric)
+        {
+            alpha = String.Empty;
+            numeric = String.Empty;
+            if (String.IsNullOrEmpty(match))
+                return;
+
+            // Fix up for extraneous characters
+            var charsToRemove = new string[] { "[", "]", "(", ")", ".", "_" };
+            foreach (var c in charsToRemove)
+                match = match.Replace(c, string.Empty);
+            match = match.Trim();
+
+            char[] splits = { '-', ' '};
+            var parts = match.Split(splits);
+            if (parts.Length == 2 && String.IsNullOrEmpty(parts[0]) == false && String.IsNullOrEmpty(parts[1]) == false)
+            {
+                alpha = parts[0];
+                numeric = parts[1];
+                return;
+            }
+
+            // Fall back to splitting based on where alpha and numeric values appear (ABC123 pattern)
+
+            // Get first digit
+            int alphaCount = 0;
+            foreach (var c in match)
+            {
+                if (Char.IsDigit(c))
+                    break;
+                ++alphaCount;
+            }
+
+            // Split based on the number of alpha characters
+            alpha = match.Substring(0, alphaCount);
+            numeric = match.Substring(alphaCount, match.Length - alphaCount);
         }
 
 
