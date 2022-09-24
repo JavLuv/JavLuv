@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
+﻿using System.IO;
 using System.Reflection;
 
 namespace MovieInfo
@@ -62,7 +60,7 @@ namespace MovieInfo
                     var actresses = MovieSerializer<ActressesData>.Load(m_actressFilename, ActressesData.Filter);
 
                     // Copy all public read/write properties
-                    PropertyInfo[] properties = typeof(BackupData).GetProperties();
+                    PropertyInfo[] properties = typeof(ActressesData).GetProperties();
                     foreach (PropertyInfo property in properties)
                     {
                         if (property.CanRead && property.CanWrite)

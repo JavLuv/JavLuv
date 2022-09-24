@@ -120,7 +120,7 @@ namespace JavLuv
 
         #endregion
 
-        #region Events
+        #region Event Handlers
 
         private void SelectedItems_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {

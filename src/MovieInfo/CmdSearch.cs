@@ -82,9 +82,10 @@ namespace MovieInfo
     {
         #region Constructors
 
-        public CmdSearch(CacheData cacheData, string searchText, SortBy sortBy, bool showUnratedOnly, bool showSubtitlesOnly)
+        public CmdSearch(CacheData cacheData, ActressesData actressesData, string searchText, SortBy sortBy, bool showUnratedOnly, bool showSubtitlesOnly)
         {
             m_cacheData = cacheData;
+            m_actressesData = actressesData;
             m_searchText = searchText;
             m_sortBy = sortBy;
             m_showUnratedOnly = showUnratedOnly;
@@ -96,6 +97,7 @@ namespace MovieInfo
         #region Properties
 
         public List<MovieData> FilteredMovies { get { return m_filteredMovies; } }
+        public List<ActressData> FilteredActresses { get { return m_filteredActresses; } }
 
         #endregion
 
@@ -111,7 +113,7 @@ namespace MovieInfo
             else
             {
                 // Populate filtered movie list with all movies
-                lock(m_cacheData)
+                lock (m_cacheData)
                 {
                     foreach (var movie in m_cacheData.Movies)
                     {
@@ -124,6 +126,13 @@ namespace MovieInfo
 
             // Sort the filtered movies
             Sort();
+
+            // TODO: Add searching and sorting for actresses
+            lock (m_actressesData)
+            {
+                foreach (var actress in m_actressesData.Actresses)
+                    m_filteredActresses.Add(actress);
+            }
         }
 
         #endregion
@@ -258,7 +267,9 @@ namespace MovieInfo
         #region Private Members
 
         private CacheData m_cacheData;
+        private ActressesData m_actressesData;
         private List<MovieData> m_filteredMovies = new List<MovieData>();
+        private List<ActressData> m_filteredActresses = new List<ActressData>();
         private string m_searchText = String.Empty;
         private SortBy m_sortBy = SortBy.Title;
         private bool m_showUnratedOnly;

@@ -3,18 +3,18 @@
 namespace JavLuv
 {
     /// <summary>
-    /// Interaction logic for MovieBrowserView.xaml
+    /// Interaction logic for ActressBrowserView.xaml
     /// </summary>
-    public partial class MovieBrowserView : UserControl
+    public partial class ActressBrowserView : UserControl
     {
-        public MovieBrowserView()
+        public ActressBrowserView()
         {
             InitializeComponent();
         }
 
         private void ListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            var viewModel = DataContext as MovieBrowserViewModel;
+            var viewModel = DataContext as ActressBrowserViewModel;
             if (viewModel == null)
                 return;
             var listView = sender as ListView;
@@ -22,7 +22,7 @@ namespace JavLuv
                 return;
             viewModel.SelectedItems.Clear();
             foreach (var item in listView.SelectedItems)
-                viewModel.SelectedItems.Add(item as MovieBrowserItemViewModel);
+                viewModel.SelectedItems.Add(item as ActressBrowserItemViewModel);
         }
     }
 }

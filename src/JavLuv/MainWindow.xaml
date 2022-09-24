@@ -42,8 +42,8 @@
 
     <Window.InputBindings>
         <KeyBinding Command="{Binding CloseOverlayCommand}" Key="Esc" />
-        <KeyBinding Command="{Binding Browser.NavigateLeftCommand}" Key="Left" />
-        <KeyBinding Command="{Binding Browser.NavigateRightCommand}" Key="Right" />
+        <KeyBinding Command="{Binding MovieBrowser.NavigateLeftCommand}" Key="Left" />
+        <KeyBinding Command="{Binding MovieBrowser.NavigateRightCommand}" Key="Right" />
     </Window.InputBindings>
     
     <Window.TaskbarItemInfo>
@@ -77,10 +77,13 @@
                 <TabControl>
                     <TabItem Header="{DynamicResource Text.MoviesTab}">
                         <local:MovieBrowserView 
-                            DataContext="{Binding Browser}"
+                            DataContext="{Binding MovieBrowser}"
                            />
                     </TabItem>
                     <TabItem Header="{DynamicResource Text.ActressesTab}">
+                        <local:ActressBrowserView 
+                            DataContext="{Binding ActressBrowser}"
+                           />
                     </TabItem>
                 </TabControl>
                 <ContentControl 
@@ -123,7 +126,7 @@
                 </StatusBarItem>
                 <Separator Grid.Column="3" />
                 <StatusBarItem Grid.Column="4">
-                    <TextBlock Text="{Binding Browser.SelectedDescription}" />
+                    <TextBlock Text="{Binding MovieBrowser.SelectedDescription}" />
                 </StatusBarItem>
                 <Separator Grid.Column="5" />
                 <StatusBarItem Grid.Column="6">

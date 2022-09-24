@@ -97,6 +97,14 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="ActressBrowserItemView.xaml.cs">
+      <DependentUpon>ActressBrowserItemView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ActressBrowserItemViewModel.cs" />
+    <Compile Include="ActressBrowserView.xaml.cs">
+      <DependentUpon>ActressBrowserView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ActressBrowserViewModel.cs" />
     <Compile Include="MovieBrowserItemView.xaml.cs">
       <DependentUpon>MovieBrowserItemView.xaml</DependentUpon>
     </Compile>
@@ -156,6 +164,14 @@
     <Compile Include="VersionCheckView.xaml.cs">
       <DependentUpon>VersionCheckView.xaml</DependentUpon>
     </Compile>
+    <Page Include="ActressBrowserItemView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ActressBrowserView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="MovieBrowserItemView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

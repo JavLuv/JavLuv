@@ -36,7 +36,8 @@ namespace JavLuv
             m_movieScanner = new MovieScanner(m_movieCollection);
             m_settingsViewModel = new SettingsViewModel(this);
             m_reportViewModel = new ReportViewModel(this);
-            m_browserViewModel = new MovieBrowserViewModel(this);
+            m_movieBrowserViewModel = new MovieBrowserViewModel(this);
+            m_actressBrowserViewModel = new ActressBrowserViewModel(this);
             m_sidePanelViewModel = new SidePanelViewModel(this);
             Overlay = null;
 
@@ -76,7 +77,7 @@ namespace JavLuv
                     m_mainPanelViewModel = value;
                     NotifyPropertyChanged("Overlay");
                     SidePanel.IsEnabled = (m_mainPanelViewModel == null) ? true : false;
-                    Browser.IsEnabled = (m_mainPanelViewModel == null) ? true : false;
+                    MovieBrowser.IsEnabled = (m_mainPanelViewModel == null) ? true : false;
                 }
             }
         }
@@ -100,7 +101,9 @@ namespace JavLuv
 
         public SidePanelViewModel SidePanel { get { return m_sidePanelViewModel; } }
 
-        public MovieBrowserViewModel Browser { get { return m_browserViewModel; } }
+        public MovieBrowserViewModel MovieBrowser { get { return m_movieBrowserViewModel; } }
+
+        public ActressBrowserViewModel ActressBrowser { get { return m_actressBrowserViewModel; } }
 
         public SettingsViewModel Settings { get { return m_settingsViewModel; } }
 
@@ -223,7 +226,7 @@ namespace JavLuv
 
             // Optionally move/rename post-scan
             if (JavLuv.Settings.Get().EnableMoveRename && JavLuv.Settings.Get().MoveRenameAfterScan && m_movieScanner.IsCancelled == false)
-                m_browserViewModel.MoveRenameMovies(moviesAdded);
+                m_movieBrowserViewModel.MoveRenameMovies(moviesAdded);
 
             m_movieScanner.Clear();
         }
@@ -377,7 +380,8 @@ namespace JavLuv
         SidePanelViewModel m_sidePanelViewModel;
         SettingsViewModel m_settingsViewModel;
         ReportViewModel m_reportViewModel;
-        MovieBrowserViewModel m_browserViewModel;
+        MovieBrowserViewModel m_movieBrowserViewModel;
+        ActressBrowserViewModel m_actressBrowserViewModel;
         ObservableObject m_mainPanelViewModel;
         MovieScanner m_movieScanner;
         MovieCollection m_movieCollection;

@@ -29,7 +29,13 @@ namespace MovieInfo
 
         #region Events
 
+        // TODO: I think I can probably consolodate these into a single event
         public event EventHandler MoviesDisplayedChanged;
+        public event EventHandler ActressesDisplayedChanged;
+
+        #endregion
+
+        #region Event Handlers
 
         private void CommandQueue_CommandFinished(object sender, CommandEventArgs e)
         {
@@ -38,6 +44,7 @@ namespace MovieInfo
                 m_dispatcher.Invoke(DispatcherPriority.Normal, new Action(delegate ()          
                 { 
                     NotifyMoviesDisplayedChanged();
+                    NotifyActressesDisplayedChanged();
                     m_loaded = true;
                     Search();
                 }));     
@@ -49,7 +56,9 @@ namespace MovieInfo
                     if (m_search != null)
                     {
                         m_moviesDisplayed = m_search.FilteredMovies;
-                        NotifyMoviesDisplayedChanged();                     
+                        m_actressesDisplayed = m_search.FilteredActresses;
+                        NotifyMoviesDisplayedChanged();
+                        NotifyActressesDisplayedChanged();
                     }
                 }));
             }
@@ -60,6 +69,7 @@ namespace MovieInfo
         #region Properties
 
         public List<MovieData> MoviesDisplayed { get { return m_moviesDisplayed; } }
+        public List<ActressData> ActressesDisplayed { get { return m_actressesDisplayed; } }
 
         public string SearchText
         {
@@ -203,6 +213,8 @@ namespace MovieInfo
                     m_actresses.Actresses.Add(actress);
                 }
             }
+            Search();
+            Save();
         }
 
         public MovieData GetMovie(string uniqueID)
@@ -426,7 +438,7 @@ namespace MovieInfo
         {
             if (m_loaded == false)
                 return;
-            m_search = new CmdSearch(m_cacheData, m_searchText, m_sortBy, ShowUnratedOnly, ShowSubtitlesOnly);
+            m_search = new CmdSearch(m_cacheData, m_actresses, m_searchText, m_sortBy, ShowUnratedOnly, ShowSubtitlesOnly);
             CommandQueue.Command().Execute(m_search);            
         }
 
@@ -446,12 +458,19 @@ namespace MovieInfo
             handler?.Invoke(this, new EventArgs());
         }
 
+        private void NotifyActressesDisplayedChanged()
+        {
+            EventHandler handler = ActressesDisplayedChanged;
+            handler?.Invoke(this, new EventArgs());
+        }
+
         #endregion
 
         #region Private Members
 
         // Displayed results
         private List<MovieData> m_moviesDisplayed = new List<MovieData>();
+        private List<ActressData> m_actressesDisplayed = new List<ActressData>();
 
         // Search parameters
         private string m_searchText = String.Empty;
