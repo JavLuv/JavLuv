@@ -94,23 +94,21 @@ namespace WebScraper
         {
             var actressData = new ActressData();
             actressData.Name = actor.Name;
+            foreach (string altname in actor.Aliases)
+                actressData.AlternateNames.Add(altname);
             
             // Check JavDatabase actresses
             var javDatabase = new ActressJavDatabase(actressData, language);
             javDatabase.Scrape();
-            ScrapeAliasesIfNotAcceptable(actor, actressData, javDatabase);          
+            ScrapeAltNamesIfNotAcceptable(actressData, javDatabase);          
 
             // If we don't have a complete set of data, try alternative sites
             if (IsActressDataComplete(actressData) == false)
             {
                 var javModel = new ActressJavModel(actressData, language);
                 javModel.Scrape();
-                ScrapeAliasesIfNotAcceptable(actor, actressData, javModel);
+                ScrapeAltNamesIfNotAcceptable(actressData, javModel);
             }
-
-            // Return nothing if data is not minimal acceptable level
-            if (IsActressDataAcceptable(actressData) == false)
-                return null;
 
             return actressData;
         }
@@ -379,12 +377,12 @@ namespace WebScraper
         }
 
 
-        private void ScrapeAliasesIfNotAcceptable(ActorData actor, ActressData actressData, ModuleActress module)
+        private void ScrapeAltNamesIfNotAcceptable(ActressData actressData, ModuleActress module)
         {
             // If failed to find or adequately populate data, try existing aliases
             if (IsActressDataAcceptable(actressData) == false)
             {
-                foreach (string altName in actor.Aliases)
+                foreach (string altName in actressData.AlternateNames)
                 {
                     actressData.Name = altName;
                     module.Scrape();

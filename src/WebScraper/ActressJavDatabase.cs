@@ -50,20 +50,12 @@ namespace WebScraper
             // Scrape required information from page
             foreach (var element in document.All)
             {
-                if (element.TextContent == "Name")
+                if (element.TextContent == "Japanese Name")
                 {
                     var nextSibling = element.NextSibling;
                     if (IsValidNode(nextSibling))
                     {
-                        m_actressData.Name = nextSibling.TextContent;
-                    }
-                }
-                else if (element.TextContent == "Japanese Name")
-                {
-                    var nextSibling = element.NextSibling;
-                    if (IsValidNode(nextSibling))
-                    {
-                        m_actressData.JapaneseName = nextSibling.TextContent;
+                        m_actressData.JapaneseName = nextSibling.TextContent.Trim();
                     }
                 }
                 else if (element.TextContent == "Date of Birth")
@@ -101,7 +93,10 @@ namespace WebScraper
                     var nextSibling = element.NextSibling;
                     if (IsValidNode(nextSibling))
                     {
-                        m_actressData.Cup = nextSibling.TextContent;
+                        string cupText = nextSibling.TextContent.Trim();
+                        // Saw one example of multiple entries.
+                        string[] cups = cupText.Split(' ');
+                        m_actressData.Cup = cups[0];
                     }
                 }
                 else if (element.TextContent == "Measurements")
@@ -125,7 +120,7 @@ namespace WebScraper
                     var nextSibling = element.NextSibling;
                     if (IsValidNode(nextSibling))
                     {
-                        m_actressData.BloodType = nextSibling.TextContent;
+                        m_actressData.BloodType = nextSibling.TextContent.Trim();
                     }
                 }
                 else if (element.TextContent == "Number of Movies")

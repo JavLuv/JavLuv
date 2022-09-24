@@ -233,7 +233,17 @@ namespace MovieInfo
             {
                 ActressData key = new ActressData();
                 key.Name = name;
-                return m_actresses.Actresses.Contains(key);
+                if (m_actresses.Actresses.Contains(key))
+                    return true;
+                foreach (var actress in m_actresses.Actresses)
+                {
+                    foreach (var altname in actress.AlternateNames)
+                    {
+                        if (name == altname)
+                            return true;
+                    }
+                }
+                return false;
             }
         }
 
