@@ -4,7 +4,6 @@ using Subtitles;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Threading;
 using System.Windows;
 using System.Xml.Linq;
@@ -113,7 +112,8 @@ namespace JavLuv
         public bool ScanRecursively { get; set; }
         public bool MoveRenameAfterScan { get; set; }
         public string SearchText { get; set; }
-        public MovieInfo.SortBy SortBy { get; set; }
+        public MovieInfo.SortMoviesBy SortMoviesBy { get; set; }
+        public MovieInfo.SortActressesBy SortActressesBy { get; set; }
         public bool ShowID { get; set; }
         public bool ShowUnratedOnly { get; set; }
         public bool ShowSubtitlesOnly { get; set; }
@@ -283,6 +283,13 @@ namespace JavLuv
                 englishSettings.Add(filters);
                 filters = root.Element("ActorFilters");
                 englishSettings.Add(filters);
+            }
+
+            // We're changing the name of the SortBy field
+            XElement sortBy = root.Element("SortBy");
+            if (sortBy != null)
+            {
+                sortBy.Name = "SortMoviesBy";
             }
         }
 

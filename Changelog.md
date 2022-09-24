@@ -1,6 +1,10 @@
 # Changelog
 All significant changes are listed in this file.
 
+## [1.1.0] - 2022-9-24
+
+- Add Actress viewer
+
 ## [1.0.2] - 2022-9-22
 
 - Added buttons to reset or merge filters in settings

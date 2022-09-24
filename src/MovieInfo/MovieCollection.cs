@@ -29,7 +29,6 @@ namespace MovieInfo
 
         #region Events
 
-        // TODO: I think I can probably consolodate these into a single event
         public event EventHandler MoviesDisplayedChanged;
         public event EventHandler ActressesDisplayedChanged;
 
@@ -46,18 +45,28 @@ namespace MovieInfo
                     NotifyMoviesDisplayedChanged();
                     NotifyActressesDisplayedChanged();
                     m_loaded = true;
-                    Search();
+                    SearchMovies();
+                    SearchActresses();
                 }));     
             }
-            else if (e.CommandName == "MovieInfo.CmdSearch")
+            else if (e.CommandName == "MovieInfo.CmdSearchMovies")
             {
                 m_dispatcher.Invoke(DispatcherPriority.Normal, new Action(delegate ()
                 {
-                    if (m_search != null)
+                    if (m_searchMovies != null)
                     {
-                        m_moviesDisplayed = m_search.FilteredMovies;
-                        m_actressesDisplayed = m_search.FilteredActresses;
+                        m_moviesDisplayed = m_searchMovies.FilteredMovies;
                         NotifyMoviesDisplayedChanged();
+                    }
+                }));
+            }
+            else if (e.CommandName == "MovieInfo.CmdSearchActresses")
+            {
+                m_dispatcher.Invoke(DispatcherPriority.Normal, new Action(delegate ()
+                {
+                    if (m_searchActresses != null)
+                    {
+                        m_actressesDisplayed = m_searchActresses.FilteredActresses;
                         NotifyActressesDisplayedChanged();
                     }
                 }));
@@ -77,19 +86,32 @@ namespace MovieInfo
             set 
             { 
                 m_searchText = value;
-                Search();
+                SearchMovies();
             }
         }
 
-        public SortBy SortBy
+        public SortMoviesBy SortMoviesBy
         {
-            private get { return m_sortBy; }
+            private get { return m_sortMoviesBy; }
             set
             {
-                if (value != m_sortBy)
+                if (value != m_sortMoviesBy)
                 {
-                    m_sortBy = value;
-                    Search();
+                    m_sortMoviesBy = value;
+                    SearchMovies();
+                }
+            }
+        }
+
+        public SortActressesBy SortActressesBy
+        {
+            private get { return m_sortActressesBy; }
+            set
+            {
+                if (value != m_sortActressesBy)
+                {
+                    m_sortActressesBy = value;
+                    SearchActresses();
                 }
             }
         }
@@ -105,7 +127,7 @@ namespace MovieInfo
                 if (value != m_showID)
                 {
                     m_showID = value;
-                    Search();
+                    SearchMovies();
                 }
             }
         }
@@ -121,7 +143,7 @@ namespace MovieInfo
                 if (value != m_showUnratedOnly)
                 {
                     m_showUnratedOnly = value;
-                    Search();
+                    SearchMovies();
                 }
             }
         }
@@ -137,7 +159,7 @@ namespace MovieInfo
                 if (value != m_showSubtitlesOnly)
                 {
                     m_showSubtitlesOnly = value;
-                    Search();
+                    SearchMovies();
                 }
             }
         }
@@ -194,7 +216,7 @@ namespace MovieInfo
                     }
                 }
             }
-            Search();
+            SearchMovies();
             Save();
             errorMsg = err.ToString();
             return newMovies;
@@ -213,7 +235,7 @@ namespace MovieInfo
                     m_actresses.Actresses.Add(actress);
                 }
             }
-            Search();
+            SearchActresses();
             Save();
         }
 
@@ -360,7 +382,7 @@ namespace MovieInfo
                         m_cacheData.Movies.Remove(movie);
                 }
             }
-            Search();
+            SearchMovies();
             Save();
         }
 
@@ -383,7 +405,8 @@ namespace MovieInfo
             foreach (var pair in actorFilter)
                 actors.Add(new FilterPair(pair.Original, pair.Filtered));
             CommandQueue.Command().Execute(new CmdFilter(movies, studios, labels, directors, genres, actors));
-            Search();
+            SearchMovies();
+            SearchActresses();
             Save();
         }
 
@@ -412,7 +435,7 @@ namespace MovieInfo
                 }
                 m_moviesDisplayed.Clear();
             }
-            Search();
+            SearchMovies();
             Save();
         }
 
@@ -434,12 +457,20 @@ namespace MovieInfo
             NotifyMoviesDisplayedChanged();
         }
 
-        public void Search()
+        public void SearchMovies()
         {
             if (m_loaded == false)
                 return;
-            m_search = new CmdSearch(m_cacheData, m_actresses, m_searchText, m_sortBy, ShowUnratedOnly, ShowSubtitlesOnly);
-            CommandQueue.Command().Execute(m_search);            
+            m_searchMovies = new CmdSearchMovies(m_cacheData, m_searchText, m_sortMoviesBy, ShowUnratedOnly, ShowSubtitlesOnly);
+            CommandQueue.Command().Execute(m_searchMovies);            
+        }
+
+        public void SearchActresses()
+        {
+            if (m_loaded == false)
+                return;
+            m_searchActresses = new CmdSearchActresses(m_actresses, m_searchText, m_sortActressesBy);
+            CommandQueue.Command().Execute(m_searchActresses);
         }
 
         public void Save()
@@ -475,11 +506,13 @@ namespace MovieInfo
         // Search parameters
         private string m_searchText = String.Empty;
 
-        // Current search command
-        private CmdSearch m_search;
+        // Movie search
+        private CmdSearchMovies m_searchMovies;
+        private SortMoviesBy m_sortMoviesBy;
 
-        // Current sort by command
-        private SortBy m_sortBy;
+        // Actress search
+        private CmdSearchActresses m_searchActresses;
+        private SortActressesBy m_sortActressesBy;
 
         // Show ID with title
         private bool m_showID;

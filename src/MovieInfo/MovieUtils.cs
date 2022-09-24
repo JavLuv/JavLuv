@@ -121,7 +121,48 @@ namespace MovieInfo
             return changed;
         }
 
-        public static int TitleCompare(string leftTitle, string rightTitle)
+        public static List<string> SearchSplit(string stringToSplit)
+        {
+            List<string> results = new List<string>();
+            bool inQuote = false;
+            StringBuilder currentToken = new StringBuilder();
+            for (int index = 0; index < stringToSplit.Length; ++index)
+            {
+                char currentCharacter = stringToSplit[index];
+                if (currentCharacter == '"')
+                {
+                    // When we see a ", we need to decide whether we are
+                    // at the start or send of a quoted section...
+                    inQuote = !inQuote;
+                }
+                else if (currentCharacter == ' ' && inQuote == false)
+                {
+                    // We've come to the end of a token, so we find the token,
+                    // trim it and add it to the collection of results...
+                    string result = currentToken.ToString().Trim();
+                    if (result != "") results.Add(result);
+
+                    // We start a new token...
+                    currentToken = new StringBuilder();
+                }
+                else
+                {
+                    // We've got a 'normal' character, so we add it to
+                    // the curent token...
+                    currentToken.Append(currentCharacter);
+                }
+            }
+
+            // We've come to the end of the string, so we add the last token...
+            string lastResult = currentToken.ToString().Trim();
+            if (lastResult != "")
+                results.Add(lastResult);
+
+            return results;
+        }
+
+
+        public static int MovieTitleCompare(string leftTitle, string rightTitle)
         {
             return Utilities.TitleNormalize(leftTitle).CompareTo(Utilities.TitleNormalize(rightTitle));
         }
@@ -134,7 +175,7 @@ namespace MovieInfo
             return MovieIDCompareNumeric(leftID.Value, rightID.Value);
         }
 
-        public static int ActressCompare(List<ActorData> leftActors, List<ActorData> rightActors)
+        public static int MovieActressCompare(List<ActorData> leftActors, List<ActorData> rightActors)
         {
             for (int i = 0; i < Math.Min(leftActors.Count, rightActors.Count); ++i)
             {

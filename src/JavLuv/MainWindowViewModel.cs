@@ -340,7 +340,7 @@ namespace JavLuv
             {
                 if (Overlay.GetType() == typeof(MovieDetailViewModel))
                 {
-                    Collection.Search();
+                    Collection.SearchMovies();
                     Collection.Save();
                 }
             }

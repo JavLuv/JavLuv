@@ -49,10 +49,11 @@
     <Compile Include="CmdMarkSharedFolders.cs" />
     <Compile Include="CmdRestoreMetadata.cs" />
     <Compile Include="CmdSave.cs" />
+    <Compile Include="CmdSearchActresses.cs" />
     <Compile Include="CommandQueue.cs" />
     <Compile Include="MovieCollection.cs" />
     <Compile Include="MovieData.cs" />
-    <Compile Include="CmdSearch.cs" />
+    <Compile Include="CmdSearchMovies.cs" />
     <Compile Include="MovieSerializer.cs" />
     <Compile Include="BackupData.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

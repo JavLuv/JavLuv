@@ -105,6 +105,10 @@
       <DependentUpon>ActressBrowserView.xaml</DependentUpon>
     </Compile>
     <Compile Include="ActressBrowserViewModel.cs" />
+    <Compile Include="ActressDetailView.xaml.cs">
+      <DependentUpon>ActressDetailView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ActressDetailViewModel.cs" />
     <Compile Include="MovieBrowserItemView.xaml.cs">
       <DependentUpon>MovieBrowserItemView.xaml</DependentUpon>
     </Compile>
@@ -169,6 +173,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="ActressBrowserView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ActressDetailView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
