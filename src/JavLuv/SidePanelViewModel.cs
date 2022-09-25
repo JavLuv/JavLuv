@@ -90,6 +90,20 @@ namespace JavLuv
                 sortByPair.Refresh();
         }
 
+        public void OnChangeTabs()
+        {
+            if (Settings.Get().SelectedTabIndex == 0)
+            {
+                // Movie browser is shown
+
+            }
+            else
+            {
+                // Actress browser is shown
+
+            }
+        }
+
         #endregion
 
         #region Properties

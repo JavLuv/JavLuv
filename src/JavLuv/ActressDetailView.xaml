@@ -5,11 +5,189 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
     xmlns:local="clr-namespace:JavLuv"
+    Background="{StaticResource UserControl.Background}"
     mc:Ignorable="d" 
     d:DesignHeight="450" 
-    d:DesignWidth="800"
+    d:DesignWidth="900"
     >
-    <Grid>
-            
+    <UserControl.Resources>
+
+        <Image x:Key="ImageFolder" x:Shared="false" Source="Resources/folder.png" />
+        <Image x:Key="ImageSubtitles" x:Shared="false" Source="Resources/subtitles.png" />
+
+        <Style x:Key="DetailLabelStyle" TargetType="Label" BasedOn="{StaticResource {x:Type Label}}">
+            <Setter Property="FontSize" Value="16" />
+            <Setter Property="HorizontalAlignment" Value="Right" />
+        </Style>
+        <Style x:Key="DetailLabelContentStyle" TargetType="Label" BasedOn="{StaticResource {x:Type Label}}">
+            <Setter Property="Grid.Column" Value="2" />
+            <Setter Property="FontSize" Value="16" />
+        </Style>
+        <Style x:Key="DetailTextBoxStyle" TargetType="TextBox" BasedOn="{StaticResource {x:Type TextBox}}">
+            <Setter Property="Grid.Column" Value="2" />
+            <Setter Property="FontSize" Value="16" />
+            <Setter Property="Margin" Value="0,4,0,0" />
+            <Setter Property="BorderBrush" Value="Transparent" />
+            <Setter Property="TextWrapping" Value="Wrap" />
+        </Style>
+    </UserControl.Resources>
+
+    <Grid x:Name="MainGrid" Focusable="True" MouseDown="MainGrid_MouseDown"  >
+        <Grid.RowDefinitions>
+            <RowDefinition Height="36" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="36" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        
+        <Grid.InputBindings>
+            <KeyBinding Command="{Binding Parent.NavigateLeftCommand}" Key="Left" />
+            <KeyBinding Command="{Binding Parent.NavigateRightCommand}" Key="Right" />
+        </Grid.InputBindings>
+
+        <Grid.ContextMenu>
+            <ContextMenu>
+                <MenuItem Header="{DynamicResource Text.CopyTitle}" Command="{Binding CopyTitleAndMetadataCommand}" />
+            </ContextMenu>
+        </Grid.ContextMenu>
+
+        <Button
+            IsEnabled="True"
+            Command="{Binding Parent.Parent.CloseOverlayCommand}"
+            Background="Transparent" 
+            BorderThickness="0" 
+            Margin="4, 4, 4, 4"
+            >
+            <Grid>
+                <Polyline Margin="8, 8, 0, 0" StrokeThickness="2" Stroke="WhiteSmoke" Points="10, 0 -10, 0" />
+                <Polyline Margin="8, 8, 0, 0" StrokeThickness="2" Stroke="WhiteSmoke" Points="0,-8 -8,0 0,8" />
+            </Grid>
+        </Button>
+        <TextBlock Margin="5,0,0,0" VerticalAlignment="Center" Grid.Column="1" Text="{DynamicResource Text.Back}"/>
+        <Grid Grid.Column="0" Grid.ColumnSpan="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1*" />
+                <ColumnDefinition Width="32" />
+                <ColumnDefinition Width=".7*" />
+                <ColumnDefinition Width="32" />
+                <ColumnDefinition Width="1*" />
+            </Grid.ColumnDefinitions>
+            <Button 
+                Command="{Binding Parent.NavigateLeftCommand}"
+                Background="Transparent" 
+                BorderThickness="0" 
+                Margin="4, 4, 4, 4"
+                Grid.Column="1"
+                >
+                <Grid>
+                    <Polyline Margin="8, 8, 0, 0" StrokeThickness="2" Stroke="WhiteSmoke" Points="10, 0 -10, 0" />
+                    <Polyline Margin="8, 8, 0, 0" StrokeThickness="2" Stroke="WhiteSmoke" Points="0,-8 -8,0 0,8" />
+                </Grid>
+            </Button>
+            <TextBlock Grid.Column="2" Margin="5,0,0,0" FontSize="18" VerticalAlignment="Center" HorizontalAlignment="Center" Text="{DynamicResource Text.ActressDetails}" />
+            <Button 
+                Command="{Binding Parent.NavigateRightCommand}"
+                Background="Transparent" 
+                BorderThickness="0" 
+                Margin="4, 4, 4, 4"
+                Grid.Column="3"
+                >
+                <Grid Background="Transparent" >
+                    <Polyline Margin="8, 8, 0, 0" StrokeThickness="2" Stroke="WhiteSmoke" Points="-10,0 10,0" />
+                    <Polyline Margin="8, 8, 0, 0" StrokeThickness="2" Stroke="WhiteSmoke" Points="0,-8 8,0 0,8" />
+                </Grid>
+            </Button>
+            <ToggleButton
+                Grid.Column="5"
+                Margin="4, 4, 4, 4"
+                HorizontalAlignment="Right"
+                Visibility="{Binding ShowOriginalTitleVisible}"
+                IsChecked="{Binding ShowOriginalTitle}"
+                Width="28"
+                Height="28"
+                Content="{DynamicResource Text.JP}"
+                ToolTip="{DynamicResource Text.ShowOriginalJpTitle}"
+                />
+        </Grid>
+        <Grid Grid.Row="1" Grid.ColumnSpan="2" >
+            <DockPanel Margin="40,10,40,10" >
+                <TextBox 
+                    DockPanel.Dock="Top" 
+                    BorderThickness="0"
+                    TextWrapping="WrapWithOverflow" 
+                    FontSize="18" 
+                    HorizontalAlignment="Center" 
+                    FontWeight="Bold" 
+                    Text="{Binding Name, UpdateSourceTrigger=LostFocus}" 
+                    />
+                <Grid MinHeight="200" Margin="0, 15, 0, 0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="2*" />
+                        <ColumnDefinition Width="10" />
+                        <ColumnDefinition Width="3*" />
+                    </Grid.ColumnDefinitions>
+                    <Grid Grid.Column="0">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="4*" />
+                            <RowDefinition MinHeight="120" Height="*" />
+                        </Grid.RowDefinitions>
+                        <Image 
+                            MinHeight="100" 
+                            HorizontalAlignment="Center" 
+                            Stretch="Uniform"
+                            Source="{Binding Image}" 
+                            >
+                            <Image.ContextMenu>
+                                <ContextMenu>
+                                    <MenuItem Header="{DynamicResource Text.ImportCoverImage}" Command="{Binding ImportCoverImageCommand}" />
+                                </ContextMenu>
+                            </Image.ContextMenu>
+                        </Image>
+                        <DockPanel Grid.Row="1" MinHeight="100">
+                        </DockPanel>
+                    </Grid>
+                    <StackPanel Background="Transparent"  Grid.Column="2">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="1*" MinWidth="130"/>
+                                <ColumnDefinition Width="10" />
+                                <ColumnDefinition Width="2*" />
+                            </Grid.ColumnDefinitions>
+                            <Label Style="{StaticResource DetailLabelStyle}" Content="{DynamicResource Text.ActressJapaneseName}" />
+                            <TextBox Style="{StaticResource DetailTextBoxStyle}" Text="{Binding ID, UpdateSourceTrigger=LostFocus}" />
+                        </Grid>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="1*" MinWidth="130"/>
+                                <ColumnDefinition Width="10" />
+                                <ColumnDefinition Width="2*" />
+                            </Grid.ColumnDefinitions>
+                            <Label Style="{StaticResource DetailLabelStyle}" Content="{DynamicResource Text.ActressAlternateNames}" />
+                            <TextBox Style="{StaticResource DetailTextBoxStyle}" Text="{Binding AlternateNames, UpdateSourceTrigger=LostFocus}" />
+                        </Grid>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="1*" MinWidth="130"/>
+                                <ColumnDefinition Width="10" />
+                                <ColumnDefinition Width="2*" />
+                            </Grid.ColumnDefinitions>
+                            <Label Style="{StaticResource DetailLabelStyle}" Content="{DynamicResource Text.UserRating}" />
+                            <local:RatingControl Margin="0, 4, 0, 0" BorderBrush="Transparent" Grid.Column="2" Value="{Binding UserRating}" />
+                        </Grid>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="1*" MinWidth="130"/>
+                                <ColumnDefinition Width="10" />
+                                <ColumnDefinition Width="2*" />
+                            </Grid.ColumnDefinitions>
+                            <Label Style="{StaticResource DetailLabelStyle}" Content="{DynamicResource Text.Notes}" />
+                            <TextBox Style="{StaticResource DetailTextBoxStyle}" TextWrapping="Wrap" AcceptsReturn="True" Text="{Binding Notes, UpdateSourceTrigger=LostFocus}" />
+                        </Grid>
+                    </StackPanel>
+                </Grid>
+            </DockPanel>
+        </Grid>
     </Grid>
 </UserControl>

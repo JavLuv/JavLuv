@@ -1,12 +1,5 @@
-﻿using Common;
-using MovieInfo;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.Collections.ObjectModel;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Windows;
 using System.Windows.Input;
 
 namespace JavLuv
@@ -136,12 +129,12 @@ namespace JavLuv
         #endregion
 
         #region Commands
-/*
+
         #region Navigate Left Command
 
         private void NavigateLeftExecute()
         {
-            MovieDetailViewModel current = Parent.Overlay as MovieDetailViewModel;
+            ActressDetailViewModel current = Parent.Overlay as ActressDetailViewModel;
             if (current == null)
                 return;
             Parent.Overlay = new ActressDetailViewModel(this, Actresses[Actresses.IndexOf(current.BrowserItem) - 1]);
@@ -149,7 +142,7 @@ namespace JavLuv
 
         private bool CanNavigateLeftExecute()
         {
-            MovieDetailViewModel current = Parent.Overlay as MovieDetailViewModel;
+            ActressDetailViewModel current = Parent.Overlay as ActressDetailViewModel;
             if (current == null)
                 return false;
             if (Actresses.IndexOf(current.BrowserItem) == 0)
@@ -165,18 +158,18 @@ namespace JavLuv
 
         private void NavigateRightExecute()
         {
-            MovieDetailViewModel current = Parent.Overlay as MovieDetailViewModel;
+            ActressDetailViewModel current = Parent.Overlay as ActressDetailViewModel;
             if (current == null)
                 return;
-            Parent.Overlay = new MovieDetailViewModel(this, Movies[Movies.IndexOf(current.BrowserItem) + 1]);
+            Parent.Overlay = new ActressDetailViewModel(this, Actresses[Actresses.IndexOf(current.BrowserItem) + 1]);
         }
 
         private bool CanNavigateRightExecute()
         {
-            MovieDetailViewModel current = Parent.Overlay as MovieDetailViewModel;
+            ActressDetailViewModel current = Parent.Overlay as ActressDetailViewModel;
             if (current == null)
                 return false;
-            if (Movies.IndexOf(current.BrowserItem) >= Movies.Count - 1)
+            if (Actresses.IndexOf(current.BrowserItem) >= Actresses.Count - 1)
                 return false;
             return true;
         }
@@ -184,14 +177,14 @@ namespace JavLuv
         public ICommand NavigateRightCommand { get { return new RelayCommand(NavigateRightExecute, CanNavigateRightExecute); } }
 
         #endregion
-*/
+
         #endregion
 
         #region Public Functions
 
         public void OpenDetailView(ActressBrowserItemViewModel browserItem)
         {
-            //Parent.Overlay = new ActressDetailViewModel(this, browserItem);
+            Parent.Overlay = new ActressDetailViewModel(this, browserItem);
         }
 
         #endregion

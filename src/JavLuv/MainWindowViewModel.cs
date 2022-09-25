@@ -46,6 +46,9 @@ namespace JavLuv
             m_movieScanner.ScanComplete += OnMovieScannerComplete;
             m_movieCollection.MoviesDisplayedChanged += MovieCollection_MoviesDisplayedChanged;
 
+            // Set loaded UI elemenets
+            SelectedTabIndex = JavLuv.Settings.Get().SelectedTabIndex;
+
             // Check version
             var timeToCheck = new TimeSpan(1, 0, 0, 0); // 1 day interval
             var interval = new TimeSpan(0, 0, 0, 0);
@@ -68,16 +71,17 @@ namespace JavLuv
         {
             get
             {
-                return m_mainPanelViewModel;
+                return m_overlayViewModel;
             }
             set
             {
-                if (value != m_mainPanelViewModel)
+                if (value != m_overlayViewModel)
                 {
-                    m_mainPanelViewModel = value;
+                    m_overlayViewModel = value;
                     NotifyPropertyChanged("Overlay");
-                    SidePanel.IsEnabled = (m_mainPanelViewModel == null) ? true : false;
-                    MovieBrowser.IsEnabled = (m_mainPanelViewModel == null) ? true : false;
+                    SidePanel.IsEnabled = (m_overlayViewModel == null) ? true : false;
+                    MovieBrowser.IsEnabled = (m_overlayViewModel == null) ? true : false;
+                    ActressBrowser.IsEnabled = (m_overlayViewModel == null) ? true : false;
                 }
             }
         }
@@ -108,6 +112,23 @@ namespace JavLuv
         public SettingsViewModel Settings { get { return m_settingsViewModel; } }
 
         public MovieCollection Collection { get { return m_movieCollection; } }
+
+        public int SelectedTabIndex
+        {
+            get
+            {
+                return JavLuv.Settings.Get().SelectedTabIndex;
+            }
+            set
+            {
+                if (value != JavLuv.Settings.Get().SelectedTabIndex)
+                {
+                    JavLuv.Settings.Get().SelectedTabIndex = value;
+                    NotifyPropertyChanged("SelectedTabIndex");
+                    SidePanel.OnChangeTabs();
+                }
+            }
+        }
 
         public bool IsScanning { get { return m_movieScanner.Phase != ScanPhase.Finished; } }
 
@@ -382,7 +403,7 @@ namespace JavLuv
         ReportViewModel m_reportViewModel;
         MovieBrowserViewModel m_movieBrowserViewModel;
         ActressBrowserViewModel m_actressBrowserViewModel;
-        ObservableObject m_mainPanelViewModel;
+        ObservableObject m_overlayViewModel;
         MovieScanner m_movieScanner;
         MovieCollection m_movieCollection;
         TaskbarItemProgressState m_progressState;

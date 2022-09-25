@@ -38,6 +38,11 @@
             <local:MovieDetailView/>
         </DataTemplate>
 
+        <DataTemplate 
+            DataType="{x:Type local:ActressDetailViewModel}">
+            <local:ActressDetailView/>
+        </DataTemplate>
+
     </Window.Resources>
 
     <Window.InputBindings>
@@ -74,7 +79,7 @@
 
             <!-- Browser view -->
             <Grid Grid.Column="2">
-                <TabControl>
+                <TabControl SelectedIndex="{Binding SelectedTabIndex}">
                     <TabItem Header="{DynamicResource Text.MoviesTab}">
                         <local:MovieBrowserView 
                             DataContext="{Binding MovieBrowser}"

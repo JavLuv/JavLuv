@@ -1,11 +1,8 @@
 ﻿using Common;
 using MovieInfo;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Input;
 using System.Windows.Media;
 
@@ -57,7 +54,7 @@ namespace JavLuv
 
         private void DetailViewExecute()
         {
-            //Parent.OpenDetailView(this);
+            Parent.OpenDetailView(this);
         }
 
         private bool CanDetailViewExecute()

@@ -111,7 +111,7 @@ namespace JavLuv
 
         #endregion
 
-       #region Event Handlers
+        #region Event Handlers
 
         private void LoadImage_FinishedLoading(object sender, System.EventArgs e)
         {
@@ -203,7 +203,6 @@ namespace JavLuv
             }
         }
 
-
         public MovieBrowserItemViewModel BrowserItem { get { return m_browserItem; } }
 
         public MovieData MovieData { get { return m_movieData; } }
@@ -225,6 +224,7 @@ namespace JavLuv
                     {
                         m_movieData.Metadata.OriginalTitle = value;
                         m_movieData.MetadataChanged = true;
+                        NotifyPropertyChanged("Title");
                     }
                 }
                 else
@@ -233,9 +233,9 @@ namespace JavLuv
                     {
                         m_movieData.Metadata.Title = value;
                         m_movieData.MetadataChanged = true;
-                    }
+                         NotifyPropertyChanged("Title");
+                   }
                 }
-                NotifyPropertyChanged("Title");
             }
         }
 
@@ -248,7 +248,7 @@ namespace JavLuv
                 {
                     m_movieData.Metadata.UniqueID.Value = value;
                     m_movieData.MetadataChanged = true;
-                    NotifyPropertyChanged("Title");
+                    NotifyPropertyChanged("ID");
                 }
             }
         }

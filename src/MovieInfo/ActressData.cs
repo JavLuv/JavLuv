@@ -57,10 +57,12 @@ namespace MovieInfo
         public int Waist { get; set; }
         public int Hips { get; set; }
         public string BloodType { get; set; }
+        public int UserRating { get; set; }
+        public string Notes { get; set; }
         public int NumberOfMovies { get; set; }
         public List<string> Images { get; set; }
         public string ThumbnailImage { get; set; }
-        public string DetailImage { get; set; }
+        public string DetailImageFileName { get; set; }
 
         #endregion
     }

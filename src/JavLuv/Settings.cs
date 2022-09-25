@@ -105,6 +105,7 @@ namespace JavLuv
         }
 
         // Preserved UI elements
+        public int SelectedTabIndex { get; set; }
         public string LastFolder { get; set; }
         public string SubtitleImportFolder { get; set; }
         public string SubtitleExportFolder { get; set; }

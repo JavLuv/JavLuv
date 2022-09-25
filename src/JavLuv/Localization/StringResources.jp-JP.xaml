@@ -71,6 +71,11 @@
     <system:String x:Key="Text.JP">JP</system:String>
     <system:String x:Key="Text.ShowOriginalJpTitle">Show original Japanese title</system:String>
 
+    <!-- Actress details -->
+    <system:String x:Key="Text.ActressDetails">Actress Details</system:String>
+    <system:String x:Key="Text.ActressJapaneseName">Japanese Name:</system:String>
+    <system:String x:Key="Text.ActressAlternateNames">Alternate Names:</system:String>
+
     <!-- Miscellaneous -->
     <system:String x:Key="Text.JavLuvTitle">JavLuv - あなたのJAVムービーオーガナイザー</system:String>
     <system:String x:Key="Text.MoviesTab">Movies</system:String>

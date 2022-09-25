@@ -46,6 +46,13 @@
     <system:String x:Key="Text.JavLuvDistributed">JavLuv is distributed under the MIT Open Source License:</system:String>
     <system:String x:Key="Text.ffmpeg">ffmpeg is distributed under the GNU General Public License::</system:String>
 
+    <!-- Version Check View -->
+    <system:String x:Key="Text.VersionCheckTitle">Version Check</system:String>
+    <system:String x:Key="Text.VersionCheckMessage">A new version of JavLuv is available.</system:String>
+    <system:String x:Key="Text.CurrentVersion">Current version: {0}</system:String>
+    <system:String x:Key="Text.NewVersion">New version: {0}</system:String>
+    <system:String x:Key="Text.VersionDetails">Details</system:String>
+
     <!-- Movie details -->
     <system:String x:Key="Text.MovieDetails">Movie Details</system:String>
     <system:String x:Key="Text.ID">ID:</system:String>
@@ -63,6 +70,11 @@
     <system:String x:Key="Text.CopyTitle">Copy title and metadata</system:String>
     <system:String x:Key="Text.JP">JP</system:String>
     <system:String x:Key="Text.ShowOriginalJpTitle">Show original Japanese title</system:String>
+
+    <!-- Actress details -->
+    <system:String x:Key="Text.ActressDetails">Actress Details</system:String>
+    <system:String x:Key="Text.ActressJapaneseName">Japanese Name:</system:String>
+    <system:String x:Key="Text.ActressAlternateNames">Alternate Names:</system:String>
 
     <!-- Miscellaneous -->
     <system:String x:Key="Text.JavLuvTitle">JavLuv - Your JAV Movie Organizer</system:String>
@@ -94,13 +106,6 @@
     <system:String x:Key="Text.MovingMoviesMessage">Moving movies to new location:</system:String>
     <system:String x:Key="Text.MovingRenamingMoviesTitle">Moving / Renaming Movies</system:String>
     <system:String x:Key="Text.MovingRenamingMoviesMessage">Moving / renaming movies and related files / folders:</system:String>
-
-    <!-- Version Check View -->
-    <system:String x:Key="Text.VersionCheckTitle">Version Check</system:String>
-    <system:String x:Key="Text.VersionCheckMessage">A new version of JavLuv is available.</system:String>
-    <system:String x:Key="Text.CurrentVersion">Current version: {0}</system:String>
-    <system:String x:Key="Text.NewVersion">New version: {0}</system:String>
-    <system:String x:Key="Text.VersionDetails">Details</system:String>
 
     <!-- Side Panel View -->
     <system:String x:Key="Text.ConcatenateMovies">Concatenate movies...</system:String>

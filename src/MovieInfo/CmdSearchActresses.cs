@@ -85,13 +85,6 @@ namespace MovieInfo
 
             // Sort the filtered movies
             Sort();
-
-            // TODO: Add searching and sorting for actresses
-            lock (m_actressesData)
-            {
-                foreach (var actress in m_actressesData.Actresses)
-                    m_filteredActresses.Add(actress);
-            }
         }
 
         #endregion
@@ -136,6 +129,12 @@ namespace MovieInfo
             {
                 case SortActressesBy.Name:
                     m_filteredActresses.Sort(new ActressNameComparer());
+                    break;
+                case SortActressesBy.Age_Youngest:
+                    m_filteredActresses.Sort(new ActressAgeYoungestComparer());
+                    break;
+                case SortActressesBy.Age_Oldest:
+                    m_filteredActresses.Sort(new ActressAgeOldestComparer());
                     break;
             };
         }
