@@ -140,50 +140,18 @@ namespace MovieInfo
 
         #region Public Functions
 
-        public List<MovieData> AddMovies(List<MovieData> movies, out string errorMsg)
+        public void AddMovies(List<MovieData> movies)
         {
-            List<MovieData> newMovies = new List<MovieData>();
             var err = new StringBuilder(1024);
             lock (m_cacheData)
             {
                 foreach (var movie in movies)
                 {
-                    // There's already a movie with this ID.  Check if we're updating location
-                    // or if it's a duplicate error.
-                    MovieData existingMovie;
-                    if (m_cacheData.Movies.TryGetValue(movie, out existingMovie))
-                    {
-                        if (Directory.Exists(existingMovie.Path) && movie.Path != existingMovie.Path)
-                        {
-                            err.Append("Movie ID: ");
-                            err.Append(existingMovie.Metadata.UniqueID.Value);
-                            err.Append(" already exists in collection at: ");
-                            err.Append(existingMovie.Path);
-                            err.Append("\n");
-                            err.Append("New movie skipped: ");
-                            err.Append(movie.Path);
-                            err.Append("\n\n");
-                        }
-                        else
-                        {
-                            // Preserve movie resolution as a special case
-                            movie.MovieResolution = existingMovie.MovieResolution;
-                            m_cacheData.Movies.Remove(movie);
-                            m_cacheData.Movies.Add(movie);
-                            newMovies.Add(movie);
-                        }
-                    }
-                    else
-                    {
-                        m_cacheData.Movies.Add(movie);
-                        newMovies.Add(movie);
-                    }
+                    m_cacheData.Movies.Add(movie);
                 }
             }
             Search();
             Save();
-            errorMsg = err.ToString();
-            return newMovies;
         }
 
         public MovieData GetMovie(string uniqueID)

@@ -205,8 +205,7 @@ namespace JavLuv
             NotifyPropertyChanged("ScanVisibility");
 
             string errorMsg = String.Empty;
-            var moviesAdded = m_movieCollection.AddMovies(m_movieScanner.Movies, out errorMsg);
-            if (m_movieScanner.ErrorLog != String.Empty || errorMsg != String.Empty)
+            if (m_movieScanner.ErrorLog != String.Empty)
             {
                 m_reportViewModel.ErrorLog = String.Empty;
                 if (m_movieScanner.ErrorLog != String.Empty)
@@ -220,8 +219,9 @@ namespace JavLuv
 
             // Optionally move/rename post-scan
             if (JavLuv.Settings.Get().EnableMoveRename && JavLuv.Settings.Get().MoveRenameAfterScan && m_movieScanner.IsCancelled == false)
-                m_browserViewModel.MoveRenameMovies(moviesAdded);
+                m_browserViewModel.MoveRenameMovies(m_movieScanner.Movies);
 
+            m_movieCollection.AddMovies(m_movieScanner.Movies);
             m_movieScanner.Clear();
         }
 

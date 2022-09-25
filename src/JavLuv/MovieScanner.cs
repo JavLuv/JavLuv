@@ -196,6 +196,10 @@ namespace JavLuv
                     // Check to see if if this movie is already in the cache.  
                     if (String.IsNullOrEmpty(fileInfo.ID) == false && m_movieCollection.MovieExists(fileInfo.ID))
                     {
+                        // Mark this as a shared folder, since we may have extra files in it now.  Otherwise, if
+                        // only one successful file remains, the directory could be inadvertently be moved instead
+                        // of selected files copied.
+                        directoryInfo.IsSharedFolder = true;
                         LogError(String.Format("Error scanning file {0}.  {1} already exists in collection.", fileInfo.FileName, fileInfo.ID), directoryToScan);
                         continue;
                     }
@@ -386,6 +390,10 @@ namespace JavLuv
 
         private bool IsSharedFolder(DirectoryInfo directoryInfo)
         {
+            // Don't bother checking if we've marked this as a shared folder previously.
+            if (directoryInfo.IsSharedFolder)
+                return true;
+
             string currentID = String.Empty;
 
             // Check to see if we have multiple IDs
