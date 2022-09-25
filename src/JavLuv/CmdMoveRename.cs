@@ -98,8 +98,7 @@ namespace JavLuv
 
                 // Update collection with new folder and file names
                 m_movieCollection.RemoveMovies(newMovies);
-                String err;
-                m_movieCollection.AddMovies(newMovies, out err);
+                m_movieCollection.AddMovies(newMovies);
 
                 // Ensure users have enough time to register the dialog box operation is complete
                 System.Threading.Thread.Sleep(500);

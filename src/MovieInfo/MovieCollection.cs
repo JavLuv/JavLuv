@@ -173,53 +173,18 @@ namespace MovieInfo
 
         #region Public Functions
 
-        public List<MovieData> AddMovies(List<MovieData> movies, out string errorMsg)
+        public void AddMovies(List<MovieData> movies)
         {
-            List<MovieData> newMovies = new List<MovieData>();
             var err = new StringBuilder(1024);
             lock (m_cacheData)
             {
                 foreach (var movie in movies)
                 {
-                    // There's already a movie with this ID.  Check if we're updating location
-                    // or if it's a duplicate error.
-                    MovieData existingMovie;
-                    if (m_cacheData.Movies.TryGetValue(movie, out existingMovie))
-                    {
-                        // TODO: Do I need this anymore?  I think I'm checking for duplicates
-                        // pretty carefully in the scanner at this point.  Will need to look
-                        // into this at a later date.  Maybe I can simplify this function.
-                        if (Directory.Exists(existingMovie.Path) && movie.Path != existingMovie.Path)
-                        {
-                            err.Append("Movie ID: ");
-                            err.Append(existingMovie.Metadata.UniqueID.Value);
-                            err.Append(" already exists in collection at: ");
-                            err.Append(existingMovie.Path);
-                            err.Append("\n");
-                            err.Append("New movie skipped: ");
-                            err.Append(movie.Path);
-                            err.Append("\n\n");
-                        }
-                        else
-                        {
-                            // Preserve movie resolution as a special case
-                            movie.MovieResolution = existingMovie.MovieResolution;
-                            m_cacheData.Movies.Remove(movie);
-                            m_cacheData.Movies.Add(movie);
-                            newMovies.Add(movie);
-                        }
-                    }
-                    else
-                    {
-                        m_cacheData.Movies.Add(movie);
-                        newMovies.Add(movie);
-                    }
+                    m_cacheData.Movies.Add(movie);
                 }
             }
             SearchMovies();
             Save();
-            errorMsg = err.ToString();
-            return newMovies;
         }
 
         public void AddActresses(List<ActressData> actresses)
