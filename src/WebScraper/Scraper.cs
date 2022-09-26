@@ -344,63 +344,68 @@ namespace WebScraper
 
         private List<ActorData> MergeActors(List<ActorData> a, List<ActorData> b)
         {
-            var actorList = a;
-            if (actorList.Count == 0)
+            if (a.Count == 0)
                 return b;
-            if (actorList.Count == b.Count)
+            foreach (var actorB in b)
             {
-
-                return actorList;
+                bool mergedActor = false;
+                foreach (var actorA in a)
+                {
+                    if (MovieUtils.AreActorsEquivalent(actorA, actorB))
+                    {
+                        MergeActors(actorA, actorB);
+                        mergedActor = true;
+                        break;
+                    }
+                }
+                if (mergedActor == false)
+                    a.Add(actorB);
             }
-            return actorList;
+            return a;
         }
 
-        private bool NamesMatch(ActorData a, ActorData b, out string matchA, out string matchB)
+        private void MergeActors(ActorData a, ActorData b)
         {
-            matchA = String.Empty;
-            matchB = String.Empty;
-            if (a.Name == b.Name)
+            // Do nothing with main names equivalent - this is the norm
+            if (a.Name != b.Name)
             {
-                matchA = a.Name;
-                matchB = matchA;
-                return true;
-            }
-            if (b.Name.ContainsCaseless(a.Aliases))
-                return true;
-            foreach (var aliasA in a.Aliases)
-            {
-                if (aliasA == b.Name)
+                // If b's main name is different, we list it as an alias
+                // if it's not already in a's aliases.
+                bool foundInAliases = false;
+                foreach (var name in a.Aliases)
                 {
-                    matchA = b.Name;
-                    matchB = matchA;
-                    return true;
+                    if (name == b.Name)
+                    {
+                        foundInAliases = true;
+                        break;
+                    }
                 }
+                if (foundInAliases == false)
+                    a.Aliases.Add(b.Name);
             }
+
+            // Merge b's aliases into a's alias list.
+            // Check through all of b's aliases.
             foreach (var aliasB in b.Aliases)
             {
+                // If the alias is equivalent to a's name, do nothing
                 if (aliasB == a.Name)
-                {
-                    matchA = a.Name;
-                    matchB = matchA;
-                    return true;
-                }
-            }
-            foreach (var aliasA in a.Aliases)
-            {
-                foreach (var aliasB in b.Aliases)
+                    continue;
+
+                // Check to see if b's alias is already in a's list.  If not,
+                // we'll add it as another alias.
+                bool foundInAliases = false;
+                foreach (var aliasA in a.Aliases)
                 {
                     if (aliasA == aliasB)
                     {
-                        matchA = aliasA;
-                        matchB = matchA;
-                        return true;
+                        foundInAliases = true;
+                        break;
                     }
                 }
+                if (foundInAliases == false)
+                    a.Aliases.Add(aliasB);
             }
-            const float SimilarityThreshold = 0.65f;
-            if (Utilities.GetSimilarity(a.Name, b.Name) > SimilarityThreshold)
-                return true;
-            return false;
         }
 
         private string MergeStrings(string a, string b)

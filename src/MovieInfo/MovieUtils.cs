@@ -233,6 +233,22 @@ namespace MovieInfo
             return genresChanged;
         }
 
+        public static bool AreActorsEquivalent(ActorData a, ActorData b)
+        {
+            if (a.Name == b.Name)
+                return true;
+            if (b.Name.ContainsCaseless(a.Aliases))
+                return true;
+            if (a.Name.ContainsCaseless(b.Aliases))
+                return true;
+            foreach (var name in a.Aliases)
+            {
+                if (name.ContainsCaseless(b.Aliases))
+                    return true;
+            }
+            return AreActorsNearlyEquivalent(a, b);
+        }
+
         public static string ActorsToString(List<ActorData> actors)
         {
             var str = new StringBuilder();
@@ -707,6 +723,32 @@ namespace MovieInfo
             }
             StringToActors(sb.ToString(), ref actorData);
             return actorData;
+        }
+
+        private static bool AreActorsNearlyEquivalent(ActorData a, ActorData b)
+        {
+            const float SimilarityThreshold = 0.65f;
+            if (Utilities.GetSimilarity(a.Name, b.Name) > SimilarityThreshold)
+                return true;
+            if (GetSimilarityMatches(b.Name, a.Aliases, SimilarityThreshold))
+                return true;
+            if (GetSimilarityMatches(a.Name, b.Aliases, SimilarityThreshold))
+                return true;
+            foreach (var name in a.Aliases)
+            {
+                if (GetSimilarityMatches(a.Name, b.Aliases, SimilarityThreshold))
+                    return true;
+            }
+            return false;
+        }
+        private static bool GetSimilarityMatches(string s, List<string> strings, float threshold)
+        {
+            foreach (var str in strings)
+            {
+                if (Utilities.GetSimilarity(s, str) > threshold)
+                    return true;
+            }
+            return false;
         }
 
         private static void MoveRenameFoldersAndFiles(MovieData movieData, MovieData newMovieData)
