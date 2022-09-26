@@ -213,24 +213,6 @@ namespace JavLuv
             }
         }
 
-        public string Age
-        {
-            get
-            {
-                DateTime zeroTime = new DateTime(1, 1, 1);
-
-                DateTime a = m_actressData.DateOfBirth;
-                DateTime b = DateTime.Now;
-
-                TimeSpan span = b - a;
-
-                // Because we start at year 1 for the Gregorian
-                // calendar, we must subtract a year here.
-                int years = (zeroTime + span).Year - 1;
-                return years.ToString();
-            }
-        }
-
         public string Notes
         {
             get { return m_actressData.Notes; }
@@ -244,6 +226,42 @@ namespace JavLuv
             }
         }
         
+        public string Age
+        {
+            get
+            {
+                if (m_actressData.DateOfBirth == new DateTime())
+                    return String.Empty;
+
+                // Calculate age - a little trickier than you'd expect.  
+                // Still not 100% precise, but good enough in 99.999% of cases.
+                DateTime zeroTime = new DateTime(1, 1, 1);
+                DateTime a = m_actressData.DateOfBirth;
+                DateTime b = DateTime.Now;
+                TimeSpan span = b - a;
+                // Because we start at year 1 for the Gregorian
+                // calendar, we must subtract a year here.
+                int years = (zeroTime + span).Year - 1;
+                return years.ToString();
+            }
+        }
+
+        public string MoviesInCollection
+        {
+            get
+            {
+                return String.Empty;                
+            }
+        }
+
+        public int AverageMovieRating
+        {
+            get
+            {
+                return 0;
+            }
+        }
+
         #endregion
 
         #region Commands

@@ -78,8 +78,8 @@ namespace MovieInfo
         public int Hips { get; set; }
         public string BloodType { get; set; }
         public int UserRating { get; set; }
-         public int NumMovies { get; set; }
-       public string Notes { get; set; }
+        public int NumMovies { get; set; }
+        public string Notes { get; set; }
         public List<string> ImageFileNames { get; set; }
         public int ImageIndex { get; set; }
 

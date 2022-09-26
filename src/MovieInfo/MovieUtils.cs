@@ -233,6 +233,29 @@ namespace MovieInfo
             return genresChanged;
         }
 
+        public static bool IsActressUnknonwn(ActressData actress)
+        {
+            if (actress == null)
+                return true;
+            if (String.IsNullOrEmpty(actress.JapaneseName) == false)
+                return false;
+            if (actress.DateOfBirth != new DateTime())
+                return false;
+            if (actress.Height != 0)
+                return false;
+            if (String.IsNullOrEmpty(actress.Cup) == false)
+                return false;
+            if (actress.Bust != 0)
+                return false;
+            if (actress.Waist != 0)
+                return false;
+            if (actress.Hips != 0)
+                return false;
+            if (String.IsNullOrEmpty(actress.BloodType) == false)
+                return false;
+            return true;
+        }
+
         public static bool AreActorsEquivalent(ActorData a, ActorData b)
         {
             if (a.Name == b.Name)

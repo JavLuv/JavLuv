@@ -100,6 +100,8 @@ namespace MovieInfo
             {
                 if (m_showUnknownActresses == false)
                 {
+                    if (MovieUtils.IsActressUnknonwn(actress))
+                        continue;
                     if (m_sortActressesBy == SortActressesBy.Age_Youngest || m_sortActressesBy == SortActressesBy.Age_Oldest)
                     {
                         if (actress.DateOfBirth == new DateTime())

@@ -24,8 +24,8 @@
 
             <Grid Margin="5, 5, 5, 5">
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="7*" />
-                    <RowDefinition Height="1*" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="22" />
                 </Grid.RowDefinitions>
 
                 <ContentControl Width="300" HorizontalAlignment="Center">
