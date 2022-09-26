@@ -103,7 +103,7 @@ namespace WebScraper
                     {
                         nextSibling = nextSibling.NextSibling;
                         if (IsValidNode(nextSibling))
-                            m_actressData.Breasts = Utilities.ParseInitialDigits(nextSibling.TextContent);
+                            m_actressData.Bust = Utilities.ParseInitialDigits(nextSibling.TextContent);
                     }
                 }
                 else if (element.TextContent == " Waist : ")

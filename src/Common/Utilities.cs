@@ -152,51 +152,22 @@ namespace Common
             return alpha.ToUpper() + "-" + numeric.ToUpper();
         }
 
-        private static void SplitIDMatch(string match, out string alpha, out string numeric)
-        {
-            alpha = String.Empty;
-            numeric = String.Empty;
-            if (String.IsNullOrEmpty(match))
-                return;
-
-            // Fix up for extraneous characters
-            var charsToRemove = new string[] { "[", "]", "(", ")", ".", "_" };
-            foreach (var c in charsToRemove)
-                match = match.Replace(c, string.Empty);
-            match = match.Trim();
-
-            char[] splits = { '-', ' '};
-            var parts = match.Split(splits);
-            if (parts.Length == 2 && String.IsNullOrEmpty(parts[0]) == false && String.IsNullOrEmpty(parts[1]) == false)
-            {
-                alpha = parts[0];
-                numeric = parts[1];
-                return;
-            }
-
-            // Fall back to splitting based on where alpha and numeric values appear (ABC123 pattern)
-
-            // Get first digit
-            int alphaCount = 0;
-            foreach (var c in match)
-            {
-                if (Char.IsDigit(c))
-                    break;
-                ++alphaCount;
-            }
-
-            // Split based on the number of alpha characters
-            alpha = match.Substring(0, alphaCount);
-            numeric = match.Substring(alphaCount, match.Length - alphaCount);
-        }
-
-
         public static bool ContainsCaseless(this string stringToSearch, string searchTerm)
         {
             return stringToSearch.IndexOf(searchTerm, StringComparison.CurrentCultureIgnoreCase) >= 0;
         }
 
         public static bool ContainsCaseless(this string stringToSearch, string[] searchTerms)
+        {
+            foreach (string term in searchTerms)
+            {
+                if (stringToSearch.ContainsCaseless(term))
+                    return true;
+            }
+            return false;
+        }
+
+        public static bool ContainsCaseless(this string stringToSearch, List<string> searchTerms)
         {
             foreach (string term in searchTerms)
             {
@@ -261,6 +232,29 @@ namespace Common
             for (int i = 0; i < strings.Length; ++i)
                 strings[i] = strings[i].Trim();
             return strings;
+        }
+
+        public static string StringListToString(List<string> stringList)
+        {
+            if (stringList.Count == 0)
+                return String.Empty;
+            var sb = new StringBuilder(stringList.Count * 50);
+            foreach (var str in stringList)
+            {
+                sb.Append(str);
+                if (stringList.IndexOf(str) != stringList.Count - 1)
+                    sb.Append(", ");
+            }
+            return sb.ToString();
+        }
+
+        public static List<string> StringToStringList(string str)
+        {
+            var stringList = new List<string>();
+            var strings = str.Split(',');
+            foreach (var s in strings)
+                stringList.Add(s.Trim());
+            return stringList;
         }
 
         public static string FilterListToString(List<FilterPair> filterList)
@@ -628,6 +622,44 @@ namespace Common
         #endregion
 
         #region Private Functions
+
+        private static void SplitIDMatch(string match, out string alpha, out string numeric)
+        {
+            alpha = String.Empty;
+            numeric = String.Empty;
+            if (String.IsNullOrEmpty(match))
+                return;
+
+            // Fix up for extraneous characters
+            var charsToRemove = new string[] { "[", "]", "(", ")", ".", "_" };
+            foreach (var c in charsToRemove)
+                match = match.Replace(c, string.Empty);
+            match = match.Trim();
+
+            char[] splits = { '-', ' ' };
+            var parts = match.Split(splits);
+            if (parts.Length == 2 && String.IsNullOrEmpty(parts[0]) == false && String.IsNullOrEmpty(parts[1]) == false)
+            {
+                alpha = parts[0];
+                numeric = parts[1];
+                return;
+            }
+
+            // Fall back to splitting based on where alpha and numeric values appear (ABC123 pattern)
+
+            // Get first digit
+            int alphaCount = 0;
+            foreach (var c in match)
+            {
+                if (Char.IsDigit(c))
+                    break;
+                ++alphaCount;
+            }
+
+            // Split based on the number of alpha characters
+            alpha = match.Substring(0, alphaCount);
+            numeric = match.Substring(alphaCount, match.Length - alphaCount);
+        }
 
         private static string CopyDeleteFolderRecursive(string sourceDir, string destinationDir, bool deleteThisFolder)
         {

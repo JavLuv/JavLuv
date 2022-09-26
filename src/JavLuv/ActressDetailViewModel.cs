@@ -23,9 +23,10 @@ namespace JavLuv
             m_parent = parent;
             m_browserItem = browserItem;
             m_actressData = m_browserItem.ActressData;
-            if (String.IsNullOrEmpty(m_actressData.DetailImageFileName) == false)
+            if (m_actressData.ImageFileNames.Count > 0)
             {
-                m_loadImage = new CmdLoadImage(Path.Combine(Utilities.GetActressImageFolder(), m_actressData.DetailImageFileName));
+                m_actressData.ImageIndex = Math.Min(m_actressData.ImageIndex, m_actressData.ImageFileNames.Count - 1);
+                m_loadImage = new CmdLoadImage(Path.Combine(Utilities.GetActressImageFolder(), m_actressData.ImageFileNames[m_actressData.ImageIndex]));
                 m_loadImage.FinishedLoading += LoadImage_FinishedLoading;
                 CommandQueue.ShortTask().Execute(m_loadImage, CommandOrder.First);
             }
@@ -39,7 +40,7 @@ namespace JavLuv
         {
             Image = m_loadImage.Image;
             if (Image == null)
-                Logger.WriteWarning("Unable to load image " + Path.Combine(Utilities.GetActressImageFolder(), m_actressData.DetailImageFileName));
+                Logger.WriteWarning("Unable to load image " + Path.Combine(Utilities.GetActressImageFolder(), m_actressData.ImageFileNames[m_actressData.ImageIndex]));
             m_loadImage = null;
         }
 
@@ -97,63 +98,88 @@ namespace JavLuv
                 }
             }
         }
-        /*
+
         public string AlternateNames
         {
-            get { return m_movieData.Metadata.Premiered; }
+            get { return Utilities.StringListToString(m_actressData.AlternateNames); }
             set
             {
-                if (value != m_movieData.Metadata.Premiered)
+                var names = value;
+                var currentNames = Utilities.StringListToString(m_actressData.AlternateNames);
+                if (value != currentNames)
                 {
-                    m_movieData.Metadata.Premiered = value;
-                    m_movieData.MetadataChanged = true;
-                    NotifyPropertyChanged("Released");
+                    m_actressData.AlternateNames = Utilities.StringToStringList(value);
+                    NotifyPropertyChanged("AlternateNames");
                 }
             }
         }
 
-        public string Studio
+        public string DateOfBirth
         {
-            get { return m_movieData.Metadata.Studio; }
+            get 
+            {
+                if (m_actressData.DateOfBirth == new DateTime())
+                    return String.Empty;
+                return m_actressData.DateOfBirth.ToShortDateString(); 
+            }
             set
             {
-                if (value != m_movieData.Metadata.Studio)
+                var newDateTime = new DateTime();
+                if (DateTime.TryParse(value, out newDateTime))
                 {
-                    m_movieData.Metadata.Studio = value;
-                    m_movieData.MetadataChanged = true;
-                    NotifyPropertyChanged("Studio");
+                    if (newDateTime != m_actressData.DateOfBirth)
+                    {
+                        m_actressData.DateOfBirth = newDateTime;
+                        NotifyPropertyChanged("DateOfBirth");
+                    }
                 }
             }
         }
 
-        public string Label
+        public string Cup
         {
-            get { return m_movieData.Metadata.Label; }
+            get { return m_actressData.Cup; }
             set
             {
-                if (value != m_movieData.Metadata.Label)
+                if (value != m_actressData.Cup)
                 {
-                    m_movieData.Metadata.Label = value;
-                    m_movieData.MetadataChanged = true;
-                    NotifyPropertyChanged("Label");
+                    m_actressData.Cup = value;
+                    NotifyPropertyChanged("Cup");
                 }
             }
         }
 
-        public string Director
+        public string Measurements
         {
-            get { return m_movieData.Metadata.Director; }
+            get 
+            {
+                if (m_actressData.Bust == 0 || m_actressData.Waist == 0 || m_actressData.Hips == 0)
+                        return String.Empty;
+                return String.Format("{0}-{1}-{2}", m_actressData.Bust, m_actressData.Waist, m_actressData.Hips); 
+            }
             set
             {
-                if (value != m_movieData.Metadata.Director)
+                if (String.IsNullOrEmpty(value))
+                    return;
+                string[] values = value.Split('-');
+                if (values.Length < 3)
+                    return;
+                int bust = 0;
+                int waist = 0;
+                int hips = 0;
+                int.TryParse(values[0], out bust);
+                int.TryParse(values[1], out waist);
+                int.TryParse(values[2], out hips);
+                if (bust != m_actressData.Bust || waist != m_actressData.Waist || hips != m_actressData.Hips)
                 {
-                    m_movieData.Metadata.Director = value;
-                    m_movieData.MetadataChanged = true;
-                    NotifyPropertyChanged("Director");
+                    m_actressData.Bust = bust;
+                    m_actressData.Waist = waist;
+                    m_actressData.Hips = hips;
+                    NotifyPropertyChanged("Measurements");
                 }
             }
         }
-        */
+
         public int UserRating
         {
             get { return m_actressData.UserRating; }
@@ -166,68 +192,42 @@ namespace JavLuv
                 }
             }
         }
-        /*
-        public string Genres
-        {
-            get
-            {
-                return MovieUtils.GenresToString(m_movieData);
-            }
-            set
-            {
-                if (MovieUtils.StringToGenres(m_movieData, value))
-                {
-                    m_movieData.MetadataChanged = true;
-                    NotifyPropertyChanged("Genres");
-                }
-            }
-        }
 
-        public string Actors
+        public string Movies
         {
-            get
+            get 
             {
-                return MovieUtils.ActorsToString(m_movieData.Metadata.Actors);
+                if (m_actressData.NumMovies == 0)
+                    return String.Empty;
+                return m_actressData.NumMovies.ToString(); 
             }
             set
             {
-                var actors = m_movieData.Metadata.Actors;
-                if (MovieUtils.StringToActors(value, ref actors))
+                if (String.IsNullOrEmpty(value))
+                    return;
+                int movies = 0;
+                int.TryParse(value, out movies);
+                if (movies != m_actressData.NumMovies)
                 {
-                    m_movieData.Metadata.Actors = actors;
-                    m_movieData.MetadataChanged = true;
-                    NotifyPropertyChanged("Actors");
-                }
-            }
-        }
-
-        public string Resolution
-        {
-            get { return m_movieData.MovieResolution; }
-            set
-            {
-                if (value != m_movieData.MovieResolution)
-                {
-                    m_movieData.MovieResolution = value;
-                    NotifyPropertyChanged("Resolution");
+                    m_actressData.NumMovies = movies;
+                    NotifyPropertyChanged("Movies");
                 }
             }
         }
 
         public string Notes
         {
-            get { return m_movieData.Metadata.Plot; }
+            get { return m_actressData.Notes; }
             set
             {
-                if (value != m_movieData.Metadata.Plot)
+                if (value != m_actressData.Notes)
                 {
-                    m_movieData.Metadata.Plot = value;
-                    m_movieData.MetadataChanged = true;
+                    m_actressData.Notes = value;
                     NotifyPropertyChanged("Notes");
                 }
             }
         }
-        */
+        
         #endregion
 
         #region Commands

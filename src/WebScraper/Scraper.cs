@@ -45,7 +45,7 @@ namespace WebScraper
             // Merge the two scrape results, combining them according to which
             // returns the best results from both.
             var mergedMetadata = MergePrimary(javLibraryMetadata, javDatabaseMetadata);
-
+            
             // Check to see if we have a complete set of metadata
             if (IsMovieMetadataComplete(mergedMetadata) == false || downloadCoverImage)
             {
@@ -212,7 +212,7 @@ namespace WebScraper
             if (String.IsNullOrEmpty(module.ImageSource) == false)
             {
                 if (DownloadImage(ref imagePath, module.ImageSource))
-                    actressData.Images.Add(Path.GetFileName(imagePath));
+                    actressData.ImageFileNames.Add(Path.GetFileName(imagePath));
             }
         }
 
@@ -317,9 +317,13 @@ namespace WebScraper
             combined.Director = MergeStrings(javLibrary.Director, javDatabase.Director);
             combined.Series = MergeStrings(javLibrary.Series, javDatabase.Series);
             combined.Genres = MergeStringLists(javLibrary.Genres, javDatabase.Genres);
+
+            // JavLibrary gives us alternate names, which is really handy, but since we're scraping
+            // actress data from JavDatabase first, we'll initially get actresses from them and 
+            // try merging in other actresses later.  
             // JAV Library seems more reliable for actors.  so don't use other sources
             // unless there's no choice.
-            combined.Actors = (javLibrary.Actors.Count == 0) ? javDatabase.Actors : javLibrary.Actors;
+            combined.Actors = MergeActors(javDatabase.Actors, javLibrary.Actors);
             return combined;
         }
 
@@ -334,10 +338,74 @@ namespace WebScraper
             primary.Director = MergeStrings(primary.Director, secondary.Director);
             primary.Series = MergeStrings(primary.Series, secondary.Series);
             primary.Genres = MergeStringLists(primary.Genres, secondary.Genres);
-            // Only use secondary actors if required.  Too easy to get alternate, incorrect spellings
-            if (primary.Actors.Count == 0)
-                primary.Actors = secondary.Actors;
+            primary.Actors = MergeActors(primary.Actors, secondary.Actors);
             return primary;
+        }
+
+        private List<ActorData> MergeActors(List<ActorData> a, List<ActorData> b)
+        {
+            if (a.Count == 0)
+                return b;
+            foreach (var actorB in b)
+            {
+                bool mergedActor = false;
+                foreach (var actorA in a)
+                {
+                    if (MovieUtils.AreActorsEquivalent(actorA, actorB))
+                    {
+                        MergeActors(actorA, actorB);
+                        mergedActor = true;
+                        break;
+                    }
+                }
+                if (mergedActor == false)
+                    a.Add(actorB);
+            }
+            return a;
+        }
+
+        private void MergeActors(ActorData a, ActorData b)
+        {
+            // Do nothing with main names equivalent - this is the norm
+            if (a.Name != b.Name)
+            {
+                // If b's main name is different, we list it as an alias
+                // if it's not already in a's aliases.
+                bool foundInAliases = false;
+                foreach (var name in a.Aliases)
+                {
+                    if (name == b.Name)
+                    {
+                        foundInAliases = true;
+                        break;
+                    }
+                }
+                if (foundInAliases == false)
+                    a.Aliases.Add(b.Name);
+            }
+
+            // Merge b's aliases into a's alias list.
+            // Check through all of b's aliases.
+            foreach (var aliasB in b.Aliases)
+            {
+                // If the alias is equivalent to a's name, do nothing
+                if (aliasB == a.Name)
+                    continue;
+
+                // Check to see if b's alias is already in a's list.  If not,
+                // we'll add it as another alias.
+                bool foundInAliases = false;
+                foreach (var aliasA in a.Aliases)
+                {
+                    if (aliasA == aliasB)
+                    {
+                        foundInAliases = true;
+                        break;
+                    }
+                }
+                if (foundInAliases == false)
+                    a.Aliases.Add(aliasB);
+            }
         }
 
         private string MergeStrings(string a, string b)
@@ -431,7 +499,7 @@ namespace WebScraper
                 return false;
             if (String.IsNullOrEmpty(actressData.Cup))
                 return false;
-            if (actressData.Breasts == 0)
+            if (actressData.Bust == 0)
                 return false;
             if (actressData.Waist == 0)
                 return false;
@@ -439,7 +507,7 @@ namespace WebScraper
                 return false;
             if (String.IsNullOrEmpty(actressData.BloodType))
                 return false;
-            if (actressData.NumberOfMovies == 0)
+            if (actressData.NumMovies == 0)
                 return false;
             return true;
         }
