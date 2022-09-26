@@ -113,7 +113,7 @@ namespace JavLuv
                 {
                     Settings.Get().ShowAdvancedOptions = value;
                     Parent.SidePanel.NotifyAllProperty();
-                    Parent.Browser.NotifyAllProperties();
+                    Parent.MovieBrowser.NotifyAllProperties();
                     NotifyPropertyChanged("ShowAdvancedOptions");
                 }
             }
@@ -272,7 +272,7 @@ namespace JavLuv
                     Settings.Get().EnableMoveRename = value;
                     NotifyPropertyChanged("EnableMoveRename");
                     Parent.SidePanel.NotifyAllProperty();
-                    Parent.Browser.NotifyAllProperties();
+                    Parent.MovieBrowser.NotifyAllProperties();
                 }
             }
         }

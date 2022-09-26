@@ -247,6 +247,14 @@ namespace Common
             return folder;
         }
 
+        public static string GetActressImageFolder()
+        {
+            string folder = Path.Combine(GetJavLuvSettingsFolder(), "actresses");
+            if (Directory.Exists(folder) == false)
+                Directory.CreateDirectory(folder);
+            return folder;
+        }
+
         public static string[] ProcessSettingsList(string s)
         {
             string[] strings = s.ToLower().Split(';');

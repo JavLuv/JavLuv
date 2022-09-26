@@ -13,7 +13,7 @@ namespace JavLuv
     {
         #region Constructors
 
-        public MovieItem(DetailViewModel parent, string movieFileName)
+        public MovieItem(MovieDetailViewModel parent, string movieFileName)
         {
             m_parent = parent;
             m_movieFileName = movieFileName;
@@ -69,17 +69,17 @@ namespace JavLuv
 
         #region Private Members
 
-        private DetailViewModel m_parent;
+        private MovieDetailViewModel m_parent;
         private string m_movieFileName;
 
         #endregion
     }
 
-    public class DetailViewModel : ObservableObject
+    public class MovieDetailViewModel : ObservableObject
     {
         #region Constructors
 
-        public DetailViewModel(BrowserViewModel parent, BrowserItemViewModel browserItem)
+        public MovieDetailViewModel(MovieBrowserViewModel parent, MovieBrowserItemViewModel browserItem)
         {
             Logger.WriteInfo("Viewing details of movie " + browserItem.MovieData.Metadata.UniqueID.Value);
             m_parent = parent;
@@ -111,7 +111,7 @@ namespace JavLuv
 
         #endregion
 
-       #region Event Handlers
+        #region Event Handlers
 
         private void LoadImage_FinishedLoading(object sender, System.EventArgs e)
         {
@@ -136,7 +136,7 @@ namespace JavLuv
 
         #region Properties
 
-        public BrowserViewModel Parent { get { return m_parent; } }
+        public MovieBrowserViewModel Parent { get { return m_parent; } }
 
         public ImageSource Image
         {
@@ -203,8 +203,7 @@ namespace JavLuv
             }
         }
 
-
-        public BrowserItemViewModel BrowserItem { get { return m_browserItem; } }
+        public MovieBrowserItemViewModel BrowserItem { get { return m_browserItem; } }
 
         public MovieData MovieData { get { return m_movieData; } }
 
@@ -225,6 +224,7 @@ namespace JavLuv
                     {
                         m_movieData.Metadata.OriginalTitle = value;
                         m_movieData.MetadataChanged = true;
+                        NotifyPropertyChanged("Title");
                     }
                 }
                 else
@@ -233,9 +233,9 @@ namespace JavLuv
                     {
                         m_movieData.Metadata.Title = value;
                         m_movieData.MetadataChanged = true;
-                    }
+                         NotifyPropertyChanged("Title");
+                   }
                 }
-                NotifyPropertyChanged("Title");
             }
         }
 
@@ -248,7 +248,7 @@ namespace JavLuv
                 {
                     m_movieData.Metadata.UniqueID.Value = value;
                     m_movieData.MetadataChanged = true;
-                    NotifyPropertyChanged("Title");
+                    NotifyPropertyChanged("ID");
                 }
             }
         }
@@ -489,9 +489,9 @@ namespace JavLuv
 
         #region Private Members
 
-        private BrowserViewModel m_parent;
+        private MovieBrowserViewModel m_parent;
         private MovieData m_movieData;
-        private BrowserItemViewModel m_browserItem;
+        private MovieBrowserItemViewModel m_browserItem;
         private ImageSource m_image;
         private CmdLoadImage m_loadImage;
         private CmdGetResolution m_getResolution;

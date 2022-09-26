@@ -7,11 +7,11 @@ using System.Collections.ObjectModel;
 
 namespace WebScraper
 {
-    public class ModuleJavDatabase : ModuleBase
+    public class MovieJavDatabase : ModuleMovie
     {
         #region Constructors
 
-        public ModuleJavDatabase(MovieMetadata metadata, LanguageType language) : base(metadata, language)
+        public MovieJavDatabase(MovieMetadata metadata, LanguageType language) : base(metadata, language)
         {
         }
 
@@ -29,7 +29,11 @@ namespace WebScraper
             task.Wait();
         }
 
-        override public void ParseDocument(IHtmlDocument document)
+        #endregion
+
+        #region Protected Functions
+
+        override protected void ParseDocument(IHtmlDocument document)
         {
             foreach (var element in document.All)
             {
@@ -39,14 +43,31 @@ namespace WebScraper
                 {
                     if (m_metadata.UniqueID.Value == element.GetAttribute("alt"))
                     {
-                        if (element.GetAttribute("src").StartsWith("http"))
+                        string srcAttr = element.GetAttribute("src");
+                        if (String.IsNullOrEmpty(srcAttr) == false && srcAttr.StartsWith("http"))
                         {
                             // Only get the first image.  The second is much smaller.
-                            if (String.IsNullOrEmpty(CoverImageSource))
-                                CoverImageSource = element.GetAttribute("src");
+                            if (String.IsNullOrEmpty(ImageSource))
+                                ImageSource = element.GetAttribute("src");
                         }
                     }
-                }              
+                }
+
+                // Check for actress' parent
+                if (element.NodeName == "DIV") 
+                {
+                    // Look for idol name DIV element
+                    if (String.IsNullOrEmpty(element.ClassName) == false && element.ClassName == "idol-name")
+                    {
+                        var childElement = element.FirstChild;
+                        if (childElement != null && childElement.NodeName == "A")
+                        {
+                            var actor = new ActorData(childElement.TextContent);
+                            actor.Order = m_metadata.Actors.Count;
+                            m_metadata.Actors.Add(actor);
+                        }
+                    }
+                }
 
                 if (element.TextContent == "Translated Title:")
                 {
@@ -87,13 +108,7 @@ namespace WebScraper
                         string tagContent = element.TextContent;
                         if (String.IsNullOrEmpty(tagContent))
                             continue;
-                        if (tagType == TagType.Actors)
-                        {
-                            var actor = new ActorData(tagContent);
-                            actor.Order = m_metadata.Actors.Count;
-                            m_metadata.Actors.Add(actor);                        
-                        }
-                        else if (tagType == TagType.Genre)
+                        if (tagType == TagType.Genre)
                         {
                             if (m_metadata.Genres.Contains(tagContent) == false)
                                 m_metadata.Genres.Add(FixCensored(tagContent));
@@ -119,10 +134,6 @@ namespace WebScraper
             }
         }
 
-        #endregion
-
-        #region Protected Functions
-
         protected override bool IsLanguageSupported()
         {
             if (m_language == LanguageType.English)
@@ -143,8 +154,6 @@ namespace WebScraper
 
         private TagType ParseTagType(string s)
         {
-            if (s.StartsWith("idols"))
-                return TagType.Actors;
             if (s.StartsWith("genres"))
                 return TagType.Genre;
             if (s.StartsWith("studios"))
@@ -172,7 +181,6 @@ namespace WebScraper
 
         private enum TagType
         {
-            Actors,
             Genre,
             Studio,
             Label,

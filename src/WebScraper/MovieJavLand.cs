@@ -6,11 +6,11 @@ using Common;
 
 namespace WebScraper
 {
-    public class ModuleJavLand : ModuleBase
+    public class MovieJavLand : ModuleMovie
     {
         #region Constructors
 
-        public ModuleJavLand(MovieMetadata metadata, LanguageType language) : base(metadata, language)
+        public MovieJavLand(MovieMetadata metadata, LanguageType language) : base(metadata, language)
         {
         }
 
@@ -28,7 +28,11 @@ namespace WebScraper
             task.Wait();
         }
 
-        override public void ParseDocument(IHtmlDocument document)
+        #endregion
+
+        #region Protected Functions
+
+        override protected void ParseDocument(IHtmlDocument document)
         {
 
             // Parse movie info page
@@ -52,7 +56,7 @@ namespace WebScraper
                 {
                     if (m_metadata.UniqueID.Value == element.GetAttribute("alt"))
                     {
-                        CoverImageSource = element.GetAttribute("src");
+                        ImageSource = element.GetAttribute("src");
                     }
                 }
 
@@ -133,10 +137,6 @@ namespace WebScraper
                 }
             }
         }
-
-        #endregion
-
-        #region Protected Functions
 
         protected override bool IsLanguageSupported()
         {

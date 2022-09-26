@@ -4,11 +4,11 @@ using System.Windows.Controls;
 namespace JavLuv
 {
     /// <summary>
-    /// Interaction logic for BrowserItemView.xaml
+    /// Interaction logic for MovieBrowserItemView.xaml
     /// </summary>
-    public partial class BrowserItemView : UserControl
+    public partial class MovieBrowserItemView : UserControl
     {
-        public BrowserItemView()
+        public MovieBrowserItemView()
         {
             InitializeComponent();
         }

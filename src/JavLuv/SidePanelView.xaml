@@ -73,8 +73,8 @@
                 <ComboBox 
                     Grid.Column="1"
                     HorizontalAlignment="Left"
-                    ItemsSource="{Binding SortByList}"
-                    SelectedItem="{Binding CurrentSortBy}"
+                    ItemsSource="{Binding SortMovieByList}"
+                    SelectedItem="{Binding CurrentSortMovieBy}"
                     Height="24" 
                     Width="100"
                     DisplayMemberPath="Name"

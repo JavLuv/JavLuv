@@ -14,7 +14,7 @@ namespace WebScraper
     {
         #region Public Functions
 
-        public MovieMetadata Scrape(string movieID, ref string coverImagePath, LanguageType language)
+        public MovieMetadata ScrapeMovie(string movieID, ref string coverImagePath, LanguageType language)
         {
             Logger.WriteInfo("Attempting to scrape metadata for " + movieID);
 
@@ -29,18 +29,18 @@ namespace WebScraper
             // Create first scraper module and execute
             var javLibraryMetadata = new MovieMetadata();
             javLibraryMetadata.UniqueID.Value = movieID;
-            var javLibrary = new ModuleJavLibrary(javLibraryMetadata, language);
+            var javLibrary = new MovieJavLibrary(javLibraryMetadata, language);
             javLibrary.Scrape();
             if (downloadCoverImage)
-                DownloadCoverImage(ref coverImagePath, javLibrary.CoverImageSource);
+                DownloadImage(ref coverImagePath, javLibrary.ImageSource);
 
             // Create second scraper module and execute
             var javDatabaseMetadata = new MovieMetadata();
             javDatabaseMetadata.UniqueID.Value = movieID;
-            var javDatabase = new ModuleJavDatabase(javDatabaseMetadata, language);
+            var javDatabase = new MovieJavDatabase(javDatabaseMetadata, language);
             javDatabase.Scrape();
             if (downloadCoverImage)
-                DownloadCoverImage(ref coverImagePath, javDatabase.CoverImageSource);
+                DownloadImage(ref coverImagePath, javDatabase.ImageSource);
 
             // Merge the two scrape results, combining them according to which
             // returns the best results from both.
@@ -57,10 +57,10 @@ namespace WebScraper
                 {
                     var javLandMetadata = new MovieMetadata();
                     javLandMetadata.UniqueID.Value = movieID;
-                    var javLand = new ModuleJavLand(javLandMetadata, language);
+                    var javLand = new MovieJavLand(javLandMetadata, language);
                     javLand.Scrape();
                     if (downloadCoverImage)
-                        DownloadCoverImage(ref coverImagePath, javLand.CoverImageSource);
+                        DownloadImage(ref coverImagePath, javLand.ImageSource);
                     mergedMetadata = MergeSecondary(mergedMetadata, javLandMetadata);
 
                     // Try JavBus scraper
@@ -68,10 +68,10 @@ namespace WebScraper
                     {
                         var javBusMetadata = new MovieMetadata();
                         javBusMetadata.UniqueID.Value = movieID;
-                        var javBus = new ModuleJavBus(javBusMetadata, language);
+                        var javBus = new MovieJavBus(javBusMetadata, language);
                         javBus.Scrape();
                         if (downloadCoverImage)
-                            DownloadCoverImage(ref coverImagePath, javBus.CoverImageSource);
+                            DownloadImage(ref coverImagePath, javBus.ImageSource);
                         mergedMetadata = MergeSecondary(mergedMetadata, javBusMetadata);
                     }
                 }
@@ -90,32 +90,45 @@ namespace WebScraper
             return mergedMetadata;
         }
 
-        public string ScrapeOriginalTitle(string movieID)
+        public ActressData ScrapeActress(ActorData actor, LanguageType language)
         {
-            var titleMetadata = new MovieMetadata();
-            titleMetadata.UniqueID.Value = movieID;
-            var javDatabase = new ModuleJavDatabase(titleMetadata, LanguageType.Japanese);
+            var actressData = new ActressData();
+            actressData.Name = actor.Name;
+            foreach (string altname in actor.Aliases)
+                actressData.AlternateNames.Add(altname);
+
+            // Create destination filename and path
+            string actressImagefolder = Utilities.GetActressImageFolder();
+            string actressFileName = actor.Name.ToLower().Replace(' ', '-');
+            string actressFullPath = Path.Combine(actressImagefolder, actressFileName);
+
+            // Check JavDatabase actresses
+            var javDatabase = new ActressJavDatabase(actressData, language);
             javDatabase.Scrape();
-            if (String.IsNullOrEmpty(titleMetadata.Title))
+            ScrapeAltNamesIfNotAcceptable(actressData, javDatabase);
+            DownloadActressImage(actressData, javDatabase, actressFullPath);
+
+            // If we don't have a complete set of data, try alternative sites
+            if (IsActressDataComplete(actressData) == false)
             {
-                var javLibrary = new ModuleJavLibrary(titleMetadata, LanguageType.Japanese);
-                javLibrary.Scrape();
-                if (String.IsNullOrEmpty(titleMetadata.Title))
-                {
-                    var javLand = new ModuleJavLand(titleMetadata, LanguageType.Japanese);
-                    javLand.Scrape();
-                    if (String.IsNullOrEmpty(titleMetadata.Title))
-                    {
-                        var javBus = new ModuleJavBus(titleMetadata, LanguageType.Japanese);
-                        javBus.Scrape();
-                    }
-                }
+                var javModel = new ActressJavModel(actressData, language);
+                javModel.Scrape();
+                ScrapeAltNamesIfNotAcceptable(actressData, javModel);
+                DownloadActressImage(actressData, javModel, actressFullPath);
             }
 
-            if (String.IsNullOrEmpty(titleMetadata.Title))
-                Logger.WriteWarning(String.Format("Japanese title for movie {0} was not found.", movieID));
+            return actressData;
+        }
 
-            return titleMetadata.Title;
+        public string ScrapeOriginalTitle(string movieID)
+        {
+            var japaneseMetadata = ScrapeJapaneseMetadata(movieID, CompletionLevel.Minimal);
+            if (japaneseMetadata == null)
+            {
+                Logger.WriteWarning(String.Format("Japanese title for movie {0} was not found.", movieID));
+                return String.Empty;
+            }
+            return japaneseMetadata.Title;
         }
 
         public bool DownloadCoverImage(string movieID, ref string coverImagePath)
@@ -129,24 +142,24 @@ namespace WebScraper
             // all the sites JavLuv scrapes.
 
             // Download images from all sites and determine the best quality
-            var javLibrary = new ModuleJavLibrary(metadata, LanguageType.English);
+            var javLibrary = new MovieJavLibrary(metadata, LanguageType.English);
             javLibrary.Scrape();
-            if (DownloadCoverImage(ref coverImagePath, javLibrary.CoverImageSource))
+            if (DownloadImage(ref coverImagePath, javLibrary.ImageSource))
                 retVal = true;
 
-            var javDatabase = new ModuleJavDatabase(metadata, LanguageType.English);
+            var javDatabase = new MovieJavDatabase(metadata, LanguageType.English);
             javDatabase.Scrape();
-            if (DownloadCoverImage(ref coverImagePath, javLibrary.CoverImageSource))
+            if (DownloadImage(ref coverImagePath, javLibrary.ImageSource))
                 retVal = true;
 
-            var javLand = new ModuleJavLand(metadata, LanguageType.English);
+            var javLand = new MovieJavLand(metadata, LanguageType.English);
             javLand.Scrape();
-            if (DownloadCoverImage(ref coverImagePath, javLibrary.CoverImageSource))
+            if (DownloadImage(ref coverImagePath, javLibrary.ImageSource))
                 retVal = true;
 
-            var javBus = new ModuleJavBus(metadata, LanguageType.English);
+            var javBus = new MovieJavBus(metadata, LanguageType.English);
             javBus.Scrape();
-            if (DownloadCoverImage(ref coverImagePath, javLibrary.CoverImageSource))
+            if (DownloadImage(ref coverImagePath, javLibrary.ImageSource))
                 retVal = true;
 
             return retVal;
@@ -156,14 +169,61 @@ namespace WebScraper
 
         #region Private Functions
 
-        private bool DownloadCoverImage(ref string coverImagePath, string coverImageSource)
+        private MovieMetadata ScrapeJapaneseMetadata(string movieID, CompletionLevel completion)
+        {
+            var combinedMetadata = new MovieMetadata();
+            combinedMetadata.UniqueID.Value = movieID;
+
+            var javDatabase = new MovieJavDatabase(combinedMetadata, LanguageType.Japanese);
+            javDatabase.Scrape();
+            if (IsMovieMetadataCompleteOrAcceptable(combinedMetadata, completion) == false)
+            {
+                var newMetadata = new MovieMetadata();
+                newMetadata.UniqueID.Value = movieID;
+                var javLibrary = new MovieJavLibrary(newMetadata, LanguageType.Japanese);
+                javLibrary.Scrape();
+                combinedMetadata = MergeSecondary(combinedMetadata, newMetadata);
+                if (IsMovieMetadataCompleteOrAcceptable(combinedMetadata, completion) == false)
+                {
+                    newMetadata = new MovieMetadata();
+                    newMetadata.UniqueID.Value = movieID;
+                    var javLand = new MovieJavLand(newMetadata, LanguageType.Japanese);
+                    javLand.Scrape();
+                    combinedMetadata = MergeSecondary(combinedMetadata, newMetadata);
+                    if (IsMovieMetadataCompleteOrAcceptable(combinedMetadata, completion) == false)
+                    {
+                        newMetadata = new MovieMetadata();
+                        newMetadata.UniqueID.Value = movieID;
+                        var javBus = new MovieJavBus(newMetadata, LanguageType.Japanese);
+                        javBus.Scrape();
+                        combinedMetadata = MergeSecondary(combinedMetadata, newMetadata);
+                        if (IsMovieMetadataAcceptable(combinedMetadata) == false)
+                        {
+                            return null;
+                        }
+                    }
+                }
+            }
+            return combinedMetadata;
+        }
+
+        private void DownloadActressImage(ActressData actressData, ModuleActress module, string imagePath)
+        {
+            if (String.IsNullOrEmpty(module.ImageSource) == false)
+            {
+                if (DownloadImage(ref imagePath, module.ImageSource))
+                    actressData.Images.Add(Path.GetFileName(imagePath));
+            }
+        }
+
+        private bool DownloadImage(ref string imagePath, string imageSource)
         {
             // Don't continue if we don't have full information
-            if (String.IsNullOrEmpty(coverImageSource) || String.IsNullOrEmpty(coverImagePath))
+            if (String.IsNullOrEmpty(imageSource) || String.IsNullOrEmpty(imagePath))
                 return false;
 
             // Set the appropriate extension
-            string coverImageFilename = Path.ChangeExtension(coverImagePath, Path.GetExtension(coverImageSource));
+            string imageFilename = Path.ChangeExtension(imagePath, Path.GetExtension(imageSource));
 
             bool retVal = false;
 
@@ -172,57 +232,57 @@ namespace WebScraper
             {
                 try
                 {
-                    Logger.WriteInfo("Downloading cover art from " + coverImageSource);
+                    Logger.WriteInfo("Downloading image from " + imageSource);
 
                     // May be partial source
-                    if (coverImageSource.StartsWith("http") == false)
-                        coverImageSource = "http:" + coverImageSource;
+                    if (imageSource.StartsWith("http") == false)
+                        imageSource = "http:" + imageSource;
 
-                    if (File.Exists(coverImagePath))
+                    if (File.Exists(imagePath))
                     {
                         // Load existing image
-                        ImageSource currentImage = LoadImageFromFile(coverImagePath);
+                        ImageSource currentImage = LoadImageFromFile(imagePath);
 
                         // Get temp filename
                         string tempFileName = Path.GetTempFileName();
 
                         // Download the image file and load it
-                        client.DownloadFile(coverImageSource, tempFileName);
+                        client.DownloadFile(imageSource, tempFileName);
 
                         ImageSource newImage = LoadImageFromFile(tempFileName);                   
                         if (newImage.Width > currentImage.Width && newImage.Height > currentImage.Height)
                         {
-                            Logger.WriteInfo("Replacing cover art: " + coverImageFilename);
-                            File.Copy(tempFileName, coverImageFilename, true);
-                            coverImagePath = coverImageFilename;
+                            Logger.WriteInfo("Replacing image: " + imageFilename);
+                            File.Copy(tempFileName, imageFilename, true);
+                            imagePath = imageFilename;
                             retVal = true;
                         }
                         File.Delete(tempFileName);                  
                     }
                     else
                     {
-                        client.DownloadFile(coverImageSource, coverImageFilename);
+                        client.DownloadFile(imageSource, imageFilename);
 
                         // Load image to check quality
-                        ImageSource newImage = LoadImageFromFile(coverImageFilename);
+                        ImageSource newImage = LoadImageFromFile(imageFilename);
                         
                         // Don't allow tiny thumbnail images - they're probably invalid anyhow
                         if (newImage.Width < 100 || newImage.Height < 100)
                         {
-                            Logger.WriteInfo("Cover art is too small to use.");
-                            File.Delete(coverImageFilename);
+                            Logger.WriteInfo("Image is too small to use.");
+                            File.Delete(imageFilename);
                         }
                         else
                         {
-                            Logger.WriteInfo("Saved cover art: " + coverImageFilename);
-                            coverImagePath = coverImageFilename;
+                            Logger.WriteInfo("Saved image: " + imageFilename);
+                            imagePath = imageFilename;
                             retVal=true;
                         }                  
                     }
                 }
                 catch (Exception ex)
                 {
-                    Logger.WriteError("Error downloading cover image", ex);
+                    Logger.WriteError("Error downloading image", ex);
                 }
             }
             return retVal;
@@ -297,6 +357,14 @@ namespace WebScraper
             return a.Union(b, StringComparer.OrdinalIgnoreCase).ToList();
         }
 
+        private bool IsMovieMetadataCompleteOrAcceptable(MovieMetadata metadata, CompletionLevel completion)
+        {
+            if (completion == CompletionLevel.Minimal)
+                return IsMovieMetadataAcceptable(metadata);
+            else
+                return IsMovieMetadataComplete(metadata);
+        }
+
         private bool IsMovieMetadataComplete(MovieMetadata metadata)
         {
             if (String.IsNullOrEmpty(metadata.Title))
@@ -323,6 +391,82 @@ namespace WebScraper
             if (String.IsNullOrEmpty(metadata.Studio))
                 return false;
             return true;
+        }
+
+        private void ScrapeAltNamesIfNotAcceptable(ActressData actressData, ModuleActress module)
+        {
+            // If failed to find or adequately populate data, try existing aliases
+            if (IsActressDataAcceptable(actressData) == false)
+            {
+                for (int i = 0; i < actressData.AlternateNames.Count; ++i)
+                {
+                    string name = actressData.Name;
+                    string altName = actressData.AlternateNames[i];
+                    actressData.Name = altName;
+                    module.Scrape();
+                    if (IsActressDataAcceptable(actressData))
+                    {
+                        // If we found a match, we're going to essentially swap the original
+                        // name and alternate name.
+                        actressData.AlternateNames[i] = name;
+                        break;
+                    }
+                    // If no match is found, we revert the name back to the original
+                    actressData.Name = name;
+                }
+            }
+        }
+
+        private bool IsActressDataComplete(ActressData actressData)
+        {
+            if (actressData == null)
+                return false;
+            if (String.IsNullOrEmpty(actressData.Name))
+                return false;
+            if (String.IsNullOrEmpty(actressData.JapaneseName))
+                return false;
+            if (actressData.DateOfBirth == new DateTime())
+                return false;
+            if (actressData.Height == 0)
+                return false;
+            if (String.IsNullOrEmpty(actressData.Cup))
+                return false;
+            if (actressData.Breasts == 0)
+                return false;
+            if (actressData.Waist == 0)
+                return false;
+            if (actressData.Hips == 0)
+                return false;
+            if (String.IsNullOrEmpty(actressData.BloodType))
+                return false;
+            if (actressData.NumberOfMovies == 0)
+                return false;
+            return true;
+        }
+
+        private bool IsActressDataAcceptable(ActressData actressData)
+        {
+            if (actressData == null)
+                return false;
+            if (actressData == null)
+                return false;
+            if (String.IsNullOrEmpty(actressData.Name))
+                return false;
+            if (String.IsNullOrEmpty(actressData.JapaneseName))
+                return false;
+            if (actressData.DateOfBirth == new DateTime())
+                return false;
+            return true;
+        }
+
+        #endregion
+
+        #region Private Members
+
+        enum CompletionLevel
+        {
+            Minimal,
+            Complete
         }
 
         #endregion

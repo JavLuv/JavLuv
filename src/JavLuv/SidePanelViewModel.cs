@@ -5,13 +5,13 @@ using System.Windows.Input;
 
 namespace JavLuv
 {
-    public class SortByPair : ObservableObject
+    public class SortMovieByPair : ObservableObject
     {
         #region Constructor
 
-        public SortByPair(SortBy sortBy, string key)
+        public SortMovieByPair(SortMoviesBy sortBy, string key)
         {
-            Type = sortBy;
+            Value = sortBy;
             m_key = key;
         }
 
@@ -19,7 +19,7 @@ namespace JavLuv
 
         #region Properties
 
-        public SortBy Type { get; private set; }
+        public SortMoviesBy Value { get; private set; }
         public string Name 
         { 
             get
@@ -60,23 +60,23 @@ namespace JavLuv
             Parent.Collection.ShowUnratedOnly = ShowUnratedOnly;
             Parent.Collection.ShowSubtitlesOnly = ShowSubtitlesOnly;
 
-            m_sortByList.Add(new SortByPair(SortBy.Title, "Text.SortByTitle"));
-            m_sortByList.Add(new SortByPair(SortBy.ID, "Text.SortByID"));
-            m_sortByList.Add(new SortByPair(SortBy.Actress, "Text.SortByActress"));
-            m_sortByList.Add(new SortByPair(SortBy.Date_Newest, "Text.SortByDateNewest"));
-            m_sortByList.Add(new SortByPair(SortBy.Date_Oldest, "Text.SortByDateOldest"));
-            m_sortByList.Add(new SortByPair(SortBy.UserRating, "Text.SortByUserRating"));
+            m_sortMovieByList.Add(new SortMovieByPair(SortMoviesBy.Title, "Text.SortByTitle"));
+            m_sortMovieByList.Add(new SortMovieByPair(SortMoviesBy.ID, "Text.SortByID"));
+            m_sortMovieByList.Add(new SortMovieByPair(SortMoviesBy.Actress, "Text.SortByActress"));
+            m_sortMovieByList.Add(new SortMovieByPair(SortMoviesBy.Date_Newest, "Text.SortByDateNewest"));
+            m_sortMovieByList.Add(new SortMovieByPair(SortMoviesBy.Date_Oldest, "Text.SortByDateOldest"));
+            m_sortMovieByList.Add(new SortMovieByPair(SortMoviesBy.UserRating, "Text.SortByUserRating"));
 
-            foreach (var sortBy in m_sortByList)
+            foreach (var sortBy in m_sortMovieByList)
             {
-                if (sortBy.Type == Settings.Get().SortBy)
+                if (sortBy.Value == Settings.Get().SortMoviesBy)
                 {
-                    CurrentSortBy = sortBy;
-                    Parent.Collection.SortBy = sortBy.Type;
+                    CurrentSortMovieBy = sortBy;
+                    Parent.Collection.SortMoviesBy = sortBy.Value;
                     break;
                 }
             }
-            NotifyPropertyChanged("SortByList");          
+            NotifyPropertyChanged("SortMovieByList");          
         }
 
         #endregion
@@ -86,8 +86,22 @@ namespace JavLuv
         public void NotifyAllProperty()
         {
             NotifyAllPropertiesChanged();
-            foreach (var sortByPair in Parent.SidePanel.SortByList)
+            foreach (var sortByPair in Parent.SidePanel.SortMovieByList)
                 sortByPair.Refresh();
+        }
+
+        public void OnChangeTabs()
+        {
+            if (Settings.Get().SelectedTabIndex == 0)
+            {
+                // Movie browser is shown
+
+            }
+            else
+            {
+                // Actress browser is shown
+
+            }
         }
 
         #endregion
@@ -195,22 +209,22 @@ namespace JavLuv
             }
         }
 
-        public ObservableCollection<SortByPair> SortByList
+        public ObservableCollection<SortMovieByPair> SortMovieByList
         {
-            get { return m_sortByList; }
+            get { return m_sortMovieByList; }
         }
 
-        public SortByPair CurrentSortBy
+        public SortMovieByPair CurrentSortMovieBy
         {
-            get { return m_currentSortBy; }
+            get { return m_currentSortMovieBy; }
             set
             {
-                if (value != m_currentSortBy)
+                if (value != m_currentSortMovieBy)
                 {
-                    m_currentSortBy = value;
-                    Settings.Get().SortBy = m_currentSortBy.Type;
-                    NotifyPropertyChanged("CurrentSortBy");
-                    Parent.Collection.SortBy = m_currentSortBy.Type;
+                    m_currentSortMovieBy = value;
+                    Settings.Get().SortMoviesBy = m_currentSortMovieBy.Value;
+                    NotifyPropertyChanged("CurrentSortMovieBy");
+                    Parent.Collection.SortMoviesBy = m_currentSortMovieBy.Value;
                 }
             }
         }
@@ -336,8 +350,8 @@ namespace JavLuv
         private MainWindowViewModel m_parent;
         private bool m_isEnabled = true;
         private bool m_settingsIsEnabled = true;
-        private ObservableCollection<SortByPair> m_sortByList = new ObservableCollection<SortByPair>();
-        private SortByPair m_currentSortBy;
+        private ObservableCollection<SortMovieByPair> m_sortMovieByList = new ObservableCollection<SortMovieByPair>();
+        private SortMovieByPair m_currentSortMovieBy;
 
         #endregion
     }

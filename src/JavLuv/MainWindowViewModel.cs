@@ -36,7 +36,8 @@ namespace JavLuv
             m_movieScanner = new MovieScanner(m_movieCollection);
             m_settingsViewModel = new SettingsViewModel(this);
             m_reportViewModel = new ReportViewModel(this);
-            m_browserViewModel = new BrowserViewModel(this);
+            m_movieBrowserViewModel = new MovieBrowserViewModel(this);
+            m_actressBrowserViewModel = new ActressBrowserViewModel(this);
             m_sidePanelViewModel = new SidePanelViewModel(this);
             Overlay = null;
 
@@ -44,6 +45,9 @@ namespace JavLuv
             m_movieScanner.ScanUpdate += OnMovieScannerUpdate;
             m_movieScanner.ScanComplete += OnMovieScannerComplete;
             m_movieCollection.MoviesDisplayedChanged += MovieCollection_MoviesDisplayedChanged;
+
+            // Set loaded UI elemenets
+            SelectedTabIndex = JavLuv.Settings.Get().SelectedTabIndex;
 
             // Check version
             var timeToCheck = new TimeSpan(1, 0, 0, 0); // 1 day interval
@@ -67,16 +71,17 @@ namespace JavLuv
         {
             get
             {
-                return m_mainPanelViewModel;
+                return m_overlayViewModel;
             }
             set
             {
-                if (value != m_mainPanelViewModel)
+                if (value != m_overlayViewModel)
                 {
-                    m_mainPanelViewModel = value;
+                    m_overlayViewModel = value;
                     NotifyPropertyChanged("Overlay");
-                    SidePanel.IsEnabled = (m_mainPanelViewModel == null) ? true : false;
-                    Browser.IsEnabled = (m_mainPanelViewModel == null) ? true : false;
+                    SidePanel.IsEnabled = (m_overlayViewModel == null) ? true : false;
+                    MovieBrowser.IsEnabled = (m_overlayViewModel == null) ? true : false;
+                    ActressBrowser.IsEnabled = (m_overlayViewModel == null) ? true : false;
                 }
             }
         }
@@ -100,11 +105,30 @@ namespace JavLuv
 
         public SidePanelViewModel SidePanel { get { return m_sidePanelViewModel; } }
 
-        public BrowserViewModel Browser { get { return m_browserViewModel; } }
+        public MovieBrowserViewModel MovieBrowser { get { return m_movieBrowserViewModel; } }
+
+        public ActressBrowserViewModel ActressBrowser { get { return m_actressBrowserViewModel; } }
 
         public SettingsViewModel Settings { get { return m_settingsViewModel; } }
 
         public MovieCollection Collection { get { return m_movieCollection; } }
+
+        public int SelectedTabIndex
+        {
+            get
+            {
+                return JavLuv.Settings.Get().SelectedTabIndex;
+            }
+            set
+            {
+                if (value != JavLuv.Settings.Get().SelectedTabIndex)
+                {
+                    JavLuv.Settings.Get().SelectedTabIndex = value;
+                    NotifyPropertyChanged("SelectedTabIndex");
+                    SidePanel.OnChangeTabs();
+                }
+            }
+        }
 
         public bool IsScanning { get { return m_movieScanner.Phase != ScanPhase.Finished; } }
 
@@ -217,9 +241,12 @@ namespace JavLuv
                 ProgressState = TaskbarItemProgressState.Error;
             }
 
+            // Add new actresses to actress database
+            m_movieCollection.AddActresses(m_movieScanner.Actresses);
+
             // Optionally move/rename post-scan
             if (JavLuv.Settings.Get().EnableMoveRename && JavLuv.Settings.Get().MoveRenameAfterScan && m_movieScanner.IsCancelled == false)
-                m_browserViewModel.MoveRenameMovies(m_movieScanner.Movies);
+                m_movieBrowserViewModel.MoveRenameMovies(m_movieScanner.Movies);
 
             m_movieCollection.AddMovies(m_movieScanner.Movies);
             m_movieScanner.Clear();
@@ -244,6 +271,12 @@ namespace JavLuv
                 ProgressState = TaskbarItemProgressState.Normal;
                 PercentComplete = (int)(((float)m_movieScanner.ItemsProcessed / (float)m_movieScanner.TotalItems) * 100.0);
                 ScanStatus = string.Format(TextManager.GetString("Text.DownloadingMetadata"), m_movieScanner.ItemsProcessed, m_movieScanner.TotalItems);
+            }
+            else if (m_movieScanner.Phase == ScanPhase.DownloadActressData)
+            {
+                ProgressState = TaskbarItemProgressState.Normal;
+                PercentComplete = (int)(((float)m_movieScanner.ItemsProcessed / (float)m_movieScanner.TotalItems) * 100.0);
+                ScanStatus = string.Format(TextManager.GetString("Text.DownloadingActressData"), m_movieScanner.ItemsProcessed, m_movieScanner.TotalItems);
             }
         }
 
@@ -326,9 +359,9 @@ namespace JavLuv
         {
             if (Overlay != null)
             {
-                if (Overlay.GetType() == typeof(DetailViewModel))
+                if (Overlay.GetType() == typeof(MovieDetailViewModel))
                 {
-                    Collection.Search();
+                    Collection.SearchMovies();
                     Collection.Save();
                 }
             }
@@ -368,8 +401,9 @@ namespace JavLuv
         SidePanelViewModel m_sidePanelViewModel;
         SettingsViewModel m_settingsViewModel;
         ReportViewModel m_reportViewModel;
-        BrowserViewModel m_browserViewModel;
-        ObservableObject m_mainPanelViewModel;
+        MovieBrowserViewModel m_movieBrowserViewModel;
+        ActressBrowserViewModel m_actressBrowserViewModel;
+        ObservableObject m_overlayViewModel;
         MovieScanner m_movieScanner;
         MovieCollection m_movieCollection;
         TaskbarItemProgressState m_progressState;

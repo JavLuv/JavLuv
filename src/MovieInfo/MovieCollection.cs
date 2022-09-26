@@ -17,9 +17,10 @@ namespace MovieInfo
             CommandQueue.Command().CommandFinished += CommandQueue_CommandFinished;
             var folder = Utilities.GetJavLuvSettingsFolder();
             m_cacheFilename = Path.Combine(folder, "JavLuv.cache");
+            m_actressesFilename = Path.Combine(folder, "Actresses.xml");
             m_backupFilename = Path.Combine(folder, "Metadata.backup");
             if (File.Exists(m_cacheFilename))
-                CommandQueue.Command().Execute(new CmdLoad(ref m_cacheData, m_cacheFilename, ref m_backupData, m_backupFilename));
+                CommandQueue.Command().Execute(new CmdLoad(ref m_cacheData, m_cacheFilename, ref m_actresses, m_actressesFilename, ref m_backupData, m_backupFilename));
             else
                 m_loaded = true;
         }
@@ -29,6 +30,11 @@ namespace MovieInfo
         #region Events
 
         public event EventHandler MoviesDisplayedChanged;
+        public event EventHandler ActressesDisplayedChanged;
+
+        #endregion
+
+        #region Event Handlers
 
         private void CommandQueue_CommandFinished(object sender, CommandEventArgs e)
         {
@@ -37,18 +43,31 @@ namespace MovieInfo
                 m_dispatcher.Invoke(DispatcherPriority.Normal, new Action(delegate ()          
                 { 
                     NotifyMoviesDisplayedChanged();
+                    NotifyActressesDisplayedChanged();
                     m_loaded = true;
-                    Search();
+                    SearchMovies();
+                    SearchActresses();
                 }));     
             }
-            else if (e.CommandName == "MovieInfo.CmdSearch")
+            else if (e.CommandName == "MovieInfo.CmdSearchMovies")
             {
                 m_dispatcher.Invoke(DispatcherPriority.Normal, new Action(delegate ()
                 {
-                    if (m_search != null)
+                    if (m_searchMovies != null)
                     {
-                        m_moviesDisplayed = m_search.FilteredMovies;
-                        NotifyMoviesDisplayedChanged();                     
+                        m_moviesDisplayed = m_searchMovies.FilteredMovies;
+                        NotifyMoviesDisplayedChanged();
+                    }
+                }));
+            }
+            else if (e.CommandName == "MovieInfo.CmdSearchActresses")
+            {
+                m_dispatcher.Invoke(DispatcherPriority.Normal, new Action(delegate ()
+                {
+                    if (m_searchActresses != null)
+                    {
+                        m_actressesDisplayed = m_searchActresses.FilteredActresses;
+                        NotifyActressesDisplayedChanged();
                     }
                 }));
             }
@@ -59,6 +78,7 @@ namespace MovieInfo
         #region Properties
 
         public List<MovieData> MoviesDisplayed { get { return m_moviesDisplayed; } }
+        public List<ActressData> ActressesDisplayed { get { return m_actressesDisplayed; } }
 
         public string SearchText
         {
@@ -66,19 +86,32 @@ namespace MovieInfo
             set 
             { 
                 m_searchText = value;
-                Search();
+                SearchMovies();
             }
         }
 
-        public SortBy SortBy
+        public SortMoviesBy SortMoviesBy
         {
-            private get { return m_sortBy; }
+            private get { return m_sortMoviesBy; }
             set
             {
-                if (value != m_sortBy)
+                if (value != m_sortMoviesBy)
                 {
-                    m_sortBy = value;
-                    Search();
+                    m_sortMoviesBy = value;
+                    SearchMovies();
+                }
+            }
+        }
+
+        public SortActressesBy SortActressesBy
+        {
+            private get { return m_sortActressesBy; }
+            set
+            {
+                if (value != m_sortActressesBy)
+                {
+                    m_sortActressesBy = value;
+                    SearchActresses();
                 }
             }
         }
@@ -94,7 +127,7 @@ namespace MovieInfo
                 if (value != m_showID)
                 {
                     m_showID = value;
-                    Search();
+                    SearchMovies();
                 }
             }
         }
@@ -110,7 +143,7 @@ namespace MovieInfo
                 if (value != m_showUnratedOnly)
                 {
                     m_showUnratedOnly = value;
-                    Search();
+                    SearchMovies();
                 }
             }
         }
@@ -126,7 +159,7 @@ namespace MovieInfo
                 if (value != m_showSubtitlesOnly)
                 {
                     m_showSubtitlesOnly = value;
-                    Search();
+                    SearchMovies();
                 }
             }
         }
@@ -150,7 +183,24 @@ namespace MovieInfo
                     m_cacheData.Movies.Add(movie);
                 }
             }
-            Search();
+            SearchMovies();
+            Save();
+        }
+
+        public void AddActresses(List<ActressData> actresses)
+        {
+            lock(m_actresses)
+            {
+                foreach (var actress in actresses)
+                {
+                    ActressData key = new ActressData();
+                    key.Name = actress.Name;
+                    if (m_actresses.Actresses.Contains(key))
+                        continue;
+                    m_actresses.Actresses.Add(actress);
+                }
+            }
+            SearchActresses();
             Save();
         }
 
@@ -173,6 +223,26 @@ namespace MovieInfo
                 MovieData key = new MovieData();
                 key.Metadata.UniqueID.Value = uniqueID;
                 return m_cacheData.Movies.Contains(key);
+            }
+        }
+
+        public bool ActressExists(string name)
+        {
+            lock (m_actresses)
+            {
+                ActressData key = new ActressData();
+                key.Name = name;
+                if (m_actresses.Actresses.Contains(key))
+                    return true;
+                foreach (var actress in m_actresses.Actresses)
+                {
+                    foreach (var altname in actress.AlternateNames)
+                    {
+                        if (name == altname)
+                            return true;
+                    }
+                }
+                return false;
             }
         }
 
@@ -277,7 +347,7 @@ namespace MovieInfo
                         m_cacheData.Movies.Remove(movie);
                 }
             }
-            Search();
+            SearchMovies();
             Save();
         }
 
@@ -300,7 +370,8 @@ namespace MovieInfo
             foreach (var pair in actorFilter)
                 actors.Add(new FilterPair(pair.Original, pair.Filtered));
             CommandQueue.Command().Execute(new CmdFilter(movies, studios, labels, directors, genres, actors));
-            Search();
+            SearchMovies();
+            SearchActresses();
             Save();
         }
 
@@ -329,7 +400,7 @@ namespace MovieInfo
                 }
                 m_moviesDisplayed.Clear();
             }
-            Search();
+            SearchMovies();
             Save();
         }
 
@@ -351,18 +422,26 @@ namespace MovieInfo
             NotifyMoviesDisplayedChanged();
         }
 
-        public void Search()
+        public void SearchMovies()
         {
             if (m_loaded == false)
                 return;
-            m_search = new CmdSearch(m_cacheData, m_searchText, m_sortBy, ShowUnratedOnly, ShowSubtitlesOnly);
-            CommandQueue.Command().Execute(m_search);            
+            m_searchMovies = new CmdSearchMovies(m_cacheData, m_searchText, m_sortMoviesBy, ShowUnratedOnly, ShowSubtitlesOnly);
+            CommandQueue.Command().Execute(m_searchMovies);            
+        }
+
+        public void SearchActresses()
+        {
+            if (m_loaded == false)
+                return;
+            m_searchActresses = new CmdSearchActresses(m_actresses, m_searchText, m_sortActressesBy);
+            CommandQueue.Command().Execute(m_searchActresses);
         }
 
         public void Save()
         {
             CommandQueue.Command().Execute(new CmdMarkSharedFolders(m_cacheData));
-            CommandQueue.Command().Execute(new CmdSave(m_cacheData, m_cacheFilename, m_backupData, m_backupFilename));
+            CommandQueue.Command().Execute(new CmdSave(m_cacheData, m_cacheFilename, m_actresses, m_actressesFilename, m_backupData, m_backupFilename));
         }
 
         #endregion
@@ -375,21 +454,30 @@ namespace MovieInfo
             handler?.Invoke(this, new EventArgs());
         }
 
+        private void NotifyActressesDisplayedChanged()
+        {
+            EventHandler handler = ActressesDisplayedChanged;
+            handler?.Invoke(this, new EventArgs());
+        }
+
         #endregion
 
         #region Private Members
 
         // Displayed results
         private List<MovieData> m_moviesDisplayed = new List<MovieData>();
+        private List<ActressData> m_actressesDisplayed = new List<ActressData>();
 
         // Search parameters
         private string m_searchText = String.Empty;
 
-        // Current search command
-        private CmdSearch m_search;
+        // Movie search
+        private CmdSearchMovies m_searchMovies;
+        private SortMoviesBy m_sortMoviesBy;
 
-        // Current sort by command
-        private SortBy m_sortBy;
+        // Actress search
+        private CmdSearchActresses m_searchActresses;
+        private SortActressesBy m_sortActressesBy;
 
         // Show ID with title
         private bool m_showID;
@@ -404,7 +492,9 @@ namespace MovieInfo
         private System.Windows.Threading.Dispatcher m_dispatcher;
         private CacheData m_cacheData = new CacheData();
         private BackupData m_backupData = new BackupData();
+        private ActressesData m_actresses = new ActressesData();
         private string m_cacheFilename = String.Empty;
+        private string m_actressesFilename = String.Empty;
         private string m_backupFilename = String.Empty;
         private bool m_loaded = false;
 

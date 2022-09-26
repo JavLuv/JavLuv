@@ -97,14 +97,26 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="BrowserItemView.xaml.cs">
-      <DependentUpon>BrowserItemView.xaml</DependentUpon>
+    <Compile Include="ActressBrowserItemView.xaml.cs">
+      <DependentUpon>ActressBrowserItemView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="BrowserItemViewModel.cs" />
-    <Compile Include="BrowserView.xaml.cs">
-      <DependentUpon>BrowserView.xaml</DependentUpon>
+    <Compile Include="ActressBrowserItemViewModel.cs" />
+    <Compile Include="ActressBrowserView.xaml.cs">
+      <DependentUpon>ActressBrowserView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="BrowserViewModel.cs" />
+    <Compile Include="ActressBrowserViewModel.cs" />
+    <Compile Include="ActressDetailView.xaml.cs">
+      <DependentUpon>ActressDetailView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ActressDetailViewModel.cs" />
+    <Compile Include="MovieBrowserItemView.xaml.cs">
+      <DependentUpon>MovieBrowserItemView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="MovieBrowserItemViewModel.cs" />
+    <Compile Include="MovieBrowserView.xaml.cs">
+      <DependentUpon>MovieBrowserView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="MovieBrowserViewModel.cs" />
     <Compile Include="CmdCheckVersion.cs" />
     <Compile Include="CmdFindSubtitles.cs" />
     <Compile Include="CmdGetOriginalTitle.cs" />
@@ -116,10 +128,10 @@
       <DependentUpon>ConcatView.xaml</DependentUpon>
     </Compile>
     <Compile Include="ConcatViewModel.cs" />
-    <Compile Include="DetailView.xaml.cs">
-      <DependentUpon>DetailView.xaml</DependentUpon>
+    <Compile Include="MovieDetailView.xaml.cs">
+      <DependentUpon>MovieDetailView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="DetailViewModel.cs" />
+    <Compile Include="MovieDetailViewModel.cs" />
     <Compile Include="ScanView.xaml.cs">
       <DependentUpon>ScanView.xaml</DependentUpon>
     </Compile>
@@ -156,11 +168,23 @@
     <Compile Include="VersionCheckView.xaml.cs">
       <DependentUpon>VersionCheckView.xaml</DependentUpon>
     </Compile>
-    <Page Include="BrowserItemView.xaml">
+    <Page Include="ActressBrowserItemView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="BrowserView.xaml">
+    <Page Include="ActressBrowserView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ActressDetailView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="MovieBrowserItemView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="MovieBrowserView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -168,7 +192,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="DetailView.xaml">
+    <Page Include="MovieDetailView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -17,18 +16,13 @@ using System.Windows.Shapes;
 namespace JavLuv
 {
     /// <summary>
-    /// Interaction logic for DetailView.xaml
+    /// Interaction logic for ActressBrowserItemView.xaml
     /// </summary>
-    public partial class DetailView : UserControl
+    public partial class ActressBrowserItemView : UserControl
     {
-        public DetailView()
+        public ActressBrowserItemView()
         {
             InitializeComponent();
-        }
-
-        private void MainGrid_MouseDown(object sender, MouseButtonEventArgs e)
-        {
-            MainGrid.Focus();
         }
     }
 }

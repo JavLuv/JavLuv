@@ -1,8 +1,4 @@
-﻿using Common;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
+﻿using System.IO;
 
 namespace MovieInfo
 {
@@ -10,10 +6,12 @@ namespace MovieInfo
     {
         #region Constructors
 
-        public CmdSave(CacheData cacheData, string cacheFilename, BackupData backupData, string backupFilename)
+        public CmdSave(CacheData cacheData, string cacheFilename, ActressesData actresses, string actressesFilename, BackupData backupData, string backupFilename)
         {
             m_cacheData = cacheData;
             m_cacheFilename = cacheFilename;
+            m_actresses = actresses;
+            m_actressesFilename = actressesFilename;
             m_backupData = backupData;
             m_backupFilename = backupFilename;
         }
@@ -51,6 +49,12 @@ namespace MovieInfo
                     MovieSerializer<BackupData>.Save(m_backupFilename, m_backupData);
                 }
             }
+
+            lock(m_actresses)
+            {
+                // Save actresses data
+                MovieSerializer<ActressesData>.Save(m_actressesFilename, m_actresses);
+            }
         }
 
         #endregion
@@ -59,6 +63,8 @@ namespace MovieInfo
 
         private CacheData m_cacheData;
         private string m_cacheFilename;
+        private ActressesData m_actresses;
+        private string m_actressesFilename;
         private BackupData m_backupData;
         private string m_backupFilename;
 

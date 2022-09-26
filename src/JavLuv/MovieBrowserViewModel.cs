@@ -11,11 +11,11 @@ using System.Windows.Input;
 
 namespace JavLuv
 {
-    public class BrowserViewModel : ObservableObject
+    public class MovieBrowserViewModel : ObservableObject
     {
         #region Constructors
 
-        public BrowserViewModel(MainWindowViewModel parent)
+        public MovieBrowserViewModel(MainWindowViewModel parent)
         {
             m_parent = parent;
             m_parent.Collection.MoviesDisplayedChanged += Collection_MoviesDisplayedChanged;
@@ -37,7 +37,7 @@ namespace JavLuv
 
         public MainWindowViewModel Parent { get { return m_parent; } }
 
-        public ObservableCollection<BrowserItemViewModel> Movies
+        public ObservableCollection<MovieBrowserItemViewModel> Movies
         {
             get { return m_movies; }
         }
@@ -55,7 +55,7 @@ namespace JavLuv
             }
         }
 
-        public ObservableCollection<BrowserItemViewModel> SelectedItems
+        public ObservableCollection<MovieBrowserItemViewModel> SelectedItems
         {
             get { return m_selectedItems; }
             set
@@ -120,7 +120,7 @@ namespace JavLuv
 
         #endregion
 
-        #region Events
+        #region Event Handlers
 
         private void SelectedItems_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
@@ -157,7 +157,7 @@ namespace JavLuv
         {
             Movies.Clear();
             foreach (var movie in Parent.Collection.MoviesDisplayed)
-                Movies.Add(new BrowserItemViewModel(this, movie));
+                Movies.Add(new MovieBrowserItemViewModel(this, movie));
         }
 
         #endregion
@@ -172,7 +172,7 @@ namespace JavLuv
             {
                 if (SelectedItems.Count == 0)
                     return;
-                BrowserItemViewModel movieItem = null;
+                MovieBrowserItemViewModel movieItem = null;
                 if (SelectedItems.Count == 1)
                     movieItem = SelectedItems[0];
                 else
@@ -202,15 +202,15 @@ namespace JavLuv
 
         private void NavigateLeftExecute()
         {
-            DetailViewModel current = Parent.Overlay as DetailViewModel;
+            MovieDetailViewModel current = Parent.Overlay as MovieDetailViewModel;
             if (current == null)
                 return;
-            Parent.Overlay = new DetailViewModel(this, Movies[Movies.IndexOf(current.BrowserItem) - 1]);
+            Parent.Overlay = new MovieDetailViewModel(this, Movies[Movies.IndexOf(current.BrowserItem) - 1]);
         }
 
         private bool CanNavigateLeftExecute()
         {
-            DetailViewModel current = Parent.Overlay as DetailViewModel;
+            MovieDetailViewModel current = Parent.Overlay as MovieDetailViewModel;
             if (current == null)
                 return false;
             if (Movies.IndexOf(current.BrowserItem) == 0)
@@ -226,15 +226,15 @@ namespace JavLuv
 
         private void NavigateRightExecute()
         {
-            DetailViewModel current = Parent.Overlay as DetailViewModel;
+            MovieDetailViewModel current = Parent.Overlay as MovieDetailViewModel;
             if (current == null)
                 return;
-            Parent.Overlay = new DetailViewModel(this, Movies[Movies.IndexOf(current.BrowserItem) + 1]);
+            Parent.Overlay = new MovieDetailViewModel(this, Movies[Movies.IndexOf(current.BrowserItem) + 1]);
         }
 
         private bool CanNavigateRightExecute()
         {
-            DetailViewModel current = Parent.Overlay as DetailViewModel;
+            MovieDetailViewModel current = Parent.Overlay as MovieDetailViewModel;
             if (current == null)
                 return false;
             if (Movies.IndexOf(current.BrowserItem) >= Movies.Count - 1)
@@ -479,9 +479,9 @@ namespace JavLuv
 
         #region Public Functions
 
-        public void OpenDetailView(BrowserItemViewModel browserItem)
+        public void OpenDetailView(MovieBrowserItemViewModel browserItem)
         {
-            Parent.Overlay = new DetailViewModel(this, browserItem);
+            Parent.Overlay = new MovieDetailViewModel(this, browserItem);
         }
 
         public void MoveRenameMovies(List<MovieData> movies)
@@ -553,8 +553,8 @@ namespace JavLuv
         #region Private Members
 
         private MainWindowViewModel m_parent;
-        private ObservableCollection<BrowserItemViewModel> m_movies = new ObservableCollection<BrowserItemViewModel>();
-        private ObservableCollection<BrowserItemViewModel> m_selectedItems = new ObservableCollection<BrowserItemViewModel>();
+        private ObservableCollection<MovieBrowserItemViewModel> m_movies = new ObservableCollection<MovieBrowserItemViewModel>();
+        private ObservableCollection<MovieBrowserItemViewModel> m_selectedItems = new ObservableCollection<MovieBrowserItemViewModel>();
         private string m_selectedDescription = String.Empty;
         private bool m_isEnabled = true;
         private Random m_random = new Random();

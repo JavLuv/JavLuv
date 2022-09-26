@@ -8,11 +8,11 @@ using System.Windows.Media;
 
 namespace JavLuv
 {
-    public class BrowserItemViewModel : ObservableObject
+    public class MovieBrowserItemViewModel : ObservableObject
     {
         #region Constructors
 
-        public BrowserItemViewModel(BrowserViewModel parent, MovieData movieData)
+        public MovieBrowserItemViewModel(MovieBrowserViewModel parent, MovieData movieData)
         {
             Parent = parent;
             m_movieData = movieData;
@@ -23,7 +23,7 @@ namespace JavLuv
 
         #region Properties
 
-        public BrowserViewModel Parent { get; private set; }
+        public MovieBrowserViewModel Parent { get; private set; }
 
         public MovieData MovieData { get { return m_movieData; } }
 
@@ -116,15 +116,15 @@ namespace JavLuv
 
         private void CreateDisplayTitle()
         {
-            switch (Settings.Get().SortBy)
+            switch (Settings.Get().SortMoviesBy)
             {
-                case SortBy.Title:
+                case SortMoviesBy.Title:
                     m_displayTitle = GetOptionalIdAndTitle();
                     break;
-                case SortBy.ID:
+                case SortMoviesBy.ID:
                     m_displayTitle = String.Format("[{0}] {1}", m_movieData.Metadata.UniqueID.Value, m_movieData.Metadata.Title);
                     break;
-                case SortBy.Actress:
+                case SortMoviesBy.Actress:
                     if (m_movieData.Metadata.Actors.Count == 0)
                         m_displayTitle = String.Format("({0}) {1}", "???", GetOptionalIdAndTitle());
                     else if (m_movieData.Metadata.Actors.Count == 1)
@@ -134,15 +134,15 @@ namespace JavLuv
                     else
                         m_displayTitle = String.Format("({0}, {1}, & more...) {2}", m_movieData.Metadata.Actors[0].Name, m_movieData.Metadata.Actors[1].Name, GetOptionalIdAndTitle());
                     break;
-                case SortBy.Date_Newest:
-                    goto case SortBy.Date_Oldest;
-                case SortBy.Date_Oldest:
+                case SortMoviesBy.Date_Newest:
+                    goto case SortMoviesBy.Date_Oldest;
+                case SortMoviesBy.Date_Oldest:
                     string date = m_movieData.Metadata.Premiered;
                     if (String.IsNullOrEmpty(date))
                         date = "Unknown";
                     m_displayTitle = String.Format("({0}) {1}", date, GetOptionalIdAndTitle());
                     break;
-                case SortBy.UserRating:
+                case SortMoviesBy.UserRating:
                     m_displayTitle = String.Format("({0}) {1}", UserRatingToStars(m_movieData.Metadata.UserRating), GetOptionalIdAndTitle());
                     break;
             }

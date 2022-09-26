@@ -63,11 +63,15 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ModuleJavBus.cs" />
-    <Compile Include="ModuleJavDatabase.cs" />
+    <Compile Include="ActressJavModel.cs" />
+    <Compile Include="ModuleActress.cs" />
+    <Compile Include="ActressJavDatabase.cs" />
+    <Compile Include="MovieJavBus.cs" />
+    <Compile Include="MovieJavDatabase.cs" />
     <Compile Include="ModuleBase.cs" />
-    <Compile Include="ModuleJavLand.cs" />
-    <Compile Include="ModuleJavLibrary.cs" />
+    <Compile Include="MovieJavLand.cs" />
+    <Compile Include="MovieJavLibrary.cs" />
+    <Compile Include="ModuleMovie.cs" />
     <Compile Include="Scraper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

@@ -3,11 +3,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Text.RegularExpressions;
 
 namespace MovieInfo
 {
-    public enum SortBy
+    public enum SortMoviesBy
     {
         Title,
         ID,
@@ -19,15 +18,15 @@ namespace MovieInfo
 
     #region Comparers
 
-    public class TitleComparer : IComparer<MovieData>
+    public class MovieTitleComparer : IComparer<MovieData>
     {
         public int Compare(MovieData left, MovieData right)
         {
-            return MovieUtils.TitleCompare(left.Metadata.Title, right.Metadata.Title);
+            return MovieUtils.MovieTitleCompare(left.Metadata.Title, right.Metadata.Title);
         }
     }
 
-    public class IDComparer : IComparer<MovieData>
+    public class MovieIDComparer : IComparer<MovieData>
     {
         public int Compare(MovieData left, MovieData right)
         {
@@ -35,15 +34,15 @@ namespace MovieInfo
         }
     }
 
-    public class ActressComparer : IComparer<MovieData>
+    public class MovieActressComparer : IComparer<MovieData>
     {
         public int Compare(MovieData left, MovieData right)
         {
-            return MovieUtils.ActressCompare(left.Metadata.Actors, right.Metadata.Actors);
+            return MovieUtils.MovieActressCompare(left.Metadata.Actors, right.Metadata.Actors);
         }
     }
 
-    public class DateNewestComparer : IComparer<MovieData>
+    public class MovieDateNewestComparer : IComparer<MovieData>
     {
         public int Compare(MovieData left, MovieData right)
         {
@@ -54,7 +53,7 @@ namespace MovieInfo
         }
     }
 
-    public class DateOldestComparer : IComparer<MovieData>
+    public class MovieDateOldestComparer : IComparer<MovieData>
     {
         public int Compare(MovieData left, MovieData right)
         {
@@ -65,7 +64,7 @@ namespace MovieInfo
         }
     }
 
-    public class UserRatingComparer : IComparer<MovieData>
+    public class MovieUserRatingComparer : IComparer<MovieData>
     {
         public int Compare(MovieData left, MovieData right)
         {
@@ -78,15 +77,15 @@ namespace MovieInfo
 
     #endregion
 
-    public class CmdSearch : IAsyncCommand
+    public class CmdSearchMovies : IAsyncCommand
     {
         #region Constructors
 
-        public CmdSearch(CacheData cacheData, string searchText, SortBy sortBy, bool showUnratedOnly, bool showSubtitlesOnly)
+        public CmdSearchMovies(CacheData cacheData, string searchText, SortMoviesBy sortMoviesBy, bool showUnratedOnly, bool showSubtitlesOnly)
         {
             m_cacheData = cacheData;
             m_searchText = searchText;
-            m_sortBy = sortBy;
+            m_sortMoviesBy = sortMoviesBy;
             m_showUnratedOnly = showUnratedOnly;
             m_showSubtitlesOnly = showSubtitlesOnly;
         }
@@ -111,7 +110,7 @@ namespace MovieInfo
             else
             {
                 // Populate filtered movie list with all movies
-                lock(m_cacheData)
+                lock (m_cacheData)
                 {
                     foreach (var movie in m_cacheData.Movies)
                     {
@@ -130,50 +129,9 @@ namespace MovieInfo
 
         #region Private Functions
 
-        private List<string> Split(string stringToSplit, params char[] delimiters)
-        {
-            List<string> results = new List<string>();
-
-            bool inQuote = false;
-            StringBuilder currentToken = new StringBuilder();
-            for (int index = 0; index < stringToSplit.Length; ++index)
-            {
-                char currentCharacter = stringToSplit[index];
-                if (currentCharacter == '"')
-                {
-                    // When we see a ", we need to decide whether we are
-                    // at the start or send of a quoted section...
-                    inQuote = !inQuote;
-                }
-                else if (delimiters.Contains(currentCharacter) && inQuote == false)
-                {
-                    // We've come to the end of a token, so we find the token,
-                    // trim it and add it to the collection of results...
-                    string result = currentToken.ToString().Trim();
-                    if (result != "") results.Add(result);
-
-                    // We start a new token...
-                    currentToken = new StringBuilder();
-                }
-                else
-                {
-                    // We've got a 'normal' character, so we add it to
-                    // the curent token...
-                    currentToken.Append(currentCharacter);
-                }
-            }
-
-            // We've come to the end of the string, so we add the last token...
-            string lastResult = currentToken.ToString().Trim();
-            if (lastResult != "") 
-                results.Add(lastResult);
-
-            return results;
-        }
-
         private void Search()
         {
-            var terms = Split(m_searchText, ' ');   
+            var terms = MovieUtils.SearchSplit(m_searchText);   
             HashSet<MovieData> foundMovies = new HashSet<MovieData>();
             foreach (MovieData movie in m_cacheData.Movies)
             {
@@ -230,25 +188,25 @@ namespace MovieInfo
 
         private void Sort()
         {
-            switch (m_sortBy)
+            switch (m_sortMoviesBy)
             {
-                case SortBy.Title:
-                    m_filteredMovies.Sort(new TitleComparer());
+                case SortMoviesBy.Title:
+                    m_filteredMovies.Sort(new MovieTitleComparer());
                     break;
-                case SortBy.ID:
-                    m_filteredMovies.Sort(new IDComparer());
+                case SortMoviesBy.ID:
+                    m_filteredMovies.Sort(new MovieIDComparer());
                     break;
-                case SortBy.Actress:
-                    m_filteredMovies.Sort(new ActressComparer());
+                case SortMoviesBy.Actress:
+                    m_filteredMovies.Sort(new MovieActressComparer());
                     break;
-                case SortBy.Date_Newest:
-                    m_filteredMovies.Sort(new DateNewestComparer());
+                case SortMoviesBy.Date_Newest:
+                    m_filteredMovies.Sort(new MovieDateNewestComparer());
                     break;
-                case SortBy.Date_Oldest:
-                    m_filteredMovies.Sort(new DateOldestComparer());
+                case SortMoviesBy.Date_Oldest:
+                    m_filteredMovies.Sort(new MovieDateOldestComparer());
                     break;
-                case SortBy.UserRating:
-                    m_filteredMovies.Sort(new UserRatingComparer());
+                case SortMoviesBy.UserRating:
+                    m_filteredMovies.Sort(new MovieUserRatingComparer());
                     break;
             };
         }
@@ -260,7 +218,7 @@ namespace MovieInfo
         private CacheData m_cacheData;
         private List<MovieData> m_filteredMovies = new List<MovieData>();
         private string m_searchText = String.Empty;
-        private SortBy m_sortBy = SortBy.Title;
+        private SortMoviesBy m_sortMoviesBy = SortMoviesBy.Title;
         private bool m_showUnratedOnly;
         private bool m_showSubtitlesOnly;
 

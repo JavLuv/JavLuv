@@ -71,8 +71,15 @@
     <system:String x:Key="Text.JP">JP</system:String>
     <system:String x:Key="Text.ShowOriginalJpTitle">Show original Japanese title</system:String>
 
+    <!-- Actress details -->
+    <system:String x:Key="Text.ActressDetails">Actress Details</system:String>
+    <system:String x:Key="Text.ActressJapaneseName">Japanese Name:</system:String>
+    <system:String x:Key="Text.ActressAlternateNames">Alternate Names:</system:String>
+
     <!-- Miscellaneous -->
     <system:String x:Key="Text.JavLuvTitle">JavLuv - あなたのJAVムービーオーガナイザー</system:String>
+    <system:String x:Key="Text.MoviesTab">Movies</system:String>
+    <system:String x:Key="Text.ActressesTab">Actresses</system:String>
     <system:String x:Key="Text.Back">Back</system:String>
     <system:String x:Key="Text.Browse">Browse...</system:String>
     <system:String x:Key="Text.Close">Close</system:String>
@@ -81,6 +88,7 @@
     <system:String x:Key="Text.ImportCoverImage">Import cover image...</system:String>
     <system:String x:Key="Text.LoadingMetadata">Loading metadata {0}/{1}</system:String>
     <system:String x:Key="Text.DownloadingMetadata">Downloading metadata {0}/{1}</system:String>
+    <system:String x:Key="Text.DownloadingActressData">Downloading actress data {0}/{1}</system:String>
     <system:String x:Key="Text.ScanningFolders">Scanning {0} folders</system:String>
     <system:String x:Key="Text.DisplayingMovies">Displaying {0} of {1} movies</system:String>
     <system:String x:Key="Text.ExitJavLuvScanningFiles">JavLuv is currently scanning files.\nWould you like to exit anyways and cancel this operation?</system:String>
