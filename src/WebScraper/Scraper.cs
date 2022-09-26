@@ -45,7 +45,7 @@ namespace WebScraper
             // Merge the two scrape results, combining them according to which
             // returns the best results from both.
             var mergedMetadata = MergePrimary(javLibraryMetadata, javDatabaseMetadata);
-
+            
             // Check to see if we have a complete set of metadata
             if (IsMovieMetadataComplete(mergedMetadata) == false || downloadCoverImage)
             {
@@ -212,7 +212,7 @@ namespace WebScraper
             if (String.IsNullOrEmpty(module.ImageSource) == false)
             {
                 if (DownloadImage(ref imagePath, module.ImageSource))
-                    actressData.Images.Add(Path.GetFileName(imagePath));
+                    actressData.ImageFileNames.Add(Path.GetFileName(imagePath));
             }
         }
 
@@ -317,9 +317,13 @@ namespace WebScraper
             combined.Director = MergeStrings(javLibrary.Director, javDatabase.Director);
             combined.Series = MergeStrings(javLibrary.Series, javDatabase.Series);
             combined.Genres = MergeStringLists(javLibrary.Genres, javDatabase.Genres);
+
+            // JavLibrary gives us alternate names, which is really handy, but since we're scraping
+            // actress data from JavDatabase first, we'll initially get actresses from them and 
+            // try merging in other actresses later.  
             // JAV Library seems more reliable for actors.  so don't use other sources
             // unless there's no choice.
-            combined.Actors = (javLibrary.Actors.Count == 0) ? javDatabase.Actors : javLibrary.Actors;
+            combined.Actors = MergeActors(javDatabase.Actors, javLibrary.Actors);
             return combined;
         }
 
@@ -334,10 +338,69 @@ namespace WebScraper
             primary.Director = MergeStrings(primary.Director, secondary.Director);
             primary.Series = MergeStrings(primary.Series, secondary.Series);
             primary.Genres = MergeStringLists(primary.Genres, secondary.Genres);
-            // Only use secondary actors if required.  Too easy to get alternate, incorrect spellings
-            if (primary.Actors.Count == 0)
-                primary.Actors = secondary.Actors;
+            primary.Actors = MergeActors(primary.Actors, secondary.Actors);
             return primary;
+        }
+
+        private List<ActorData> MergeActors(List<ActorData> a, List<ActorData> b)
+        {
+            var actorList = a;
+            if (actorList.Count == 0)
+                return b;
+            if (actorList.Count == b.Count)
+            {
+
+                return actorList;
+            }
+            return actorList;
+        }
+
+        private bool NamesMatch(ActorData a, ActorData b, out string matchA, out string matchB)
+        {
+            matchA = String.Empty;
+            matchB = String.Empty;
+            if (a.Name == b.Name)
+            {
+                matchA = a.Name;
+                matchB = matchA;
+                return true;
+            }
+            if (b.Name.ContainsCaseless(a.Aliases))
+                return true;
+            foreach (var aliasA in a.Aliases)
+            {
+                if (aliasA == b.Name)
+                {
+                    matchA = b.Name;
+                    matchB = matchA;
+                    return true;
+                }
+            }
+            foreach (var aliasB in b.Aliases)
+            {
+                if (aliasB == a.Name)
+                {
+                    matchA = a.Name;
+                    matchB = matchA;
+                    return true;
+                }
+            }
+            foreach (var aliasA in a.Aliases)
+            {
+                foreach (var aliasB in b.Aliases)
+                {
+                    if (aliasA == aliasB)
+                    {
+                        matchA = aliasA;
+                        matchB = matchA;
+                        return true;
+                    }
+                }
+            }
+            const float SimilarityThreshold = 0.65f;
+            if (Utilities.GetSimilarity(a.Name, b.Name) > SimilarityThreshold)
+                return true;
+            return false;
         }
 
         private string MergeStrings(string a, string b)
@@ -431,7 +494,7 @@ namespace WebScraper
                 return false;
             if (String.IsNullOrEmpty(actressData.Cup))
                 return false;
-            if (actressData.Breasts == 0)
+            if (actressData.Bust == 0)
                 return false;
             if (actressData.Waist == 0)
                 return false;
@@ -439,7 +502,7 @@ namespace WebScraper
                 return false;
             if (String.IsNullOrEmpty(actressData.BloodType))
                 return false;
-            if (actressData.NumberOfMovies == 0)
+            if (actressData.NumMovies == 0)
                 return false;
             return true;
         }

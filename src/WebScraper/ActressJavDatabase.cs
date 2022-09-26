@@ -110,7 +110,7 @@ namespace WebScraper
                         string[] dateParts = nextSibling.TextContent.Split('-');
                         try
                         {
-                            m_actressData.Breasts = int.Parse(dateParts[0]);
+                            m_actressData.Bust = int.Parse(dateParts[0]);
                             m_actressData.Waist = int.Parse(dateParts[1]);
                             m_actressData.Hips = int.Parse(dateParts[2]);
                         }
@@ -133,7 +133,7 @@ namespace WebScraper
                     {
                         try
                         {
-                            m_actressData.NumberOfMovies = int.Parse(nextSibling.TextContent);
+                            m_actressData.NumMovies = int.Parse(nextSibling.TextContent);
                         }
                         catch (Exception)
                         { }

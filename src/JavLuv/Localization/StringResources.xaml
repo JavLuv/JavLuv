@@ -53,6 +53,10 @@
     <system:String x:Key="Text.NewVersion">New version: {0}</system:String>
     <system:String x:Key="Text.VersionDetails">Details</system:String>
 
+    <!-- Shared details -->
+    <system:String x:Key="Text.UserRating">User Rating:</system:String>
+    <system:String x:Key="Text.Notes">Notes:</system:String>
+   
     <!-- Movie details -->
     <system:String x:Key="Text.MovieDetails">Movie Details</system:String>
     <system:String x:Key="Text.ID">ID:</system:String>
@@ -62,11 +66,9 @@
     <system:String x:Key="Text.Studio">Studio:</system:String>
     <system:String x:Key="Text.Label">Label:</system:String>
     <system:String x:Key="Text.Director">Director:</system:String>
-    <system:String x:Key="Text.UserRating">User Rating:</system:String>
     <system:String x:Key="Text.Genres">Genres:</system:String>
     <system:String x:Key="Text.Actresses">Actresses:</system:String>
     <system:String x:Key="Text.Resolution">Resolution:</system:String>
-    <system:String x:Key="Text.Notes">Notes:</system:String>
     <system:String x:Key="Text.CopyTitle">Copy title and metadata</system:String>
     <system:String x:Key="Text.JP">JP</system:String>
     <system:String x:Key="Text.ShowOriginalJpTitle">Show original Japanese title</system:String>
@@ -75,6 +77,16 @@
     <system:String x:Key="Text.ActressDetails">Actress Details</system:String>
     <system:String x:Key="Text.ActressJapaneseName">Japanese Name:</system:String>
     <system:String x:Key="Text.ActressAlternateNames">Alternate Names:</system:String>
+    <system:String x:Key="Text.ActressDateOfBirth">Date of Birth:</system:String>
+    <system:String x:Key="Text.ActressHeight">Height:</system:String>
+    <system:String x:Key="Text.ActressCup">Cup:</system:String>
+    <system:String x:Key="Text.ActressMeasurements">Measurements:</system:String>
+    <system:String x:Key="Text.ActressBloodType">Blood Type:</system:String>
+    <system:String x:Key="Text.ActressNumMovies">Number of Movies:</system:String>
+    <system:String x:Key="Text.ActressAge">Age:</system:String>
+    <system:String x:Key="Text.ActressIsBirthday">Is Birthday:</system:String>
+    <system:String x:Key="Text.ActressNumMoviesInCollection">Movies In Collection:</system:String>
+    <system:String x:Key="Text.ActressAverageMovieRating">Average Movie Rating:</system:String>
 
     <!-- Miscellaneous -->
     <system:String x:Key="Text.JavLuvTitle">JavLuv - Your JAV Movie Organizer</system:String>
