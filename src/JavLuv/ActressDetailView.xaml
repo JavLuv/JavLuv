@@ -248,8 +248,8 @@
                             <ColumnDefinition Width="10" />
                             <ColumnDefinition Width="2*" />
                         </Grid.ColumnDefinitions>
-                        <Label Style="{StaticResource DetailLabelStyle}" Content="{DynamicResource Text.ActressJapaneseName}" />
-                        <TextBox Style="{StaticResource DetailTextBoxStyle}" Text="{Binding JapaneseName, UpdateSourceTrigger=LostFocus}" />
+                        <Label Style="{StaticResource DetailLabelStyle}" Content="{DynamicResource Text.ActressAge}" />
+                        <Label Style="{StaticResource DetailLabelContentStyle}" Content="{Binding Age}" />
                     </Grid>
                 </StackPanel>
             </Grid>

@@ -135,6 +135,10 @@
     <system:String x:Key="Text.ShowID">Show ID</system:String>
     <system:String x:Key="Text.ShowUnratedOnly">Show unrated only</system:String>
     <system:String x:Key="Text.ShowSubtitlesOnly">Show subtitles only</system:String>
+    <system:String x:Key="Text.SortByName">Name</system:String>
+    <system:String x:Key="Text.SortByAgeYoungest">Age (youngest)</system:String>
+    <system:String x:Key="Text.SortByAgeOldest">Age (oldest)</system:String>
+    <system:String x:Key="Text.ShowUnknownActresses">Show unknown actresses</system:String>
 
     <!-- Browser Item View -->
     <system:String x:Key="Text.PlayMovie">Play movie</system:String>

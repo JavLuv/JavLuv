@@ -371,8 +371,8 @@ namespace JavLuv
                 }
                 else if (Overlay.GetType() == typeof(ActressDetailViewModel))
                 {
-                    ActressBrowser.RestoreSearchText();
                     Collection.SearchActresses();
+                    Collection.SearchMovies();
                     Collection.Save();
                 }
             }

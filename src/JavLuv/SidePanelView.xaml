@@ -73,8 +73,19 @@
                 <ComboBox 
                     Grid.Column="1"
                     HorizontalAlignment="Left"
+                    Visibility="{Binding MovieControlsVisibility}"
                     ItemsSource="{Binding SortMovieByList}"
                     SelectedItem="{Binding CurrentSortMovieBy}"
+                    Height="24" 
+                    Width="100"
+                    DisplayMemberPath="Name"
+                    />
+                <ComboBox 
+                    Grid.Column="1"
+                    HorizontalAlignment="Left"
+                    Visibility="{Binding ActressControlsVisibility}"
+                    ItemsSource="{Binding SortActressByList}"
+                    SelectedItem="{Binding CurrentSortActressesBy}"
                     Height="24" 
                     Width="100"
                     DisplayMemberPath="Name"
@@ -83,18 +94,28 @@
             <CheckBox 
                 Margin="5, 10, 5, 2"
                 VerticalAlignment="Center"
+                 Visibility="{Binding MovieControlsVisibility}"
                 Content="{DynamicResource Text.ShowID}"
                 IsChecked="{Binding ShowID}"
                 />
             <CheckBox 
+                Margin="5, 10, 5, 2"
+                VerticalAlignment="Center"
+                 Visibility="{Binding ActressControlsVisibility}"
+                Content="{DynamicResource Text.ShowUnknownActresses}"
+                IsChecked="{Binding ShowUnknownActresses}"
+                />
+            <CheckBox 
                 Margin="5, 2, 5, 2"
                 VerticalAlignment="Center"
+                 Visibility="{Binding MovieControlsVisibility}"
                 Content="{DynamicResource Text.ShowUnratedOnly}"
                 IsChecked="{Binding ShowUnratedOnly}"
                 />
             <CheckBox 
                 Margin="5, 2, 5, 2"
                 VerticalAlignment="Center"
+                 Visibility="{Binding MovieControlsVisibility}"
                 Content="{DynamicResource Text.ShowSubtitlesOnly}"
                 IsChecked="{Binding ShowSubtitlesOnly}"
                 />

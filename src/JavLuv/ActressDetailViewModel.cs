@@ -27,8 +27,7 @@ namespace JavLuv
             }
 
             // TODO: Add a search specifically for actresses, instead of just relying on hits in a general search.
-            // good enough for the time being, though, as it works 99% of the time.
-            Parent.Parent.SidePanel.SearchText = String.Format("\"{0}\"", m_actressData.Name);
+            Parent.Parent.Collection.SearchMoviesByActress(String.Format("\"{0}\"", m_actressData.Name));
         }
 
         #endregion
@@ -211,6 +210,24 @@ namespace JavLuv
                     m_actressData.NumMovies = movies;
                     NotifyPropertyChanged("Movies");
                 }
+            }
+        }
+
+        public string Age
+        {
+            get
+            {
+                DateTime zeroTime = new DateTime(1, 1, 1);
+
+                DateTime a = m_actressData.DateOfBirth;
+                DateTime b = DateTime.Now;
+
+                TimeSpan span = b - a;
+
+                // Because we start at year 1 for the Gregorian
+                // calendar, we must subtract a year here.
+                int years = (zeroTime + span).Year - 1;
+                return years.ToString();
             }
         }
 

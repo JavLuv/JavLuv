@@ -118,6 +118,7 @@ namespace JavLuv
         public bool ShowID { get; set; }
         public bool ShowUnratedOnly { get; set; }
         public bool ShowSubtitlesOnly { get; set; }
+        public bool ShowUnknownActresses { get; set; }
         public bool ShowOriginalTitle { get; set; }
 
         // Misc persistent data

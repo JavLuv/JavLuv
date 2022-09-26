@@ -29,7 +29,7 @@ namespace MovieInfo
     {
         public int Compare(ActressData left, ActressData right)
         {
-            return DateTime.Compare(left.DateOfBirth, right.DateOfBirth);
+            return DateTime.Compare(right.DateOfBirth, left.DateOfBirth);
         }
     }
 
@@ -37,7 +37,7 @@ namespace MovieInfo
     {
         public int Compare(ActressData left, ActressData right)
         {
-            return DateTime.Compare(right.DateOfBirth, left.DateOfBirth);
+            return DateTime.Compare(left.DateOfBirth, right.DateOfBirth);
         }
     }
 
@@ -47,11 +47,12 @@ namespace MovieInfo
     {
         #region Constructors
 
-        public CmdSearchActresses(ActressesData actressesData, string searchText, SortActressesBy sortActressesBy)
+        public CmdSearchActresses(ActressesData actressesData, string searchText, SortActressesBy sortActressesBy, bool showUnknownActresses)
         {
             m_actressesData = actressesData;
             m_searchText = searchText;
             m_sortActressesBy = sortActressesBy;
+            m_showUnknownActresses = showUnknownActresses;
         }
 
         #endregion;
@@ -67,7 +68,7 @@ namespace MovieInfo
         public void Execute()
         {
             // Perform keyword-based search if required
-            if (String.IsNullOrEmpty(m_searchText) == false)
+            if (String.IsNullOrEmpty(m_searchText) == false || m_showUnknownActresses == false)
             {
                 Search();
             }
@@ -97,9 +98,18 @@ namespace MovieInfo
             HashSet<ActressData> foundActresses = new HashSet<ActressData>();
             foreach (ActressData actress in m_actressesData.Actresses)
             {
+                if (m_showUnknownActresses == false)
+                {
+                    if (m_sortActressesBy == SortActressesBy.Age_Youngest || m_sortActressesBy == SortActressesBy.Age_Oldest)
+                    {
+                        if (actress.DateOfBirth == new DateTime())
+                            continue;
+                    }
+                }
                 bool found = true;
                 foreach (string term in terms)
                 {
+
                     if (!SearchActresses(actress, term))
                     {
                         found = false;
@@ -147,7 +157,7 @@ namespace MovieInfo
         private List<ActressData> m_filteredActresses = new List<ActressData>();
         private string m_searchText = String.Empty;
         private SortActressesBy m_sortActressesBy = SortActressesBy.Name;
-
+        private bool m_showUnknownActresses;
         #endregion
     }
 }

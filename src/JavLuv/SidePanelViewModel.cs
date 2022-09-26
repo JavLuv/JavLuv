@@ -1,15 +1,17 @@
-﻿using Common;
-using MovieInfo;
+﻿using MovieInfo;
 using System.Collections.ObjectModel;
+using System.Windows;
 using System.Windows.Input;
 
 namespace JavLuv
 {
-    public class SortMovieByPair : ObservableObject
+    // TODO: Make a generic ObservablePair class or something,
+    // instead of making all those one-off classes
+    public class SortMoviesByPair : ObservableObject
     {
         #region Constructor
 
-        public SortMovieByPair(SortMoviesBy sortBy, string key)
+        public SortMoviesByPair(SortMoviesBy sortBy, string key)
         {
             Value = sortBy;
             m_key = key;
@@ -22,6 +24,47 @@ namespace JavLuv
         public SortMoviesBy Value { get; private set; }
         public string Name 
         { 
+            get
+            {
+                return TextManager.GetString(m_key);
+            }
+        }
+
+        #endregion
+
+        #region Public Functions
+
+        public void Refresh()
+        {
+            NotifyAllPropertiesChanged();
+        }
+
+        #endregion
+
+        #region Private Members
+
+        private string m_key;
+
+        #endregion
+    }
+
+    public class SortActressesByPair : ObservableObject
+    {
+        #region Constructor
+
+        public SortActressesByPair(SortActressesBy sortBy, string key)
+        {
+            Value = sortBy;
+            m_key = key;
+        }
+
+        #endregion
+
+        #region Properties
+
+        public SortActressesBy Value { get; private set; }
+        public string Name
+        {
             get
             {
                 return TextManager.GetString(m_key);
@@ -60,12 +103,16 @@ namespace JavLuv
             Parent.Collection.ShowUnratedOnly = ShowUnratedOnly;
             Parent.Collection.ShowSubtitlesOnly = ShowSubtitlesOnly;
 
-            m_sortMovieByList.Add(new SortMovieByPair(SortMoviesBy.Title, "Text.SortByTitle"));
-            m_sortMovieByList.Add(new SortMovieByPair(SortMoviesBy.ID, "Text.SortByID"));
-            m_sortMovieByList.Add(new SortMovieByPair(SortMoviesBy.Actress, "Text.SortByActress"));
-            m_sortMovieByList.Add(new SortMovieByPair(SortMoviesBy.Date_Newest, "Text.SortByDateNewest"));
-            m_sortMovieByList.Add(new SortMovieByPair(SortMoviesBy.Date_Oldest, "Text.SortByDateOldest"));
-            m_sortMovieByList.Add(new SortMovieByPair(SortMoviesBy.UserRating, "Text.SortByUserRating"));
+            m_sortMovieByList.Add(new SortMoviesByPair(SortMoviesBy.Title, "Text.SortByTitle"));
+            m_sortMovieByList.Add(new SortMoviesByPair(SortMoviesBy.ID, "Text.SortByID"));
+            m_sortMovieByList.Add(new SortMoviesByPair(SortMoviesBy.Actress, "Text.SortByActress"));
+            m_sortMovieByList.Add(new SortMoviesByPair(SortMoviesBy.Date_Newest, "Text.SortByDateNewest"));
+            m_sortMovieByList.Add(new SortMoviesByPair(SortMoviesBy.Date_Oldest, "Text.SortByDateOldest"));
+            m_sortMovieByList.Add(new SortMoviesByPair(SortMoviesBy.UserRating, "Text.SortByUserRating"));
+
+            m_sortActressesByList.Add(new SortActressesByPair(SortActressesBy.Name, "Text.SortByName"));
+            m_sortActressesByList.Add(new SortActressesByPair(SortActressesBy.Age_Youngest, "Text.SortByAgeYoungest"));
+            m_sortActressesByList.Add(new SortActressesByPair(SortActressesBy.Age_Oldest, "Text.SortByAgeOldest"));
 
             foreach (var sortBy in m_sortMovieByList)
             {
@@ -76,7 +123,20 @@ namespace JavLuv
                     break;
                 }
             }
-            NotifyPropertyChanged("SortMovieByList");          
+            NotifyPropertyChanged("SortMovieByList");
+
+            foreach (var sortBy in m_sortActressesByList)
+            {
+                if (sortBy.Value == Settings.Get().SortActressesBy)
+                {
+                    CurrentSortActressesBy = sortBy;
+                    Parent.Collection.SortActressesBy = sortBy.Value;
+                    break;
+                }
+            }
+            NotifyPropertyChanged("SortActressesByList");
+
+            OnChangeTabs();
         }
 
         #endregion
@@ -95,12 +155,14 @@ namespace JavLuv
             if (Settings.Get().SelectedTabIndex == 0)
             {
                 // Movie browser is shown
-
+                MovieControlsVisibility = Visibility.Visible;
+                ActressControlsVisibility = Visibility.Collapsed;
             }
             else
             {
                 // Actress browser is shown
-
+                MovieControlsVisibility = Visibility.Collapsed;
+                ActressControlsVisibility = Visibility.Visible;
             }
         }
 
@@ -209,12 +271,26 @@ namespace JavLuv
             }
         }
 
-        public ObservableCollection<SortMovieByPair> SortMovieByList
+        public bool ShowUnknownActresses
+        {
+            get { return Settings.Get().ShowUnknownActresses; }
+            set
+            {
+                if (value != Settings.Get().ShowUnknownActresses)
+                {
+                    Settings.Get().ShowUnknownActresses = value;
+                    Parent.Collection.ShowUnknownActresses = value;
+                    NotifyPropertyChanged("ShowUnknownActresses");
+                }
+            }
+        }
+
+        public ObservableCollection<SortMoviesByPair> SortMovieByList
         {
             get { return m_sortMovieByList; }
         }
 
-        public SortMovieByPair CurrentSortMovieBy
+        public SortMoviesByPair CurrentSortMovieBy
         {
             get { return m_currentSortMovieBy; }
             set
@@ -228,7 +304,52 @@ namespace JavLuv
                 }
             }
         }
-       
+        public ObservableCollection<SortActressesByPair> SortActressByList
+        {
+            get { return m_sortActressesByList; }
+        }
+
+        public SortActressesByPair CurrentSortActressesBy
+        {
+            get { return m_currentSortActressesBy; }
+            set
+            {
+                if (value != m_currentSortActressesBy)
+                {
+                    m_currentSortActressesBy = value;
+                    Settings.Get().SortActressesBy = m_currentSortActressesBy.Value;
+                    NotifyPropertyChanged("CurrentSortActressesBy");
+                    Parent.Collection.SortActressesBy = m_currentSortActressesBy.Value;
+                }
+            }
+        }
+
+        public Visibility MovieControlsVisibility
+        {
+            get { return m_movieControlsVisible; }
+            set
+            {
+                if (value != m_movieControlsVisible)
+                {
+                    m_movieControlsVisible = value;
+                    NotifyPropertyChanged("MovieControlsVisibility");
+                }
+            }
+        }
+
+        public Visibility ActressControlsVisibility
+        {
+            get { return m_actressControlsVisible; }
+            set
+            {
+                if (value != m_actressControlsVisible)
+                {
+                    m_actressControlsVisible = value;
+                    NotifyPropertyChanged("ActressControlsVisibility");
+                }
+            }
+        }
+
         #endregion
 
         #region Commands
@@ -350,8 +471,12 @@ namespace JavLuv
         private MainWindowViewModel m_parent;
         private bool m_isEnabled = true;
         private bool m_settingsIsEnabled = true;
-        private ObservableCollection<SortMovieByPair> m_sortMovieByList = new ObservableCollection<SortMovieByPair>();
-        private SortMovieByPair m_currentSortMovieBy;
+        private ObservableCollection<SortMoviesByPair> m_sortMovieByList = new ObservableCollection<SortMoviesByPair>();
+        private SortMoviesByPair m_currentSortMovieBy;
+        private ObservableCollection<SortActressesByPair> m_sortActressesByList = new ObservableCollection<SortActressesByPair>();
+        private SortActressesByPair m_currentSortActressesBy;
+        private Visibility m_movieControlsVisible = Visibility.Visible;
+        private Visibility m_actressControlsVisible = Visibility.Visible;
 
         #endregion
     }

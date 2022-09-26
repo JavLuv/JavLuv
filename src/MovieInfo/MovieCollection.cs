@@ -165,6 +165,23 @@ namespace MovieInfo
             }
         }
 
+
+        public bool ShowUnknownActresses
+        {
+            private get
+            {
+                return m_showUnknownActresses;
+            }
+            set
+            {
+                if (value != m_showUnknownActresses)
+                {
+                    m_showUnknownActresses = value;
+                    SearchActresses();
+                }
+            }
+        }
+
         public int NumMovies
         {
             get { return m_cacheData.Movies.Count; }
@@ -431,11 +448,20 @@ namespace MovieInfo
             CommandQueue.Command().Execute(m_searchMovies);            
         }
 
+        // TODO: Make a better version for searching specifically by actress, not just a generic name
+        public void SearchMoviesByActress(string name)
+        {
+            if (m_loaded == false)
+                return;
+            m_searchMovies = new CmdSearchMovies(m_cacheData, name, m_sortMoviesBy, ShowUnratedOnly, ShowSubtitlesOnly);
+            CommandQueue.Command().Execute(m_searchMovies);
+        }
+
         public void SearchActresses()
         {
             if (m_loaded == false)
                 return;
-            m_searchActresses = new CmdSearchActresses(m_actresses, m_searchText, m_sortActressesBy);
+            m_searchActresses = new CmdSearchActresses(m_actresses, m_searchText, m_sortActressesBy, m_showUnknownActresses);
             CommandQueue.Command().Execute(m_searchActresses);
         }
 
@@ -488,6 +514,9 @@ namespace MovieInfo
 
         // Show only subtitled movies
         private bool m_showSubtitlesOnly;
+
+        // Show unknown actresses
+        private bool m_showUnknownActresses;
 
         // Internal data
         private System.Windows.Threading.Dispatcher m_dispatcher;
