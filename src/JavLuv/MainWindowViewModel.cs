@@ -246,7 +246,7 @@ namespace JavLuv
 
             // Optionally move/rename post-scan
             if (JavLuv.Settings.Get().EnableMoveRename && JavLuv.Settings.Get().MoveRenameAfterScan && m_movieScanner.IsCancelled == false)
-                m_browserViewModel.MoveRenameMovies(m_movieScanner.Movies);
+                m_movieBrowserViewModel.MoveRenameMovies(m_movieScanner.Movies);
 
             m_movieCollection.AddMovies(m_movieScanner.Movies);
             m_movieScanner.Clear();
