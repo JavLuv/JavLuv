@@ -158,7 +158,8 @@
                 <!--Actress Name-->
                 <TextBox 
                     BorderThickness="0"   
-                    HorizontalAlignment="Left"
+                    Grid.ColumnSpan="3"
+                    HorizontalAlignment="Stretch"
                     VerticalAlignment="Top"
                     TextWrapping="WrapWithOverflow" 
                     FontSize="26" 
@@ -240,14 +241,24 @@
                         <TextBox Style="{StaticResource DetailTextBoxStyle}" TextWrapping="Wrap" AcceptsReturn="True" Text="{Binding Notes, UpdateSourceTrigger=LostFocus}" />
                     </Grid>
                 </StackPanel>
-
+                <StackPanel Background="Transparent" HorizontalAlignment="Left" Grid.Row="1" Grid.Column="2">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="1*" MinWidth="140"/>
+                            <ColumnDefinition Width="10" />
+                            <ColumnDefinition Width="2*" />
+                        </Grid.ColumnDefinitions>
+                        <Label Style="{StaticResource DetailLabelStyle}" Content="{DynamicResource Text.ActressJapaneseName}" />
+                        <TextBox Style="{StaticResource DetailTextBoxStyle}" Text="{Binding JapaneseName, UpdateSourceTrigger=LostFocus}" />
+                    </Grid>
+                </StackPanel>
             </Grid>
         </Grid>
 
         
          <!--Browser View-->
         <Grid Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" >
-            
+            <local:MovieBrowserView DataContext="{Binding Parent.Parent.MovieBrowser}" />
         </Grid>
     </Grid>
 </UserControl>

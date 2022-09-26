@@ -184,7 +184,14 @@ namespace JavLuv
 
         public void OpenDetailView(ActressBrowserItemViewModel browserItem)
         {
+            m_searchTextBackup = Parent.SidePanel.SearchText;
             Parent.Overlay = new ActressDetailViewModel(this, browserItem);
+        }
+
+        public void RestoreSearchText()
+        {
+            Parent.SidePanel.SearchText = m_searchTextBackup;
+            m_searchTextBackup = String.Empty;
         }
 
         #endregion
@@ -196,6 +203,7 @@ namespace JavLuv
         private ObservableCollection<ActressBrowserItemViewModel> m_selectedItems = new ObservableCollection<ActressBrowserItemViewModel>();
         private string m_selectedDescription = String.Empty;
         private bool m_isEnabled = true;
+        private string m_searchTextBackup = String.Empty;
 
         #endregion
     }

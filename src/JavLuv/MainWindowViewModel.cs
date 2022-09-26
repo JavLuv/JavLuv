@@ -80,7 +80,12 @@ namespace JavLuv
                     m_overlayViewModel = value;
                     NotifyPropertyChanged("Overlay");
                     SidePanel.IsEnabled = (m_overlayViewModel == null) ? true : false;
-                    MovieBrowser.IsEnabled = (m_overlayViewModel == null) ? true : false;
+                    if (m_overlayViewModel == null)
+                        MovieBrowser.IsEnabled = true;
+                    else if (m_overlayViewModel is ActressDetailViewModel)
+                        MovieBrowser.IsEnabled = true;
+                    else
+                        MovieBrowser.IsEnabled = true;
                     ActressBrowser.IsEnabled = (m_overlayViewModel == null) ? true : false;
                 }
             }
@@ -362,6 +367,12 @@ namespace JavLuv
                 if (Overlay.GetType() == typeof(MovieDetailViewModel))
                 {
                     Collection.SearchMovies();
+                    Collection.Save();
+                }
+                else if (Overlay.GetType() == typeof(ActressDetailViewModel))
+                {
+                    ActressBrowser.RestoreSearchText();
+                    Collection.SearchActresses();
                     Collection.Save();
                 }
             }

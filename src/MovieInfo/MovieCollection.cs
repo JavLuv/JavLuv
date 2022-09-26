@@ -87,6 +87,7 @@ namespace MovieInfo
             { 
                 m_searchText = value;
                 SearchMovies();
+                SearchActresses();
             }
         }
 

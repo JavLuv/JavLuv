@@ -1,12 +1,7 @@
 ﻿using Common;
 using MovieInfo;
 using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
@@ -30,6 +25,10 @@ namespace JavLuv
                 m_loadImage.FinishedLoading += LoadImage_FinishedLoading;
                 CommandQueue.ShortTask().Execute(m_loadImage, CommandOrder.First);
             }
+
+            // TODO: Add a search specifically for actresses, instead of just relying on hits in a general search.
+            // good enough for the time being, though, as it works 99% of the time.
+            Parent.Parent.SidePanel.SearchText = String.Format("\"{0}\"", m_actressData.Name);
         }
 
         #endregion
