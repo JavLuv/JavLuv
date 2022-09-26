@@ -53,6 +53,22 @@ namespace WebScraper
                     }
                 }
 
+                // Check for actress' parent
+                if (element.NodeName == "DIV") 
+                {
+                    // Look for idol name DIV element
+                    if (String.IsNullOrEmpty(element.ClassName) == false && element.ClassName == "idol-name")
+                    {
+                        var childElement = element.FirstChild;
+                        if (childElement != null && childElement.NodeName == "A")
+                        {
+                            var actor = new ActorData(childElement.TextContent);
+                            actor.Order = m_metadata.Actors.Count;
+                            m_metadata.Actors.Add(actor);
+                        }
+                    }
+                }
+
                 if (element.TextContent == "Translated Title:")
                 {
                     var nextElement = element.NextElementSibling;
@@ -92,13 +108,7 @@ namespace WebScraper
                         string tagContent = element.TextContent;
                         if (String.IsNullOrEmpty(tagContent))
                             continue;
-                        if (tagType == TagType.Actors)
-                        {
-                            var actor = new ActorData(tagContent);
-                            actor.Order = m_metadata.Actors.Count;
-                            m_metadata.Actors.Add(actor);
-                        }
-                        else if (tagType == TagType.Genre)
+                        if (tagType == TagType.Genre)
                         {
                             if (m_metadata.Genres.Contains(tagContent) == false)
                                 m_metadata.Genres.Add(FixCensored(tagContent));
@@ -144,8 +154,6 @@ namespace WebScraper
 
         private TagType ParseTagType(string s)
         {
-            if (s.StartsWith("idols"))
-                return TagType.Actors;
             if (s.StartsWith("genres"))
                 return TagType.Genre;
             if (s.StartsWith("studios"))
@@ -173,7 +181,6 @@ namespace WebScraper
 
         private enum TagType
         {
-            Actors,
             Genre,
             Studio,
             Label,
