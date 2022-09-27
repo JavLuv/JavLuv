@@ -85,7 +85,7 @@ namespace JavLuv
                     else if (m_overlayViewModel is ActressDetailViewModel)
                         MovieBrowser.IsEnabled = true;
                     else
-                        MovieBrowser.IsEnabled = true;
+                        MovieBrowser.IsEnabled = false;
                     ActressBrowser.IsEnabled = (m_overlayViewModel == null) ? true : false;
                 }
             }
