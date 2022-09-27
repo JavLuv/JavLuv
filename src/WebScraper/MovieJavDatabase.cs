@@ -132,6 +132,10 @@ namespace WebScraper
                     }
                 }
             }
+
+            // Clean up parentheses in names
+            foreach (ActorData actor in m_metadata.Actors)
+                MovieUtils.FilterActorName(actor);
         }
 
         protected override bool IsLanguageSupported()

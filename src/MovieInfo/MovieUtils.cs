@@ -256,6 +256,46 @@ namespace MovieInfo
             return true;
         }
 
+        public static void FilterActorName(ActorData actor)
+        {
+            // Some actors are listed as "First Last (AltFirst AltLast).
+            // This function will split these out into main and alt names
+
+            if (actor == null || String.IsNullOrEmpty(actor.Name))
+                return;
+
+            // Try cplitting name on parens
+            string[] actorNames = actor.Name.Split("()".ToCharArray());
+            if (actorNames.Length == 1)
+            {
+                // If those don't exist, just trim and return the first string
+                actor.Name = actorNames[0].Trim();
+                return;
+            }
+
+            // Assign the trimmed first part
+            actor.Name = actorNames[0].Trim();
+
+            // If we have one or more names in parens, next try splitting on commas
+            string[] moreActorNames = actorNames[1].Split(',');
+            foreach (string name in moreActorNames)
+            {
+                // Add each name to the alias list if it doesn't exist
+                string trimmedName = name.Trim();
+                bool foundAlias = false;
+                foreach (string alias in actor.Aliases)
+                {
+                    if (alias == trimmedName)
+                    {
+                        foundAlias = true;
+                        break;
+                    }
+                }
+                if (foundAlias == false)
+                    actor.Aliases.Add(trimmedName);
+            }
+        }
+
         public static bool AreActorsEquivalent(ActorData a, ActorData b)
         {
             if (a.Name == b.Name)
