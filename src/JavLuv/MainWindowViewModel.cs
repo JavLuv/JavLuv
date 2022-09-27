@@ -77,12 +77,22 @@ namespace JavLuv
             {
                 if (value != m_overlayViewModel)
                 {
+                    // This is a special case.  Preserve the old overlay view model if viewing a movie
+                    // from the actress detail page, and preserve it once we're done.
+                    if (m_overlayViewModel is ActressDetailViewModel && value is MovieDetailViewModel)
+                        m_previousActressDetailViewModel = m_overlayViewModel as ActressDetailViewModel;
+                    else if (value == null && m_previousActressDetailViewModel != null)
+                    {
+                        value = m_previousActressDetailViewModel;
+                        m_previousActressDetailViewModel = null;
+                    }   
+                    
                     m_overlayViewModel = value;
                     NotifyPropertyChanged("Overlay");
+
+                    // Selectively enable or disable various view models depending on combination
                     SidePanel.IsEnabled = (m_overlayViewModel == null) ? true : false;
-                    if (m_overlayViewModel == null)
-                        MovieBrowser.IsEnabled = true;
-                    else if (m_overlayViewModel is ActressDetailViewModel)
+                    if (m_overlayViewModel == null || m_overlayViewModel is ActressDetailViewModel)
                         MovieBrowser.IsEnabled = true;
                     else
                         MovieBrowser.IsEnabled = false;
@@ -415,6 +425,7 @@ namespace JavLuv
         MovieBrowserViewModel m_movieBrowserViewModel;
         ActressBrowserViewModel m_actressBrowserViewModel;
         ObservableObject m_overlayViewModel;
+        ActressDetailViewModel m_previousActressDetailViewModel;
         MovieScanner m_movieScanner;
         MovieCollection m_movieCollection;
         TaskbarItemProgressState m_progressState;
