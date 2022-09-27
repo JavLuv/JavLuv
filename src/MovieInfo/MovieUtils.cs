@@ -2,8 +2,10 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Security.Policy;
 using System.Text;
 using System.Text.RegularExpressions;
 
@@ -270,43 +272,61 @@ namespace MovieInfo
             {
                 // If those don't exist, just trim and return the first string
                 actor.Name = actorNames[0].Trim();
-                return;
             }
-
-            // Assign the trimmed first part
-            actor.Name = actorNames[0].Trim();
-
-            // If we have one or more names in parens, next try splitting on commas
-            string[] moreActorNames = actorNames[1].Split(',');
-            foreach (string name in moreActorNames)
+            else
             {
-                // Add each name to the alias list if it doesn't exist
-                string trimmedName = name.Trim();
-                bool foundAlias = false;
-                foreach (string alias in actor.Aliases)
+                // Assign the trimmed first part
+                actor.Name = actorNames[0].Trim();
+
+                // If we have one or more names in parens, next try splitting on commas
+                string[] moreActorNames = actorNames[1].Split(',');
+                foreach (string name in moreActorNames)
                 {
-                    if (alias == trimmedName)
+                    // Add each name to the alias list if it doesn't exist
+                    string trimmedName = name.Trim();
+                    bool foundAlias = false;
+                    foreach (string alias in actor.Aliases)
                     {
-                        foundAlias = true;
-                        break;
+                        if (alias == trimmedName)
+                        {
+                            foundAlias = true;
+                            break;
+                        }
                     }
+                    if (foundAlias == false)
+                        actor.Aliases.Add(trimmedName);
                 }
-                if (foundAlias == false)
-                    actor.Aliases.Add(trimmedName);
             }
+
+            // Make all title case
+            TextInfo textInfo = new CultureInfo("en-US", false).TextInfo;
+            actor.Name = textInfo.ToTitleCase(actor.Name);
+            for (int i = 0; i < actor.Aliases.Count; ++i)
+                actor.Aliases[i] = textInfo.ToTitleCase(actor.Aliases[i]);
+
+            // Remove duplicates
+            var nameSet = new HashSet<string>();
+            foreach (var alias in actor.Aliases)
+            {
+                if (alias != actor.Name)
+                    nameSet.Add(alias.Trim());
+            }
+            actor.Aliases.Clear();
+            foreach (var alias in nameSet)
+                actor.Aliases.Add(alias);
         }
 
         public static bool AreActorsEquivalent(ActorData a, ActorData b)
         {
             if (a.Name == b.Name)
                 return true;
-            if (b.Name.ContainsCaseless(a.Aliases))
+            if (Utilities.Equals(b.Name, a.Aliases, true))
                 return true;
-            if (a.Name.ContainsCaseless(b.Aliases))
+            if (Utilities.Equals(a.Name, b.Aliases, true))
                 return true;
             foreach (var name in a.Aliases)
             {
-                if (name.ContainsCaseless(b.Aliases))
+                if (Utilities.Equals(name, b.Aliases, true))
                     return true;
             }
             return AreActorsNearlyEquivalent(a, b);
@@ -799,7 +819,7 @@ namespace MovieInfo
                 return true;
             foreach (var name in a.Aliases)
             {
-                if (GetSimilarityMatches(a.Name, b.Aliases, SimilarityThreshold))
+                if (GetSimilarityMatches(name, b.Aliases, SimilarityThreshold))
                     return true;
             }
             return false;

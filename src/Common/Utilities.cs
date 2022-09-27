@@ -152,6 +152,16 @@ namespace Common
             return alpha.ToUpper() + "-" + numeric.ToUpper();
         }
 
+        public static bool Equals(string str, List<string> strings, bool ignoreCase)
+        {
+            foreach (string s in strings)
+            {
+                if (String.Compare(str, s, ignoreCase) == 0)
+                    return true;
+            }
+            return false;
+        }
+
         public static bool ContainsCaseless(this string stringToSearch, string searchTerm)
         {
             return stringToSearch.IndexOf(searchTerm, StringComparison.CurrentCultureIgnoreCase) >= 0;

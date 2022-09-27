@@ -81,6 +81,10 @@ namespace WebScraper
                     return null;
             }
 
+            // Clean up names as best we can
+            foreach (ActorData actor in mergedMetadata.Actors)
+                MovieUtils.FilterActorName(actor);
+
             // If we're any language but Japanese, perform special Japanese-language scrape to get original title
             if (language != LanguageType.Japanese)
                 mergedMetadata.OriginalTitle = ScrapeOriginalTitle(movieID);
