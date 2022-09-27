@@ -191,28 +191,6 @@ namespace JavLuv
             }
         }
 
-        public string Movies
-        {
-            get 
-            {
-                if (m_actressData.NumMovies == 0)
-                    return String.Empty;
-                return m_actressData.NumMovies.ToString(); 
-            }
-            set
-            {
-                if (String.IsNullOrEmpty(value))
-                    return;
-                int movies = 0;
-                int.TryParse(value, out movies);
-                if (movies != m_actressData.NumMovies)
-                {
-                    m_actressData.NumMovies = movies;
-                    NotifyPropertyChanged("Movies");
-                }
-            }
-        }
-
         public string Notes
         {
             get { return m_actressData.Notes; }

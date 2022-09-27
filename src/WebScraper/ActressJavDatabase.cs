@@ -126,19 +126,6 @@ namespace WebScraper
                         m_actressData.BloodType = nextSibling.TextContent.Trim();
                     }
                 }
-                else if (element.TextContent == "Number of Movies")
-                {
-                    var nextSibling = element.NextSibling;
-                    if (IsValidNode(nextSibling))
-                    {
-                        try
-                        {
-                            m_actressData.NumMovies = int.Parse(nextSibling.TextContent);
-                        }
-                        catch (Exception)
-                        { }
-                    }
-                }
             }
 
         }

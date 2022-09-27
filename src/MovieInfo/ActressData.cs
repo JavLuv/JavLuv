@@ -5,26 +5,6 @@ using System.Xml.Linq;
 namespace MovieInfo
 {
 
-    public class ActressStats
-    {
-        #region Constructors
-
-        public ActressStats()
-        {
-        }
-
-        #endregion
-
-        #region Properties
-
-        public int Age { get; set; }
-        public bool IsBirthday { get; set; }
-        public int NumMoviesInCollection { get; set; }
-        public int AverageMovieRating { get; set; }
-
-        #endregion
-    }
-
     [Serializable]
     public class ActressData : IEquatable<ActressData>
     {
@@ -78,7 +58,6 @@ namespace MovieInfo
         public int Hips { get; set; }
         public string BloodType { get; set; }
         public int UserRating { get; set; }
-        public int NumMovies { get; set; }
         public string Notes { get; set; }
         public List<string> ImageFileNames { get; set; }
         public int ImageIndex { get; set; }

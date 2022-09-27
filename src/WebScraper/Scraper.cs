@@ -511,8 +511,6 @@ namespace WebScraper
                 return false;
             if (String.IsNullOrEmpty(actressData.BloodType))
                 return false;
-            if (actressData.NumMovies == 0)
-                return false;
             return true;
         }
 
