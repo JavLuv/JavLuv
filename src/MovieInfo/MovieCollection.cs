@@ -369,6 +369,20 @@ namespace MovieInfo
             Save();
         }
 
+        public void RemoveActresses(List<ActressData> actresses)
+        {
+            lock (m_actresses)
+            {
+                foreach (var actress in actresses)
+                {
+                    if (m_actresses.Actresses.Contains(actress))
+                        m_actresses.Actresses.Remove(actress);
+                }
+            }
+            SearchActresses();
+            Save();
+        }
+
         public void FilterMetadata(List<MovieData> movies, List<FilterPair> studioFilter, List<FilterPair> labelFilter,
             List<FilterPair> directorFilter, List<FilterPair> categoryFilter, List<FilterPair> actorFilter)
         {

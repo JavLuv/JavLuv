@@ -1,4 +1,6 @@
-﻿using System;
+﻿using MovieInfo;
+using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
 
@@ -177,6 +179,27 @@ namespace JavLuv
         public ICommand NavigateRightCommand { get { return new RelayCommand(NavigateRightExecute, CanNavigateRightExecute); } }
 
         #endregion
+
+
+        #region Remove From Library Command
+
+        private void RemoveFromLibraryExecute()
+        {
+            List<ActressData> actresses = new List<ActressData>();
+            foreach (var item in SelectedItems)
+                actresses.Add(item.ActressData);
+            Parent.Collection.RemoveActresses(actresses);
+        }
+
+        private bool CanRemoveFromLibraryExecute()
+        {
+            return Parent.IsScanning == false;
+        }
+
+        public ICommand RemoveFromLibraryCommand { get { return new RelayCommand(RemoveFromLibraryExecute, CanRemoveFromLibraryExecute); } }
+
+        #endregion
+
 
         #endregion
 
