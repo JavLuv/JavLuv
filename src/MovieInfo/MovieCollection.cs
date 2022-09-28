@@ -165,7 +165,6 @@ namespace MovieInfo
             }
         }
 
-
         public bool ShowUnknownActresses
         {
             private get
@@ -186,6 +185,8 @@ namespace MovieInfo
         {
             get { return m_cacheData.Movies.Count; }
         }
+
+        public string MovieSearchActress { get; set; }
 
         #endregion
 
@@ -500,16 +501,11 @@ namespace MovieInfo
         {
             if (m_loaded == false)
                 return;
-            m_searchMovies = new CmdSearchMovies(m_cacheData, m_searchText, String.Empty, m_sortMoviesBy, ShowUnratedOnly, ShowSubtitlesOnly);
+            if (String.IsNullOrEmpty(MovieSearchActress))
+                m_searchMovies = new CmdSearchMovies(m_cacheData, m_searchText, String.Empty, m_sortMoviesBy, ShowUnratedOnly, ShowSubtitlesOnly);
+            else
+                m_searchMovies = new CmdSearchMovies(m_cacheData, String.Empty, MovieSearchActress, m_sortMoviesBy, false, false);
             CommandQueue.Command().Execute(m_searchMovies);            
-        }
-
-        public void SearchMoviesByActress(string name)
-        {
-            if (m_loaded == false)
-                return;
-            m_searchMovies = new CmdSearchMovies(m_cacheData, String.Empty, name, m_sortMoviesBy, false, false);
-            CommandQueue.Command().Execute(m_searchMovies);
         }
 
         public void SearchActresses()

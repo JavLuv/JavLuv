@@ -96,7 +96,17 @@ namespace JavLuv
                         MovieBrowser.IsEnabled = true;
                     else
                         MovieBrowser.IsEnabled = false;
-                    ActressBrowser.IsEnabled = (m_overlayViewModel == null) ? true : false;
+
+                    if (m_overlayViewModel == null)
+                    {
+                        ActressBrowser.IsEnabled = true;
+                        Collection.MovieSearchActress = String.Empty;
+                        Collection.SearchMovies();
+                    }
+                    else
+                    {
+                        ActressBrowser.IsEnabled = false;
+                    }
                 }
             }
         }

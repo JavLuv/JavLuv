@@ -26,7 +26,8 @@ namespace JavLuv
                 CommandQueue.ShortTask().Execute(m_loadImage, CommandOrder.First);
             }
 
-            Parent.Parent.Collection.SearchMoviesByActress(m_actressData.Name);
+            Parent.Parent.Collection.MovieSearchActress = m_actressData.Name;
+            Parent.Parent.Collection.SearchMovies();
         }
 
         #endregion
