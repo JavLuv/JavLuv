@@ -205,11 +205,27 @@ namespace MovieInfo
             Save();
         }
 
+        public void AddActress(ActressData actress)
+        {
+            lock (m_actresses)
+            {
+                if (m_actresses.Actresses.Contains(new ActressData(actress.Name)))
+                    return;
+                m_actresses.Actresses.Add(actress);
+                foreach (string altName in actress.AltNames)
+                {
+                    if (m_actresses.AltNames.Contains(new AltNameData(altName)))
+                        m_actresses.AltNames.Add(new AltNameData(altName, actress.Name));
+                }
+            }
+            SearchActresses();
+            Save();
+        }
+
         public void AddActresses(List<ActressData> actresses)
         {
-            lock(m_actresses)
+            lock (m_actresses)
             {
-                List<string> errorList = new List<string>();
                 foreach (var actress in actresses)
                 {
                     if (m_actresses.Actresses.Contains(new ActressData(actress.Name)))
@@ -218,8 +234,6 @@ namespace MovieInfo
                     foreach (string altName in actress.AltNames)
                     {
                         if (m_actresses.AltNames.Contains(new AltNameData(altName)))
-                            errorList.Add(altName);
-                        else
                             m_actresses.AltNames.Add(new AltNameData(altName, actress.Name));
                     }
                 }

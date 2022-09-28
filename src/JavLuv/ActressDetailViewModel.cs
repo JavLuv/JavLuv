@@ -64,6 +64,8 @@ namespace JavLuv
 
         public ActressData ActressData { get { return m_actressData; } }
 
+        public bool NameChanged { get; private set; }
+
         public string Name
         {
             get
@@ -91,8 +93,11 @@ namespace JavLuv
                             );
                         return;
                     }
+                    Parent.Parent.Collection.RemoveActress(m_actressData);
                     m_actressData.Name = value;
                     NotifyPropertyChanged("Name");
+                    Parent.Parent.Collection.AddActress(m_actressData);
+                    Parent.Parent.Collection.UpdateActressNames();
                 }
             }
         }
@@ -137,6 +142,7 @@ namespace JavLuv
                     }
                     m_actressData.AltNames = altNames;
                     NotifyPropertyChanged("AlternateNames");
+                    Parent.Parent.Collection.UpdateActressNames();
                 }
             }
         }
