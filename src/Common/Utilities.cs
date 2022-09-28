@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -242,6 +243,32 @@ namespace Common
             for (int i = 0; i < strings.Length; ++i)
                 strings[i] = strings[i].Trim();
             return strings;
+        }
+
+        public static string DateTimeToString(DateTime dateTime)
+        {
+            try
+            {
+                if (dateTime == null || dateTime == new DateTime())
+                    return String.Empty;
+                return dateTime.ToString("yyyy-MM-dd");
+            }
+            catch(Exception)
+            {
+                return String.Empty;
+            }
+        }
+
+        public static DateTime StringToDateTime(string dateTimeString)
+        {
+            try
+            {
+                return DateTime.ParseExact(dateTimeString, "yyyy-MM-dd", CultureInfo.InvariantCulture);
+            }
+            catch(Exception)
+            {
+                return new DateTime();
+            }
         }
 
         public static string StringListToString(List<string> stringList)

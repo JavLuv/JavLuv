@@ -115,21 +115,16 @@ namespace JavLuv
         {
             get 
             {
-                if (m_actressData.DateOfBirth == new DateTime())
-                    return String.Empty;
-                return m_actressData.DateOfBirth.ToShortDateString(); 
+                return Utilities.DateTimeToString(m_actressData.DateOfBirth);
             }
             set
             {
-                var newDateTime = new DateTime();
-                if (DateTime.TryParse(value, out newDateTime))
+                var newDateTime = Utilities.StringToDateTime(value);
+                if (newDateTime != m_actressData.DateOfBirth && newDateTime != new DateTime())
                 {
-                    if (newDateTime != m_actressData.DateOfBirth)
-                    {
-                        m_actressData.DateOfBirth = newDateTime;
-                        NotifyPropertyChanged("DateOfBirth");
-                    }
-                }
+                    m_actressData.DateOfBirth = newDateTime;
+                    NotifyPropertyChanged("DateOfBirth");
+                }      
             }
         }
 
