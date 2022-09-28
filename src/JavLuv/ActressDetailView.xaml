@@ -32,14 +32,14 @@
         </Style>
     </UserControl.Resources>
 
-    <Grid x:Name="MainGrid" Focusable="True" MouseDown="MainGrid_MouseDown"  >
+    <Grid x:Name="MainGrid" Focusable="True" MouseDown="MainGrid_MouseDown" >
         <Grid.RowDefinitions>
             <RowDefinition Height="36" />
             <RowDefinition Height="420" />
             <RowDefinition Height="15" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
-        
+
         <Grid.InputBindings>
             <KeyBinding Command="{Binding Parent.NavigateLeftCommand}" Key="Left" />
             <KeyBinding Command="{Binding Parent.NavigateRightCommand}" Key="Right" />
@@ -52,7 +52,7 @@
         </Grid.ContextMenu>
 
         <!--Actress Details Header Controls-->
-        <Grid>
+        <Grid Background="Transparent">
             <Grid.RowDefinitions>
                 <RowDefinition Height="36" />
             </Grid.RowDefinitions>
@@ -164,8 +164,8 @@
                     />
                 
                 <!--Actress Info, first column-->
-                <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
-                    <StackPanel Background="Transparent" HorizontalAlignment="Left" MinWidth="500"  Grid.Row="1" Grid.Column="0">
+                <!--<ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" >-->
+                    <StackPanel HorizontalAlignment="Left" MinWidth="500"  Grid.Row="1" Grid.Column="0" Background="Transparent" IsHitTestVisible="True" MouseDown="MainGrid_MouseDown">
                         <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="180"/>
@@ -248,13 +248,7 @@
                             <TextBox Style="{StaticResource DetailTextBoxStyle}" TextWrapping="Wrap" AcceptsReturn="True" Text="{Binding Notes, UpdateSourceTrigger=LostFocus}" />
                         </Grid>
                     </StackPanel>
-
-                </ScrollViewer>
-
-                <!--Actress Info, second column-->
-                <StackPanel Background="Transparent" HorizontalAlignment="Left" Grid.Row="1" Grid.Column="2">
-                </StackPanel>
-
+                <!--</ScrollViewer>-->
 
             </Grid>
         </Grid>

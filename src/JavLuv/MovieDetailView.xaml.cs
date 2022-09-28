@@ -11,6 +11,9 @@ namespace JavLuv
         public MovieDetailView()
         {
             InitializeComponent();
+
+            // Ensures WPF sets initial focus to the first element.  By default, no focus is set
+            Loaded += (sender, e) => MoveFocus(new TraversalRequest(FocusNavigationDirection.First));
         }
 
         private void MainGrid_MouseDown(object sender, MouseButtonEventArgs e)
