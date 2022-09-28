@@ -16,7 +16,6 @@ namespace JavLuv
         {
             Parent = parent;
             m_actressData = actressData;
-            m_imageFileName = String.Empty;
             CreateDisplayTitle();
         }
 
@@ -88,7 +87,7 @@ namespace JavLuv
             if (m_loadImage != null)
             {
                 m_loadImage.Cancel = true;
-                m_loadImage.FinishedLoading -= LoadImage_FinishedLoading;
+                m_loadImage.FinishedLoading -= OnImageFinishedLoading;
                 m_loadImage = null;
             }
         }
@@ -109,18 +108,17 @@ namespace JavLuv
             if (m_actressData.ImageFileNames.Count == 0)
                 return;
             m_actressData.ImageIndex = Math.Min(m_actressData.ImageIndex, m_actressData.ImageFileNames.Count - 1);
-            m_imageFileName = m_actressData.ImageFileNames[m_actressData.ImageIndex];
-            string path = Path.Combine(Utilities.GetActressImageFolder(), m_imageFileName);
+            string path = Path.Combine(Utilities.GetActressImageFolder(), m_actressData.ImageFileNames[m_actressData.ImageIndex]);
             m_loadImage = new CmdLoadImage(path, ImageSize.Thumbnail);
-            m_loadImage.FinishedLoading += LoadImage_FinishedLoading;
+            m_loadImage.FinishedLoading += OnImageFinishedLoading;
             CommandQueue.ShortTask().Execute(m_loadImage);
         }
 
-        private void LoadImage_FinishedLoading(object sender, EventArgs e)
+        private void OnImageFinishedLoading(object sender, EventArgs e)
         {
             Image = m_loadImage.Image;
             if (Image == null)
-                Logger.WriteWarning("Unable to load image " + m_imageFileName);
+                Logger.WriteWarning("Unable to load image " + Path.Combine(Utilities.GetActressImageFolder(), m_actressData.ImageFileNames[m_actressData.ImageIndex]));
             m_loadImage = null;
         }
 
@@ -144,7 +142,6 @@ namespace JavLuv
         #region Private Members
 
         private ImageSource m_image;
-        private string m_imageFileName;
         private CmdLoadImage m_loadImage;
         private ActressData m_actressData;
         private string m_displayTitle;

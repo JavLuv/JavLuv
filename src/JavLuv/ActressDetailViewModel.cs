@@ -21,20 +21,20 @@ namespace JavLuv
             if (m_actressData.ImageFileNames.Count > 0)
             {
                 m_actressData.ImageIndex = Math.Min(m_actressData.ImageIndex, m_actressData.ImageFileNames.Count - 1);
-                m_loadImage = new CmdLoadImage(Path.Combine(Utilities.GetActressImageFolder(), m_actressData.ImageFileNames[m_actressData.ImageIndex]));
-                m_loadImage.FinishedLoading += LoadImage_FinishedLoading;
+                string path = Path.Combine(Utilities.GetActressImageFolder(), m_actressData.ImageFileNames[m_actressData.ImageIndex]);
+                m_loadImage = new CmdLoadImage(path, ImageSize.Full);
+                m_loadImage.FinishedLoading += OnImageFinishedLoading;
                 CommandQueue.ShortTask().Execute(m_loadImage, CommandOrder.First);
             }
 
-            // TODO: Add a search specifically for actresses, instead of just relying on hits in a general search.
-            Parent.Parent.Collection.SearchMoviesByActress(String.Format("\"{0}\"", m_actressData.Name));
+            Parent.Parent.Collection.SearchMoviesByActress(m_actressData.Name);
         }
 
         #endregion
 
         #region Event Handlers
 
-        private void LoadImage_FinishedLoading(object sender, System.EventArgs e)
+        private void OnImageFinishedLoading(object sender, System.EventArgs e)
         {
             Image = m_loadImage.Image;
             if (Image == null)

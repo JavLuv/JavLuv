@@ -320,13 +320,13 @@ namespace MovieInfo
         {
             if (a.Name == b.Name)
                 return true;
-            if (Utilities.Equals(b.Name, a.Aliases, true))
+            if (Utilities.Equals(b.Name, a.Aliases, StringComparison.OrdinalIgnoreCase))
                 return true;
-            if (Utilities.Equals(a.Name, b.Aliases, true))
+            if (Utilities.Equals(a.Name, b.Aliases, StringComparison.OrdinalIgnoreCase))
                 return true;
             foreach (var name in a.Aliases)
             {
-                if (Utilities.Equals(name, b.Aliases, true))
+                if (Utilities.Equals(name, b.Aliases, StringComparison.OrdinalIgnoreCase))
                     return true;
             }
             return AreActorsNearlyEquivalent(a, b);

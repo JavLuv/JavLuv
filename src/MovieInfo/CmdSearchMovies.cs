@@ -81,10 +81,18 @@ namespace MovieInfo
     {
         #region Constructors
 
-        public CmdSearchMovies(CacheData cacheData, string searchText, SortMoviesBy sortMoviesBy, bool showUnratedOnly, bool showSubtitlesOnly)
+        public CmdSearchMovies(
+            CacheData cacheData, 
+            string searchText, 
+            string actressName,
+            SortMoviesBy sortMoviesBy, 
+            bool showUnratedOnly, 
+            bool showSubtitlesOnly
+            )
         {
             m_cacheData = cacheData;
             m_searchText = searchText;
+            m_actressName = actressName;
             m_sortMoviesBy = sortMoviesBy;
             m_showUnratedOnly = showUnratedOnly;
             m_showSubtitlesOnly = showSubtitlesOnly;
@@ -103,7 +111,7 @@ namespace MovieInfo
         public void Execute()
         {
             // Perform keyword-based search if required
-            if (String.IsNullOrEmpty(m_searchText) == false || m_showSubtitlesOnly || m_showUnratedOnly)
+            if (String.IsNullOrEmpty(m_searchText) == false || m_showSubtitlesOnly || m_showUnratedOnly || String.IsNullOrEmpty(m_actressName) == false)
             {
                 Search();
             }
@@ -131,32 +139,45 @@ namespace MovieInfo
 
         private void Search()
         {
-            var terms = MovieUtils.SearchSplit(m_searchText);   
             HashSet<MovieData> foundMovies = new HashSet<MovieData>();
-            foreach (MovieData movie in m_cacheData.Movies)
+
+            if (String.IsNullOrEmpty(m_searchText) == false)
             {
-                if (m_showUnratedOnly && movie.Metadata.UserRating != 0)
-                    continue;
-                if (m_showSubtitlesOnly && movie.SubtitleFileNames.Count() == 0)
-                    continue;
-                bool found = true;
-                foreach (string term in terms)
+                var terms = MovieUtils.SearchSplit(m_searchText);   
+                foreach (MovieData movie in m_cacheData.Movies)
                 {
-                    if (!SearchMovie(movie, term))
-                    {
-                        found = false;
+                    if (m_showUnratedOnly && movie.Metadata.UserRating != 0)
                         continue;
+                    if (m_showSubtitlesOnly && movie.SubtitleFileNames.Count() == 0)
+                        continue;
+                    bool found = true;
+                    foreach (string term in terms)
+                    {
+                        if (!SearchMovieForTerm(movie, term))
+                        {
+                            found = false;
+                            continue;
+                        }
                     }
+                    if (found)
+                        foundMovies.Add(movie);
                 }
-                if (found)
-                    foundMovies.Add(movie);
+            }
+
+            if (String.IsNullOrEmpty(m_actressName) == false)
+            {
+                foreach (MovieData movie in m_cacheData.Movies)
+                {
+                    if (SearchMovieForActress(movie, m_actressName))
+                        m_filteredMovies.Add(movie);
+                }
             }
 
             foreach (MovieData movie in foundMovies)
                 m_filteredMovies.Add(movie);
         }
 
-        private bool SearchMovie(MovieData movie, string term)
+        private bool SearchMovieForTerm(MovieData movie, string term)
         {
             if (movie.Metadata.Title.ContainsCaseless(term))
                 return true;
@@ -183,6 +204,18 @@ namespace MovieInfo
                 return true;
             if (movie.Path.ContainsCaseless(term))
                 return true;
+            return false;
+        }
+
+        private bool SearchMovieForActress(MovieData movie, string actress)
+        {
+            foreach (var actor in movie.Metadata.Actors)
+            {
+                if (String.Equals(actress, actor.Name, StringComparison.OrdinalIgnoreCase))
+                    return true;
+                if (Utilities.Equals(actress, actor.Aliases, StringComparison.OrdinalIgnoreCase))
+                    return true;
+            }
             return false;
         }
 
@@ -221,6 +254,7 @@ namespace MovieInfo
         private SortMoviesBy m_sortMoviesBy = SortMoviesBy.Title;
         private bool m_showUnratedOnly;
         private bool m_showSubtitlesOnly;
+        private string m_actressName;
 
         #endregion
     }

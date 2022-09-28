@@ -152,11 +152,11 @@ namespace Common
             return alpha.ToUpper() + "-" + numeric.ToUpper();
         }
 
-        public static bool Equals(string str, List<string> strings, bool ignoreCase)
+        public static bool Equals(string str, List<string> strings, StringComparison comparison)
         {
             foreach (string s in strings)
             {
-                if (String.Compare(str, s, ignoreCase) == 0)
+                if (String.Equals(str, s, comparison))
                     return true;
             }
             return false;

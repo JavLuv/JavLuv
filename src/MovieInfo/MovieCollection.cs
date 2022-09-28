@@ -458,16 +458,15 @@ namespace MovieInfo
         {
             if (m_loaded == false)
                 return;
-            m_searchMovies = new CmdSearchMovies(m_cacheData, m_searchText, m_sortMoviesBy, ShowUnratedOnly, ShowSubtitlesOnly);
+            m_searchMovies = new CmdSearchMovies(m_cacheData, m_searchText, String.Empty, m_sortMoviesBy, ShowUnratedOnly, ShowSubtitlesOnly);
             CommandQueue.Command().Execute(m_searchMovies);            
         }
 
-        // TODO: Make a better version for searching specifically by actress, not just a generic name
         public void SearchMoviesByActress(string name)
         {
             if (m_loaded == false)
                 return;
-            m_searchMovies = new CmdSearchMovies(m_cacheData, name, m_sortMoviesBy, ShowUnratedOnly, ShowSubtitlesOnly);
+            m_searchMovies = new CmdSearchMovies(m_cacheData, String.Empty, name, m_sortMoviesBy, false, false);
             CommandQueue.Command().Execute(m_searchMovies);
         }
 
