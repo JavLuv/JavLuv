@@ -52,7 +52,7 @@
                         Width="130"
                         ItemsSource="{Binding Languages}"
                         SelectedValue="{Binding SelectedLanguage}"
-                        DisplayMemberPath="Text"
+                        DisplayMemberPath="Value"
                         />
 
                     <CheckBox 

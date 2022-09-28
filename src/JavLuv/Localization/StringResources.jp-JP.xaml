@@ -12,7 +12,7 @@
     <system:String x:Key="Text.Japanese">日本語</system:String>
     <system:String x:Key="Text.ShowAdvanced">Show advanced options</system:String>
     <system:String x:Key="Text.CheckForUpdates">Automatically check for updates</system:String>
-    <system:String x:Key="Text.Subtitles">Subtitle</system:String>
+    <system:String x:Key="Text.Subtitles">Subtitles</system:String>
     <system:String x:Key="Text.HideMetadata">Hide metadata and cover files</system:String>
     <system:String x:Key="Text.Scanning">Scanning</system:String>
     <system:String x:Key="Text.GenerateMetadata">Generate metadata from local files if no online resources are found</system:String>

@@ -1,50 +1,11 @@
 ﻿using Common;
 using System;
-using System.Collections.ObjectModel;
 using System.Windows.Input;
+using LanguageTypePair = JavLuv.ObservableStringValuePair<Common.LanguageType>;
+using LanguageTypePairList = System.Collections.ObjectModel.ObservableCollection<JavLuv.ObservableStringValuePair<Common.LanguageType>>;
 
 namespace JavLuv
 {
-
-    public class LanguageData : ObservableObject
-    {
-        #region Constructor
-
-        public LanguageData(LanguageType language)
-        {
-            Language = language;
-        }
-
-        #endregion
-
-        #region Properties
-
-        public LanguageType Language { get; private set; }
-
-        public string Text
-        {
-            get
-            {
-                if (Language == LanguageType.English)
-                    return TextManager.GetString("Text.English");
-                else if (Language == LanguageType.Japanese)
-                    return TextManager.GetString("Text.Japanese");
-                return App.Current.Properties["English"].ToString();
-            }
-        }
-
-        #endregion
-
-        #region Public Functions
-
-        public void Refresh()
-        {
-            NotifyPropertyChanged("Text");
-        }
-
-        #endregion
-    }
-
     public class SettingsViewModel : ObservableObject
     {
         #region Constructors
@@ -52,14 +13,17 @@ namespace JavLuv
         public SettingsViewModel(MainWindowViewModel parent)
         {
             m_parent = parent;
-            Languages = new ObservableCollection<LanguageData>();
-            LanguageType currentLanguage = Settings.Get().Language;
-            foreach (LanguageType lang in Enum.GetValues(typeof(LanguageType)))
+            Languages = new LanguageTypePairList();
+            Languages.Add(new LanguageTypePair("Text.English", LanguageType.English));
+            Languages.Add(new LanguageTypePair("Text.Japanese", LanguageType.Japanese));
+            LanguageType currentLanguage = Settings.Get().Language;    
+            foreach (var language in Languages)
             {
-                var langData = new LanguageData(lang);
-                if (lang == currentLanguage)
-                    SelectedLanguage = langData;
-                Languages.Add(langData);
+                if (Settings.Get().Language == language.Value)
+                {
+                    SelectedLanguage = language;
+                    break;
+                }
             }
         }
 
@@ -80,7 +44,7 @@ namespace JavLuv
 
         public Settings Data { get { return Settings.Get(); } }
 
-        public LanguageData SelectedLanguage
+        public LanguageTypePair SelectedLanguage
         {
             get
             {
@@ -88,13 +52,13 @@ namespace JavLuv
             }
             set
             {
-                if (m_selectedLanguage == null || value.Language != m_selectedLanguage.Language)
+                if (m_selectedLanguage == null || value.Value != m_selectedLanguage.Value)
                 {
                     m_selectedLanguage = value;
-                    Settings.Get().Language = m_selectedLanguage.Language;
-                    TextManager.SetLanguage(m_selectedLanguage.Language);
+                    Settings.Get().Language = m_selectedLanguage.Value;
+                    TextManager.SetLanguage(m_selectedLanguage.Value);
                     foreach (var languageData in Languages)
-                        languageData.Refresh();
+                        languageData.Notify();
                     if (Parent.SidePanel != null)
                         Parent.SidePanel.NotifyAllProperty();
                     NotifyAllPropertiesChanged();
@@ -102,7 +66,7 @@ namespace JavLuv
             }
         }
 
-        public ObservableCollection<LanguageData> Languages { get; private set; }
+        public LanguageTypePairList Languages { get; private set; }
 
         public bool ShowAdvancedOptions
         {
@@ -552,7 +516,7 @@ namespace JavLuv
         #region Private Members
 
         private MainWindowViewModel m_parent;
-        private LanguageData m_selectedLanguage;
+        private LanguageTypePair m_selectedLanguage;
 
         #endregion
     }

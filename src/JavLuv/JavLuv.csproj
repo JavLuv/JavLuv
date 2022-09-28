@@ -136,6 +136,7 @@
       <DependentUpon>MovieDetailView.xaml</DependentUpon>
     </Compile>
     <Compile Include="MovieDetailViewModel.cs" />
+    <Compile Include="ObservableStringValuePair.cs" />
     <Compile Include="ScanView.xaml.cs">
       <DependentUpon>ScanView.xaml</DependentUpon>
     </Compile>
