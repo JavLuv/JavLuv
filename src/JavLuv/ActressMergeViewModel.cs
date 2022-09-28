@@ -83,7 +83,7 @@ namespace JavLuv
                 StringBuilder sb = new StringBuilder(200);
                 sb.AppendLine(String.Format("{0} {1}", TextManager.GetString("Text.MergeActressesName"), m_actressData.Name));
                 sb.AppendLine(String.Format("{0} {1}", TextManager.GetString("Text.ActressJapaneseName"), m_actressData.JapaneseName));
-                sb.AppendLine(String.Format("{0} {1}", TextManager.GetString("Text.ActressAlternateNames"), Common.Utilities.StringListToString(m_actressData.AlternateNames)));
+                sb.AppendLine(String.Format("{0} {1}", TextManager.GetString("Text.ActressAlternateNames"), Common.Utilities.StringListToString(m_actressData.AltNames)));
                 return sb.ToString();
             }
         }
@@ -156,6 +156,7 @@ namespace JavLuv
                 MovieUtils.MergeActresses(m_parent.SelectedItems[1].ActressData, m_parent.SelectedItems[0].ActressData);
                 m_parent.Parent.Collection.RemoveActress(m_parent.SelectedItems[0].ActressData);
             }
+            m_parent.Parent.Collection.UpdateActressNames();
         }
 
         private bool CanMergeActressesExecute()

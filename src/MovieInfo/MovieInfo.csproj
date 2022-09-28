@@ -50,6 +50,7 @@
     <Compile Include="CmdRestoreMetadata.cs" />
     <Compile Include="CmdSave.cs" />
     <Compile Include="CmdSearchActresses.cs" />
+    <Compile Include="CmdUpdateActressNames.cs" />
     <Compile Include="CommandQueue.cs" />
     <Compile Include="MovieCollection.cs" />
     <Compile Include="MovieData.cs" />

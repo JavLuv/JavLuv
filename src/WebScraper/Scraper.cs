@@ -102,7 +102,7 @@ namespace WebScraper
             var actressData = new ActressData();
             actressData.Name = actor.Name;
             foreach (string altname in actor.Aliases)
-                actressData.AlternateNames.Add(altname);
+                actressData.AltNames.Add(altname);
 
             // Create destination filename and path
             string actressImagefolder = Utilities.GetActressImageFolder();
@@ -479,17 +479,17 @@ namespace WebScraper
             // If failed to find or adequately populate data, try existing aliases
             if (IsActressDataAcceptable(actressData) == false)
             {
-                for (int i = 0; i < actressData.AlternateNames.Count; ++i)
+                for (int i = 0; i < actressData.AltNames.Count; ++i)
                 {
                     string name = actressData.Name;
-                    string altName = actressData.AlternateNames[i];
+                    string altName = actressData.AltNames[i];
                     actressData.Name = altName;
                     module.Scrape();
                     if (IsActressDataAcceptable(actressData))
                     {
                         // If we found a match, we're going to essentially swap the original
                         // name and alternate name.
-                        actressData.AlternateNames[i] = name;
+                        actressData.AltNames[i] = name;
                         break;
                     }
                     // If no match is found, we revert the name back to the original

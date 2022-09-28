@@ -8,7 +8,7 @@ namespace MovieInfo
     {
         #region Constructors
 
-        public CmdLoad(ref CacheData cacheData, string cacheFilename, ref ActressesData actresses, string actressFilename, ref BackupData backupData, string backupFilename)
+        public CmdLoad(ref CacheData cacheData, string cacheFilename, ref ActressesDatabase actresses, string actressFilename, ref BackupData backupData, string backupFilename)
         {
             m_cacheData = cacheData;
             m_cacheFilename = cacheFilename;
@@ -57,10 +57,10 @@ namespace MovieInfo
             {
                 if (File.Exists(m_actressFilename))
                 {
-                    var actresses = MovieSerializer<ActressesData>.Load(m_actressFilename, ActressesData.Filter);
+                    var actresses = MovieSerializer<ActressesDatabase>.Load(m_actressFilename, ActressesDatabase.Filter);
 
                     // Copy all public read/write properties
-                    PropertyInfo[] properties = typeof(ActressesData).GetProperties();
+                    PropertyInfo[] properties = typeof(ActressesDatabase).GetProperties();
                     foreach (PropertyInfo property in properties)
                     {
                         if (property.CanRead && property.CanWrite)
@@ -77,7 +77,7 @@ namespace MovieInfo
 
         private CacheData m_cacheData;
         private string m_cacheFilename;
-        private ActressesData m_actresses;
+        private ActressesDatabase m_actresses;
         private string m_actressFilename;
         private BackupData m_backupData;
         private string m_backupFilename;

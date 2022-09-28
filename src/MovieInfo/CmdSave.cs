@@ -6,7 +6,7 @@ namespace MovieInfo
     {
         #region Constructors
 
-        public CmdSave(CacheData cacheData, string cacheFilename, ActressesData actresses, string actressesFilename, BackupData backupData, string backupFilename)
+        public CmdSave(CacheData cacheData, string cacheFilename, ActressesDatabase actresses, string actressesFilename, BackupData backupData, string backupFilename)
         {
             m_cacheData = cacheData;
             m_cacheFilename = cacheFilename;
@@ -53,7 +53,7 @@ namespace MovieInfo
             lock(m_actresses)
             {
                 // Save actresses data
-                MovieSerializer<ActressesData>.Save(m_actressesFilename, m_actresses);
+                MovieSerializer<ActressesDatabase>.Save(m_actressesFilename, m_actresses);
             }
         }
 
@@ -63,7 +63,7 @@ namespace MovieInfo
 
         private CacheData m_cacheData;
         private string m_cacheFilename;
-        private ActressesData m_actresses;
+        private ActressesDatabase m_actresses;
         private string m_actressesFilename;
         private BackupData m_backupData;
         private string m_backupFilename;

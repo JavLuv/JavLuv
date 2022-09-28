@@ -98,14 +98,14 @@ namespace JavLuv
 
         public string AlternateNames
         {
-            get { return Utilities.StringListToString(m_actressData.AlternateNames); }
+            get { return Utilities.StringListToString(m_actressData.AltNames); }
             set
             {
                 var names = value;
-                var currentNames = Utilities.StringListToString(m_actressData.AlternateNames);
+                var currentNames = Utilities.StringListToString(m_actressData.AltNames);
                 if (value != currentNames)
                 {
-                    m_actressData.AlternateNames = Utilities.StringToStringList(value);
+                    m_actressData.AltNames = Utilities.StringToStringList(value);
                     NotifyPropertyChanged("AlternateNames");
                 }
             }

@@ -243,7 +243,10 @@ namespace JavLuv
             NotifyPropertyChanged("IsScanning");
             NotifyPropertyChanged("ScanVisibility");
 
-            string errorMsg = String.Empty;
+            // Add new actresses to actress database
+            m_movieCollection.AddActresses(m_movieScanner.Actresses);
+
+           string errorMsg = String.Empty;
             if (m_movieScanner.ErrorLog != String.Empty)
             {
                 m_reportViewModel.ErrorLog = String.Empty;
@@ -255,9 +258,6 @@ namespace JavLuv
                 m_sidePanelViewModel.IsEnabled = false;
                 ProgressState = TaskbarItemProgressState.Error;
             }
-
-            // Add new actresses to actress database
-            m_movieCollection.AddActresses(m_movieScanner.Actresses);
 
             // Optionally move/rename post-scan
             if (JavLuv.Settings.Get().EnableMoveRename && JavLuv.Settings.Get().MoveRenameAfterScan && m_movieScanner.IsCancelled == false)

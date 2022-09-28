@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Xml.Linq;
+using System.Xml.Serialization;
 
 namespace MovieInfo
 {
@@ -14,7 +16,18 @@ namespace MovieInfo
         {
             Name = String.Empty;
             JapaneseName = String.Empty;
-            AlternateNames = new List<string>();
+            AltNames = new List<string>();
+            DateOfBirth = new DateTime();
+            Cup = String.Empty;
+            BloodType = String.Empty;
+            ImageFileNames = new List<string>();
+        }
+
+        public ActressData(string name)
+        {
+            Name = name;
+            JapaneseName = String.Empty;
+            AltNames = new List<string>();
             DateOfBirth = new DateTime();
             Cup = String.Empty;
             BloodType = String.Empty;
@@ -32,7 +45,7 @@ namespace MovieInfo
 
         public override bool Equals(object obj)
         {
-            var md = obj as MovieData;
+            var md = obj as ActressData;
             if (md == null)
                 return false;
             return Equals(md);
@@ -49,7 +62,7 @@ namespace MovieInfo
 
         public string Name { get; set; }
         public string JapaneseName { get; set; }
-        public List<string> AlternateNames { get; set; }
+        public List<string> AltNames { get; set; }
         public DateTime DateOfBirth { get; set; }
         public int Height { get; set; }
         public string Cup { get; set; }
@@ -66,13 +79,69 @@ namespace MovieInfo
     }
 
     [Serializable]
-    public class ActressesData
+    public class AltNameData : IEquatable<AltNameData>
     {
         #region Constructors
 
-        public ActressesData()
+        public AltNameData()
+        {
+            AltName = String.Empty;
+            Name = String.Empty;
+        }
+        public AltNameData(string altName)
+        {
+            AltName = altName;
+            Name = String.Empty;
+        }
+
+        public AltNameData(string altName, string name)
+        {
+            AltName = altName;
+            Name = name;
+        }
+
+        #endregion
+
+        #region Public Functions
+
+        public override int GetHashCode()
+        {
+            return AltName.GetHashCode();
+        }
+
+        public override bool Equals(object obj)
+        {
+            var md = obj as AltNameData;
+            if (md == null)
+                return false;
+            return Equals(md);
+        }
+
+        public bool Equals(AltNameData other)
+        {
+            return String.Compare(AltName, other.AltName, true) == 0;
+        }
+
+        #endregion
+
+        #region Properties
+
+        public string AltName { get; set; }
+
+        public string Name { get; set; }
+        #endregion
+    }
+
+
+    [Serializable]
+    public class ActressesDatabase
+    {
+        #region Constructors
+
+        public ActressesDatabase()
         {
             Actresses = new HashSet<ActressData>();
+            AltNames = new HashSet<AltNameData>();
         }
 
         public static void Filter(XDocument doc)
@@ -84,6 +153,8 @@ namespace MovieInfo
         #region Properties
 
         public HashSet<ActressData> Actresses { get; set; }
+
+        public HashSet<AltNameData> AltNames { get; set; }
 
         #endregion
     }

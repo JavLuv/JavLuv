@@ -47,7 +47,7 @@ namespace MovieInfo
     {
         #region Constructors
 
-        public CmdSearchActresses(ActressesData actressesData, string searchText, SortActressesBy sortActressesBy, bool showUnknownActresses)
+        public CmdSearchActresses(ActressesDatabase actressesData, string searchText, SortActressesBy sortActressesBy, bool showUnknownActresses)
         {
             m_actressesData = actressesData;
             m_searchText = searchText;
@@ -78,9 +78,7 @@ namespace MovieInfo
                 lock (m_actressesData)
                 {
                     foreach (var actress in m_actressesData.Actresses)
-                    {
                         m_filteredActresses.Add(actress);
-                    }
                 }
             }
 
@@ -155,7 +153,7 @@ namespace MovieInfo
 
         #region Private Members
 
-        private ActressesData m_actressesData;
+        private ActressesDatabase m_actressesData;
         private List<ActressData> m_filteredActresses = new List<ActressData>();
         private string m_searchText = String.Empty;
         private SortActressesBy m_sortActressesBy = SortActressesBy.Name;

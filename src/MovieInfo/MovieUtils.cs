@@ -237,12 +237,12 @@ namespace MovieInfo
 
         public static void MergeActresses(ActressData primary, ActressData secondary)
         {
-            if (Utilities.Equals(secondary.Name, primary.AlternateNames, StringComparison.OrdinalIgnoreCase) == false)
-                primary.AlternateNames.Add(secondary.Name);
-            foreach (string altName2 in secondary.AlternateNames)
+            if (Utilities.Equals(secondary.Name, primary.AltNames, StringComparison.OrdinalIgnoreCase) == false)
+                primary.AltNames.Add(secondary.Name);
+            foreach (string altName2 in secondary.AltNames)
             {
-                if (Utilities.Equals(altName2, primary.AlternateNames, StringComparison.OrdinalIgnoreCase) == false)
-                    primary.AlternateNames.Add(altName2);
+                if (Utilities.Equals(altName2, primary.AltNames, StringComparison.OrdinalIgnoreCase) == false)
+                    primary.AltNames.Add(altName2);
             }
             if (String.IsNullOrEmpty(primary.JapaneseName))
                 primary.JapaneseName = secondary.JapaneseName;

@@ -13,7 +13,7 @@ namespace MovieInfo
             Movies = new HashSet<MovieMetadata>();
         }
 
-       public static void Filter(XDocument doc)
+        public static void Filter(XDocument doc)
         {
         }
 
