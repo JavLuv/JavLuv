@@ -235,6 +235,42 @@ namespace MovieInfo
             return genresChanged;
         }
 
+        public static void MergeActresses(ActressData primary, ActressData secondary)
+        {
+            if (Utilities.Equals(secondary.Name, primary.AlternateNames, StringComparison.OrdinalIgnoreCase) == false)
+                primary.AlternateNames.Add(secondary.Name);
+            foreach (string altName2 in secondary.AlternateNames)
+            {
+                if (Utilities.Equals(altName2, primary.AlternateNames, StringComparison.OrdinalIgnoreCase) == false)
+                    primary.AlternateNames.Add(altName2);
+            }
+            if (String.IsNullOrEmpty(primary.JapaneseName))
+                primary.JapaneseName = secondary.JapaneseName;
+            if (primary.DateOfBirth == new DateTime())
+                primary.DateOfBirth = secondary.DateOfBirth;
+            if (primary.Height == 0)
+                primary.Height = secondary.Height;
+            if (String.IsNullOrEmpty(primary.Cup))
+                primary.Cup = secondary.Cup;
+            if (primary.Bust == 0)
+                primary.Bust = secondary.Bust;
+            if (primary.Waist == 0)
+                primary.Waist = secondary.Waist;
+            if (primary.Hips == 0)
+                primary.Hips = secondary.Hips;
+            if (String.IsNullOrEmpty(primary.BloodType))
+                primary.BloodType = secondary.BloodType;
+            if (primary.UserRating == 0)
+                primary.UserRating = secondary.UserRating;
+            if (String.IsNullOrEmpty(secondary.Notes) == false)
+            {
+                if (String.IsNullOrEmpty(primary.Notes))
+                    primary.Notes = secondary.Notes;
+                else
+                    primary.Notes += "\n" + secondary.Notes;
+            }
+        }
+
         public static bool IsActressUnknonwn(ActressData actress)
         {
             if (actress == null)

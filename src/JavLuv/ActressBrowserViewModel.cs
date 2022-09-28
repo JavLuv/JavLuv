@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Windows;
 using System.Windows.Input;
 
 namespace JavLuv
@@ -180,7 +181,6 @@ namespace JavLuv
 
         #endregion
 
-
         #region Remove From Library Command
 
         private void RemoveFromLibraryExecute()
@@ -200,6 +200,23 @@ namespace JavLuv
 
         #endregion
 
+        #region Merge Actresses Command
+
+        private void MergeActressesExecute()
+        {
+            var actressMergeDialog = new ActressMergeView(this);
+            actressMergeDialog.Owner = Application.Current.MainWindow;
+            actressMergeDialog.ShowDialog();
+        }
+
+        private bool CanMergeActressesExecute()
+        {
+            return Parent.IsScanning == false && SelectedItems.Count == 2;
+        }
+
+        public ICommand MergeActressesCommand { get { return new RelayCommand(MergeActressesExecute, CanMergeActressesExecute); } }
+
+        #endregion
 
         #endregion
 

@@ -105,13 +105,13 @@ namespace JavLuv
         {
             if (m_loadImage != null)
                 return;
-            if (m_actressData.ImageFileNames.Count == 0)
-                return;
-            m_actressData.ImageIndex = Math.Min(m_actressData.ImageIndex, m_actressData.ImageFileNames.Count - 1);
-            string path = Path.Combine(Utilities.GetActressImageFolder(), m_actressData.ImageFileNames[m_actressData.ImageIndex]);
-            m_loadImage = new CmdLoadImage(path, ImageSize.Thumbnail);
-            m_loadImage.FinishedLoading += OnImageFinishedLoading;
-            CommandQueue.ShortTask().Execute(m_loadImage);
+            if (m_actressData.ImageFileNames.Count != 0)
+            {
+                string path = Path.Combine(Utilities.GetActressImageFolder(), m_actressData.ImageFileNames[m_actressData.ImageIndex]);
+                m_loadImage = new CmdLoadImage(path, ImageSize.Thumbnail);
+                m_loadImage.FinishedLoading += OnImageFinishedLoading;
+                CommandQueue.ShortTask().Execute(m_loadImage);
+            }
         }
 
         private void OnImageFinishedLoading(object sender, EventArgs e)

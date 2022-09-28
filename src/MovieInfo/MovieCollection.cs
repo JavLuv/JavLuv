@@ -369,6 +369,16 @@ namespace MovieInfo
             Save();
         }
 
+        public void RemoveActress(ActressData actress)
+        {
+            lock (m_actresses)
+            {
+                m_actresses.Actresses.Remove(actress);
+            }
+            SearchActresses();
+            Save();
+        }
+
         public void RemoveActresses(List<ActressData> actresses)
         {
             lock (m_actresses)

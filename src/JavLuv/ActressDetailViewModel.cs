@@ -20,7 +20,6 @@ namespace JavLuv
             m_actressData = m_browserItem.ActressData;
             if (m_actressData.ImageFileNames.Count > 0)
             {
-                m_actressData.ImageIndex = Math.Min(m_actressData.ImageIndex, m_actressData.ImageFileNames.Count - 1);
                 string path = Path.Combine(Utilities.GetActressImageFolder(), m_actressData.ImageFileNames[m_actressData.ImageIndex]);
                 m_loadImage = new CmdLoadImage(path, ImageSize.Full);
                 m_loadImage.FinishedLoading += OnImageFinishedLoading;
