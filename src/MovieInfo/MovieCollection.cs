@@ -262,6 +262,23 @@ namespace MovieInfo
             }
         }
 
+        public ActressData FindActress(string name)
+        {
+            lock (m_actresses)
+            {
+                ActressData actress = null;
+                if (m_actresses.Actresses.TryGetValue(new ActressData(name), out actress))
+                    return actress;
+                AltNameData altName = null;
+                if (m_actresses.AltNames.TryGetValue(new AltNameData(name), out altName))
+                {
+                    if (m_actresses.Actresses.TryGetValue(new ActressData(altName.Name), out actress))
+                        return actress;
+                }
+                return actress;
+            }
+        }
+
         public HashSet<string> GetAllFileNames()
         {
             lock (m_cacheData)

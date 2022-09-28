@@ -74,6 +74,23 @@ namespace JavLuv
             {
                 if (value != m_actressData.Name)
                 {
+                    if (String.IsNullOrEmpty(value))
+                    {
+                        MessageBox.Show(
+                            TextManager.GetString("Text.ActressEmptyNameMessage"),
+                            TextManager.GetString("Text.ActressRenameError")
+                            );
+                        return;
+                    }
+                    ActressData actress = Parent.Parent.Collection.FindActress(value);
+                    if (actress != null && Name != actress.Name)
+                    {
+                        MessageBox.Show(
+                            String.Format(TextManager.GetString("Text.ActressRenameMessage"), actress.Name),
+                            TextManager.GetString("Text.ActressRenameError")
+                            );
+                        return;
+                    }
                     m_actressData.Name = value;
                     NotifyPropertyChanged("Name");
                 }
@@ -105,7 +122,20 @@ namespace JavLuv
                 var currentNames = Utilities.StringListToString(m_actressData.AltNames);
                 if (value != currentNames)
                 {
-                    m_actressData.AltNames = Utilities.StringToStringList(value);
+                    var altNames = Utilities.StringToStringList(value);
+                    foreach (var name in altNames)
+                    {
+                        ActressData actress = Parent.Parent.Collection.FindActress(value);
+                        if (actress != null && Name != actress.Name)
+                        {
+                            MessageBox.Show(
+                                String.Format(TextManager.GetString("Text.ActressRenameMessage"), actress.Name), 
+                                TextManager.GetString("Text.ActressRenameError")
+                                );
+                            return;
+                        }
+                    }
+                    m_actressData.AltNames = altNames;
                     NotifyPropertyChanged("AlternateNames");
                 }
             }
