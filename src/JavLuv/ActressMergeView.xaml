@@ -10,7 +10,7 @@
     WindowStartupLocation="CenterOwner"
     ResizeMode="NoResize"
     Title="{DynamicResource Text.MergeActressesTitle}" 
-    Height="520" 
+    Height="500" 
     Width="600"
     Initialized="Window_Initialized"
     >
@@ -22,7 +22,7 @@
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="10" />
-            <RowDefinition Height="24" />
+            <RowDefinition Height="28" />
             <RowDefinition Height="10" />
             <RowDefinition Height="*" />
             <RowDefinition Height="18" />
@@ -34,6 +34,7 @@
             Grid.Row="1" 
             Grid.Column="1" 
             HorizontalAlignment="Center"
+            VerticalAlignment="Center"
             Content="{DynamicResource Text.MergeActressesInstructions}" 
             />
 
@@ -55,7 +56,7 @@
                     <Grid.RowDefinitions>
                         <RowDefinition Height="*" />
                         <RowDefinition Height="10" />
-                        <RowDefinition Height="90" />
+                        <RowDefinition Height="80" />
                     </Grid.RowDefinitions>
                     <Image                    
                         HorizontalAlignment="Stretch" 
@@ -66,8 +67,8 @@
                         Grid.Row="2"
                         HorizontalAlignment="Stretch" 
                         VerticalAlignment="Stretch" 
-                        Text="{Binding Information}"
                         TextWrapping="Wrap"
+                        Text="{Binding Information}"
                         />
                 </Grid>
             </ToggleButton>
@@ -83,7 +84,7 @@
                     <Grid.RowDefinitions>
                         <RowDefinition Height="*" />
                         <RowDefinition Height="10" />
-                        <RowDefinition Height="90" />
+                        <RowDefinition Height="80" />
                     </Grid.RowDefinitions>
                     <Image                    
                         HorizontalAlignment="Stretch" 
@@ -94,6 +95,7 @@
                         Grid.Row="2"
                         HorizontalAlignment="Stretch" 
                         VerticalAlignment="Stretch" 
+                        TextWrapping="Wrap"
                         Text="{Binding Information}"
                         />
                 </Grid>

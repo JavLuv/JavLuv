@@ -102,6 +102,7 @@ namespace JavLuv
             Parent.Collection.SearchText = SearchText;
             Parent.Collection.ShowUnratedOnly = ShowUnratedOnly;
             Parent.Collection.ShowSubtitlesOnly = ShowSubtitlesOnly;
+            Parent.Collection.ShowUnknownActresses = ShowUnknownActresses;
 
             m_sortMovieByList.Add(new SortMoviesByPair(SortMoviesBy.Title, "Text.SortByTitle"));
             m_sortMovieByList.Add(new SortMoviesByPair(SortMoviesBy.ID, "Text.SortByID"));

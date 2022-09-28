@@ -96,6 +96,9 @@ namespace WebScraper
 
         public ActressData ScrapeActress(ActorData actor, LanguageType language)
         {
+            Logger.WriteInfo("Attempting to scrape information for " + actor.Name);
+
+            // Prepare actress data with names and alternate names
             var actressData = new ActressData();
             actressData.Name = actor.Name;
             foreach (string altname in actor.Aliases)
@@ -120,6 +123,12 @@ namespace WebScraper
                 ScrapeAltNamesIfNotAcceptable(actressData, javModel);
                 DownloadActressImage(actressData, javModel, actressFullPath);
             }
+
+            // Log success or failure
+            if (MovieUtils.IsActressUnknonwn(actressData))
+                Logger.WriteWarning("Unable to find online information for " + actressData.Name + " or aliases");
+            else
+                Logger.WriteInfo("Found information for " + actressData.Name);
 
             return actressData;
         }

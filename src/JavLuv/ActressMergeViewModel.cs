@@ -81,7 +81,7 @@ namespace JavLuv
             get
             {
                 StringBuilder sb = new StringBuilder(200);
-                sb.AppendLine(m_actressData.Name);
+                sb.AppendLine(String.Format("{0} {1}", TextManager.GetString("Text.MergeActressesName"), m_actressData.Name));
                 sb.AppendLine(String.Format("{0} {1}", TextManager.GetString("Text.ActressJapaneseName"), m_actressData.JapaneseName));
                 sb.AppendLine(String.Format("{0} {1}", TextManager.GetString("Text.ActressAlternateNames"), Common.Utilities.StringListToString(m_actressData.AlternateNames)));
                 return sb.ToString();
@@ -146,8 +146,16 @@ namespace JavLuv
 
         private void MergeActressesExecute()
         {
-            MovieUtils.MergeActresses(m_parent.SelectedItems[0].ActressData, m_parent.SelectedItems[1].ActressData);
-            m_parent.Parent.Collection.RemoveActress(m_parent.SelectedItems[1].ActressData);
+            if (m_actressMergeItemA.IsChecked)
+            {
+                MovieUtils.MergeActresses(m_parent.SelectedItems[0].ActressData, m_parent.SelectedItems[1].ActressData);
+                 m_parent.Parent.Collection.RemoveActress(m_parent.SelectedItems[1].ActressData);
+           }
+            else
+            {
+                MovieUtils.MergeActresses(m_parent.SelectedItems[1].ActressData, m_parent.SelectedItems[0].ActressData);
+                m_parent.Parent.Collection.RemoveActress(m_parent.SelectedItems[0].ActressData);
+            }
         }
 
         private bool CanMergeActressesExecute()

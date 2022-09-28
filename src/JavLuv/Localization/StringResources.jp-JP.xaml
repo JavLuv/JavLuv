@@ -184,4 +184,11 @@
     <system:String x:Key="Text.SubtitleFilesExtensionFixed">{0} subtitle files with incorrect extensions</system:String>
     <system:String x:Key="Text.SubtitleFilesImported">{0} subtitle files imported</system:String>
 
+    <!-- Merge Actresses View -->
+    <system:String x:Key="Text.MergeActressesTitle">Merge Actresses</system:String>
+    <system:String x:Key="Text.MergeActressesButton">Merge</system:String>
+    <system:String x:Key="Text.MergeActressesMenu">Merge actresses...</system:String>
+    <system:String x:Key="Text.MergeActressesInstructions">Select which actress entry to use when merged information conflicts.</system:String>
+    <system:String x:Key="Text.MergeActressesName">Name:</system:String>
+
 </ResourceDictionary>

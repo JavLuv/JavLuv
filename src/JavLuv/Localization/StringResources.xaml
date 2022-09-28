@@ -189,5 +189,6 @@
     <system:String x:Key="Text.MergeActressesButton">Merge</system:String>
     <system:String x:Key="Text.MergeActressesMenu">Merge actresses...</system:String>
     <system:String x:Key="Text.MergeActressesInstructions">Select which actress entry to use when merged information conflicts.</system:String>
+    <system:String x:Key="Text.MergeActressesName">Name:</system:String>
 
 </ResourceDictionary>

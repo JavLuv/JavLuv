@@ -269,6 +269,14 @@ namespace MovieInfo
                 else
                     primary.Notes += "\n" + secondary.Notes;
             }
+            if (secondary.ImageFileNames.Count != 0)
+            {
+                foreach (string fn in secondary.ImageFileNames)
+                {
+                    if (Utilities.Equals(fn, primary.ImageFileNames, StringComparison.OrdinalIgnoreCase) == false)
+                        primary.ImageFileNames.Add(fn);
+                }
+            }
         }
 
         public static bool IsActressUnknonwn(ActressData actress)
