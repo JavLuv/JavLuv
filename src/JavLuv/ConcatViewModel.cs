@@ -49,7 +49,7 @@ namespace JavLuv
         private void SelectPartsExecute()
         {
             var openFileDlg = new System.Windows.Forms.OpenFileDialog();
-            openFileDlg.Filter = "Movie files (*.mp4;*.mkv;*.wmv;*.avi)|*.mp4;*.mkv;*.wmv;*.avi|All files(*.*)|*.*";
+            openFileDlg.Filter = Utilities.GetMoviesFileFilter();
             openFileDlg.CheckFileExists = true;
             openFileDlg.CheckPathExists = true;
             openFileDlg.Multiselect = true;

@@ -415,9 +415,22 @@ namespace MovieInfo
         {
             lock (m_actresses)
             {
+                var folder = Utilities.GetActressImageFolder();
                 foreach (var actress in actresses)
                 {
                     m_actresses.Actresses.Remove(actress);
+                    try
+                    {
+                        foreach (var fn in actress.ImageFileNames)
+                        {
+                            var fullPath = Path.Combine(folder, fn);
+                            File.Delete(fullPath);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Logger.WriteError("Could not delete actress image", ex);
+                    }
                     foreach (string alias in actress.AltNames)
                         m_actresses.AltNames.Remove(new AltNameData(alias));
                 }

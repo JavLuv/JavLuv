@@ -411,22 +411,12 @@ namespace Subtitles
                 return false;
 
             // Check for exact checksum match
-            if (GetMD5Checksum(fn1) != GetMD5Checksum(fn2))
+            if (Utilities.GetSHA1Checksum(fn1) != Utilities.GetSHA1Checksum(fn2))
                 return false;
             
             return true;
         }
 
-        public string GetMD5Checksum(string filename)
-        {
-            using (var md5 = System.Security.Cryptography.MD5.Create())
-            {
-                using (var stream = System.IO.File.OpenRead(filename))
-                {
-                    return BitConverter.ToString(md5.ComputeHash(stream));
-                }
-            }
-        }
         private bool IsSubtitle(string fileName)
         {
             string fileExt = Path.GetExtension(fileName).Substring(1).ToLower();

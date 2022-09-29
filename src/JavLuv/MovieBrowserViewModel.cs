@@ -512,7 +512,7 @@ namespace JavLuv
             try
             {
                 var openFileDlg = new System.Windows.Forms.OpenFileDialog();
-                openFileDlg.Filter = "Image files (*.jpg;*.jpeg;*.png;*.webp;*.gif)|*.jpg;*.jpeg;*.png;*.webp;*.gif|All files(*.*)|*.*";
+                openFileDlg.Filter = Utilities.GetImagesFileFilter();
                 openFileDlg.InitialDirectory = movieData.Path;
                 openFileDlg.CheckFileExists = true;
                 openFileDlg.CheckPathExists = true;

@@ -106,7 +106,7 @@ namespace WebScraper
 
             // Create destination filename and path
             string actressImagefolder = Utilities.GetActressImageFolder();
-            string actressFileName = actor.Name.ToLower().Replace(' ', '-');
+            string actressFileName = Guid.NewGuid().ToString();
             string actressFullPath = Path.Combine(actressImagefolder, actressFileName);
 
             // Check JavDatabase actresses
@@ -225,7 +225,10 @@ namespace WebScraper
             if (String.IsNullOrEmpty(module.ImageSource) == false)
             {
                 if (DownloadImage(ref imagePath, module.ImageSource))
+                {
                     actressData.ImageFileNames.Add(Path.GetFileName(imagePath));
+                    actressData.ImageFileNames = Utilities.DeleteDuplicateFiles(actressData.ImageFileNames);
+                }
             }
         }
 

@@ -90,6 +90,8 @@
     <system:String x:Key="Text.ActressRenameError">Actress Rename Error</system:String>
     <system:String x:Key="Text.ActressRenameMessage">Name is already in use by {0}.</system:String>
     <system:String x:Key="Text.ActressEmptyNameMessage">An actress' name can't be empty.</system:String>
+    <system:String x:Key="Text.ActressImportImage">Import images...</system:String>
+    <system:String x:Key="Text.ActressDeleteImage">Delete image</system:String>
 
     <!-- Miscellaneous -->
     <system:String x:Key="Text.JavLuvTitle">JavLuv - あなたのJAVムービーオーガナイザー</system:String>

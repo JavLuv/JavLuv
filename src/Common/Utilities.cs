@@ -237,6 +237,16 @@ namespace Common
             return folder;
         }
 
+        public static string GetImagesFileFilter()
+        {
+            return "Image files (*.jpg;*.jpeg;*.png;*.webp;*.gif)|*.jpg;*.jpeg;*.png;*.webp;*.gif|All files(*.*)|*.*";
+        }
+
+        public static string GetMoviesFileFilter()
+        {
+            return "Movie files (*.mp4;*.mkv;*.wmv;*.avi)|*.mp4;*.mkv;*.wmv;*.avi|All files(*.*)|*.*";
+        }
+
         public static string[] ProcessSettingsList(string s)
         {
             string[] strings = s.ToLower().Split(';');
@@ -656,6 +666,64 @@ namespace Common
             return uniqueFolder;
         }
 
+        public static string GetSHA1Checksum(string filename)
+        {
+            try
+            {
+                using (var md5 = System.Security.Cryptography.SHA1.Create())
+                {
+                    using (var stream = System.IO.File.OpenRead(filename))
+                    {
+                        return BitConverter.ToString(md5.ComputeHash(stream));
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.WriteError("Unable to load file " + filename, ex);
+            }
+            return String.Empty;
+        }
+
+        public static List<string> DeleteDuplicateFiles(List<string> fileNames)
+        {
+            List<string> result = new List<string>();
+            Dictionary<string, string> hashFilenamePairs = new Dictionary<string, string>();
+
+            foreach (string fileName in fileNames)
+            {
+                string hash = GetSHA1Checksum(fileName);
+                if (hash == String.Empty || hashFilenamePairs.ContainsKey(hash))
+                {
+                    try
+                    {
+                        File.Delete(fileName);
+                    }
+                    catch (Exception ex)
+                    {
+                        Logger.WriteError("Unable to delete duplicate file " + fileName, ex);
+                    }
+                    continue;
+                }
+                hashFilenamePairs.Add(hash, fileName);
+                result.Add(fileName);
+            }
+
+            return result;
+        }
+
+        public static List<string> DeleteDuplicateFiles(string folder, List<string> fileNames)
+        {
+            var fullPathFilenames = new List<string>();
+            foreach (var fileName in fileNames)
+                fullPathFilenames.Add(Path.Combine(folder, fileName));
+            fullPathFilenames = DeleteDuplicateFiles(fullPathFilenames);    
+            var result = new List<string>();
+            foreach (var fullPathFilename in fullPathFilenames)
+                result.Add(Path.GetFileName(fullPathFilename));
+            return result;
+        }
+
         #endregion
 
         #region Private Functions
@@ -885,6 +953,7 @@ namespace Common
         private static readonly string[] s_strippedTitleWords = { "A ", "An ", "The " };
         private static readonly int s_numRetries = 10;
         private static readonly int s_retryDelayMs = 250;
+
         #endregion
     }
 }

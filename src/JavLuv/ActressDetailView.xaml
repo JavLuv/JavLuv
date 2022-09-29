@@ -43,11 +43,13 @@
         <Grid.InputBindings>
             <KeyBinding Command="{Binding Parent.NavigateLeftCommand}" Key="Left" />
             <KeyBinding Command="{Binding Parent.NavigateRightCommand}" Key="Right" />
+            <KeyBinding Command="{Binding PreviousImageCommand}" Key="Left" Modifiers="Ctrl" />
+            <KeyBinding Command="{Binding NextImageCommand}" Key="Right" Modifiers="Ctrl"/>
         </Grid.InputBindings>
 
         <Grid.ContextMenu>
             <ContextMenu>
-                <MenuItem Header="{DynamicResource Text.CopyTitle}" Command="{Binding CopyTitleAndMetadataCommand}" />
+                <MenuItem Header="{DynamicResource Text.ActressImportImage}" Command="{Binding ImportImagesCommand}" />
             </ContextMenu>
         </Grid.ContextMenu>
 
@@ -118,7 +120,7 @@
         </Grid>
 
         <!--Actress Image and Stats-->
-        <Grid Grid.Row="1" Margin="0, 10, 0, 0" >
+        <Grid Grid.Row="1" Margin="0, 10, 0, 0" Background="Transparent" >
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="10" />
                 <ColumnDefinition Width="2*" />
@@ -134,11 +136,13 @@
                 HorizontalAlignment="Right" 
                 VerticalAlignment="Center" 
                 Stretch="Uniform"
+                Visibility="{Binding ImageVisibility}"
                 Source="{Binding Image}" 
                 >
                 <Image.ContextMenu>
                     <ContextMenu>
-                        <MenuItem Header="{DynamicResource Text.ImportCoverImage}" Command="{Binding ImportCoverImageCommand}" />
+                        <MenuItem Header="{DynamicResource Text.ActressImportImage}" Command="{Binding ImportImagesCommand}" />
+                        <MenuItem Header="{DynamicResource Text.ActressDeleteImage}" Command="{Binding DeleteImageCommand}" />
                     </ContextMenu>
                 </Image.ContextMenu>
             </Image>
@@ -151,7 +155,7 @@
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
-                
+
                 <!--Actress Name-->
                 <TextBox 
                     BorderThickness="0"                      
@@ -162,99 +166,98 @@
                     FontWeight="Bold" 
                     Text="{Binding Name, UpdateSourceTrigger=LostFocus}" 
                     />
-                
+
                 <!--Actress Info, first column-->
                 <!--<ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" >-->
-                    <StackPanel HorizontalAlignment="Left" MinWidth="500"  Grid.Row="1" Grid.Column="0" Background="Transparent" IsHitTestVisible="True" MouseDown="MainGrid_MouseDown">
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="180"/>
-                                <ColumnDefinition Width="10" />
-                                <ColumnDefinition Width="*" />
-                            </Grid.ColumnDefinitions>
-                            <Label Style="{StaticResource DetailLabelStyle}" Content="{DynamicResource Text.ActressJapaneseName}" />
-                            <TextBox Style="{StaticResource DetailTextBoxStyle}" Text="{Binding JapaneseName, UpdateSourceTrigger=LostFocus}" />
-                        </Grid>
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="180"/>
-                                <ColumnDefinition Width="10" />
-                                <ColumnDefinition Width="*" />
-                            </Grid.ColumnDefinitions>
-                            <Label Style="{StaticResource DetailLabelStyle}" Content="{DynamicResource Text.ActressAlternateNames}" />
-                            <TextBox Style="{StaticResource DetailTextBoxStyle}" Text="{Binding AlternateNames, UpdateSourceTrigger=LostFocus}" />
-                        </Grid>
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="180"/>
-                                <ColumnDefinition Width="10" />
-                                <ColumnDefinition Width="*" />
-                            </Grid.ColumnDefinitions>
-                            <Label Style="{StaticResource DetailLabelStyle}" Content="{DynamicResource Text.ActressDateOfBirth}" />
-                            <TextBox Style="{StaticResource DetailTextBoxStyle}" Text="{Binding DateOfBirth, UpdateSourceTrigger=LostFocus}" />
-                        </Grid>
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="180"/>
-                                <ColumnDefinition Width="10" />
-                                <ColumnDefinition Width="*" />
-                            </Grid.ColumnDefinitions>
-                            <Label Style="{StaticResource DetailLabelStyle}" Content="{DynamicResource Text.ActressCup}" />
-                            <TextBox Style="{StaticResource DetailTextBoxStyle}" Text="{Binding Cup, UpdateSourceTrigger=LostFocus}" />
-                        </Grid>
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="180"/>
-                                <ColumnDefinition Width="10" />
-                                <ColumnDefinition Width="*" />
-                            </Grid.ColumnDefinitions>
-                            <Label Style="{StaticResource DetailLabelStyle}" Content="{DynamicResource Text.ActressMeasurements}" />
-                            <TextBox Style="{StaticResource DetailTextBoxStyle}" Text="{Binding Measurements, UpdateSourceTrigger=LostFocus}" />
-                        </Grid>
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="180"/>
-                                <ColumnDefinition Width="10" />
-                                <ColumnDefinition Width="*" />
-                            </Grid.ColumnDefinitions>
-                            <Label Style="{StaticResource DetailLabelStyle}" Content="{DynamicResource Text.ActressAge}" />
-                            <Label Style="{StaticResource DetailLabelContentStyle}" Content="{Binding Age}" />
-                        </Grid>
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="180"/>
-                                <ColumnDefinition Width="10" />
-                                <ColumnDefinition Width="*" />
-                            </Grid.ColumnDefinitions>
-                            <Label Style="{StaticResource DetailLabelStyle}" Content="{DynamicResource Text.ActressAverageMovieRating}" />
-                            <local:RatingControl Margin="0, 4, 0, 0" BorderBrush="Transparent" IsEnabled="False" Grid.Column="2" Value="{Binding AverageMovieRating,Mode=OneTime}" />
-                        </Grid>
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="180"/>
-                                <ColumnDefinition Width="10" />
-                                <ColumnDefinition Width="*" />
-                            </Grid.ColumnDefinitions>
-                            <Label Style="{StaticResource DetailLabelStyle}" Content="{DynamicResource Text.UserRating}" />
-                            <local:RatingControl Margin="0, 4, 0, 0" BorderBrush="Transparent" Grid.Column="2" Value="{Binding UserRating}" />
-                        </Grid>
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="180"/>
-                                <ColumnDefinition Width="10" />
-                                <ColumnDefinition Width="*" />
-                            </Grid.ColumnDefinitions>
-                            <Label Style="{StaticResource DetailLabelStyle}" Content="{DynamicResource Text.Notes}" />
-                            <TextBox Style="{StaticResource DetailTextBoxStyle}" TextWrapping="Wrap" AcceptsReturn="True" Text="{Binding Notes, UpdateSourceTrigger=LostFocus}" />
-                        </Grid>
-                    </StackPanel>
+                <StackPanel HorizontalAlignment="Left" MinWidth="500"  Grid.Row="1" Grid.Column="0" Background="Transparent" IsHitTestVisible="True" MouseDown="MainGrid_MouseDown">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="180"/>
+                            <ColumnDefinition Width="10" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <Label Style="{StaticResource DetailLabelStyle}" Content="{DynamicResource Text.ActressJapaneseName}" />
+                        <TextBox Style="{StaticResource DetailTextBoxStyle}" Text="{Binding JapaneseName, UpdateSourceTrigger=LostFocus}" />
+                    </Grid>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="180"/>
+                            <ColumnDefinition Width="10" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <Label Style="{StaticResource DetailLabelStyle}" Content="{DynamicResource Text.ActressAlternateNames}" />
+                        <TextBox Style="{StaticResource DetailTextBoxStyle}" Text="{Binding AlternateNames, UpdateSourceTrigger=LostFocus}" />
+                    </Grid>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="180"/>
+                            <ColumnDefinition Width="10" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <Label Style="{StaticResource DetailLabelStyle}" Content="{DynamicResource Text.ActressDateOfBirth}" />
+                        <TextBox Style="{StaticResource DetailTextBoxStyle}" Text="{Binding DateOfBirth, UpdateSourceTrigger=LostFocus}" />
+                    </Grid>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="180"/>
+                            <ColumnDefinition Width="10" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <Label Style="{StaticResource DetailLabelStyle}" Content="{DynamicResource Text.ActressCup}" />
+                        <TextBox Style="{StaticResource DetailTextBoxStyle}" Text="{Binding Cup, UpdateSourceTrigger=LostFocus}" />
+                    </Grid>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="180"/>
+                            <ColumnDefinition Width="10" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <Label Style="{StaticResource DetailLabelStyle}" Content="{DynamicResource Text.ActressMeasurements}" />
+                        <TextBox Style="{StaticResource DetailTextBoxStyle}" Text="{Binding Measurements, UpdateSourceTrigger=LostFocus}" />
+                    </Grid>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="180"/>
+                            <ColumnDefinition Width="10" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <Label Style="{StaticResource DetailLabelStyle}" Content="{DynamicResource Text.ActressAge}" />
+                        <Label Style="{StaticResource DetailLabelContentStyle}" Content="{Binding Age}" />
+                    </Grid>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="180"/>
+                            <ColumnDefinition Width="10" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <Label Style="{StaticResource DetailLabelStyle}" Content="{DynamicResource Text.ActressAverageMovieRating}" />
+                        <local:RatingControl Margin="0, 4, 0, 0" BorderBrush="Transparent" IsEnabled="False" Grid.Column="2" Value="{Binding AverageMovieRating,Mode=OneTime}" />
+                    </Grid>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="180"/>
+                            <ColumnDefinition Width="10" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <Label Style="{StaticResource DetailLabelStyle}" Content="{DynamicResource Text.UserRating}" />
+                        <local:RatingControl Margin="0, 4, 0, 0" BorderBrush="Transparent" Grid.Column="2" Value="{Binding UserRating}" />
+                    </Grid>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="180"/>
+                            <ColumnDefinition Width="10" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <Label Style="{StaticResource DetailLabelStyle}" Content="{DynamicResource Text.Notes}" />
+                        <TextBox Style="{StaticResource DetailTextBoxStyle}" TextWrapping="Wrap" AcceptsReturn="True" Text="{Binding Notes, UpdateSourceTrigger=LostFocus}" />
+                    </Grid>
+                </StackPanel>
                 <!--</ScrollViewer>-->
 
             </Grid>
         </Grid>
 
-       
-         <!--Browser View-->
+        <!--Browser View-->
         <Grid Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" >
             <local:MovieBrowserView DataContext="{Binding Parent.Parent.MovieBrowser}" />
         </Grid>

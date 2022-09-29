@@ -2,6 +2,7 @@
 using MovieInfo;
 using System;
 using System.IO;
+using System.Linq;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
@@ -18,14 +19,7 @@ namespace JavLuv
             m_parent = parent;
             m_browserItem = browserItem;
             m_actressData = m_browserItem.ActressData;
-            if (m_actressData.ImageFileNames.Count > 0)
-            {
-                string path = Path.Combine(Utilities.GetActressImageFolder(), m_actressData.ImageFileNames[m_actressData.ImageIndex]);
-                m_loadImage = new CmdLoadImage(path, ImageSize.Full);
-                m_loadImage.FinishedLoading += OnImageFinishedLoading;
-                CommandQueue.ShortTask().Execute(m_loadImage, CommandOrder.First);
-            }
-
+            LoadCurrentImage();
             Parent.Parent.Collection.MovieSearchActress = m_actressData.Name;
             Parent.Parent.Collection.SearchMovies();
         }
@@ -57,7 +51,18 @@ namespace JavLuv
                 {
                     m_image = value;
                     NotifyPropertyChanged("Image");
+                    NotifyPropertyChanged("ImageVisibility");
                 }
+            }
+        }
+
+        public Visibility ImageVisibility
+        {
+            get
+            {
+                if (Image == null)
+                    return Visibility.Hidden;
+                return Visibility.Visible;
             }
         }
 
@@ -275,59 +280,140 @@ namespace JavLuv
 
         #region Commands
 
-        #region Import Cover Image Command
+        #region Next Image Command
 
-        private void ImportCoverImageExecute()
+        private void NextImageExecute()
         {
-            /*
-            if (Parent.ImportCoverImage(m_movieData))
+            m_actressData.ImageIndex = ++m_actressData.ImageIndex % m_actressData.ImageFileNames.Count;
+            LoadCurrentImage();
+        }
+
+        private bool CanNextImageExecute()
+        {
+            return m_actressData.ImageFileNames.Count > 1;
+        }
+
+        public ICommand NextImageCommand { get { return new RelayCommand(NextImageExecute, CanNextImageExecute); } }
+
+        #endregion
+
+        #region Previous Image Command
+
+        private void PreviousImageExecute()
+        {
+            m_actressData.ImageIndex = (--m_actressData.ImageIndex + m_actressData.ImageFileNames.Count) % m_actressData.ImageFileNames.Count;
+            LoadCurrentImage();
+        }
+
+        private bool CanPreviousImageExecute()
+        {
+            return m_actressData.ImageFileNames.Count > 1;
+        }
+
+        public ICommand PreviousImageCommand { get { return new RelayCommand(PreviousImageExecute, CanPreviousImageExecute); } }
+
+        #endregion
+
+        #region Import Image Command
+
+        private void ImportImagesExecute()
+        {
+            var openFileDlg = new System.Windows.Forms.OpenFileDialog();
+            openFileDlg.Filter = Utilities.GetImagesFileFilter();
+            openFileDlg.CheckFileExists = true;
+            openFileDlg.CheckPathExists = true;
+            openFileDlg.Multiselect = true;
+            openFileDlg.InitialDirectory = Utilities.GetValidSubFolder(Settings.Get().LastFolder);
+            var results = openFileDlg.ShowDialog();
+            if (results == System.Windows.Forms.DialogResult.OK)
             {
-                m_loadImage = new CmdLoadImage(Path.Combine(m_movieData.Path, m_movieData.CoverFileName));
-                m_loadImage.FinishedLoading += LoadImage_FinishedLoading;
+                string actressImagefolder = Utilities.GetActressImageFolder();
+                foreach (string filename in openFileDlg.FileNames)
+                {
+                    string ext = Path.GetExtension(filename);
+                    string actressFileName = Path.ChangeExtension(Guid.NewGuid().ToString(), ext);
+                    string actressFullPath = Path.Combine(actressImagefolder, actressFileName);
+                    try
+                    {
+                        File.Copy(filename, actressFullPath);
+                        m_actressData.ImageFileNames.Add(actressFileName);
+                    }
+                    catch (Exception ex)
+                    {
+                        Logger.WriteError("Unable to import actress image", ex);
+                    }
+                }
+
+                // Remove any potential duplicate filenames
+                m_actressData.ImageFileNames = Utilities.DeleteDuplicateFiles(Utilities.GetActressImageFolder(), m_actressData.ImageFileNames);
+
+                if (m_actressData.ImageFileNames.Count > 0)
+                {
+                    // Pick the last image imported as the new current image
+                    m_actressData.ImageIndex = m_actressData.ImageFileNames.Count - 1;
+                    LoadCurrentImage();
+                }
+                if (openFileDlg.FileNames.Count() > 0)
+                    Settings.Get().LastFolder = Path.GetDirectoryName(openFileDlg.FileNames[0]);
+            }
+        }
+
+        private bool CanImportImagesExecute()
+        {
+            return true;
+        }
+
+        public ICommand ImportImagesCommand { get { return new RelayCommand(ImportImagesExecute, CanImportImagesExecute); } }
+
+        #endregion
+
+        #region Delete Image Command
+
+        private void DeleteImageExecute()
+        {
+            var fileNameToDelete = m_actressData.ImageFileNames[m_actressData.ImageIndex];
+            fileNameToDelete = Path.Combine(Utilities.GetActressImageFolder(), fileNameToDelete);
+            try
+            {
+                File.Delete(fileNameToDelete);
+                m_actressData.ImageFileNames.RemoveAt(m_actressData.ImageIndex);
+                if (m_actressData.ImageIndex >= m_actressData.ImageFileNames.Count)
+                    m_actressData.ImageIndex = 0;
+                LoadCurrentImage();
+            }
+            catch (Exception ex)
+            {
+                Logger.WriteError("Could not delete actress image", ex);
+            }
+        }
+
+        private bool CanDeleteImageExecute()
+        {
+            return m_actressData.ImageFileNames.Count() > 0;
+        }
+
+        public ICommand DeleteImageCommand { get { return new RelayCommand(DeleteImageExecute, CanDeleteImageExecute); } }
+
+        #endregion
+
+        #endregion
+
+        #region Private Functions
+
+        private void LoadCurrentImage()
+        {
+            if (m_actressData.ImageFileNames.Count > 0)
+            {
+                string path = Path.Combine(Utilities.GetActressImageFolder(), m_actressData.ImageFileNames[m_actressData.ImageIndex]);
+                m_loadImage = new CmdLoadImage(path, ImageSize.Full);
+                m_loadImage.FinishedLoading += OnImageFinishedLoading;
                 CommandQueue.ShortTask().Execute(m_loadImage, CommandOrder.First);
             }
-            */
+            else
+            {
+                Image = null;
+            }
         }
-
-        private bool CanImportCoverImageExecute()
-        {
-            return true;
-        }
-
-        public ICommand ImportCoverImageCommand { get { return new RelayCommand(ImportCoverImageExecute, CanImportCoverImageExecute); } }
-
-        #endregion
-
-        #region Copy Title And Metadata Command
-
-        private void CopyTitleAndMetadataExecute()
-        {
-            string text = String.Empty;
-            /*
-            text += "[" + ID + "] ";
-            text += Title;
-            text += "\n\n";
-            text += "ID: " + ID + "\n";
-            text += "Released: " + Released + "\n";
-            text += "Runtime: " + Runtime + "\n";
-            text += "Studio: " + Studio + "\n";
-            text += "Label: " + Label + "\n";
-            text += "Director: " + Director + "\n";
-            text += "Genres: " + Genres + "\n";
-            text += "Actresses: " + Actors + "\n\n";
-            */
-            Clipboard.SetText(text);
-        }
-
-        private bool CanCopyTitleAndMetadataExecute()
-        {
-            return true;
-        }
-
-        public ICommand CopyTitleAndMetadataCommand { get { return new RelayCommand(CopyTitleAndMetadataExecute, CanCopyTitleAndMetadataExecute); } }
-
-
-        #endregion
 
         #endregion
 
