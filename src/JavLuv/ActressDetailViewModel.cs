@@ -21,12 +21,24 @@ namespace JavLuv
             m_actressData = m_browserItem.ActressData;
             LoadCurrentImage();
             Parent.Parent.Collection.MovieSearchActress = m_actressData.Name;
+            Parent.Parent.Collection.MoviesDisplayedChanged += OnMoviesDisplayedChanged;
             Parent.Parent.Collection.SearchMovies();
+        }
+
+        public ActressDetailViewModel(ActressDetailViewModel actressDetailViewModel) : 
+            this(actressDetailViewModel.m_parent, actressDetailViewModel.m_browserItem)
+        {
         }
 
         #endregion
 
         #region Event Handlers
+
+        private void OnMoviesDisplayedChanged(object sender, EventArgs e)
+        {
+            AverageMovieRating = Parent.Parent.Collection.AverageMovieRating;
+            Parent.Parent.Collection.MoviesDisplayedChanged -= OnMoviesDisplayedChanged;
+        }
 
         private void OnImageFinishedLoading(object sender, System.EventArgs e)
         {
@@ -272,7 +284,15 @@ namespace JavLuv
         {
             get
             {
-                return 0;
+                return m_averageMovieCollection;
+            }
+            set
+            {
+                if (value != m_averageMovieCollection)
+                {
+                    m_averageMovieCollection = value;
+                    NotifyPropertyChanged("AverageMovieRating");
+                }
             }
         }
 
@@ -424,6 +444,7 @@ namespace JavLuv
         private ActressBrowserItemViewModel m_browserItem;
         private ImageSource m_image;
         private CmdLoadImage m_loadImage;
+        private int m_averageMovieCollection;
 
         #endregion
     }

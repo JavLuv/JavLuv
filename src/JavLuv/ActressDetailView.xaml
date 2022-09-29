@@ -231,7 +231,7 @@
                             <ColumnDefinition Width="*" />
                         </Grid.ColumnDefinitions>
                         <Label Style="{StaticResource DetailLabelStyle}" Content="{DynamicResource Text.ActressAverageMovieRating}" />
-                        <local:RatingControl Margin="0, 4, 0, 0" BorderBrush="Transparent" IsEnabled="False" Grid.Column="2" Value="{Binding AverageMovieRating,Mode=OneTime}" />
+                        <local:RatingControl Margin="0, 4, 0, 0" BorderBrush="Transparent" IsEnabled="False" Grid.Column="2" Value="{Binding AverageMovieRating,Mode=OneWay}" />
                     </Grid>
                     <Grid>
                         <Grid.ColumnDefinitions>

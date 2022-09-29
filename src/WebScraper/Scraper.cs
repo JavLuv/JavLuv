@@ -227,7 +227,7 @@ namespace WebScraper
                 if (DownloadImage(ref imagePath, module.ImageSource))
                 {
                     actressData.ImageFileNames.Add(Path.GetFileName(imagePath));
-                    actressData.ImageFileNames = Utilities.DeleteDuplicateFiles(actressData.ImageFileNames);
+                    actressData.ImageFileNames = Utilities.DeleteDuplicateFiles(Utilities.GetActressImageFolder(), actressData.ImageFileNames);
                 }
             }
         }

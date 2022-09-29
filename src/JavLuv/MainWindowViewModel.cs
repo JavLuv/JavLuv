@@ -83,7 +83,7 @@ namespace JavLuv
                         m_previousActressDetailViewModel = m_overlayViewModel as ActressDetailViewModel;
                     else if (value == null && m_previousActressDetailViewModel != null)
                     {
-                        value = m_previousActressDetailViewModel;
+                        value = new ActressDetailViewModel(m_previousActressDetailViewModel);
                         m_previousActressDetailViewModel = null;
                     }   
                     

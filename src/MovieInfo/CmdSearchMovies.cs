@@ -81,6 +81,7 @@ namespace MovieInfo
         #region Constructors
 
         public CmdSearchMovies(
+            MovieCollection collection,
             CacheData cacheData, 
             string searchText, 
             string actressName,
@@ -89,6 +90,7 @@ namespace MovieInfo
             bool showSubtitlesOnly
             )
         {
+            m_movieCollection = collection;
             m_cacheData = cacheData;
             m_searchText = searchText;
             m_actressName = actressName;
@@ -130,6 +132,22 @@ namespace MovieInfo
 
             // Sort the filtered movies
             Sort();
+
+            // Calculate average movie rating
+            int totalRating = 0;
+            int totalCount = 0;
+            foreach (var movie in m_filteredMovies)
+            {
+                if (movie.Metadata.UserRating != 0)
+                {
+                    totalCount++;
+                    totalRating += movie.Metadata.UserRating;
+                }
+            }
+            if (String.IsNullOrEmpty(m_actressName) == false && totalCount > 0)
+                m_movieCollection.AverageMovieRating = (int)Math.Ceiling((double)totalRating / (double)totalCount);
+            else
+                m_movieCollection.AverageMovieRating = 0;
         }
 
         #endregion
@@ -247,6 +265,7 @@ namespace MovieInfo
 
         #region Private Members
 
+        private MovieCollection m_movieCollection;
         private CacheData m_cacheData;
         private List<MovieData> m_filteredMovies = new List<MovieData>();
         private string m_searchText = String.Empty;

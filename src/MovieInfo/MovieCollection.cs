@@ -80,6 +80,8 @@ namespace MovieInfo
         public List<MovieData> MoviesDisplayed { get { return m_moviesDisplayed; } }
         public List<ActressData> ActressesDisplayed { get { return m_actressesDisplayed; } }
 
+        public int AverageMovieRating { get; set; }
+
         public string SearchText
         {
             private get { return m_searchText; }
@@ -515,9 +517,9 @@ namespace MovieInfo
             if (m_loaded == false)
                 return;
             if (String.IsNullOrEmpty(MovieSearchActress))
-                m_searchMovies = new CmdSearchMovies(m_cacheData, m_searchText, String.Empty, m_sortMoviesBy, ShowUnratedOnly, ShowSubtitlesOnly);
+                m_searchMovies = new CmdSearchMovies(this, m_cacheData, m_searchText, String.Empty, m_sortMoviesBy, ShowUnratedOnly, ShowSubtitlesOnly);
             else
-                m_searchMovies = new CmdSearchMovies(m_cacheData, String.Empty, MovieSearchActress, m_sortMoviesBy, false, false);
+                m_searchMovies = new CmdSearchMovies(this, m_cacheData, String.Empty, MovieSearchActress, m_sortMoviesBy, false, false);
             CommandQueue.Command().Execute(m_searchMovies);            
         }
 
