@@ -399,8 +399,8 @@ namespace JavLuv
         private void ChooseSubtitlesFolderExecute()
         {
             System.Windows.Forms.FolderBrowserDialog dlg = new System.Windows.Forms.FolderBrowserDialog();
-            if (String.IsNullOrEmpty(Settings.Get().Subtitles))
-                dlg.SelectedPath = Utilities.GetValidSubFolder(Settings.Get().LastFolder);
+            if (String.IsNullOrEmpty(Settings.Get().Subtitles) == false)
+                dlg.SelectedPath = Utilities.GetValidSubFolder(Settings.Get().ScanFolder);
             else
                 dlg.SelectedPath = Utilities.GetValidSubFolder(Settings.Get().Subtitles);
             System.Windows.Forms.DialogResult result = dlg.ShowDialog();
@@ -423,11 +423,11 @@ namespace JavLuv
         private void ChooseLibraryFolderExecute()
         {
             System.Windows.Forms.FolderBrowserDialog dlg = new System.Windows.Forms.FolderBrowserDialog();
-            dlg.SelectedPath = Utilities.GetValidSubFolder(Settings.Get().LastFolder);
+            dlg.SelectedPath = Utilities.GetValidSubFolder(Settings.Get().SubtitleExportFolder);
             System.Windows.Forms.DialogResult result = dlg.ShowDialog();
             if (result != System.Windows.Forms.DialogResult.OK)
                 return;
-            Settings.Get().LastFolder = dlg.SelectedPath;
+            Settings.Get().SubtitleExportFolder = dlg.SelectedPath;
             Library = dlg.SelectedPath;
         }
 

@@ -53,7 +53,7 @@ namespace JavLuv
             openFileDlg.CheckFileExists = true;
             openFileDlg.CheckPathExists = true;
             openFileDlg.Multiselect = true;
-            openFileDlg.InitialDirectory = Utilities.GetValidSubFolder(Settings.Get().LastFolder);
+            openFileDlg.InitialDirectory = Utilities.GetValidSubFolder(Settings.Get().ConcatFolder);
             var results = openFileDlg.ShowDialog();
             if (results == System.Windows.Forms.DialogResult.OK)
             {
@@ -62,6 +62,7 @@ namespace JavLuv
                 {
                     Files.Add(filename);
                 }
+                Settings.Get().ConcatFolder = openFileDlg.InitialDirectory;
             }
         }
 

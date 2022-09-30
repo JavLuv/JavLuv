@@ -275,13 +275,13 @@ namespace JavLuv
         {
             // Select destination folder
             System.Windows.Forms.FolderBrowserDialog dlg = new System.Windows.Forms.FolderBrowserDialog();
-            dlg.SelectedPath = Utilities.GetValidSubFolder(Settings.Get().LastFolder);
+            dlg.SelectedPath = Utilities.GetValidSubFolder(Settings.Get().MoveToFolder);
             System.Windows.Forms.DialogResult result = dlg.ShowDialog();
             if (result != System.Windows.Forms.DialogResult.OK)
                 return;
 
             // Gather selected movies to move
-            Settings.Get().LastFolder = dlg.SelectedPath;
+            Settings.Get().MoveToFolder = dlg.SelectedPath;
             List<MovieData> moviesToMove = new List<MovieData>();
             foreach (var item in SelectedItems)
             {
@@ -446,13 +446,13 @@ namespace JavLuv
         {
             // Select destination folder
             System.Windows.Forms.FolderBrowserDialog dlg = new System.Windows.Forms.FolderBrowserDialog();
-            dlg.SelectedPath = Utilities.GetValidSubFolder(Settings.Get().LastFolder);
+            dlg.SelectedPath = Utilities.GetValidSubFolder(Settings.Get().FindSubtitlesFolder);
             System.Windows.Forms.DialogResult result = dlg.ShowDialog();
             if (result != System.Windows.Forms.DialogResult.OK)
                 return;
 
             // Gather selected movies to move
-            Settings.Get().LastFolder = dlg.SelectedPath;
+            Settings.Get().FindSubtitlesFolder = dlg.SelectedPath;
             List<string> movieIDs = new List<string>();
             foreach (var item in SelectedItems)
             {

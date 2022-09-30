@@ -58,6 +58,15 @@ namespace JavLuv
             MainWindowWidth = 800;
             MainWindowLeft = 100;
             MainWindowTop = 100;
+
+            ScanFolder = String.Empty;
+            ImageImportFolder = String.Empty;
+            ConcatFolder = String.Empty;
+            MoveToFolder = String.Empty;
+            FindSubtitlesFolder = String.Empty;
+            SubtitleImportFolder = String.Empty;
+            SubtitleExportFolder = String.Empty;
+
             ScanRecursively = true;
             SearchViewWidth = new GridLength(300);
             SearchText = String.Empty;
@@ -105,10 +114,14 @@ namespace JavLuv
         }
 
         // Preserved UI elements
-        public int SelectedTabIndex { get; set; }
-        public string LastFolder { get; set; }
+        public string ScanFolder { get; set; }
+        public string ImageImportFolder { get; set; }
+        public string ConcatFolder { get; set; }
+        public string MoveToFolder { get; set; }
+        public string FindSubtitlesFolder { get; set; }
         public string SubtitleImportFolder { get; set; }
         public string SubtitleExportFolder { get; set; }
+        public int SelectedTabIndex { get; set; }
         public Organizer.Mode OrganizerMode { get; set; }
         public bool ScanRecursively { get; set; }
         public bool MoveRenameAfterScan { get; set; }
@@ -292,6 +305,20 @@ namespace JavLuv
             if (sortBy != null)
             {
                 sortBy.Name = "SortMoviesBy";
+            }
+
+            // LastFolder is becoming a number of specialized folders.  We'll 
+            // initialize all of them with the old LastFolder value to start with.
+            XElement lastFolder = root.Element("LastFolder");
+            if (lastFolder != null)
+            {
+                lastFolder.AddAfterSelf(new XElement("ScanFolder", lastFolder.Value));
+                lastFolder.AddAfterSelf(new XElement("ImageImportFolder", lastFolder.Value));
+                lastFolder.AddAfterSelf(new XElement("ConcatFolder", lastFolder.Value));
+                lastFolder.AddAfterSelf(new XElement("MoveToFolder", lastFolder.Value));
+                lastFolder.AddAfterSelf(new XElement("FindSubtitlesFolder", lastFolder.Value));
+                lastFolder.AddAfterSelf(new XElement("SubtitleImportFolder", lastFolder.Value));
+                lastFolder.AddAfterSelf(new XElement("SubtitleExportFolder", lastFolder.Value));
             }
         }
 

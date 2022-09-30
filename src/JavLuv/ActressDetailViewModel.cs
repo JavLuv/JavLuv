@@ -349,7 +349,7 @@ namespace JavLuv
             openFileDlg.CheckFileExists = true;
             openFileDlg.CheckPathExists = true;
             openFileDlg.Multiselect = true;
-            openFileDlg.InitialDirectory = Utilities.GetValidSubFolder(Settings.Get().LastFolder);
+            openFileDlg.InitialDirectory = Utilities.GetValidSubFolder(Settings.Get().ImageImportFolder);
             var results = openFileDlg.ShowDialog();
             if (results == System.Windows.Forms.DialogResult.OK)
             {
@@ -380,7 +380,7 @@ namespace JavLuv
                     LoadCurrentImage();
                 }
                 if (openFileDlg.FileNames.Count() > 0)
-                    Settings.Get().LastFolder = Path.GetDirectoryName(openFileDlg.FileNames[0]);
+                    Settings.Get().ImageImportFolder = Path.GetDirectoryName(openFileDlg.FileNames[0]);
             }
         }
 

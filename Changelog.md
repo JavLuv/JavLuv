@@ -1,11 +1,12 @@
 # Changelog
 All significant changes are listed in this file.
 
-## [1.1.0] - 2022-9-26
+## [1.1.0] - 2022-9-29
 
 - Add Actress viewer
 - Fixed rare instance of import movies being moved to incorrect destination
 - Improved ID detection algorithm
+- Remembers last folder by operation instead of using a global setting
 
 ## [1.0.2] - 2022-9-22
 
