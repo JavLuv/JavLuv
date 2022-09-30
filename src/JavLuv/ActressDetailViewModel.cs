@@ -84,6 +84,42 @@ namespace JavLuv
             }
         }
 
+        public Visibility LeftNavArrowVisibility
+        {
+            get
+            {
+                if (Image == null || m_actressData.ImageFileNames.Count < 2)
+                    return Visibility.Hidden;
+                return m_leftNavArrowVisibility;
+            }
+            set
+            {
+                if (value != m_leftNavArrowVisibility)
+                {
+                    m_leftNavArrowVisibility = value;
+                    NotifyPropertyChanged("LeftNavArrowVisibility");
+                }
+            }
+        }
+
+        public Visibility RightNavArrowVisibility
+        {
+            get
+            {
+                if (Image == null || m_actressData.ImageFileNames.Count < 2)
+                    return Visibility.Hidden;
+                return m_rightNavArrowVisibility;
+            }
+            set
+            {
+                if (value != m_rightNavArrowVisibility)
+                {
+                    m_rightNavArrowVisibility = value;
+                    NotifyPropertyChanged("RightNavArrowVisibility");
+                }
+            }
+        }
+
         public ActressBrowserItemViewModel BrowserItem { get { return m_browserItem; } }
 
         public ActressData ActressData { get { return m_actressData; } }
@@ -459,6 +495,8 @@ namespace JavLuv
         private CmdLoadImage m_loadImage;
         private int m_averageMovieCollection;
         private bool m_pendingImageLoad;
+        private Visibility m_leftNavArrowVisibility = Visibility.Hidden;
+        private Visibility m_rightNavArrowVisibility = Visibility.Hidden;
 
         #endregion
     }

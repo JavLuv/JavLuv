@@ -12,8 +12,7 @@
     >
     <UserControl.Resources>
 
-        <Image x:Key="ImageFolder" x:Shared="false" Source="Resources/folder.png" />
-        <Image x:Key="ImageSubtitles" x:Shared="false" Source="Resources/subtitles.png" />
+        <Image x:Key="ImageNavArrow" x:Shared="false" Source="Resources/nav_arrow.png" />
 
         <Style x:Key="DetailLabelStyle" TargetType="Label" BasedOn="{StaticResource {x:Type Label}}">
             <Setter Property="FontSize" Value="16" />
@@ -129,23 +128,97 @@
                 <ColumnDefinition Width="10" />
             </Grid.ColumnDefinitions>
 
-            <Image 
-                Grid.Column="1"
-                Grid.Row="1"
-                MinHeight="100" 
-                HorizontalAlignment="Right" 
-                VerticalAlignment="Center" 
-                Stretch="Uniform"
-                Visibility="{Binding ImageVisibility}"
-                Source="{Binding Image}" 
+            <Grid
+                 Grid.Column="1"
+                 Grid.Row="1"
+                 MinHeight="100" 
+                 HorizontalAlignment="Right" 
+                 VerticalAlignment="Stretch"   
                 >
-                <Image.ContextMenu>
-                    <ContextMenu>
-                        <MenuItem Header="{DynamicResource Text.ActressImportImage}" Command="{Binding ImportImagesCommand}" />
-                        <MenuItem Header="{DynamicResource Text.ActressDeleteImage}" Command="{Binding DeleteImageCommand}" />
-                    </ContextMenu>
-                </Image.ContextMenu>
-            </Image>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="2*" />
+                    <ColumnDefinition Width="*" MinWidth="20" />
+                    <ColumnDefinition Width="2*" />
+                </Grid.ColumnDefinitions>
+
+                <Image 
+                    Grid.Column="0"
+                    Grid.ColumnSpan="3"
+                    MinHeight="100"
+                    HorizontalAlignment="Right" 
+                    VerticalAlignment="Center"   
+                    Height="{Binding ImageHeight ,Mode=OneWayToSource}"
+                    Width="{Binding ImageWidth ,Mode=OneWayToSource}"
+                    RenderTransform="{Binding RenderTransform, Mode=OneWayToSource}"
+                    Stretch="Uniform"
+                    Visibility="{Binding ImageVisibility}"
+                    Source="{Binding Image}" 
+                    >
+                    <Image.ContextMenu>
+                        <ContextMenu>
+                            <MenuItem Header="{DynamicResource Text.ActressImportImage}" Command="{Binding ImportImagesCommand}" />
+                            <MenuItem Header="{DynamicResource Text.ActressDeleteImage}" Command="{Binding DeleteImageCommand}" />
+                        </ContextMenu>
+                    </Image.ContextMenu>
+                </Image>
+
+                <Grid 
+                    Grid.Column="0"
+                    Background="Transparent"
+                    IsHitTestVisible="True"
+                    MouseEnter="ImageLeft_MouseEnter"
+                    MouseLeave="ImageLeft_MouseLeave"
+                    MouseDown="ImageLeft_MouseDown"
+                    >
+                    <Grid.ContextMenu>
+                        <ContextMenu>
+                            <MenuItem Header="{DynamicResource Text.ActressImportImage}" Command="{Binding ImportImagesCommand}" />
+                            <MenuItem Header="{DynamicResource Text.ActressDeleteImage}" Command="{Binding DeleteImageCommand}" />
+                        </ContextMenu>
+                    </Grid.ContextMenu>
+                    <ContentPresenter
+                        Height="80"
+                        Opacity=".4"
+                        HorizontalAlignment="Left"
+                        Margin="5, 0, 0, 0"
+                        Visibility="{Binding LeftNavArrowVisibility}"
+                        IsHitTestVisible="False"
+                        RenderTransformOrigin="0.5,0.5"                       
+                        Content="{StaticResource ImageNavArrow}" 
+                        >
+                        <ContentPresenter.RenderTransform>
+                            <ScaleTransform ScaleX="-1" />
+                        </ContentPresenter.RenderTransform>
+                    </ContentPresenter>
+                </Grid>
+
+                <Grid 
+                    Grid.Column="2"
+                    Background="Transparent"
+                    IsHitTestVisible="True"
+                    MouseEnter="ImageRight_MouseEnter"
+                    MouseLeave="ImageRight_MouseLeave"
+                    MouseDown="ImageRight_MouseDown"
+                    >
+                    <Grid.ContextMenu>
+                        <ContextMenu>
+                            <MenuItem Header="{DynamicResource Text.ActressImportImage}" Command="{Binding ImportImagesCommand}" />
+                            <MenuItem Header="{DynamicResource Text.ActressDeleteImage}" Command="{Binding DeleteImageCommand}" />
+                        </ContextMenu>
+                    </Grid.ContextMenu>
+                    <ContentPresenter
+                        Height="80"
+                        Opacity=".4"
+                        HorizontalAlignment="Right"
+                        Margin="0, 0, 5, 0"
+                        Visibility="{Binding RightNavArrowVisibility}"
+                        IsHitTestVisible="False"
+                        Content="{StaticResource ImageNavArrow}" 
+                        >
+                    </ContentPresenter>
+                </Grid>
+
+        </Grid>
 
             <Grid Grid.Row="1" Grid.Column="3">
                 <Grid.RowDefinitions>
@@ -168,91 +241,100 @@
                     />
 
                 <!--Actress Info, first column-->
-                <!--<ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" >-->
-                <StackPanel HorizontalAlignment="Left" MinWidth="500"  Grid.Row="1" Grid.Column="0" Background="Transparent" IsHitTestVisible="True" MouseDown="MainGrid_MouseDown">
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="180"/>
-                            <ColumnDefinition Width="10" />
-                            <ColumnDefinition Width="*" />
-                        </Grid.ColumnDefinitions>
-                        <Label Style="{StaticResource DetailLabelStyle}" Content="{DynamicResource Text.ActressJapaneseName}" />
-                        <TextBox Style="{StaticResource DetailTextBoxStyle}" Text="{Binding JapaneseName, UpdateSourceTrigger=LostFocus}" />
-                    </Grid>
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="180"/>
-                            <ColumnDefinition Width="10" />
-                            <ColumnDefinition Width="*" />
-                        </Grid.ColumnDefinitions>
-                        <Label Style="{StaticResource DetailLabelStyle}" Content="{DynamicResource Text.ActressAlternateNames}" />
-                        <TextBox Style="{StaticResource DetailTextBoxStyle}" Text="{Binding AlternateNames, UpdateSourceTrigger=LostFocus}" />
-                    </Grid>
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="180"/>
-                            <ColumnDefinition Width="10" />
-                            <ColumnDefinition Width="*" />
-                        </Grid.ColumnDefinitions>
-                        <Label Style="{StaticResource DetailLabelStyle}" Content="{DynamicResource Text.ActressDateOfBirth}" />
-                        <TextBox Style="{StaticResource DetailTextBoxStyle}" Text="{Binding DateOfBirth, UpdateSourceTrigger=LostFocus}" />
-                    </Grid>
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="180"/>
-                            <ColumnDefinition Width="10" />
-                            <ColumnDefinition Width="*" />
-                        </Grid.ColumnDefinitions>
-                        <Label Style="{StaticResource DetailLabelStyle}" Content="{DynamicResource Text.ActressCup}" />
-                        <TextBox Style="{StaticResource DetailTextBoxStyle}" Text="{Binding Cup, UpdateSourceTrigger=LostFocus}" />
-                    </Grid>
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="180"/>
-                            <ColumnDefinition Width="10" />
-                            <ColumnDefinition Width="*" />
-                        </Grid.ColumnDefinitions>
-                        <Label Style="{StaticResource DetailLabelStyle}" Content="{DynamicResource Text.ActressMeasurements}" />
-                        <TextBox Style="{StaticResource DetailTextBoxStyle}" Text="{Binding Measurements, UpdateSourceTrigger=LostFocus}" />
-                    </Grid>
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="180"/>
-                            <ColumnDefinition Width="10" />
-                            <ColumnDefinition Width="*" />
-                        </Grid.ColumnDefinitions>
-                        <Label Style="{StaticResource DetailLabelStyle}" Content="{DynamicResource Text.ActressAge}" />
-                        <Label Style="{StaticResource DetailLabelContentStyle}" Content="{Binding Age}" />
-                    </Grid>
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="180"/>
-                            <ColumnDefinition Width="10" />
-                            <ColumnDefinition Width="*" />
-                        </Grid.ColumnDefinitions>
-                        <Label Style="{StaticResource DetailLabelStyle}" Content="{DynamicResource Text.ActressAverageMovieRating}" />
-                        <local:RatingControl Margin="0, 4, 0, 0" BorderBrush="Transparent" IsEnabled="False" Grid.Column="2" Value="{Binding AverageMovieRating,Mode=OneWay}" />
-                    </Grid>
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="180"/>
-                            <ColumnDefinition Width="10" />
-                            <ColumnDefinition Width="*" />
-                        </Grid.ColumnDefinitions>
-                        <Label Style="{StaticResource DetailLabelStyle}" Content="{DynamicResource Text.UserRating}" />
-                        <local:RatingControl Margin="0, 4, 0, 0" BorderBrush="Transparent" Grid.Column="2" Value="{Binding UserRating}" />
-                    </Grid>
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="180"/>
-                            <ColumnDefinition Width="10" />
-                            <ColumnDefinition Width="*" />
-                        </Grid.ColumnDefinitions>
-                        <Label Style="{StaticResource DetailLabelStyle}" Content="{DynamicResource Text.Notes}" />
-                        <TextBox Style="{StaticResource DetailTextBoxStyle}" TextWrapping="Wrap" AcceptsReturn="True" Text="{Binding Notes, UpdateSourceTrigger=LostFocus}" />
-                    </Grid>
-                </StackPanel>
-                <!--</ScrollViewer>-->
+                <ScrollViewer 
+                    Grid.Row="1" 
+                    VerticalScrollBarVisibility="Auto" 
+                    >
+                    <ScrollViewer.InputBindings>
+                        <KeyBinding Command="{Binding Parent.NavigateLeftCommand}" Key="Left" />
+                        <KeyBinding Command="{Binding Parent.NavigateRightCommand}" Key="Right" />
+                        <KeyBinding Command="{Binding PreviousImageCommand}" Key="Left" Modifiers="Ctrl" />
+                        <KeyBinding Command="{Binding NextImageCommand}" Key="Right" Modifiers="Ctrl"/>
+                    </ScrollViewer.InputBindings>
+                    <StackPanel HorizontalAlignment="Left" MinWidth="500"  Grid.Row="1" Grid.Column="0" Background="Transparent" IsHitTestVisible="True" MouseDown="MainGrid_MouseDown">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="180"/>
+                                <ColumnDefinition Width="10" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <Label Style="{StaticResource DetailLabelStyle}" Content="{DynamicResource Text.ActressJapaneseName}" />
+                            <TextBox Style="{StaticResource DetailTextBoxStyle}" Text="{Binding JapaneseName, UpdateSourceTrigger=LostFocus}" />
+                        </Grid>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="180"/>
+                                <ColumnDefinition Width="10" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <Label Style="{StaticResource DetailLabelStyle}" Content="{DynamicResource Text.ActressAlternateNames}" />
+                            <TextBox Style="{StaticResource DetailTextBoxStyle}" Text="{Binding AlternateNames, UpdateSourceTrigger=LostFocus}" />
+                        </Grid>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="180"/>
+                                <ColumnDefinition Width="10" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <Label Style="{StaticResource DetailLabelStyle}" Content="{DynamicResource Text.ActressDateOfBirth}" />
+                            <TextBox Style="{StaticResource DetailTextBoxStyle}" Text="{Binding DateOfBirth, UpdateSourceTrigger=LostFocus}" />
+                        </Grid>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="180"/>
+                                <ColumnDefinition Width="10" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <Label Style="{StaticResource DetailLabelStyle}" Content="{DynamicResource Text.ActressCup}" />
+                            <TextBox Style="{StaticResource DetailTextBoxStyle}" Text="{Binding Cup, UpdateSourceTrigger=LostFocus}" />
+                        </Grid>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="180"/>
+                                <ColumnDefinition Width="10" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <Label Style="{StaticResource DetailLabelStyle}" Content="{DynamicResource Text.ActressMeasurements}" />
+                            <TextBox Style="{StaticResource DetailTextBoxStyle}" Text="{Binding Measurements, UpdateSourceTrigger=LostFocus}" />
+                        </Grid>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="180"/>
+                                <ColumnDefinition Width="10" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <Label Style="{StaticResource DetailLabelStyle}" Content="{DynamicResource Text.ActressAge}" />
+                            <Label Style="{StaticResource DetailLabelContentStyle}" Content="{Binding Age}" />
+                        </Grid>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="180"/>
+                                <ColumnDefinition Width="10" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <Label Style="{StaticResource DetailLabelStyle}" Content="{DynamicResource Text.ActressAverageMovieRating}" />
+                            <local:RatingControl Margin="0, 4, 0, 0" BorderBrush="Transparent" IsEnabled="False" Grid.Column="2" Value="{Binding AverageMovieRating,Mode=OneWay}" />
+                        </Grid>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="180"/>
+                                <ColumnDefinition Width="10" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <Label Style="{StaticResource DetailLabelStyle}" Content="{DynamicResource Text.UserRating}" />
+                            <local:RatingControl Margin="0, 4, 0, 0" BorderBrush="Transparent" Grid.Column="2" Value="{Binding UserRating}" />
+                        </Grid>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="180"/>
+                                <ColumnDefinition Width="10" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <Label Style="{StaticResource DetailLabelStyle}" Content="{DynamicResource Text.Notes}" />
+                            <TextBox Style="{StaticResource DetailTextBoxStyle}" TextWrapping="Wrap" AcceptsReturn="True" Text="{Binding Notes, UpdateSourceTrigger=LostFocus}" />
+                        </Grid>
+                    </StackPanel>
+                </ScrollViewer>
 
             </Grid>
         </Grid>
