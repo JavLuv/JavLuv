@@ -45,7 +45,13 @@ namespace JavLuv
             Image = m_loadImage.Image;
             if (Image == null)
                 Logger.WriteWarning("Unable to load image " + Path.Combine(Utilities.GetActressImageFolder(), m_actressData.ImageFileNames[m_actressData.ImageIndex]));
+            m_loadImage.FinishedLoading -= OnImageFinishedLoading;
             m_loadImage = null;
+            if (m_pendingImageLoad)
+            {
+                LoadCurrentImage();
+                m_pendingImageLoad = false;
+            }
         }
 
         #endregion
@@ -424,10 +430,17 @@ namespace JavLuv
         {
             if (m_actressData.ImageFileNames.Count > 0)
             {
-                string path = Path.Combine(Utilities.GetActressImageFolder(), m_actressData.ImageFileNames[m_actressData.ImageIndex]);
-                m_loadImage = new CmdLoadImage(path, ImageSize.Full);
-                m_loadImage.FinishedLoading += OnImageFinishedLoading;
-                CommandQueue.ShortTask().Execute(m_loadImage, CommandOrder.First);
+                if (m_loadImage == null)
+                {
+                    string path = Path.Combine(Utilities.GetActressImageFolder(), m_actressData.ImageFileNames[m_actressData.ImageIndex]);
+                    m_loadImage = new CmdLoadImage(path, ImageSize.Full);
+                    m_loadImage.FinishedLoading += OnImageFinishedLoading;
+                    CommandQueue.ShortTask().Execute(m_loadImage, CommandOrder.First);
+                }
+                else
+                {
+                    m_pendingImageLoad = true;
+                }
             }
             else
             {
@@ -445,6 +458,7 @@ namespace JavLuv
         private ImageSource m_image;
         private CmdLoadImage m_loadImage;
         private int m_averageMovieCollection;
+        private bool m_pendingImageLoad;
 
         #endregion
     }

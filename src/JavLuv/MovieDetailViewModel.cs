@@ -118,6 +118,7 @@ namespace JavLuv
             Image = m_loadImage.Image;
             if (Image == null)
                 Logger.WriteWarning("Unable to load image " + Path.Combine(m_movieData.Path, m_movieData.CoverFileName));
+            m_loadImage.FinishedLoading -= LoadImage_FinishedLoading;
             m_loadImage = null;
         }
 
