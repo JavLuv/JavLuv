@@ -9,6 +9,9 @@
     Width="158"
     Height="236"
     >
+    <UserControl.Resources>
+        <Image x:Key="ImageBirthday" x:Shared="false" Source="Resources/birthday.png" />
+    </UserControl.Resources>
     <Grid>
         <Border       
             BorderThickness="2" 
@@ -33,7 +36,7 @@
             <Grid Margin="5, 5, 5, 5">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="*" />
-                    <RowDefinition Height="22" />
+                    <RowDefinition Height="32" />
                 </Grid.RowDefinitions>
 
                 <ContentControl Width="300" HorizontalAlignment="Center">
@@ -43,13 +46,25 @@
                         />
                 </ContentControl>
 
-                <TextBlock 
-                    Margin="0, 5, 0, 0" 
-                    Grid.Row="1"
-                    TextAlignment="Center"
-                    TextWrapping="Wrap"
-                    Text="{Binding DisplayTitle}"
-                    />
+                <DockPanel Grid.Row="1" >
+                    <ContentPresenter 
+                        DockPanel.Dock="Left" 
+                        VerticalAlignment="Center"
+                        HorizontalAlignment="Center"
+                        Height="38"
+                        Visibility="{Binding BirthdayVisibility}" 
+                        Content="{StaticResource ImageBirthday}" 
+                        />
+                    <TextBlock 
+                        HorizontalAlignment="Stretch"
+                        VerticalAlignment="Center"
+                        Margin="0, 5, 0, 0" 
+                        Grid.Row="1"
+                        TextAlignment="Center"
+                        TextWrapping="Wrap"
+                        Text="{Binding DisplayTitle}"
+                        />
+                </DockPanel>
             </Grid>
         </Border>
     </Grid>

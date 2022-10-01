@@ -130,7 +130,7 @@
     <system:String x:Key="Text.SearchCollection">Search Collection</system:String>
     <system:String x:Key="Text.SortBy">Sort by:</system:String>
     <system:String x:Key="Text.SortByTitle">Title</system:String>
-    <system:String x:Key="Text.SortByID">品番</system:String>
+    <system:String x:Key="Text.SortByID">ID</system:String>
     <system:String x:Key="Text.SortByActress">Actress</system:String>
     <system:String x:Key="Text.SortByDateNewest">Date (newest)</system:String>
     <system:String x:Key="Text.SortByDateOldest">Date (oldest)</system:String>

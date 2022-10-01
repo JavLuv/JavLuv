@@ -3,6 +3,7 @@ using MovieInfo;
 using System;
 using System.IO;
 using System.Text;
+using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
 
@@ -43,7 +44,23 @@ namespace JavLuv
             }
         }
 
-        public string DisplayTitle { get { return m_displayTitle; } }
+        public Visibility BirthdayVisibility
+        {
+            get
+            {
+                if (DateTime.Now.DayOfYear == m_actressData.DateOfBirth.DayOfYear)
+                    return Visibility.Visible;
+                return Visibility.Collapsed;
+            }
+        }
+
+        public string DisplayTitle 
+        { 
+            get 
+            { 
+                return m_displayTitle; 
+            } 
+        }
 
         #endregion
 
@@ -99,6 +116,28 @@ namespace JavLuv
         private void CreateDisplayTitle()
         {
             m_displayTitle = m_actressData.Name;
+            switch (Settings.Get().SortActressesBy)
+            {
+                case SortActressesBy.Name:
+                    break;
+                case SortActressesBy.Age_Youngest:
+                case SortActressesBy.Age_Oldest:
+                    if (m_actressData.DateOfBirth == new DateTime())
+                        break;
+                    int years = MovieUtils.GetAgeFromDateOfBorth(m_actressData.DateOfBirth);
+                    m_displayTitle += "\nAge " + years.ToString();
+                    break;
+                case SortActressesBy.Birthday:
+                    m_displayTitle += "\n" + m_actressData.DateOfBirth.ToString("M");
+                    break;
+                case SortActressesBy.MovieCount:
+                    m_displayTitle += "\nMovies: " + m_actressData.MovieCount.ToString();
+                    break;
+                case SortActressesBy.UserRating:
+                    m_displayTitle += "\n" + MovieUtils.UserRatingToStars(m_actressData.UserRating);
+                    break;
+            }
+            NotifyPropertyChanged("DisplayTitle");
         }
 
         private void BeginLoadImage()

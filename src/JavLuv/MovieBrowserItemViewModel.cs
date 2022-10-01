@@ -143,7 +143,7 @@ namespace JavLuv
                     m_displayTitle = String.Format("({0}) {1}", date, GetOptionalIdAndTitle());
                     break;
                 case SortMoviesBy.UserRating:
-                    m_displayTitle = String.Format("({0}) {1}", UserRatingToStars(m_movieData.Metadata.UserRating), GetOptionalIdAndTitle());
+                    m_displayTitle = String.Format("({0}) {1}", MovieUtils.UserRatingToStars(m_movieData.Metadata.UserRating), GetOptionalIdAndTitle());
                     break;
             }
         }
@@ -166,21 +166,6 @@ namespace JavLuv
             if (Image == null)
                 Logger.WriteWarning("Unable to load image " + Path.Combine(m_movieData.Path, m_movieData.CoverFileName));
             m_loadImage = null;
-        }
-
-        private string UserRatingToStars(int userRating)
-        {
-            if (userRating == 0)
-                return "unrated";
-            StringBuilder sb = new StringBuilder(10);
-            while (userRating >= 2)
-            {
-                sb.Append("\u2605");
-                userRating -= 2;
-            }
-            if (userRating != 0)
-                sb.Append("½");
-            return sb.ToString();
         }
 
         #endregion

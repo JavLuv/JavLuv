@@ -300,16 +300,7 @@ namespace JavLuv
             {
                 if (m_actressData.DateOfBirth == new DateTime())
                     return String.Empty;
-
-                // Calculate age - a little trickier than you'd expect.  
-                // Still not 100% precise, but good enough in 99.999% of cases.
-                DateTime zeroTime = new DateTime(1, 1, 1);
-                DateTime a = m_actressData.DateOfBirth;
-                DateTime b = DateTime.Now;
-                TimeSpan span = b - a;
-                // Because we start at year 1 for the Gregorian
-                // calendar, we must subtract a year here.
-                int years = (zeroTime + span).Year - 1;
+                int years = MovieUtils.GetAgeFromDateOfBorth(m_actressData.DateOfBirth);
                 return years.ToString();
             }
         }

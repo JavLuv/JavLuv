@@ -304,6 +304,34 @@ namespace MovieInfo
             return true;
         }
 
+        public static int GetAgeFromDateOfBorth(DateTime dateOfBirth)
+        {
+            // Calculate age - a little trickier than you'd expect.  
+            // Still not 100% precise, but good enough in 99.999% of cases.
+            DateTime zeroTime = new DateTime(1, 1, 1);
+            DateTime a = dateOfBirth;
+            DateTime b = DateTime.Now;
+            TimeSpan span = b - a;
+            // Because we start at year 1 for the Gregorian
+            // calendar, we must subtract a year here.
+            return (zeroTime + span).Year - 1;
+        }
+
+        public static string UserRatingToStars(int userRating)
+        {
+            if (userRating == 0)
+                return "unrated";
+            StringBuilder sb = new StringBuilder(10);
+            while (userRating >= 2)
+            {
+                sb.Append("\u2605");
+                userRating -= 2;
+            }
+            if (userRating != 0)
+                sb.Append("½");
+            return sb.ToString();
+        }
+
         public static void FilterActorName(ActorData actor)
         {
             // Some actors are listed as "First Last (AltFirst AltLast).
