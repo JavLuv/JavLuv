@@ -38,16 +38,15 @@ namespace WebScraper
             foreach (var element in document.All)
             {
                 // Check for actress image
-                if (element.NodeName == "IMG")
-                {
-                    string srcAttr = element.GetAttribute("src");
-                    if (String.IsNullOrEmpty(srcAttr) == false && srcAttr.StartsWith("http"))
+                if (element.NodeName == "META")
+                {              
+                    var property = element.GetAttribute("property");
+                    if (property != null && property == "og:image")
                     {
-                        if (String.IsNullOrEmpty(ImageSource))
+                        var content = element.GetAttribute("content");
+                        if (content != null)
                         {
-                            string source = element.GetAttribute("src");
-                            if (source.Contains("idolimages/full/") || source.Contains("/javdata/uploads/"))
-                                ImageSource = source.Trim();
+                            ImageSource = content.Trim();
                         }
                     }
                 }
