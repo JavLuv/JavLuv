@@ -84,8 +84,6 @@
     <system:String x:Key="Text.ActressBloodType">Blood Type:</system:String>
     <system:String x:Key="Text.ActressNumMovies">Number of Movies:</system:String>
     <system:String x:Key="Text.ActressAge">Age:</system:String>
-    <system:String x:Key="Text.ActressIsBirthday">Is Birthday:</system:String>
-    <system:String x:Key="Text.ActressNumMoviesInCollection">Movies In Collection:</system:String>
     <system:String x:Key="Text.ActressAverageMovieRating">Average Movie Rating:</system:String>
     <system:String x:Key="Text.ActressRenameError">Actress Rename Error</system:String>
     <system:String x:Key="Text.ActressRenameMessage">Name is already in use by {0}.</system:String>
@@ -143,6 +141,8 @@
     <system:String x:Key="Text.SortByName">Name</system:String>
     <system:String x:Key="Text.SortByAgeYoungest">Age (youngest)</system:String>
     <system:String x:Key="Text.SortByAgeOldest">Age (oldest)</system:String>
+    <system:String x:Key="Text.SortByBirthday">Birthday</system:String>
+    <system:String x:Key="Text.SortByMovieCount">Movie count</system:String>
     <system:String x:Key="Text.ShowUnknownActresses">Show unknown actresses</system:String>
 
     <!-- Browser Item View -->

@@ -23,7 +23,7 @@ namespace MovieInfo
             if (File.Exists(oldBackupFileName))
                 File.Move(oldBackupFileName, m_backupFilename);
             if (File.Exists(m_cacheFilename))
-                CommandQueue.Command().Execute(new CmdLoad(ref m_cacheData, m_cacheFilename, ref m_actresses, m_actressesFilename, ref m_backupData, m_backupFilename));
+                CommandQueue.Command().Execute(new CmdLoad(ref m_cacheData, m_cacheFilename, ref m_actressesDatabase, m_actressesFilename, ref m_backupData, m_backupFilename));
             else
                 m_loaded = true;
         }
@@ -213,15 +213,15 @@ namespace MovieInfo
 
         public void AddActress(ActressData actress)
         {
-            lock (m_actresses)
+            lock (m_actressesDatabase)
             {
-                if (m_actresses.Actresses.Contains(new ActressData(actress.Name)))
+                if (m_actressesDatabase.Actresses.Contains(new ActressData(actress.Name)))
                     return;
-                m_actresses.Actresses.Add(actress);
+                m_actressesDatabase.Actresses.Add(actress);
                 foreach (string altName in actress.AltNames)
                 {
-                    if (m_actresses.AltNames.Contains(new AltNameData(altName)))
-                        m_actresses.AltNames.Add(new AltNameData(altName, actress.Name));
+                    if (m_actressesDatabase.AltNames.Contains(new AltNameData(altName)))
+                        m_actressesDatabase.AltNames.Add(new AltNameData(altName, actress.Name));
                 }
             }
             SearchActresses();
@@ -230,17 +230,17 @@ namespace MovieInfo
 
         public void AddActresses(List<ActressData> actresses)
         {
-            lock (m_actresses)
+            lock (m_actressesDatabase)
             {
                 foreach (var actress in actresses)
                 {
-                    if (m_actresses.Actresses.Contains(new ActressData(actress.Name)))
+                    if (m_actressesDatabase.Actresses.Contains(new ActressData(actress.Name)))
                         continue;
-                    m_actresses.Actresses.Add(actress);
+                    m_actressesDatabase.Actresses.Add(actress);
                     foreach (string altName in actress.AltNames)
                     {
-                        if (m_actresses.AltNames.Contains(new AltNameData(altName)))
-                            m_actresses.AltNames.Add(new AltNameData(altName, actress.Name));
+                        if (m_actressesDatabase.AltNames.Contains(new AltNameData(altName)))
+                            m_actressesDatabase.AltNames.Add(new AltNameData(altName, actress.Name));
                     }
                 }
             }
@@ -272,11 +272,11 @@ namespace MovieInfo
 
         public bool ActressExists(string name)
         {
-            lock (m_actresses)
+            lock (m_actressesDatabase)
             {
-                if (m_actresses.Actresses.Contains(new ActressData(name)))
+                if (m_actressesDatabase.Actresses.Contains(new ActressData(name)))
                     return true;
-                if (m_actresses.AltNames.Contains(new AltNameData(name)))
+                if (m_actressesDatabase.AltNames.Contains(new AltNameData(name)))
                     return true;
                 return false;
             }
@@ -284,15 +284,15 @@ namespace MovieInfo
 
         public ActressData FindActress(string name)
         {
-            lock (m_actresses)
+            lock (m_actressesDatabase)
             {
                 ActressData actress = null;
-                if (m_actresses.Actresses.TryGetValue(new ActressData(name), out actress))
+                if (m_actressesDatabase.Actresses.TryGetValue(new ActressData(name), out actress))
                     return actress;
                 AltNameData altName = null;
-                if (m_actresses.AltNames.TryGetValue(new AltNameData(name), out altName))
+                if (m_actressesDatabase.AltNames.TryGetValue(new AltNameData(name), out altName))
                 {
-                    if (m_actresses.Actresses.TryGetValue(new ActressData(altName.Name), out actress))
+                    if (m_actressesDatabase.Actresses.TryGetValue(new ActressData(altName.Name), out actress))
                         return actress;
                 }
                 return actress;
@@ -420,11 +420,11 @@ namespace MovieInfo
 
         public void RemoveActress(ActressData actress)
         {
-            lock (m_actresses)
+            lock (m_actressesDatabase)
             {
-                m_actresses.Actresses.Remove(actress);
+                m_actressesDatabase.Actresses.Remove(actress);
                 foreach (string alias in actress.AltNames)
-                    m_actresses.AltNames.Remove(new AltNameData(alias));
+                    m_actressesDatabase.AltNames.Remove(new AltNameData(alias));
             }
             SearchActresses();
             Save();
@@ -432,12 +432,12 @@ namespace MovieInfo
 
         public void RemoveActresses(List<ActressData> actresses)
         {
-            lock (m_actresses)
+            lock (m_actressesDatabase)
             {
                 var folder = Utilities.GetActressImageFolder();
                 foreach (var actress in actresses)
                 {
-                    m_actresses.Actresses.Remove(actress);
+                    m_actressesDatabase.Actresses.Remove(actress);
                     try
                     {
                         foreach (var fn in actress.ImageFileNames)
@@ -451,7 +451,7 @@ namespace MovieInfo
                         Logger.WriteError("Could not delete actress image", ex);
                     }
                     foreach (string alias in actress.AltNames)
-                        m_actresses.AltNames.Remove(new AltNameData(alias));
+                        m_actressesDatabase.AltNames.Remove(new AltNameData(alias));
                 }
             }
             SearchActresses();
@@ -544,19 +544,21 @@ namespace MovieInfo
         {
             if (m_loaded == false)
                 return;
-            m_searchActresses = new CmdSearchActresses(m_actresses, m_searchText, m_sortActressesBy, m_showUnknownActresses);
+            if (SortActressesBy == SortActressesBy.MovieCount)
+                CommandQueue.Command().Execute(new CmdUpdateActressMovieCount(m_cacheData, m_actressesDatabase));
+            m_searchActresses = new CmdSearchActresses(m_actressesDatabase, m_searchText, m_sortActressesBy, m_showUnknownActresses);
             CommandQueue.Command().Execute(m_searchActresses);
         }
 
         public void Save()
         {
             CommandQueue.Command().Execute(new CmdMarkSharedFolders(m_cacheData));
-            CommandQueue.Command().Execute(new CmdSave(m_cacheData, m_cacheFilename, m_actresses, m_actressesFilename, m_backupData, m_backupFilename));
+            CommandQueue.Command().Execute(new CmdSave(m_cacheData, m_cacheFilename, m_actressesDatabase, m_actressesFilename, m_backupData, m_backupFilename));
         }
 
         public void UpdateActressNames()
         {
-            CommandQueue.Command().Execute(new CmdUpdateActressNames(m_cacheData, m_actresses));
+            CommandQueue.Command().Execute(new CmdUpdateActressNames(m_cacheData, m_actressesDatabase));
         }
 
         #endregion
@@ -610,7 +612,7 @@ namespace MovieInfo
         private System.Windows.Threading.Dispatcher m_dispatcher;
         private CacheData m_cacheData = new CacheData();
         private BackupData m_backupData = new BackupData();
-        private ActressesDatabase m_actresses = new ActressesDatabase();
+        private ActressesDatabase m_actressesDatabase = new ActressesDatabase();
         private string m_cacheFilename = String.Empty;
         private string m_actressesFilename = String.Empty;
         private string m_backupFilename = String.Empty;

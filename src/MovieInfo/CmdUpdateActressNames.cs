@@ -7,10 +7,10 @@ namespace MovieInfo
     {
         #region Constructors
 
-        public CmdUpdateActressNames(CacheData cacheData, ActressesDatabase actressesData)
+        public CmdUpdateActressNames(CacheData cacheData, ActressesDatabase actressesDatabase)
         {
             m_cacheData = cacheData;
-            m_actresses = actressesData;
+            m_actressesDatabase = actressesDatabase;
         }
             
         #endregion
@@ -19,14 +19,14 @@ namespace MovieInfo
 
         public void Execute()
         {
-            lock (m_actresses)
+            lock (m_actressesDatabase)
             {
                 // First regenerate alt names
-                m_actresses.AltNames.Clear();
-                foreach (var actress in m_actresses.Actresses)
+                m_actressesDatabase.AltNames.Clear();
+                foreach (var actress in m_actressesDatabase.Actresses)
                 {
                     foreach (var alias in actress.AltNames)
-                        m_actresses.AltNames.Add(new AltNameData(alias, actress.Name));
+                        m_actressesDatabase.AltNames.Add(new AltNameData(alias, actress.Name));
                 }
 
                 // Now update all movie metadata with updated names.  The primary goal
@@ -44,7 +44,7 @@ namespace MovieInfo
 
         #region Private Functions
 
-        void UpdateActors(MovieData movie)
+        private void UpdateActors(MovieData movie)
         {
             foreach (var actor in movie.Metadata.Actors)
             {
@@ -83,7 +83,7 @@ namespace MovieInfo
                     foreach (var name in actorNames)
                     {
                         ActressData actress = null;                    
-                        if (m_actresses.Actresses.TryGetValue(new ActressData(name), out actress))
+                        if (m_actressesDatabase.Actresses.TryGetValue(new ActressData(name), out actress))
                         {
                             var newActor = new ActorData(actress.Name);
                             foreach (string altName in actress.AltNames)
@@ -115,15 +115,15 @@ namespace MovieInfo
             actress = null;
 
             // First check main actress names
-            if (m_actresses.Actresses.TryGetValue(new ActressData(name), out actress))
+            if (m_actressesDatabase.Actresses.TryGetValue(new ActressData(name), out actress))
                 return true;
 
             // Otherwise, check alt names
             AltNameData altNameData = null;
-            if (m_actresses.AltNames.TryGetValue(new AltNameData(name), out altNameData))
+            if (m_actressesDatabase.AltNames.TryGetValue(new AltNameData(name), out altNameData))
             {
                 // If we found an alt name, check the actress names and return the match
-                if (m_actresses.Actresses.TryGetValue(new ActressData(altNameData.Name), out actress))
+                if (m_actressesDatabase.Actresses.TryGetValue(new ActressData(altNameData.Name), out actress))
                     return true;
             }
 
@@ -169,7 +169,7 @@ namespace MovieInfo
         #region Private Members
 
         private CacheData m_cacheData;
-        private ActressesDatabase m_actresses;
+        private ActressesDatabase m_actressesDatabase;
 
         #endregion
     }

@@ -1,8 +1,6 @@
 ﻿using Common;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace MovieInfo
 {
@@ -13,6 +11,9 @@ namespace MovieInfo
         Name,
         Age_Youngest,
         Age_Oldest,
+        Birthday,
+        MovieCount,
+        UserRating,
     }
 
     #region Comparers
@@ -38,6 +39,36 @@ namespace MovieInfo
         public int Compare(ActressData left, ActressData right)
         {
             return DateTime.Compare(left.DateOfBirth, right.DateOfBirth);
+        }
+    }
+
+    public class ActressBirthdayComparer : IComparer<ActressData>
+    {
+        public int Compare(ActressData left, ActressData right)
+        {
+            int l = left.DateOfBirth.DayOfYear;
+            int r = right.DateOfBirth.DayOfYear;
+            return (l == r) ? 0 : (l > r) ? 1 : -1;
+        }
+    }
+
+    public class ActressMovieCountComparer : IComparer<ActressData>
+    {
+        public int Compare(ActressData left, ActressData right)
+        {
+            int l = left.MovieCount;
+            int r = right.MovieCount;
+            return (l == r) ? 0 : (l < r) ? 1 : -1;
+        }
+    }
+
+    public class ActressUserRatingComparer : IComparer<ActressData>
+    {
+        public int Compare(ActressData left, ActressData right)
+        {
+            int l = left.UserRating;
+            int r = right.UserRating;
+            return (l == r) ? 0 : (l < r) ? 1 : -1;
         }
     }
 
@@ -145,6 +176,15 @@ namespace MovieInfo
                     break;
                 case SortActressesBy.Age_Oldest:
                     m_filteredActresses.Sort(new ActressAgeOldestComparer());
+                    break;
+                case SortActressesBy.Birthday:
+                    m_filteredActresses.Sort(new ActressBirthdayComparer());
+                    break;
+                case SortActressesBy.MovieCount:
+                    m_filteredActresses.Sort(new ActressMovieCountComparer());
+                    break;
+                case SortActressesBy.UserRating:
+                    m_filteredActresses.Sort(new ActressUserRatingComparer());
                     break;
             };
         }

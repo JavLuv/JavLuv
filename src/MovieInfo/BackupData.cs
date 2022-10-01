@@ -12,6 +12,7 @@ namespace MovieInfo
         {
             Movies = new HashSet<MovieMetadata>();
             Actresses = new HashSet<ActressData>();
+            AltNames = new HashSet<AltNameData>();
         }
 
         public static void Filter(XDocument doc)

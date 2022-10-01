@@ -23,15 +23,9 @@ namespace MovieInfo
             ImageFileNames = new List<string>();
         }
 
-        public ActressData(string name)
+        public ActressData(string name) : this()
         {
             Name = name;
-            JapaneseName = String.Empty;
-            AltNames = new List<string>();
-            DateOfBirth = new DateTime();
-            Cup = String.Empty;
-            BloodType = String.Empty;
-            ImageFileNames = new List<string>();
         }
 
         #endregion
@@ -70,6 +64,7 @@ namespace MovieInfo
         public int Waist { get; set; }
         public int Hips { get; set; }
         public string BloodType { get; set; }
+        public int MovieCount { get; set; }
         public int UserRating { get; set; }
         public string Notes { get; set; }
         public List<string> ImageFileNames { get; set; }
@@ -131,7 +126,6 @@ namespace MovieInfo
         public string Name { get; set; }
         #endregion
     }
-
 
     [Serializable]
     public class ActressesDatabase
