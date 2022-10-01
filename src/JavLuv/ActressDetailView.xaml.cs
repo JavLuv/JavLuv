@@ -34,7 +34,8 @@ namespace JavLuv
                 return;
             if (e.LeftButton != MouseButtonState.Pressed)
                 return;
-            vm.PreviousImageCommand?.Execute(null);
+            if (vm.PreviousImageCommand.CanExecute(null))
+                vm.PreviousImageCommand?.Execute(null);
         }
 
         private void ImageRight_MouseDown(object sender, MouseButtonEventArgs e)
@@ -44,7 +45,8 @@ namespace JavLuv
                 return;
             if (e.LeftButton != MouseButtonState.Pressed)
                 return;
-            vm.NextImageCommand?.Execute(null);
+            if (vm.NextImageCommand.CanExecute(null))
+                vm.NextImageCommand?.Execute(null);
         }
         private void ImageLeft_MouseEnter(object sender, MouseEventArgs e)
         {
