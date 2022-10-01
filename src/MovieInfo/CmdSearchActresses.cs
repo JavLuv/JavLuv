@@ -131,7 +131,9 @@ namespace MovieInfo
                 {
                     if (MovieUtils.IsActressUnknonwn(actress))
                         continue;
-                    if (m_sortActressesBy == SortActressesBy.Age_Youngest || m_sortActressesBy == SortActressesBy.Age_Oldest)
+                    if (m_sortActressesBy == SortActressesBy.Age_Youngest || 
+                        m_sortActressesBy == SortActressesBy.Age_Oldest || 
+                        m_sortActressesBy == SortActressesBy.Birthday)
                     {
                         if (actress.DateOfBirth == new DateTime())
                             continue;
@@ -161,6 +163,11 @@ namespace MovieInfo
                 return true;
             if (actress.JapaneseName.ContainsCaseless(term))
                 return true;
+            foreach (var altName in actress.AltNames)
+            {
+                if (altName.ContainsCaseless(term))
+                    return true;
+            }
             return false;
         }
 
