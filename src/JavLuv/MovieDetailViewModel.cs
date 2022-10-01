@@ -6,6 +6,7 @@ using System.IO;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Media.Imaging;
 
 namespace JavLuv
 {
@@ -408,6 +409,35 @@ namespace JavLuv
         #endregion
 
         #region Commands
+
+        #region Paste Command
+
+        private void PasteExecute()
+        {
+            var image = Clipboard.GetImage() as BitmapSource;
+            string fileName = Path.ChangeExtension(Guid.NewGuid().ToString(), ".png");
+            string fileNamePath = Path.Combine(Utilities.GetActressImageFolder(), fileName);
+            using (FileStream stream = new FileStream(fileNamePath, FileMode.Create))
+            {
+                PngBitmapEncoder encoder = new PngBitmapEncoder();
+                encoder.Interlace = PngInterlaceOption.Off;
+                encoder.Frames.Add(BitmapFrame.Create(image));
+                encoder.Save(stream);
+            }
+            m_movieData.CoverFileName = fileName;
+            m_loadImage = new CmdLoadImage(Path.Combine(m_movieData.Path, m_movieData.CoverFileName));
+            m_loadImage.FinishedLoading += LoadImage_FinishedLoading;
+            CommandQueue.ShortTask().Execute(m_loadImage, CommandOrder.First);
+        }
+
+        private bool CanPasteExecute()
+        {
+            return Clipboard.ContainsImage();
+        }
+
+        public ICommand PasteCommand { get { return new RelayCommand(PasteExecute, CanPasteExecute); } }
+
+        #endregion
 
         #region Open Folder Command
 

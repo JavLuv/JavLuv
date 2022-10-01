@@ -99,6 +99,7 @@
     <system:String x:Key="Text.Browse">Browse...</system:String>
     <system:String x:Key="Text.Close">Close</system:String>
     <system:String x:Key="Text.Cancel">Cancel</system:String>
+    <system:String x:Key="Text.Paste">Paste</system:String>
     <system:String x:Key="Text.CancellingOperation">Cancelling operation.  Plese wait...</system:String>
     <system:String x:Key="Text.ImportCoverImage">Import cover image...</system:String>
     <system:String x:Key="Text.LoadingMetadata">Loading metadata {0}/{1}</system:String>

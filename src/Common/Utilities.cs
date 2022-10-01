@@ -691,13 +691,16 @@ namespace Common
 
         public static List<string> DeleteDuplicateFiles(List<string> fileNames)
         {
+            if (fileNames.Count < 2)
+                return fileNames;
+
             List<string> result = new List<string>();
             Dictionary<string, string> hashFilenamePairs = new Dictionary<string, string>();
 
             foreach (string fileName in fileNames)
             {
                 string hash = GetSHA1Checksum(fileName);
-                if (hash == String.Empty || hashFilenamePairs.ContainsKey(hash))
+                if (hash != String.Empty && hashFilenamePairs.ContainsKey(hash))
                 {
                     try
                     {

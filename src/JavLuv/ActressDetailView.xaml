@@ -49,6 +49,7 @@
         <Grid.ContextMenu>
             <ContextMenu>
                 <MenuItem Header="{DynamicResource Text.ActressImportImage}" Command="{Binding ImportImagesCommand}" />
+                <MenuItem Header="{DynamicResource Text.Paste}" Command="{Binding PasteCommand}" />
             </ContextMenu>
         </Grid.ContextMenu>
 
@@ -129,11 +130,11 @@
             </Grid.ColumnDefinitions>
 
             <Grid
-                 Grid.Column="1"
-                 Grid.Row="1"
-                 MinHeight="100" 
-                 HorizontalAlignment="Right" 
-                 VerticalAlignment="Stretch"   
+                Grid.Column="1"
+                Grid.Row="1"
+                MinHeight="100" 
+                HorizontalAlignment="Right" 
+                VerticalAlignment="Stretch"   
                 >
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="2*" />
@@ -157,6 +158,7 @@
                     <Image.ContextMenu>
                         <ContextMenu>
                             <MenuItem Header="{DynamicResource Text.ActressImportImage}" Command="{Binding ImportImagesCommand}" />
+                            <MenuItem Header="{DynamicResource Text.Paste}" Command="{Binding PasteCommand}" />
                             <MenuItem Header="{DynamicResource Text.ActressDeleteImage}" Command="{Binding DeleteImageCommand}" />
                         </ContextMenu>
                     </Image.ContextMenu>
@@ -173,6 +175,7 @@
                     <Grid.ContextMenu>
                         <ContextMenu>
                             <MenuItem Header="{DynamicResource Text.ActressImportImage}" Command="{Binding ImportImagesCommand}" />
+                            <MenuItem Header="{DynamicResource Text.Paste}" Command="{Binding PasteCommand}" />
                             <MenuItem Header="{DynamicResource Text.ActressDeleteImage}" Command="{Binding DeleteImageCommand}" />
                         </ContextMenu>
                     </Grid.ContextMenu>
@@ -203,6 +206,7 @@
                     <Grid.ContextMenu>
                         <ContextMenu>
                             <MenuItem Header="{DynamicResource Text.ActressImportImage}" Command="{Binding ImportImagesCommand}" />
+                            <MenuItem Header="{DynamicResource Text.Paste}" Command="{Binding PasteCommand}" />
                             <MenuItem Header="{DynamicResource Text.ActressDeleteImage}" Command="{Binding DeleteImageCommand}" />
                         </ContextMenu>
                     </Grid.ContextMenu>
@@ -214,11 +218,9 @@
                         Visibility="{Binding RightNavArrowVisibility}"
                         IsHitTestVisible="False"
                         Content="{StaticResource ImageNavArrow}" 
-                        >
-                    </ContentPresenter>
+                        />
                 </Grid>
-
-        </Grid>
+            </Grid>
 
             <Grid Grid.Row="1" Grid.Column="3">
                 <Grid.RowDefinitions>

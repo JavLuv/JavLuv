@@ -4,8 +4,10 @@ using System;
 using System.IO;
 using System.Linq;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Media.Imaging;
 
 namespace JavLuv
 {
@@ -417,6 +419,35 @@ namespace JavLuv
         }
 
         public ICommand ImportImagesCommand { get { return new RelayCommand(ImportImagesExecute, CanImportImagesExecute); } }
+
+        #endregion
+
+        #region Paste Command
+
+        private void PasteExecute()
+        {
+            var image = Clipboard.GetImage() as BitmapSource;
+            string fileName = Path.ChangeExtension(Guid.NewGuid().ToString(), ".png");
+            string fileNamePath = Path.Combine(Utilities.GetActressImageFolder(), fileName);
+            using (FileStream stream = new FileStream(fileNamePath, FileMode.Create))
+            {
+                PngBitmapEncoder encoder = new PngBitmapEncoder();
+                encoder.Interlace = PngInterlaceOption.Off;
+                encoder.Frames.Add(BitmapFrame.Create(image));
+                encoder.Save(stream);
+            }
+            m_actressData.ImageFileNames.Add(fileName);
+            m_actressData.ImageFileNames = Utilities.DeleteDuplicateFiles(Utilities.GetActressImageFolder(), m_actressData.ImageFileNames);
+            m_actressData.ImageIndex = m_actressData.ImageFileNames.Count - 1;
+            LoadCurrentImage();
+        }
+
+        private bool CanPasteExecute()
+        {
+            return Clipboard.ContainsImage();
+        }
+
+        public ICommand PasteCommand { get { return new RelayCommand(PasteExecute, CanPasteExecute); } }
 
         #endregion
 
