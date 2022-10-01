@@ -300,7 +300,11 @@ namespace Common
             var stringList = new List<string>();
             var strings = str.Split(',');
             foreach (var s in strings)
-                stringList.Add(s.Trim());
+            {
+                var st = s.Trim();
+                if (String.IsNullOrEmpty(st) == false)
+                    stringList.Add(st);
+            }
             return stringList;
         }
 
