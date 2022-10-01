@@ -299,6 +299,8 @@ namespace MovieInfo
                 return false;
             if (String.IsNullOrEmpty(actress.BloodType) == false)
                 return false;
+            if (actress.ImageFileNames.Count > 0)
+                return false;
             return true;
         }
 

@@ -47,7 +47,6 @@
     <Compile Include="CmdFilter.cs" />
     <Compile Include="CmdLoad.cs" />
     <Compile Include="CmdMarkSharedFolders.cs" />
-    <Compile Include="CmdRestoreMetadata.cs" />
     <Compile Include="CmdSave.cs" />
     <Compile Include="CmdSearchActresses.cs" />
     <Compile Include="CmdUpdateActressNames.cs" />

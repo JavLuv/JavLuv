@@ -18,6 +18,11 @@ namespace MovieInfo
             Default = true;
         }
 
+        public UniqueID(string id) : this()
+        {
+            Value = id;
+        }
+
         #endregion
 
         #region Properties
@@ -120,6 +125,11 @@ namespace MovieInfo
             Rating = 0.0f;
             Ratings = new List<RatingData>();
             Plot = String.Empty;
+        }
+
+        public MovieMetadata(string uniqueID) : this()
+        {
+            UniqueID = new UniqueID(uniqueID);
         }
 
         #endregion

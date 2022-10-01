@@ -8,11 +8,11 @@ namespace MovieInfo
     {
         #region Constructors
 
-        public CmdLoad(ref CacheData cacheData, string cacheFilename, ref ActressesDatabase actresses, string actressFilename, ref BackupData backupData, string backupFilename)
+        public CmdLoad(ref CacheData cacheData, string cacheFilename, ref ActressesDatabase actressesDatabase, string actressFilename, ref BackupData backupData, string backupFilename)
         {
             m_cacheData = cacheData;
             m_cacheFilename = cacheFilename;
-            m_actresses = actresses;
+            m_actressesDatabase = actressesDatabase;
             m_actressFilename = actressFilename;
             m_backupData = backupData;
             m_backupFilename = backupFilename;
@@ -53,7 +53,7 @@ namespace MovieInfo
                 }
             }
 
-            lock (m_actresses)
+            lock (m_actressesDatabase)
             {
                 if (File.Exists(m_actressFilename))
                 {
@@ -64,7 +64,7 @@ namespace MovieInfo
                     foreach (PropertyInfo property in properties)
                     {
                         if (property.CanRead && property.CanWrite)
-                            property.SetValue(m_actresses, property.GetValue(actresses));
+                            property.SetValue(m_actressesDatabase, property.GetValue(actresses));
                     }
                 }
             }
@@ -77,7 +77,7 @@ namespace MovieInfo
 
         private CacheData m_cacheData;
         private string m_cacheFilename;
-        private ActressesDatabase m_actresses;
+        private ActressesDatabase m_actressesDatabase;
         private string m_actressFilename;
         private BackupData m_backupData;
         private string m_backupFilename;

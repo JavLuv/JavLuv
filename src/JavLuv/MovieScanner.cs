@@ -76,8 +76,6 @@ namespace JavLuv
             foreach (string scanDirectory in scanDirectories)
                 Logger.WriteInfo("Scan directory: " + scanDirectory);
 
-            // Note that IsScanning has to be set first, or else the logic in the
-            // event handle will get thrown off as events some in out of order.
             Phase = ScanPhase.ScanningFolders;
             IsCancelled = false;
             m_hideMetadataAndCovers = Settings.Get().HideMetadataAndCovers;
@@ -519,7 +517,7 @@ namespace JavLuv
             if (m_dispatcher.HasShutdownStarted == false)
                 m_dispatcher.Invoke(DispatcherPriority.Normal, new Action(delegate () { ScanUpdate?.Invoke(this, new EventArgs()); }));
 
-            // Just perform initial test for now
+            // Download all actresses
             foreach (var actor in actorsToProcess)
             {
                 if (IsCancelled)
@@ -541,8 +539,33 @@ namespace JavLuv
                 string idolImagePath = String.Empty;
 
                 var actressData = scraper.ScrapeActress(actor, LanguageType.English);
+
+                // Check to see if we want to restore from backup instead of using scraped metadata
+                if (m_autoRestoreMetadata)
+                {
+                    var backupActressData = m_movieCollection.GetBackupActress(actressData.Name);
+                    if (backupActressData == null)
+                    {
+                        foreach (var altName in actressData.AltNames)
+                        {
+                            backupActressData = m_movieCollection.GetBackupActress(altName);
+                            if (backupActressData != null)
+                                break;
+                        }
+                    }
+                    if (backupActressData != null)
+                    {
+                        backupActressData.ImageFileNames.Clear();
+                        backupActressData.ImageIndex = 0;
+                        backupActressData.ImageFileNames = actressData.ImageFileNames;
+                        actressData = backupActressData;
+                    }
+                }
+
+                // Add actress data to the processed list
                 if (actressData != null)
-                    Actresses.Add(actressData); 
+                    Actresses.Add(actressData);
+
                 ItemsProcessed++;
                 if (m_dispatcher.HasShutdownStarted == false)
                     m_dispatcher.Invoke(DispatcherPriority.Normal, new Action(delegate () { ScanUpdate?.Invoke(this, new EventArgs()); }));

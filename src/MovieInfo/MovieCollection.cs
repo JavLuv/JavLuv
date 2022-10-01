@@ -18,7 +18,10 @@ namespace MovieInfo
             var folder = Utilities.GetJavLuvSettingsFolder();
             m_cacheFilename = Path.Combine(folder, "JavLuv.cache");
             m_actressesFilename = Path.Combine(folder, "Actresses.xml");
-            m_backupFilename = Path.Combine(folder, "Metadata.backup");
+            string oldBackupFileName = Path.Combine(folder, "Metadata.backup");
+            m_backupFilename = Path.Combine(folder, "JavLuv.backup");
+            if (File.Exists(oldBackupFileName))
+                File.Move(oldBackupFileName, m_backupFilename);
             if (File.Exists(m_cacheFilename))
                 CommandQueue.Command().Execute(new CmdLoad(ref m_cacheData, m_cacheFilename, ref m_actresses, m_actressesFilename, ref m_backupData, m_backupFilename));
             else
@@ -371,7 +374,6 @@ namespace MovieInfo
                 }
                 return false;
             }
-
         }
 
         public MovieMetadata GetBackupMetadata(string uniqueID)
@@ -379,10 +381,25 @@ namespace MovieInfo
             lock (m_backupData)
             {
                 MovieMetadata value;
-                MovieMetadata check = new MovieMetadata();
-                check.UniqueID.Value = uniqueID;
-                if (m_backupData.Movies.TryGetValue(check, out value))
+                if (m_backupData.Movies.TryGetValue(new MovieMetadata(uniqueID), out value))
                     return value;
+            }
+            return null;
+        }
+
+        public ActressData GetBackupActress(string actressName)
+        {
+            lock (m_backupData)
+            {
+                ActressData value;
+                if (m_backupData.Actresses.TryGetValue(new ActressData(actressName), out value))
+                    return value;
+                AltNameData altNameData;
+                if (m_backupData.AltNames.TryGetValue(new AltNameData(actressName), out altNameData))
+                {
+                    if (m_backupData.Actresses.TryGetValue(new ActressData(altNameData.Name), out value))
+                        return value;
+                }
             }
             return null;
         }
