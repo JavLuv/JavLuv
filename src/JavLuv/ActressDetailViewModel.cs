@@ -225,6 +225,35 @@ namespace JavLuv
                 }      
             }
         }
+        public string Age
+        {
+            get
+            {
+                if (m_actressData.DateOfBirth == new DateTime())
+                    return String.Empty;
+                int years = MovieUtils.GetAgeFromDateOfBorth(m_actressData.DateOfBirth);
+                return years.ToString();
+            }
+        }
+
+        public string Height
+        {
+            get 
+            {
+                if (m_actressData.Height < 50)
+                    return String.Empty;
+                return String.Format(TextManager.GetString("Text.ActressHeightValue"), m_actressData.Height); 
+            }
+            set
+            {
+                string currentVal = String.Format(TextManager.GetString("Text.ActressHeightValue"), m_actressData.Height);
+                if (value != currentVal)
+                {
+                    m_actressData.Height = Utilities.ParseInitialDigits(currentVal);
+                    NotifyPropertyChanged("Height");
+                }
+            }
+        }
 
         public string Cup
         {
@@ -296,17 +325,6 @@ namespace JavLuv
             }
         }
         
-        public string Age
-        {
-            get
-            {
-                if (m_actressData.DateOfBirth == new DateTime())
-                    return String.Empty;
-                int years = MovieUtils.GetAgeFromDateOfBorth(m_actressData.DateOfBirth);
-                return years.ToString();
-            }
-        }
-
         public string MoviesInCollection
         {
             get

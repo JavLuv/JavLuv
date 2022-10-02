@@ -34,7 +34,7 @@
     <Grid x:Name="MainGrid" Focusable="True" MouseDown="MainGrid_MouseDown" >
         <Grid.RowDefinitions>
             <RowDefinition Height="36" />
-            <RowDefinition Height="420" />
+            <RowDefinition Height="440" />
             <RowDefinition Height="15" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
@@ -287,6 +287,24 @@
                                 <ColumnDefinition Width="10" />
                                 <ColumnDefinition Width="*" />
                             </Grid.ColumnDefinitions>
+                            <Label Style="{StaticResource DetailLabelStyle}" Content="{DynamicResource Text.ActressAge}" />
+                            <Label Style="{StaticResource DetailLabelContentStyle}" Content="{Binding Age}" />
+                        </Grid>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="180"/>
+                                <ColumnDefinition Width="10" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <Label Style="{StaticResource DetailLabelStyle}" Content="{DynamicResource Text.ActressHeight}" />
+                            <TextBox Style="{StaticResource DetailTextBoxStyle}" Text="{Binding Height, UpdateSourceTrigger=LostFocus}" />
+                        </Grid>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="180"/>
+                                <ColumnDefinition Width="10" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
                             <Label Style="{StaticResource DetailLabelStyle}" Content="{DynamicResource Text.ActressCup}" />
                             <TextBox Style="{StaticResource DetailTextBoxStyle}" Text="{Binding Cup, UpdateSourceTrigger=LostFocus}" />
                         </Grid>
@@ -298,15 +316,6 @@
                             </Grid.ColumnDefinitions>
                             <Label Style="{StaticResource DetailLabelStyle}" Content="{DynamicResource Text.ActressMeasurements}" />
                             <TextBox Style="{StaticResource DetailTextBoxStyle}" Text="{Binding Measurements, UpdateSourceTrigger=LostFocus}" />
-                        </Grid>
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="180"/>
-                                <ColumnDefinition Width="10" />
-                                <ColumnDefinition Width="*" />
-                            </Grid.ColumnDefinitions>
-                            <Label Style="{StaticResource DetailLabelStyle}" Content="{DynamicResource Text.ActressAge}" />
-                            <Label Style="{StaticResource DetailLabelContentStyle}" Content="{Binding Age}" />
                         </Grid>
                         <Grid>
                             <Grid.ColumnDefinitions>

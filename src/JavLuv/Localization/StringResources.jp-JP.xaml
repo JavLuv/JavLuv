@@ -79,6 +79,7 @@
     <system:String x:Key="Text.ActressAlternateNames">Alternate Names:</system:String>
     <system:String x:Key="Text.ActressDateOfBirth">Date of Birth:</system:String>
     <system:String x:Key="Text.ActressHeight">Height:</system:String>
+    <system:String x:Key="Text.ActressHeightValue">{0} cm</system:String>
     <system:String x:Key="Text.ActressCup">Cup:</system:String>
     <system:String x:Key="Text.ActressMeasurements">Measurements:</system:String>
     <system:String x:Key="Text.ActressBloodType">Blood Type:</system:String>
