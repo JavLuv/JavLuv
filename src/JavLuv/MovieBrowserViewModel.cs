@@ -409,7 +409,7 @@ namespace JavLuv
             foreach (var item in SelectedItems)
                 movies.Add(item.MovieData);
             Parent.Collection.FilterMetadata(movies, Settings.Get().Culture.StudioFilters, Settings.Get().Culture.LabelFilters, 
-                Settings.Get().Culture.DirectorFilters, Settings.Get().Culture.GenreFilters, Settings.Get().Culture.ActorFilters);
+                Settings.Get().Culture.DirectorFilters, Settings.Get().Culture.GenreFilters);
         }
 
         private bool CanFilterMetadataExecute()

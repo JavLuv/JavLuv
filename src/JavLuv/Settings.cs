@@ -30,12 +30,12 @@ namespace JavLuv
         #endregion
 
         #region Properties
+
         public LanguageType Language { get; set; }
         public List<FilterPair> StudioFilters { get; set; }
         public List<FilterPair> DirectorFilters { get; set; }
         public List<FilterPair> LabelFilters { get; set; }
         public List<FilterPair> GenreFilters { get; set; }
-        public List<FilterPair> ActorFilters { get; set; }
 
         #endregion
     }
@@ -252,7 +252,6 @@ namespace JavLuv
                     s_settings.Cultures[i].LabelFilters = MergeFilterLists(s_settings.Cultures[i].LabelFilters, defaultFilters[i].LabelFilters);
                     s_settings.Cultures[i].DirectorFilters = MergeFilterLists(s_settings.Cultures[i].DirectorFilters, defaultFilters[i].DirectorFilters);
                     s_settings.Cultures[i].GenreFilters = MergeFilterLists(s_settings.Cultures[i].GenreFilters, defaultFilters[i].GenreFilters);
-                    s_settings.Cultures[i].ActorFilters = MergeFilterLists(s_settings.Cultures[i].ActorFilters, defaultFilters[i].ActorFilters);
                 }
             }
         }
@@ -464,19 +463,12 @@ namespace JavLuv
             cs.GenreFilters.Add(new FilterPair("Single Work", "Featured Actress"));
             cs.GenreFilters.Add(new FilterPair("Subjectivity", "POV"));
 
-            cs.ActorFilters = new List<FilterPair>();
-            cs.ActorFilters.Add(new FilterPair("Natsume Inagawa", "Sumire Kurokawa"));
-            cs.ActorFilters.Add(new FilterPair("Momoka Kato", "Nonoka Sato"));
-            cs.ActorFilters.Add(new FilterPair("Momoka Katou", "Nonoka Sato"));
-            cs.ActorFilters.Add(new FilterPair("Nonoka Satou", "Nonoka Sato"));
-
             // Set Japanese defaults (currently none)
             cs = cultures[(int)LanguageType.Japanese];
             cs.StudioFilters = new List<FilterPair>();
             cs.LabelFilters = new List<FilterPair>();
             cs.DirectorFilters = new List<FilterPair>();
             cs.GenreFilters = new List<FilterPair>();
-            cs.ActorFilters = new List<FilterPair>();
 
             return cultures;
         }

@@ -103,7 +103,7 @@ namespace MovieInfo
             }
         }
 
-        public static bool FilterMetadata(MovieMetadata metadata, List<FilterPair> studioFilter, List<FilterPair> labelFilter, List<FilterPair> directorFilter, List<FilterPair> genreFilter, List<FilterPair> actorFilter)
+        public static bool FilterMetadata(MovieMetadata metadata, List<FilterPair> studioFilter, List<FilterPair> labelFilter, List<FilterPair> directorFilter, List<FilterPair> genreFilter)
         {
             bool changed = false;
             metadata.Title = metadata.Title.Trim();
@@ -118,7 +118,6 @@ namespace MovieInfo
                 metadata.Director = director;
             }
             metadata.Director = FilterField(metadata.Director, directorFilter, ref changed);
-            metadata.Actors = FilterActors(metadata.Actors, actorFilter, ref changed);
             metadata.Genres = Utilities.FilterWordList(metadata.Genres, genreFilter, ref changed);
             return changed;
         }
@@ -859,27 +858,6 @@ namespace MovieInfo
                 }
             }
             return text;
-        }
-
-        private static List<ActorData> FilterActors(List<ActorData> actorData, List<FilterPair> actorFilter, ref bool changed)
-        {
-            if (actorData.Count == 0)
-                return actorData;
-            string actorsString = ActorsToString(actorData);
-            string[] actors = actorsString.Split(',');
-            List<string> actorList = new List<string>();
-            foreach (var actor in actors)
-                actorList.Add(actor.Trim());
-            actorList = Utilities.FilterWordList(actorList, actorFilter, ref changed);
-            StringBuilder sb = new StringBuilder(actorData.Count * 30);
-            foreach (var actor in actorList)
-            {
-                sb.Append(actor);
-                if (actorList.IndexOf(actor) != actorList.Count - 1)
-                    sb.Append(", ");
-            }
-            StringToActors(sb.ToString(), ref actorData);
-            return actorData;
         }
 
         private static bool AreActorsNearlyEquivalent(ActorData a, ActorData b)

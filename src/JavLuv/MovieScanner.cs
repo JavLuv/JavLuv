@@ -706,7 +706,7 @@ namespace JavLuv
                 {
                     // Clean up metadata
                     MovieUtils.FilterMetadata(metadata, Settings.Get().Culture.StudioFilters, Settings.Get().Culture.LabelFilters, 
-                        Settings.Get().Culture.DirectorFilters, Settings.Get().Culture.GenreFilters, Settings.Get().Culture.ActorFilters);
+                        Settings.Get().Culture.DirectorFilters, Settings.Get().Culture.GenreFilters);
 
                     // Check to see if we've successfully downloaded a cover file, and if so, set that value
                     if (String.IsNullOrEmpty(movieData.CoverFileName) && String.IsNullOrEmpty(coverImagePath) == false && File.Exists(coverImagePath))

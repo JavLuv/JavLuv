@@ -363,17 +363,6 @@ namespace JavLuv
             }
         }
 
-        public string ActorFilters
-        {
-            get { return Utilities.FilterListToString(Settings.Get().Culture.ActorFilters); }
-            set
-            {
-                var filterList = Utilities.StringToFilterList(value);
-                Settings.Get().Culture.ActorFilters = filterList;
-                NotifyPropertyChanged("ActorFilters");
-            }
-        }
-
         #endregion
 
         #region Commands

@@ -446,7 +446,7 @@ namespace MovieInfo
         }
 
         public void FilterMetadata(List<MovieData> movies, List<FilterPair> studioFilter, List<FilterPair> labelFilter,
-            List<FilterPair> directorFilter, List<FilterPair> categoryFilter, List<FilterPair> actorFilter)
+            List<FilterPair> directorFilter, List<FilterPair> categoryFilter)
         {
             var studios = new List<FilterPair>();
             foreach (var pair in studioFilter)
@@ -461,8 +461,6 @@ namespace MovieInfo
             foreach (var pair in categoryFilter)
                 genres.Add(new FilterPair(pair.Original, pair.Filtered));         
             var actors = new List<FilterPair>();
-            foreach (var pair in actorFilter)
-                actors.Add(new FilterPair(pair.Original, pair.Filtered));
             CommandQueue.Command().Execute(new CmdFilter(movies, studios, labels, directors, genres, actors));
             SearchMovies();
             SearchActresses();
