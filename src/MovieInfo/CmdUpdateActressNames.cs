@@ -7,8 +7,9 @@ namespace MovieInfo
     {
         #region Constructors
 
-        public CmdUpdateActressNames(CacheData cacheData, ActressesDatabase actressesDatabase)
+        public CmdUpdateActressNames(MovieCollection collection, CacheData cacheData, ActressesDatabase actressesDatabase)
         {
+            m_collection = collection;
             m_cacheData = cacheData;
             m_actressesDatabase = actressesDatabase;
         }
@@ -21,12 +22,15 @@ namespace MovieInfo
         {
             lock (m_actressesDatabase)
             {
-                // First regenerate alt names
+                // First regenerate japanese and alt names
+                m_actressesDatabase.JapaneseNames.Clear();
                 m_actressesDatabase.AltNames.Clear();
                 foreach (var actress in m_actressesDatabase.Actresses)
                 {
+                    if (string.IsNullOrEmpty(actress.JapaneseName) == false)
+                        m_actressesDatabase.JapaneseNames.Add(new NamePair(actress.JapaneseName, actress.Name));
                     foreach (var alias in actress.AltNames)
-                        m_actressesDatabase.AltNames.Add(new AltNameData(alias, actress.Name));
+                        m_actressesDatabase.AltNames.Add(new NamePair(alias, actress.Name));
                 }
 
                 // Now update all movie metadata with updated names.  The primary goal
@@ -97,33 +101,14 @@ namespace MovieInfo
 
         private bool FoundActress(ActorData actor, out ActressData actress)
         {
-            actress = null;
-            if (FoundActress(actor.Name, out actress))
+            actress = m_collection.FindActress(actor.Name);
+            if (actress != null)
                 return true;
 
             foreach (string altName in actor.Aliases)
             {
-                if (FoundActress(altName, out actress))
-                    return true;
-            }
-
-            return false;
-        }
-
-        private bool FoundActress(string name, out ActressData actress)
-        {
-            actress = null;
-
-            // First check main actress names
-            if (m_actressesDatabase.Actresses.TryGetValue(new ActressData(name), out actress))
-                return true;
-
-            // Otherwise, check alt names
-            AltNameData altNameData = null;
-            if (m_actressesDatabase.AltNames.TryGetValue(new AltNameData(name), out altNameData))
-            {
-                // If we found an alt name, check the actress names and return the match
-                if (m_actressesDatabase.Actresses.TryGetValue(new ActressData(altNameData.Name), out actress))
+                actress = m_collection.FindActress(altName);
+                if (actress != null)
                     return true;
             }
 
@@ -168,6 +153,7 @@ namespace MovieInfo
 
         #region Private Members
 
+        private MovieCollection m_collection;
         private CacheData m_cacheData;
         private ActressesDatabase m_actressesDatabase;
 

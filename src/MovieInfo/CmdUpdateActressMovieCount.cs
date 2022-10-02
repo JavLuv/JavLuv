@@ -1,17 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace MovieInfo
+﻿namespace MovieInfo
 {
     public class CmdUpdateActressMovieCount : IAsyncCommand
     {
         #region Constructors
 
-        public CmdUpdateActressMovieCount(CacheData cacheData, ActressesDatabase actressesDatabase)
+        public CmdUpdateActressMovieCount(MovieCollection collection, CacheData cacheData, ActressesDatabase actressesDatabase)
         {
+            m_collection = collection;
             m_cacheData = cacheData;
             m_actressesDatabase = actressesDatabase;
         }
@@ -47,8 +42,8 @@ namespace MovieInfo
 
         private void UpdateActressCount(string name)
         {
-            ActressData actress = null;
-            if (m_actressesDatabase.Actresses.TryGetValue(new ActressData(name), out actress))
+            ActressData actress = m_collection.FindActress(name);
+            if (m_actressesDatabase != null)
                 actress.MovieCount++;
         }
 
@@ -56,6 +51,7 @@ namespace MovieInfo
 
         #region Private Members
 
+        private MovieCollection m_collection;
         private CacheData m_cacheData;
         private ActressesDatabase m_actressesDatabase;
 

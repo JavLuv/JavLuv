@@ -52,10 +52,10 @@ namespace MovieInfo
                             m_backupData.Actresses.Add(actress);
                             foreach (var altName in actress.AltNames)
                             {
-                                var key = new AltNameData(altName);
+                                var key = new NamePair(altName);
                                 if (m_backupData.AltNames.Contains(key))
                                     m_backupData.AltNames.Remove(key);
-                                m_backupData.AltNames.Add(new AltNameData(altName, actress.Name));
+                                m_backupData.AltNames.Add(new NamePair(altName, actress.Name));
                             }
                         }
 

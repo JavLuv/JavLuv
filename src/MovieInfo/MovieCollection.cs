@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Windows.Threading;
-using System.Xml.Linq;
 
 namespace MovieInfo
 {
@@ -263,7 +262,9 @@ namespace MovieInfo
             {
                 if (m_actressesDatabase.Actresses.Contains(new ActressData(name)))
                     return true;
-                if (m_actressesDatabase.AltNames.Contains(new AltNameData(name)))
+                if (m_actressesDatabase.JapaneseNames.Contains(new NamePair(name)))
+                    return true;
+                if (m_actressesDatabase.AltNames.Contains(new NamePair(name)))
                     return true;
                 return false;
             }
@@ -276,8 +277,13 @@ namespace MovieInfo
                 ActressData actress = null;
                 if (m_actressesDatabase.Actresses.TryGetValue(new ActressData(name), out actress))
                     return actress;
-                AltNameData altName = null;
-                if (m_actressesDatabase.AltNames.TryGetValue(new AltNameData(name), out altName))
+                NamePair altName = null;
+                if (m_actressesDatabase.JapaneseNames.TryGetValue(new NamePair(name), out altName))
+                {
+                    if (m_actressesDatabase.Actresses.TryGetValue(new ActressData(altName.Name), out actress))
+                        return actress;
+                }
+                if (m_actressesDatabase.AltNames.TryGetValue(new NamePair(name), out altName))
                 {
                     if (m_actressesDatabase.Actresses.TryGetValue(new ActressData(altName.Name), out actress))
                         return actress;
@@ -381,8 +387,8 @@ namespace MovieInfo
                 ActressData value;
                 if (m_backupData.Actresses.TryGetValue(new ActressData(actressName), out value))
                     return value;
-                AltNameData altNameData;
-                if (m_backupData.AltNames.TryGetValue(new AltNameData(actressName), out altNameData))
+                NamePair altNameData;
+                if (m_backupData.AltNames.TryGetValue(new NamePair(actressName), out altNameData))
                 {
                     if (m_backupData.Actresses.TryGetValue(new ActressData(altNameData.Name), out value))
                         return value;
@@ -407,12 +413,7 @@ namespace MovieInfo
 
         public void RemoveActress(ActressData actress)
         {
-            lock (m_actressesDatabase)
-            {
-                m_actressesDatabase.Actresses.Remove(actress);
-                foreach (string alias in actress.AltNames)
-                    m_actressesDatabase.AltNames.Remove(new AltNameData(alias));
-            }
+            RemoveActressNoLock(actress);
             SearchActresses();
             Save();
         }
@@ -421,25 +422,8 @@ namespace MovieInfo
         {
             lock (m_actressesDatabase)
             {
-                var folder = Utilities.GetActressImageFolder();
                 foreach (var actress in actresses)
-                {
-                    m_actressesDatabase.Actresses.Remove(actress);
-                    try
-                    {
-                        foreach (var fn in actress.ImageFileNames)
-                        {
-                            var fullPath = Path.Combine(folder, fn);
-                            File.Delete(fullPath);
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        Logger.WriteError("Could not delete actress image", ex);
-                    }
-                    foreach (string alias in actress.AltNames)
-                        m_actressesDatabase.AltNames.Remove(new AltNameData(alias));
-                }
+                    RemoveActressNoLock(actress);
             }
             SearchActresses();
             Save();
@@ -527,7 +511,7 @@ namespace MovieInfo
             if (m_loaded == false)
                 return;
             if (SortActressesBy == SortActressesBy.MovieCount)
-                CommandQueue.Command().Execute(new CmdUpdateActressMovieCount(m_cacheData, m_actressesDatabase));
+                CommandQueue.Command().Execute(new CmdUpdateActressMovieCount(this, m_cacheData, m_actressesDatabase));
             m_searchActresses = new CmdSearchActresses(m_actressesDatabase, m_searchText, m_sortActressesBy, m_showUnknownActresses);
             CommandQueue.Command().Execute(m_searchActresses);
         }
@@ -540,7 +524,7 @@ namespace MovieInfo
 
         public void UpdateActressNames()
         {
-            CommandQueue.Command().Execute(new CmdUpdateActressNames(m_cacheData, m_actressesDatabase));
+            CommandQueue.Command().Execute(new CmdUpdateActressNames(this, m_cacheData, m_actressesDatabase));
         }
 
         #endregion
@@ -554,14 +538,36 @@ namespace MovieInfo
                 Logger.WriteError("Attempting to add " + actress.Name + ", but this name is already used");
                 return;
             }
-            if (m_actressesDatabase.AltNames.Contains(new AltNameData(actress.Name)))
+            if (m_actressesDatabase.AltNames.Contains(new NamePair(actress.Name)))
             {
                 Logger.WriteError("Attempting to add " + actress.Name + ", but this already exists as an alternate name");
                 return;
             }
             m_actressesDatabase.Actresses.Add(actress);
+            if (String.IsNullOrEmpty(actress.JapaneseName) == false)
+                m_actressesDatabase.JapaneseNames.Add(new NamePair(actress.JapaneseName));
             foreach (string altName in actress.AltNames)
-                m_actressesDatabase.AltNames.Add(new AltNameData(altName, actress.Name));
+                m_actressesDatabase.AltNames.Add(new NamePair(altName, actress.Name));
+        }
+
+        private void RemoveActressNoLock(ActressData actress)
+        {
+            m_actressesDatabase.Actresses.Remove(actress);
+            try
+            {
+                var folder = Utilities.GetActressImageFolder();
+                foreach (var fn in actress.ImageFileNames)
+                {
+                    var fullPath = Path.Combine(folder, fn);
+                    File.Delete(fullPath);
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.WriteError("Could not delete actress image", ex);
+            }
+            foreach (string alias in actress.AltNames)
+                m_actressesDatabase.AltNames.Remove(new NamePair(alias));
         }
 
         private void NotifyMoviesDisplayedChanged()

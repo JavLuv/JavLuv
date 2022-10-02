@@ -74,22 +74,22 @@ namespace MovieInfo
     }
 
     [Serializable]
-    public class AltNameData : IEquatable<AltNameData>
+    public class NamePair : IEquatable<NamePair>
     {
         #region Constructors
 
-        public AltNameData()
+        public NamePair()
         {
             AltName = String.Empty;
             Name = String.Empty;
         }
-        public AltNameData(string altName)
+        public NamePair(string altName)
         {
             AltName = altName;
             Name = String.Empty;
         }
 
-        public AltNameData(string altName, string name)
+        public NamePair(string altName, string name)
         {
             AltName = altName;
             Name = name;
@@ -106,13 +106,13 @@ namespace MovieInfo
 
         public override bool Equals(object obj)
         {
-            var md = obj as AltNameData;
+            var md = obj as NamePair;
             if (md == null)
                 return false;
             return Equals(md);
         }
 
-        public bool Equals(AltNameData other)
+        public bool Equals(NamePair other)
         {
             return String.Compare(AltName, other.AltName, true) == 0;
         }
@@ -124,6 +124,7 @@ namespace MovieInfo
         public string AltName { get; set; }
 
         public string Name { get; set; }
+
         #endregion
     }
 
@@ -135,7 +136,8 @@ namespace MovieInfo
         public ActressesDatabase()
         {
             Actresses = new HashSet<ActressData>();
-            AltNames = new HashSet<AltNameData>();
+            JapaneseNames = new HashSet<NamePair>();
+            AltNames = new HashSet<NamePair>();
         }
 
         public static void Filter(XDocument doc)
@@ -148,7 +150,9 @@ namespace MovieInfo
 
         public HashSet<ActressData> Actresses { get; set; }
 
-        public HashSet<AltNameData> AltNames { get; set; }
+        public HashSet<NamePair> JapaneseNames { get; set; }
+
+        public HashSet<NamePair> AltNames { get; set; }
 
         #endregion
     }

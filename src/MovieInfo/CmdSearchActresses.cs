@@ -5,7 +5,6 @@ using System.Collections.Generic;
 namespace MovieInfo
 {
 
-
     public enum SortActressesBy
     {
         Name,
