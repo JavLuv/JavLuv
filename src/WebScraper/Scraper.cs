@@ -264,14 +264,16 @@ namespace WebScraper
 
                         // Download the image file and load it
                         client.DownloadFile(imageSource, tempFileName);
-
-                        ImageSource newImage = LoadImageFromFile(tempFileName);                   
-                        if (newImage.Width > currentImage.Width && newImage.Height > currentImage.Height)
+                        if (IsBannedFile(tempFileName) == false)
                         {
-                            Logger.WriteInfo("Replacing image: " + imageFilename);
-                            File.Copy(tempFileName, imageFilename, true);
-                            imagePath = imageFilename;
-                            retVal = true;
+                            ImageSource newImage = LoadImageFromFile(tempFileName);                   
+                            if (newImage.Width > currentImage.Width && newImage.Height > currentImage.Height)
+                            {
+                                Logger.WriteInfo("Replacing image: " + imageFilename);
+                                File.Copy(tempFileName, imageFilename, true);
+                                imagePath = imageFilename;
+                                retVal = true;
+                            }
                         }
                         File.Delete(tempFileName);                  
                     }
@@ -279,21 +281,26 @@ namespace WebScraper
                     {
                         client.DownloadFile(imageSource, imageFilename);
 
-                        // Load image to check quality
-                        ImageSource newImage = LoadImageFromFile(imageFilename);
-                        
-                        // Don't allow tiny thumbnail images - they're probably invalid anyhow
-                        if (newImage.Width < 100 || newImage.Height < 100)
+                        if (IsBannedFile(imageFilename) == false)
                         {
-                            Logger.WriteInfo("Image is too small to use.");
-                            File.Delete(imageFilename);
+                            // Load image to check quality
+                            ImageSource newImage = LoadImageFromFile(imageFilename);
+                        
+                            // Don't allow tiny thumbnail images - they're probably invalid anyhow
+                            if (newImage.Width < 100 || newImage.Height < 100)
+                            {
+                                Logger.WriteInfo("Image is too small to use.");
+                                File.Delete(imageFilename);
+                            }
+                            else
+                            {
+                                Logger.WriteInfo("Saved image: " + imageFilename);
+                                imagePath = imageFilename;
+                                retVal=true;
+                            }                  
                         }
                         else
-                        {
-                            Logger.WriteInfo("Saved image: " + imageFilename);
-                            imagePath = imageFilename;
-                            retVal=true;
-                        }                  
+                            File.Delete(imageFilename);
                     }
                 }
                 catch (Exception ex)
@@ -302,6 +309,15 @@ namespace WebScraper
                 }
             }
             return retVal;
+        }
+
+        private bool IsBannedFile(string filename)
+        {
+            string checksum = Utilities.GetSHA1Checksum(filename);
+            // "Uknown actress" image from JavDatabase
+            if (checksum == "69-BB-2B-57-50-7E-18-0F-91-DB-2A-03-06-79-39-AA-75-EB-05-F3")
+                return true;
+            return false;
         }
 
         private ImageSource LoadImageFromFile(string filename)
