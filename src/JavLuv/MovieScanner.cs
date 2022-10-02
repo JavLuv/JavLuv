@@ -27,6 +27,7 @@ namespace JavLuv
 
         public MovieScanner(MovieCollection movieCollection)
         {
+            m_directoriesToScan = new List<string>();
             m_movieCollection = movieCollection;
             m_dispatcher = Application.Current.Dispatcher;
             Phase = ScanPhase.Finished;
@@ -64,9 +65,9 @@ namespace JavLuv
 
         public void Start(string scanDirectory)
         {
-            var scanDirectories = new List<string>();
-            scanDirectories.Add(scanDirectory);
-            Start(scanDirectories);
+            m_directoriesToScan = new List<string>();
+            m_directoriesToScan.Add(scanDirectory);
+            Start();
         }
 
         public void Start(List<string> scanDirectories)
@@ -76,25 +77,14 @@ namespace JavLuv
             foreach (string scanDirectory in scanDirectories)
                 Logger.WriteInfo("Scan directory: " + scanDirectory);
 
-            Phase = ScanPhase.ScanningFolders;
-            IsCancelled = false;
-            m_hideMetadataAndCovers = Settings.Get().HideMetadataAndCovers;
-            m_autoRestoreMetadata = Settings.Get().AutoRestoreMetadata;
-            m_scanRecursively = Settings.Get().ScanRecursively;
-            m_movieExts = Utilities.ProcessSettingsList(Settings.Get().MovieExts);
-            m_subtitleExts = Utilities.ProcessSettingsList(Settings.Get().SubtitleExts);
-            m_coverNames = Utilities.ProcessSettingsList(Settings.Get().CoverNames);
-            m_thumbnailNames = Utilities.ProcessSettingsList(Settings.Get().ThumbnailNames);
-            m_movieExclusions = Utilities.ProcessSettingsList(Settings.Get().MovieExclusions);
-            m_errorLog = String.Empty;
-            m_moviesToProcess.Clear();
-            Movies.Clear();
-            Actresses.Clear();
-            ItemsProcessed = 0;
-            TotalItems = 0;
             m_directoriesToScan = scanDirectories;
-            m_thread = new Thread(new ThreadStart(ThreadRun));
-            m_thread.Start();
+            Start();
+        }
+
+        public void Start(List<ActressData> actresses)
+        {
+            Actresses = actresses;
+            Start();
         }
 
         public void Cancel()
@@ -116,15 +106,63 @@ namespace JavLuv
 
         #region Private Functions
 
+        public void Start()
+        {
+            // Log operation
+            Logger.WriteInfo("Start scanner");
+
+            foreach (string scanDirectory in m_directoriesToScan)
+                Logger.WriteInfo("Scan directory: " + scanDirectory);
+
+            foreach (ActressData actress in Actresses)
+                Logger.WriteInfo("Update actress: " + actress.Name);
+
+            // Branchinb behavior based on input data
+            if (m_directoriesToScan.Count > 0)
+            {
+                Phase = ScanPhase.ScanningFolders;
+                Actresses.Clear();
+            }
+            else
+            {
+                Phase = ScanPhase.DownloadActressData;
+            }
+
+            IsCancelled = false;
+            m_hideMetadataAndCovers = Settings.Get().HideMetadataAndCovers;
+            m_autoRestoreMetadata = Settings.Get().AutoRestoreMetadata;
+            m_scanRecursively = Settings.Get().ScanRecursively;
+            m_movieExts = Utilities.ProcessSettingsList(Settings.Get().MovieExts);
+            m_subtitleExts = Utilities.ProcessSettingsList(Settings.Get().SubtitleExts);
+            m_coverNames = Utilities.ProcessSettingsList(Settings.Get().CoverNames);
+            m_thumbnailNames = Utilities.ProcessSettingsList(Settings.Get().ThumbnailNames);
+            m_movieExclusions = Utilities.ProcessSettingsList(Settings.Get().MovieExclusions);
+            m_errorLog = String.Empty;
+            m_moviesToProcess.Clear();
+            Movies.Clear();
+            ItemsProcessed = 0;
+            TotalItems = 0;
+            m_thread = new Thread(new ThreadStart(ThreadRun));
+            m_thread.Start();
+        }
+
+
         private void ThreadRun()
         {
             try
             {
-                m_filesInCache = m_movieCollection.GetAllFileNames();
-                foreach (var dir in m_directoriesToScan)
-                    ProcessDirectory(dir);
-                ProcessMetadata();
-                ProcessActresses();
+                if (Phase == ScanPhase.ScanningFolders)
+                {
+                    m_filesInCache = m_movieCollection.GetAllFileNames();
+                    foreach (var dir in m_directoriesToScan)
+                        ProcessDirectory(dir);
+                    ProcessMetadata();
+                    ProcessActors();
+                }
+                else
+                {
+                    UpdateActresses();
+                }
                 Phase = ScanPhase.Finished;
                 if (m_dispatcher.HasShutdownStarted == false)
                     m_dispatcher.Invoke(DispatcherPriority.Normal, new Action(delegate () { ScanComplete?.Invoke(this, new EventArgs()); }));
@@ -494,7 +532,7 @@ namespace JavLuv
             Movies.RemoveAll(m => m.Metadata == null || String.IsNullOrEmpty(m.MetadataFileName) || String.IsNullOrEmpty(m.Metadata.UniqueID.Value));
         }
 
-        private void ProcessActresses()
+        private void ProcessActors()
         {
             var actorsToProcess = new List<ActorData>();
             foreach (MovieData movie in Movies)
@@ -565,6 +603,29 @@ namespace JavLuv
                 // Add actress data to the processed list
                 if (actressData != null)
                     Actresses.Add(actressData);
+
+                ItemsProcessed++;
+                if (m_dispatcher.HasShutdownStarted == false)
+                    m_dispatcher.Invoke(DispatcherPriority.Normal, new Action(delegate () { ScanUpdate?.Invoke(this, new EventArgs()); }));
+            }
+        }
+
+        private void UpdateActresses()
+        {
+            // Prepare for update
+            TotalItems = Actresses.Count;
+            ItemsProcessed = 0;
+            Phase = ScanPhase.DownloadActressData;
+            if (m_dispatcher.HasShutdownStarted == false)
+                m_dispatcher.Invoke(DispatcherPriority.Normal, new Action(delegate () { ScanUpdate?.Invoke(this, new EventArgs()); }));
+
+            // Update each actress in turn
+            foreach (var actress in Actresses)
+            {
+                if (IsCancelled)
+                    break;
+                var scraper = new Scraper();
+                scraper.ScrapeActress(actress, Settings.Get().Language);
 
                 ItemsProcessed++;
                 if (m_dispatcher.HasShutdownStarted == false)

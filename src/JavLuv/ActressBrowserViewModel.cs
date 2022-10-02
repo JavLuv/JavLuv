@@ -181,22 +181,22 @@ namespace JavLuv
 
         #endregion
 
-        #region Remove From Library Command
+        #region Update Actresses Command
 
-        private void RemoveFromLibraryExecute()
+        private void UpdateActressesExecute()
         {
             List<ActressData> actresses = new List<ActressData>();
-            foreach (var item in SelectedItems)
-                actresses.Add(item.ActressData);
-            Parent.Collection.RemoveActresses(actresses);
+            foreach (var browserItem in SelectedItems)
+                actresses.Add(browserItem.ActressData);
+            Parent.StartScan(actresses);
         }
 
-        private bool CanRemoveFromLibraryExecute()
+        private bool CanUpdateActressesExecute()
         {
-            return Parent.IsScanning == false;
+            return SelectedItems.Count > 0;
         }
 
-        public ICommand RemoveFromLibraryCommand { get { return new RelayCommand(RemoveFromLibraryExecute, CanRemoveFromLibraryExecute); } }
+        public ICommand UpdateActressesCommand { get { return new RelayCommand(UpdateActressesExecute, CanUpdateActressesExecute); } }
 
         #endregion
 
@@ -215,6 +215,25 @@ namespace JavLuv
         }
 
         public ICommand MergeActressesCommand { get { return new RelayCommand(MergeActressesExecute, CanMergeActressesExecute); } }
+
+        #endregion
+
+        #region Remove From Library Command
+
+        private void RemoveFromLibraryExecute()
+        {
+            List<ActressData> actresses = new List<ActressData>();
+            foreach (var item in SelectedItems)
+                actresses.Add(item.ActressData);
+            Parent.Collection.RemoveActresses(actresses);
+        }
+
+        private bool CanRemoveFromLibraryExecute()
+        {
+            return Parent.IsScanning == false;
+        }
+
+        public ICommand RemoveFromLibraryCommand { get { return new RelayCommand(RemoveFromLibraryExecute, CanRemoveFromLibraryExecute); } }
 
         #endregion
 

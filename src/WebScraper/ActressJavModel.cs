@@ -10,7 +10,7 @@ namespace WebScraper
     {
         #region Constructor
 
-        public ActressJavModel(ActressData actressData, LanguageType language) : base(actressData, language)
+        public ActressJavModel(string name, LanguageType language) : base(name, language)
         {
         }
 
@@ -23,7 +23,8 @@ namespace WebScraper
             if (IsLanguageSupported() == false)
                 return;
 
-            string name = m_actressData.Name.Replace(' ', '-').ToLower();
+            Actress = new ActressData(Name);
+            string name = Actress.Name.Replace(' ', '-').ToLower();
             var task = ScrapeAsync("https://www.javmodel.com/jav/" + name + "/");
             task.Wait();
         }
@@ -59,7 +60,7 @@ namespace WebScraper
                         var child = element.FirstElementChild;
                         if (child != null && child.NodeName == "A")
                         {
-                            m_actressData.JapaneseName = child.TextContent;
+                            Actress.JapaneseName = child.TextContent;
                         }
                     }
                 }
@@ -78,7 +79,7 @@ namespace WebScraper
                                 int month = int.Parse(dateParts[0]);
                                 int day = int.Parse(dateParts[1]);
                                 int year = int.Parse(dateParts[2]);
-                                m_actressData.DateOfBirth = new DateTime(year, month, day);
+                                Actress.DateOfBirth = new DateTime(year, month, day);
                             }
                             catch (Exception)
                             { }
@@ -92,7 +93,7 @@ namespace WebScraper
                     {
                         nextSibling = nextSibling.NextSibling;
                         if (IsValidNode(nextSibling))
-                            m_actressData.Height = Utilities.ParseInitialDigits(nextSibling.TextContent);
+                            Actress.Height = Utilities.ParseInitialDigits(nextSibling.TextContent);
                     }
                 }
                 else if (element.TextContent == " Breast : ")
@@ -102,7 +103,7 @@ namespace WebScraper
                     {
                         nextSibling = nextSibling.NextSibling;
                         if (IsValidNode(nextSibling))
-                            m_actressData.Bust = Utilities.ParseInitialDigits(nextSibling.TextContent);
+                            Actress.Bust = Utilities.ParseInitialDigits(nextSibling.TextContent);
                     }
                 }
                 else if (element.TextContent == " Waist : ")
@@ -112,7 +113,7 @@ namespace WebScraper
                     {
                         nextSibling = nextSibling.NextSibling;
                         if (IsValidNode(nextSibling))
-                            m_actressData.Waist = Utilities.ParseInitialDigits(nextSibling.TextContent);
+                            Actress.Waist = Utilities.ParseInitialDigits(nextSibling.TextContent);
                     }
                 }
                 else if (element.TextContent == " Hips : ")
@@ -122,7 +123,7 @@ namespace WebScraper
                     {
                         nextSibling = nextSibling.NextSibling;
                         if (IsValidNode(nextSibling))
-                            m_actressData.Hips = Utilities.ParseInitialDigits(nextSibling.TextContent);
+                            Actress.Hips = Utilities.ParseInitialDigits(nextSibling.TextContent);
                     }
                 }
                 else if (element.TextContent == " Blood Type : ")
@@ -132,7 +133,7 @@ namespace WebScraper
                     {
                         nextSibling = nextSibling.NextSibling;
                         if (IsValidNode(nextSibling))
-                            m_actressData.BloodType = nextSibling.TextContent;
+                            Actress.BloodType = nextSibling.TextContent;
                     }
                 }
             }

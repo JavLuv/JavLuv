@@ -96,30 +96,38 @@ namespace WebScraper
 
         public ActressData ScrapeActress(ActorData actor, LanguageType language)
         {
-            Logger.WriteInfo("Attempting to scrape information for " + actor.Name);
-
             // Prepare actress data with names and alternate names
             var actressData = new ActressData();
             actressData.Name = actor.Name;
             foreach (string altname in actor.Aliases)
                 actressData.AltNames.Add(altname);
 
+            // Scrape actress and merge any new data
+            return ScrapeActress(actressData, language);
+        }
+
+        public ActressData ScrapeActress(ActressData actressData, LanguageType language)
+        {
+            Logger.WriteInfo("Attempting to scrape information for " + actressData.Name);
+
             // Create destination filename and path
             string actressImagefolder = Utilities.GetActressImageFolder();
             string actressFileName = Guid.NewGuid().ToString();
             string actressFullPath = Path.Combine(actressImagefolder, actressFileName);
 
-            // Check JavDatabase actresses
-            var javDatabase = new ActressJavDatabase(actressData, language);
+            // Check JavDatabase actresses, merge new data, and attempt alts in required
+            var javDatabase = new ActressJavDatabase(actressData.Name, language);
             javDatabase.Scrape();
+            MergeActressData(actressData, javDatabase.Actress);
             ScrapeAltNamesIfNotAcceptable(actressData, javDatabase);
             DownloadActressImage(actressData, javDatabase, actressFullPath);
 
             // If we don't have a complete set of data, try alternative sites
             if (IsActressDataComplete(actressData) == false)
             {
-                var javModel = new ActressJavModel(actressData, language);
+                var javModel = new ActressJavModel(actressData.Name, language);
                 javModel.Scrape();
+                MergeActressData(actressData, javModel.Actress);
                 ScrapeAltNamesIfNotAcceptable(actressData, javModel);
                 DownloadActressImage(actressData, javModel, actressFullPath);
             }
@@ -498,23 +506,52 @@ namespace WebScraper
             // If failed to find or adequately populate data, try existing aliases
             if (IsActressDataAcceptable(actressData) == false)
             {
-                for (int i = 0; i < actressData.AltNames.Count; ++i)
+
+                foreach (string altName in actressData.AltNames)
                 {
-                    string name = actressData.Name;
-                    string altName = actressData.AltNames[i];
-                    actressData.Name = altName;
+                    module.Name = altName;
                     module.Scrape();
+                    MergeActressData(actressData, module.Actress);
                     if (IsActressDataAcceptable(actressData))
-                    {
-                        // If we found a match, we're going to essentially swap the original
-                        // name and alternate name.
-                        actressData.AltNames[i] = name;
                         break;
-                    }
-                    // If no match is found, we revert the name back to the original
-                    actressData.Name = name;
-                }
+                }          
             }
+        }
+
+        private ActressData NewActressFrom(ActressData actressData)
+        {
+            ActressData newActressData = new ActressData();
+            newActressData.Name = actressData.Name;
+            foreach (string altName in actressData.AltNames)
+                newActressData.AltNames.Add(altName);
+            return newActressData;
+        }
+
+        private void MergeActressData(ActressData a, ActressData b)
+        {
+            if (IsActressDataComplete(a))
+                return;
+            if (String.IsNullOrEmpty(a.JapaneseName))
+                a.JapaneseName = b.JapaneseName;
+            foreach (string altName in b.AltNames)
+            {
+                if (Utilities.Equals(altName, a.AltNames))
+                    a.AltNames.Add(altName);
+            }
+            if (a.DateOfBirth == new DateTime())
+                a.DateOfBirth = b.DateOfBirth;
+            if (a.Height == 0)
+                a.Height = b.Height;
+            if (String.IsNullOrEmpty(a.Cup))
+                a.Cup = b.Cup;
+            if (a.Bust == 0)
+                a.Bust = b.Bust;
+            if (a.Waist == 0)
+                a.Waist = b.Waist;
+            if (a.Hips == 0)
+                a.Hips = b.Hips;
+            if (String.IsNullOrEmpty(a.BloodType))
+                a.BloodType = b.BloodType;
         }
 
         private bool IsActressDataComplete(ActressData actressData)

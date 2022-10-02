@@ -416,6 +416,14 @@ namespace JavLuv
             NotifyPropertyChanged("ScanVisibility");
         }
 
+        public void StartScan(List<ActressData> actresses)
+        {
+            m_movieScanner.Start(actresses);
+            SidePanel.SettingsIsEnabled = false;
+            NotifyPropertyChanged("IsScanning");
+            NotifyPropertyChanged("ScanVisibility");
+        }
+
         public void CancelScan()
         {
             if (m_movieScanner != null)

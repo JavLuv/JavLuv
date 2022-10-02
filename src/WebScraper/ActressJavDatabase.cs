@@ -10,7 +10,7 @@ namespace WebScraper
     {
         #region Constructor
 
-        public ActressJavDatabase(ActressData actressData, LanguageType language) : base(actressData, language)
+        public ActressJavDatabase(string name, LanguageType language) : base(name, language)
         {
         }
 
@@ -23,7 +23,8 @@ namespace WebScraper
             if (IsLanguageSupported() == false)
                 return;
 
-            string name = m_actressData.Name.Replace(' ', '-').ToLower();
+            Actress = new ActressData(Name);
+            string name = Actress.Name.Replace(' ', '-').ToLower();
             var task = ScrapeAsync("https://www.javdatabase.com/idols/" + name + "/");
             task.Wait();
         }
@@ -58,7 +59,7 @@ namespace WebScraper
                     var nextSibling = element.NextSibling;
                     if (IsValidNode(nextSibling))
                     {
-                        m_actressData.JapaneseName = nextSibling.TextContent.Trim();
+                        Actress.JapaneseName = nextSibling.TextContent.Trim();
                     }
                 }
                 else if (element.TextContent == "Date of Birth")
@@ -72,7 +73,7 @@ namespace WebScraper
                             int year = int.Parse(dateParts[0]);
                             int month = int.Parse(dateParts[1]);
                             int day = int.Parse(dateParts[2]);
-                            m_actressData.DateOfBirth = new DateTime(year, month, day);
+                            Actress.DateOfBirth = new DateTime(year, month, day);
                         }
                         catch(Exception)
                         { }
@@ -85,7 +86,7 @@ namespace WebScraper
                     {
                         try
                         {
-                            m_actressData.Height = int.Parse(nextSibling.TextContent);
+                            Actress.Height = int.Parse(nextSibling.TextContent);
                         }
                         catch (Exception)
                         { }
@@ -99,7 +100,7 @@ namespace WebScraper
                         string cupText = nextSibling.TextContent.Trim();
                         // Saw one example of multiple entries.
                         string[] cups = cupText.Split(' ');
-                        m_actressData.Cup = cups[0];
+                        Actress.Cup = cups[0];
                     }
                 }
                 else if (element.TextContent == "Measurements")
@@ -110,9 +111,9 @@ namespace WebScraper
                         string[] dateParts = nextSibling.TextContent.Split('-');
                         try
                         {
-                            m_actressData.Bust = int.Parse(dateParts[0]);
-                            m_actressData.Waist = int.Parse(dateParts[1]);
-                            m_actressData.Hips = int.Parse(dateParts[2]);
+                            Actress.Bust = int.Parse(dateParts[0]);
+                            Actress.Waist = int.Parse(dateParts[1]);
+                            Actress.Hips = int.Parse(dateParts[2]);
                         }
                         catch (Exception)
                         { }
@@ -123,7 +124,7 @@ namespace WebScraper
                     var nextSibling = element.NextSibling;
                     if (IsValidNode(nextSibling))
                     {
-                        m_actressData.BloodType = nextSibling.TextContent.Trim();
+                        Actress.BloodType = nextSibling.TextContent.Trim();
                     }
                 }
             }

@@ -147,17 +147,23 @@
     <system:String x:Key="Text.SortByMovieCount">Movie count</system:String>
     <system:String x:Key="Text.ShowUnknownActresses">Show unknown actresses</system:String>
 
-    <!-- Browser Item View -->
+    <!-- Shared Browser Item View -->
+    <system:String x:Key="Text.RemoveFromLibrary">Remove from library</system:String>
+
+    <!-- Movie Browser Item View -->
     <system:String x:Key="Text.PlayMovie">Play movie</system:String>
     <system:String x:Key="Text.PlayRandomMovie">Play random movie</system:String>
     <system:String x:Key="Text.MoveRename">Move / rename...</system:String>
     <system:String x:Key="Text.MoveToFolder">Move to folder...</system:String>
     <system:String x:Key="Text.RescanFiles">Rescan files</system:String>
-    <system:String x:Key="Text.RemoveFromLibrary">Remove from library</system:String>
     <system:String x:Key="Text.FilterMetadata">Filter metadata</system:String>
     <system:String x:Key="Text.RegenerateMetadata">Regenerate metadata</system:String>
     <system:String x:Key="Text.DeleteMetadata">Delete metadata</system:String>
     <system:String x:Key="Text.FindSubtitles">Find subtitles...</system:String>
+
+    <!-- Actress Browser Item View -->
+    <system:String x:Key="Text.UpdateActresses">Update actresses</system:String>
+    <system:String x:Key="Text.MergeActressesMenu">Merge actresses...</system:String>
 
     <!-- Scan Movies View -->
     <system:String x:Key="Text.ScanMoviesTitle">Scan Movies</system:String>
@@ -194,7 +200,6 @@
     <!-- Merge Actresses View -->
     <system:String x:Key="Text.MergeActressesTitle">Merge Actresses</system:String>
     <system:String x:Key="Text.MergeActressesButton">Merge</system:String>
-    <system:String x:Key="Text.MergeActressesMenu">Merge actresses...</system:String>
     <system:String x:Key="Text.MergeActressesInstructions">Select which actress entry to use when merged information conflicts.</system:String>
     <system:String x:Key="Text.MergeActressesName">Name:</system:String>
 

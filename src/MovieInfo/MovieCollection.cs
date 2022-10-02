@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Windows.Threading;
+using System.Xml.Linq;
 
 namespace MovieInfo
 {
@@ -215,15 +216,9 @@ namespace MovieInfo
         {
             lock (m_actressesDatabase)
             {
-                if (m_actressesDatabase.Actresses.Contains(new ActressData(actress.Name)))
-                    return;
-                m_actressesDatabase.Actresses.Add(actress);
-                foreach (string altName in actress.AltNames)
-                {
-                    if (m_actressesDatabase.AltNames.Contains(new AltNameData(altName)))
-                        m_actressesDatabase.AltNames.Add(new AltNameData(altName, actress.Name));
-                }
+                AddActressNoLock(actress);
             }
+            UpdateActressNames();
             SearchActresses();
             Save();
         }
@@ -233,17 +228,9 @@ namespace MovieInfo
             lock (m_actressesDatabase)
             {
                 foreach (var actress in actresses)
-                {
-                    if (m_actressesDatabase.Actresses.Contains(new ActressData(actress.Name)))
-                        continue;
-                    m_actressesDatabase.Actresses.Add(actress);
-                    foreach (string altName in actress.AltNames)
-                    {
-                        if (m_actressesDatabase.AltNames.Contains(new AltNameData(altName)))
-                            m_actressesDatabase.AltNames.Add(new AltNameData(altName, actress.Name));
-                    }
-                }
+                    AddActressNoLock(actress);
             }
+            UpdateActressNames();
             SearchActresses();
             Save();
         }
@@ -564,6 +551,23 @@ namespace MovieInfo
         #endregion
 
         #region Private Functions
+
+        private void AddActressNoLock(ActressData actress)
+        {
+            if (m_actressesDatabase.Actresses.Contains(new ActressData(actress.Name)))
+            {
+                Logger.WriteError("Attempting to add " + actress.Name + ", but this name is already used");
+                return;
+            }
+            if (m_actressesDatabase.AltNames.Contains(new AltNameData(actress.Name)))
+            {
+                Logger.WriteError("Attempting to add " + actress.Name + ", but this already exists as an alternate name");
+                return;
+            }
+            m_actressesDatabase.Actresses.Add(actress);
+            foreach (string altName in actress.AltNames)
+                m_actressesDatabase.AltNames.Add(new AltNameData(altName, actress.Name));
+        }
 
         private void NotifyMoviesDisplayedChanged()
         {

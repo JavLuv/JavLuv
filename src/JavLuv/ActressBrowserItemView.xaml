@@ -27,8 +27,9 @@
 
             <Border.ContextMenu>
                 <ContextMenu>
-                    <MenuItem Header="{DynamicResource Text.RemoveFromLibrary}" Command="{Binding Parent.RemoveFromLibraryCommand}"/>
+                    <MenuItem Header="{DynamicResource Text.UpdateActresses}" Command="{Binding Parent.UpdateActressesCommand}"/>
                     <MenuItem Header="{DynamicResource Text.MergeActressesMenu}" Command="{Binding Parent.MergeActressesCommand}"/>
+                    <MenuItem Header="{DynamicResource Text.RemoveFromLibrary}" Command="{Binding Parent.RemoveFromLibraryCommand}"/>
                 </ContextMenu>
             </Border.ContextMenu>
 

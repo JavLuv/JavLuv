@@ -7,17 +7,16 @@ namespace WebScraper
     {
         #region Constructors
 
-        public ModuleActress(ActressData actressData, LanguageType language) : base(language)
+        public ModuleActress(string name, LanguageType language) : base(language)
         {
-            m_actressData = actressData;
+            Name = name;
         }
 
-        #endregion
+        public ActressData Actress { get; protected set; }
 
-        #region Protected Members
-
-        protected ActressData m_actressData;
+        public string Name { get; set; }
 
         #endregion
+
     }
 }
