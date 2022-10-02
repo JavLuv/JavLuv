@@ -382,7 +382,7 @@ namespace JavLuv
 
         private void CloseSettingsExecute()
         {
-            Parent.CloseOverlay();
+            Parent.Overlay = null;
         }
 
         private bool CanCloseSettingsExecute()

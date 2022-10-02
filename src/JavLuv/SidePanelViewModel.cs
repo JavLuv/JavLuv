@@ -60,7 +60,6 @@ namespace JavLuv
             }
             NotifyPropertyChanged("SortActressesByList");
 
-            OnChangeTabs();
         }
 
         #endregion
@@ -72,22 +71,6 @@ namespace JavLuv
             NotifyAllPropertiesChanged();
             foreach (var sortByPair in Parent.SidePanel.SortMovieByList)
                 sortByPair.Notify();
-        }
-
-        public void OnChangeTabs()
-        {
-            if (Settings.Get().SelectedTabIndex == 0)
-            {
-                // Movie browser is shown
-                MovieControlsVisibility = Visibility.Visible;
-                ActressControlsVisibility = Visibility.Collapsed;
-            }
-            else
-            {
-                // Actress browser is shown
-                MovieControlsVisibility = Visibility.Collapsed;
-                ActressControlsVisibility = Visibility.Visible;
-            }
         }
 
         #endregion

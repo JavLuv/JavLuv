@@ -158,36 +158,27 @@ namespace MovieInfo
         {
             HashSet<MovieData> foundMovies = new HashSet<MovieData>();
 
-            if (String.IsNullOrEmpty(m_searchText) == false)
+            var terms = MovieUtils.SearchSplit(m_searchText);   
+            foreach (MovieData movie in m_cacheData.Movies)
             {
-                var terms = MovieUtils.SearchSplit(m_searchText);   
-                foreach (MovieData movie in m_cacheData.Movies)
-                {
-                    if (m_showUnratedOnly && movie.Metadata.UserRating != 0)
-                        continue;
-                    if (m_showSubtitlesOnly && movie.SubtitleFileNames.Count() == 0)
-                        continue;
-                    bool found = true;
-                    foreach (string term in terms)
-                    {
-                        if (!SearchMovieForTerm(movie, term))
-                        {
-                            found = false;
-                            continue;
-                        }
-                    }
-                    if (found)
-                        foundMovies.Add(movie);
-                }
-            }
+                if (m_showUnratedOnly && movie.Metadata.UserRating != 0)
+                    continue;
+                if (m_showSubtitlesOnly && movie.SubtitleFileNames.Count() == 0)
+                    continue;
+                if (String.IsNullOrEmpty(m_actressName) == false && SearchMovieForActress(movie, m_actressName) == false)
+                    continue;
 
-            if (String.IsNullOrEmpty(m_actressName) == false)
-            {
-                foreach (MovieData movie in m_cacheData.Movies)
+                bool found = true;
+                foreach (string term in terms)
                 {
-                    if (SearchMovieForActress(movie, m_actressName))
-                        m_filteredMovies.Add(movie);
+                    if (!SearchMovieForTerm(movie, term))
+                    {
+                        found = false;
+                        continue;
+                    }
                 }
+                if (found)
+                    foundMovies.Add(movie);
             }
 
             foreach (MovieData movie in foundMovies)
