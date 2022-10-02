@@ -9,8 +9,8 @@
     d:DesignHeight="450" 
     d:DesignWidth="250"
     >
-    <Grid IsEnabled="{Binding IsEnabled}">
-        <StackPanel>
+    <StackPanel>
+        <StackPanel IsEnabled="{Binding IsCommandViewEnabled}">
             <Button
                 Command="{Binding SettingsCommand}"
                 IsEnabled="{Binding SettingsIsEnabled}"
@@ -51,7 +51,8 @@
                 Height="24"
                 Content="{DynamicResource Text.DeleteLocalCacheEx}"
                 />
-
+        </StackPanel>
+        <StackPanel IsEnabled="{Binding IsSearchViewEnabled}">
             <Label
                 FontSize="15"
                 Margin="5, 20, 5, 5" 
@@ -94,31 +95,31 @@
             <CheckBox 
                 Margin="5, 10, 5, 2"
                 VerticalAlignment="Center"
-                 Visibility="{Binding MovieControlsVisibility}"
+                    Visibility="{Binding MovieControlsVisibility}"
                 Content="{DynamicResource Text.ShowID}"
                 IsChecked="{Binding ShowID}"
                 />
             <CheckBox 
                 Margin="5, 10, 5, 2"
                 VerticalAlignment="Center"
-                 Visibility="{Binding ActressControlsVisibility}"
+                    Visibility="{Binding ActressControlsVisibility}"
                 Content="{DynamicResource Text.ShowUnknownActresses}"
                 IsChecked="{Binding ShowUnknownActresses}"
                 />
             <CheckBox 
                 Margin="5, 2, 5, 2"
                 VerticalAlignment="Center"
-                 Visibility="{Binding MovieControlsVisibility}"
+                    Visibility="{Binding MovieControlsVisibility}"
                 Content="{DynamicResource Text.ShowUnratedOnly}"
                 IsChecked="{Binding ShowUnratedOnly}"
                 />
             <CheckBox 
                 Margin="5, 2, 5, 2"
                 VerticalAlignment="Center"
-                 Visibility="{Binding MovieControlsVisibility}"
+                    Visibility="{Binding MovieControlsVisibility}"
                 Content="{DynamicResource Text.ShowSubtitlesOnly}"
                 IsChecked="{Binding ShowSubtitlesOnly}"
                 />
-        </StackPanel>   
-    </Grid>
+        </StackPanel>
+    </StackPanel>   
 </UserControl>

@@ -79,18 +79,34 @@ namespace JavLuv
 
         public MainWindowViewModel Parent { get { return m_parent; } }
 
-        public bool IsEnabled 
+        public bool IsCommandViewEnabled 
         { 
             get
             {
-                return m_isEnabled;
+                return m_isCommandViewEnabled;
             }
             set
             {
-                if (value != m_isEnabled)
+                if (value != m_isCommandViewEnabled)
                 {
-                    m_isEnabled = value;
-                    NotifyPropertyChanged("IsEnabled");
+                    m_isCommandViewEnabled = value;
+                    NotifyPropertyChanged("IsCommandViewEnabled");
+                }
+            }
+        }
+
+        public bool IsSearchViewEnabled
+        {
+            get
+            {
+                return m_isSearchViewEnabled;
+            }
+            set
+            {
+                if (value != m_isSearchViewEnabled)
+                {
+                    m_isSearchViewEnabled = value;
+                    NotifyPropertyChanged("IsSearchViewEnabled");
                 }
             }
         }
@@ -377,7 +393,8 @@ namespace JavLuv
 
 
         private MainWindowViewModel m_parent;
-        private bool m_isEnabled = true;
+        private bool m_isCommandViewEnabled = true;
+        private bool m_isSearchViewEnabled = true;
         private bool m_settingsIsEnabled = true;
         private SortMoviesByPairList m_sortMovieByList = new SortMoviesByPairList();
         private SortMoviesByPair m_currentSortMovieBy;

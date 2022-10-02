@@ -111,22 +111,37 @@ namespace MovieInfo
 
         public void Execute()
         {
+            // First start with actress name if available, or the full list of movies otherwise
+            lock (m_cacheData)
+            {
+                if (String.IsNullOrEmpty(m_actressName) == false)
+                {
+                    foreach (MovieData movie in m_cacheData.Movies)
+                    {
+                        if (SearchMovieForActress(movie, m_actressName))
+                            m_availableMovies.Add(movie);
+                    }
+                }
+                else
+                {
+                    foreach (MovieData movie in m_cacheData.Movies)
+                        m_availableMovies.Add(movie);
+                }
+            }
+
             // Perform keyword-based search if required
-            if (String.IsNullOrEmpty(m_searchText) == false || m_showSubtitlesOnly || m_showUnratedOnly || String.IsNullOrEmpty(m_actressName) == false)
+            if (String.IsNullOrEmpty(m_searchText) == false || m_showSubtitlesOnly || m_showUnratedOnly)
             {
                 Search();
             }
             else
             {
                 // Populate filtered movie list with all movies
-                lock (m_cacheData)
+                foreach (var movie in m_availableMovies)
                 {
-                    foreach (var movie in m_cacheData.Movies)
-                    {
-                        if (m_showUnratedOnly && movie.Metadata.UserRating != 0)
-                            continue;
-                        m_filteredMovies.Add(movie);
-                    }
+                    if (m_showUnratedOnly && movie.Metadata.UserRating != 0)
+                        continue;
+                    m_filteredMovies.Add(movie);
                 }
             }
 
@@ -159,13 +174,11 @@ namespace MovieInfo
             HashSet<MovieData> foundMovies = new HashSet<MovieData>();
 
             var terms = MovieUtils.SearchSplit(m_searchText);   
-            foreach (MovieData movie in m_cacheData.Movies)
+            foreach (MovieData movie in m_availableMovies)
             {
                 if (m_showUnratedOnly && movie.Metadata.UserRating != 0)
                     continue;
                 if (m_showSubtitlesOnly && movie.SubtitleFileNames.Count() == 0)
-                    continue;
-                if (String.IsNullOrEmpty(m_actressName) == false && SearchMovieForActress(movie, m_actressName) == false)
                     continue;
 
                 bool found = true;
@@ -258,6 +271,7 @@ namespace MovieInfo
 
         private MovieCollection m_movieCollection;
         private CacheData m_cacheData;
+        private List<MovieData> m_availableMovies = new List<MovieData>();
         private List<MovieData> m_filteredMovies = new List<MovieData>();
         private string m_searchText = String.Empty;
         private SortMoviesBy m_sortMoviesBy = SortMoviesBy.Title;

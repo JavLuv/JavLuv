@@ -520,10 +520,7 @@ namespace MovieInfo
         {
             if (m_loaded == false)
                 return;
-            if (String.IsNullOrEmpty(MovieSearchActress))
-                m_searchMovies = new CmdSearchMovies(this, m_cacheData, m_searchText, String.Empty, m_sortMoviesBy, ShowUnratedOnly, ShowSubtitlesOnly);
-            else
-                m_searchMovies = new CmdSearchMovies(this, m_cacheData, String.Empty, MovieSearchActress, m_sortMoviesBy, false, false);
+            m_searchMovies = new CmdSearchMovies(this, m_cacheData, m_searchText, MovieSearchActress, m_sortMoviesBy, ShowUnratedOnly, ShowSubtitlesOnly);
             CommandQueue.Command().Execute(m_searchMovies);            
         }
 

@@ -258,7 +258,7 @@ namespace JavLuv
             // Add new actresses to actress database
             m_movieCollection.AddActresses(m_movieScanner.Actresses);
 
-           string errorMsg = String.Empty;
+            string errorMsg = String.Empty;
             if (m_movieScanner.ErrorLog != String.Empty)
             {
                 m_reportViewModel.ErrorLog = String.Empty;
@@ -267,7 +267,6 @@ namespace JavLuv
                 if (errorMsg != String.Empty)
                     m_reportViewModel.ErrorLog += errorMsg;
                 Overlay = m_reportViewModel;
-                m_sidePanelViewModel.IsEnabled = false;
                 ProgressState = TaskbarItemProgressState.Error;
             }
 
@@ -444,7 +443,8 @@ namespace JavLuv
                 case AppState.MovieBrowser:
                     MovieBrowser.IsEnabled = true;
                     ActressBrowser.IsEnabled = false;
-                    SidePanel.IsEnabled = true;
+                    SidePanel.IsCommandViewEnabled = true;
+                    SidePanel.IsSearchViewEnabled = true;
                     SidePanel.MovieControlsVisibility = Visibility.Visible;
                     SidePanel.ActressControlsVisibility = Visibility.Collapsed;
                     Collection.MovieSearchActress = String.Empty;
@@ -453,12 +453,14 @@ namespace JavLuv
                 case AppState.MovieDetail:
                     MovieBrowser.IsEnabled = false;
                     ActressBrowser.IsEnabled = false;
-                    SidePanel.IsEnabled = false;
+                    SidePanel.IsCommandViewEnabled = false;
+                    SidePanel.IsSearchViewEnabled = false;
                     break;
                 case AppState.ActressBrowser:
                     MovieBrowser.IsEnabled = false;
                     ActressBrowser.IsEnabled = true;
-                    SidePanel.IsEnabled = true;
+                    SidePanel.IsCommandViewEnabled = true;
+                    SidePanel.IsSearchViewEnabled = true;
                     SidePanel.MovieControlsVisibility = Visibility.Collapsed;
                     SidePanel.ActressControlsVisibility = Visibility.Visible;
                     Collection.SearchActresses();
@@ -466,19 +468,22 @@ namespace JavLuv
                 case AppState.ActressDetail:
                     MovieBrowser.IsEnabled = true;
                     ActressBrowser.IsEnabled = false;
-                    SidePanel.IsEnabled = false;
+                    SidePanel.IsCommandViewEnabled = false;
+                    SidePanel.IsSearchViewEnabled = true;
                     SidePanel.MovieControlsVisibility = Visibility.Visible;
                     SidePanel.ActressControlsVisibility = Visibility.Collapsed;
                     break;
                 case AppState.Settings:
                     MovieBrowser.IsEnabled = false;
                     ActressBrowser.IsEnabled = false;
-                    SidePanel.IsEnabled = false;
+                    SidePanel.IsCommandViewEnabled = false;
+                    SidePanel.IsSearchViewEnabled = false;
                     break;
                 case AppState.Report:
                     MovieBrowser.IsEnabled = false;
                     ActressBrowser.IsEnabled = false;
-                    SidePanel.IsEnabled = false;
+                    SidePanel.IsCommandViewEnabled = false;
+                    SidePanel.IsSearchViewEnabled = false;
                     break;
             };
 
