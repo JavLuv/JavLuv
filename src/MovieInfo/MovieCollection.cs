@@ -21,7 +21,12 @@ namespace MovieInfo
             string oldBackupFileName = Path.Combine(folder, "Metadata.backup");
             m_backupFilename = Path.Combine(folder, "JavLuv.backup");
             if (File.Exists(oldBackupFileName))
-                File.Move(oldBackupFileName, m_backupFilename);
+            {
+                if (File.Exists(m_backupFilename) == false)
+                    File.Move(oldBackupFileName, m_backupFilename);
+                else
+                    File.Delete(oldBackupFileName);
+            }
             if (File.Exists(m_cacheFilename))
                 CommandQueue.Command().Execute(new CmdLoad(ref m_cacheData, m_cacheFilename, ref m_actressesDatabase, m_actressesFilename, ref m_backupData, m_backupFilename));
             else
