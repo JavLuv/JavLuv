@@ -48,7 +48,8 @@ namespace JavLuv
         {
             get
             {
-                if (DateTime.Now.DayOfYear == m_actressData.DateOfBirth.DayOfYear)
+                var today = DateTime.Now;
+                if (today.Month == m_actressData.DobMonth && today.Year == m_actressData.DobYear)
                     return Visibility.Visible;
                 return Visibility.Collapsed;
             }
@@ -122,13 +123,16 @@ namespace JavLuv
                     break;
                 case SortActressesBy.Age_Youngest:
                 case SortActressesBy.Age_Oldest:
-                    if (m_actressData.DateOfBirth == new DateTime())
+                    if (m_actressData.DobYear == 0)
                         break;
-                    int years = MovieUtils.GetAgeFromDateOfBorth(m_actressData.DateOfBirth);
+                    int years = MovieUtils.GetAgeFromDateOfBirth(m_actressData.DobYear, m_actressData.DobMonth, m_actressData.DobDay);
                     m_displayTitle += "\nAge " + years.ToString();
                     break;
                 case SortActressesBy.Birthday:
-                    m_displayTitle += "\n" + m_actressData.DateOfBirth.ToString("M");
+                    if (m_actressData.DobMonth == 0 || m_actressData.DobDay == 0)
+                        m_displayTitle += "\n" + String.Format("{0}-{1}-{2}", m_actressData.DobYear, "??", "??");
+                    else
+                        m_displayTitle += "\n" + String.Format("{0}-{1}-{2}", m_actressData.DobYear, m_actressData.DobMonth, m_actressData.DobDay);
                     break;
                 case SortActressesBy.MovieCount:
                     m_displayTitle += "\nMovies: " + m_actressData.MovieCount.ToString();

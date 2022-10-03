@@ -29,7 +29,7 @@ namespace MovieInfo
     {
         public int Compare(ActressData left, ActressData right)
         {
-            return DateTime.Compare(right.DateOfBirth, left.DateOfBirth);
+            return DateTime.Compare(new DateTime(right.DobYear, right.DobMonth, right.DobDay), new DateTime(left.DobYear, left.DobMonth, left.DobDay));
         }
     }
 
@@ -37,7 +37,7 @@ namespace MovieInfo
     {
         public int Compare(ActressData left, ActressData right)
         {
-            return DateTime.Compare(left.DateOfBirth, right.DateOfBirth);
+            return DateTime.Compare(new DateTime(left.DobYear, left.DobMonth, left.DobDay), new DateTime(right.DobYear, right.DobMonth, right.DobDay));
         }
     }
 
@@ -45,9 +45,9 @@ namespace MovieInfo
     {
         public int Compare(ActressData left, ActressData right)
         {
-            int l = left.DateOfBirth.DayOfYear;
-            int r = right.DateOfBirth.DayOfYear;
-            return (l == r) ? 0 : (l > r) ? 1 : -1;
+            if (left.DobMonth == right.DobMonth)
+                return (left.DobDay < right.DobDay) ? -1 : 1;
+            return (left.DobMonth < right.DobMonth) ? -1 : 1;
         }
     }
 
@@ -131,10 +131,16 @@ namespace MovieInfo
                     if (MovieUtils.IsActressUnknonwn(actress))
                         continue;
                     if (m_sortActressesBy == SortActressesBy.Age_Youngest || 
-                        m_sortActressesBy == SortActressesBy.Age_Oldest || 
+                        m_sortActressesBy == SortActressesBy.Age_Oldest)
+                    {
+                        if (actress.DobYear == 0)
+                            continue;
+                    }
+                    else if (m_sortActressesBy == SortActressesBy.Age_Youngest ||
+                        m_sortActressesBy == SortActressesBy.Age_Oldest ||
                         m_sortActressesBy == SortActressesBy.Birthday)
                     {
-                        if (actress.DateOfBirth == new DateTime())
+                        if (actress.DobYear == 0 || actress.DobMonth == 0 || actress.DobDay == 0)
                             continue;
                     }
                 }

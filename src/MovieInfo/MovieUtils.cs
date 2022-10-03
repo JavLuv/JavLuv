@@ -245,8 +245,12 @@ namespace MovieInfo
             }
             if (String.IsNullOrEmpty(primary.JapaneseName))
                 primary.JapaneseName = secondary.JapaneseName;
-            if (primary.DateOfBirth == new DateTime())
-                primary.DateOfBirth = secondary.DateOfBirth;
+            if (primary.DobYear == 0)
+                primary.DobYear = secondary.DobYear;
+            if (primary.DobMonth == 0)
+                primary.DobMonth = secondary.DobMonth;
+            if (primary.DobDay == 0)
+                primary.DobDay = secondary.DobDay;
             if (primary.Height == 0)
                 primary.Height = secondary.Height;
             if (String.IsNullOrEmpty(primary.Cup))
@@ -284,7 +288,7 @@ namespace MovieInfo
                 return true;
             if (String.IsNullOrEmpty(actress.JapaneseName) == false)
                 return false;
-            if (actress.DateOfBirth != new DateTime())
+            if (actress.DobYear != 0 && actress.DobMonth != 0 && actress.DobDay != 0)
                 return false;
             if (actress.Height != 0)
                 return false;
@@ -303,8 +307,14 @@ namespace MovieInfo
             return true;
         }
 
-        public static int GetAgeFromDateOfBorth(DateTime dateOfBirth)
+        public static int GetAgeFromDateOfBirth(int year, int month, int day)
         {
+            if (year == 0)
+                throw new ArgumentException("Age can't be calculated without a valid year of bitth");
+
+            // We'll allow a rough estimate, assuming Jan 1 b-day if none is available
+            var dateOfBirth = new DateTime(year, Math.Max(month, 1), Math.Max(day, 1));
+
             // Calculate age - a little trickier than you'd expect.  
             // Still not 100% precise, but good enough in 99.999% of cases.
             DateTime zeroTime = new DateTime(1, 1, 1);

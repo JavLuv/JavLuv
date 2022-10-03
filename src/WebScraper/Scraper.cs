@@ -538,8 +538,12 @@ namespace WebScraper
                 if (Utilities.Equals(altName, a.AltNames))
                     a.AltNames.Add(altName);
             }
-            if (a.DateOfBirth == new DateTime())
-                a.DateOfBirth = b.DateOfBirth;
+            if (a.DobYear == 0)
+                a.DobYear = b.DobYear;
+            if (a.DobMonth == 0)
+                a.DobMonth = b.DobMonth;
+            if (a.DobDay == 0)
+                a.DobDay = b.DobDay;
             if (a.Height == 0)
                 a.Height = b.Height;
             if (String.IsNullOrEmpty(a.Cup))
@@ -562,7 +566,11 @@ namespace WebScraper
                 return false;
             if (String.IsNullOrEmpty(actressData.JapaneseName))
                 return false;
-            if (actressData.DateOfBirth == new DateTime())
+            if (actressData.DobYear == 0)
+                return false;
+            if (actressData.DobMonth == 0)
+                return false;
+            if (actressData.DobDay == 0)
                 return false;
             if (actressData.Height == 0)
                 return false;
@@ -589,7 +597,11 @@ namespace WebScraper
                 return false;
             if (String.IsNullOrEmpty(actressData.JapaneseName))
                 return false;
-            if (actressData.DateOfBirth == new DateTime())
+            if (actressData.DobYear == 0)
+                return false;
+            if (actressData.DobMonth == 0)
+                return false;
+            if (actressData.DobDay == 0)
                 return false;
             return true;
         }

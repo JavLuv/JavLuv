@@ -17,7 +17,6 @@ namespace MovieInfo
             Name = String.Empty;
             JapaneseName = String.Empty;
             AltNames = new List<string>();
-            DateOfBirth = new DateTime();
             Cup = String.Empty;
             BloodType = String.Empty;
             ImageFileNames = new List<string>();
@@ -57,7 +56,9 @@ namespace MovieInfo
         public string Name { get; set; }
         public string JapaneseName { get; set; }
         public List<string> AltNames { get; set; }
-        public DateTime DateOfBirth { get; set; }
+        public int DobYear { get; set; }
+        public int DobMonth { get; set; }
+        public int DobDay { get; set; }
         public int Height { get; set; }
         public string Cup { get; set; }
         public int Bust { get; set; }

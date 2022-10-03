@@ -213,14 +213,20 @@ namespace JavLuv
         {
             get 
             {
-                return Utilities.DateTimeToString(m_actressData.DateOfBirth);
+                return Utilities.DateTimeToString(m_actressData.DobYear, m_actressData.DobMonth, m_actressData.DobDay);
             }
             set
             {
-                var newDateTime = Utilities.StringToDateTime(value);
-                if (newDateTime != m_actressData.DateOfBirth && newDateTime != new DateTime())
+                var dateTimeStr = Utilities.DateTimeToString(m_actressData.DobYear, m_actressData.DobMonth, m_actressData.DobDay);
+                if (value != dateTimeStr)
                 {
-                    m_actressData.DateOfBirth = newDateTime;
+                    int year = 0;
+                    int month = 0;
+                    int day = 0;
+                    Utilities.DateTimeToString(value, out year, out month, out day);
+                    m_actressData.DobYear = year;
+                    m_actressData.DobMonth = month;
+                    m_actressData.DobDay = day;
                     NotifyPropertyChanged("DateOfBirth");
                 }      
             }
@@ -229,9 +235,9 @@ namespace JavLuv
         {
             get
             {
-                if (m_actressData.DateOfBirth == new DateTime())
+                if (m_actressData.DobYear == 0)
                     return String.Empty;
-                int years = MovieUtils.GetAgeFromDateOfBorth(m_actressData.DateOfBirth);
+                int years = MovieUtils.GetAgeFromDateOfBirth(m_actressData.DobYear, m_actressData.DobMonth, m_actressData.DobDay);
                 return years.ToString();
             }
         }

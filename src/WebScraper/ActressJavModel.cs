@@ -74,15 +74,17 @@ namespace WebScraper
                         if (IsValidNode(nextSibling))
                         {
                             string[] dateParts = nextSibling.TextContent.Split('/');
-                            try
-                            {
-                                int month = int.Parse(dateParts[0]);
-                                int day = int.Parse(dateParts[1]);
-                                int year = int.Parse(dateParts[2]);
-                                Actress.DateOfBirth = new DateTime(year, month, day);
-                            }
-                            catch (Exception)
-                            { }
+                            int day = 0;
+                            int month = 0;
+                            int year = 0;
+                            int.TryParse(dateParts[0], out month);
+                            if (dateParts.Length > 1)
+                                int.TryParse(dateParts[1], out day);
+                            if (dateParts.Length > 2)
+                                int.TryParse(dateParts[2], out year);
+                            Actress.DobDay = day;
+                            Actress.DobMonth = month;
+                            Actress.DobYear = year;
                         }
                     }
                 }

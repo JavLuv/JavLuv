@@ -68,15 +68,13 @@ namespace WebScraper
                     if (IsValidNode(nextSibling))
                     {
                         string[] dateParts = nextSibling.TextContent.Split('-');
-                        try
-                        {
-                            int year = int.Parse(dateParts[0]);
-                            int month = int.Parse(dateParts[1]);
-                            int day = int.Parse(dateParts[2]);
-                            Actress.DateOfBirth = new DateTime(year, month, day);
-                        }
-                        catch(Exception)
-                        { }
+                        int year = 0;
+                        int month = 0;
+                        int day = 0;
+                        Utilities.DateTimeToString(nextSibling.TextContent, out year, out month, out day);
+                        Actress.DobYear = year;
+                        Actress.DobMonth = month;
+                        Actress.DobDay = day;
                     }
                 }
                 else if (element.TextContent == "Height")

@@ -255,30 +255,21 @@ namespace Common
             return strings;
         }
 
-        public static string DateTimeToString(DateTime dateTime)
+        public static string DateTimeToString(int year, int month, int day)
         {
-            try
-            {
-                if (dateTime == null || dateTime == new DateTime())
-                    return String.Empty;
-                return dateTime.ToString("yyyy-MM-dd");
-            }
-            catch(Exception)
-            {
-                return String.Empty;
-            }
+            return String.Format("{0}-{1}-{2}", year == 0 ? "????" : year.ToString(), month == 0 ? "??" : month.ToString(), day == 0 ? "??" : day.ToString());
         }
-
-        public static DateTime StringToDateTime(string dateTimeString)
+        public static void DateTimeToString(string str, out int year, out int month, out int day)
         {
-            try
-            {
-                return DateTime.ParseExact(dateTimeString, "yyyy-MM-dd", CultureInfo.InvariantCulture);
-            }
-            catch(Exception)
-            {
-                return new DateTime();
-            }
+            year = 0;
+            month = 0;
+            day = 0;
+            string[] dateParts = str.Split('-');
+            int.TryParse(dateParts[0], out year);
+            if (dateParts.Length > 1)
+                int.TryParse(dateParts[1], out month);
+            if (dateParts.Length > 2)
+                int.TryParse(dateParts[2], out day);
         }
 
         public static string StringListToString(List<string> stringList)
