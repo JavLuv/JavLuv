@@ -420,7 +420,7 @@ namespace MovieInfo
 
         public void RemoveActress(ActressData actress)
         {
-            RemoveActressNoLock(actress);
+            RemoveActressNoLock(actress, true);
             SearchActresses();
             Save();
         }
@@ -430,7 +430,19 @@ namespace MovieInfo
             lock (m_actressesDatabase)
             {
                 foreach (var actress in actresses)
-                    RemoveActressNoLock(actress);
+                    RemoveActressNoLock(actress, true);
+            }
+            SearchActresses();
+            Save();
+        }
+
+        public void RenameActress(ActressData actress)
+        {
+            UpdateActressNames();
+            lock (m_actressesDatabase)
+            {
+                RemoveActressNoLock(actress, false);
+                AddActressNoLock(actress);
             }
             SearchActresses();
             Save();
@@ -558,22 +570,27 @@ namespace MovieInfo
                 m_actressesDatabase.AltNames.Add(new NamePair(altName, actress.Name));
         }
 
-        private void RemoveActressNoLock(ActressData actress)
+        private void RemoveActressNoLock(ActressData actress, bool deleteImages)
         {
             m_actressesDatabase.Actresses.Remove(actress);
-            try
+            if (deleteImages)
             {
-                var folder = Utilities.GetActressImageFolder();
-                foreach (var fn in actress.ImageFileNames)
+                try
                 {
-                    var fullPath = Path.Combine(folder, fn);
-                    File.Delete(fullPath);
+                    var folder = Utilities.GetActressImageFolder();
+                    foreach (var fn in actress.ImageFileNames)
+                    {
+                        var fullPath = Path.Combine(folder, fn);
+                        File.Delete(fullPath);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Logger.WriteError("Could not delete actress image", ex);
                 }
             }
-            catch (Exception ex)
-            {
-                Logger.WriteError("Could not delete actress image", ex);
-            }
+            if (String.IsNullOrEmpty(actress.JapaneseName) == false)
+                m_actressesDatabase.JapaneseNames.Remove(new NamePair(actress.JapaneseName));
             foreach (string alias in actress.AltNames)
                 m_actressesDatabase.AltNames.Remove(new NamePair(alias));
         }

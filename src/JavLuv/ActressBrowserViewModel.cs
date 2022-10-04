@@ -124,9 +124,35 @@ namespace JavLuv
 
         private void Collection_ActressesDisplayedChanged(object sender, EventArgs e)
         {
+            // When changing names, this event is triggered.  When that happens, we
+            // need to recreate the actress details with a new overlay usng the new name.
+            // We first store the actress name here to find it later.
+            string prevName = String.Empty;
+            if (Parent.Overlay is ActressDetailViewModel)
+            {
+                var vm = Parent.Overlay as ActressDetailViewModel;
+                prevName = vm.ActressData.Name;
+            }
+
+            // Update actress list with new browser items
             Actresses.Clear();
-            foreach (var movie in Parent.Collection.ActressesDisplayed)
-                Actresses.Add(new ActressBrowserItemViewModel(this, movie));
+            foreach (var actress in Parent.Collection.ActressesDisplayed)
+                Actresses.Add(new ActressBrowserItemViewModel(this, actress));
+
+            // If we were displaying an actress detail page, we need to open a new detail page
+            // using the newly created browser item viewmodel, replacing the old one.  This keeps
+            // it up to date, and allows correct navigation through the list.
+            if (String.IsNullOrEmpty(prevName) == false)
+            {
+                foreach (var actress in Actresses)
+                {
+                    if (actress.ActressData.Name == prevName)
+                    {
+                        OpenDetailView(actress);
+                        break;
+                    }
+                }
+            }
         }
 
         #endregion
