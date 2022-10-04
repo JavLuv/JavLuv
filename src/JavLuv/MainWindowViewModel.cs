@@ -57,6 +57,9 @@ namespace JavLuv
             m_movieScanner.ScanComplete += OnMovieScannerComplete;
             m_movieCollection.MoviesDisplayedChanged += MovieCollection_MoviesDisplayedChanged;
 
+            // Set initial state for settings
+            m_movieCollection.AutoSyncActresses = JavLuv.Settings.Get().AutoSyncActresses;
+
             // Set loaded UI elemenets
             SelectedTabIndex = JavLuv.Settings.Get().SelectedTabIndex;
             State = SelectedTabIndex == 0 ? AppState.MovieBrowser : AppState.ActressBrowser;

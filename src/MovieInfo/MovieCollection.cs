@@ -90,6 +90,8 @@ namespace MovieInfo
 
         public int AverageMovieRating { get; set; }
 
+        public bool AutoSyncActresses { private get; set; }
+
         public string SearchText
         {
             private get { return m_searchText; }
@@ -529,7 +531,8 @@ namespace MovieInfo
 
         public void UpdateActressNames()
         {
-            CommandQueue.Command().Execute(new CmdUpdateActressNames(this, m_cacheData, m_actressesDatabase));
+            if (AutoSyncActresses)
+                CommandQueue.Command().Execute(new CmdUpdateActressNames(this, m_cacheData, m_actressesDatabase));
         }
 
         #endregion

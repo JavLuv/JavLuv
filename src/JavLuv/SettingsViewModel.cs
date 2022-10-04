@@ -96,6 +96,20 @@ namespace JavLuv
             }
         }
 
+        public bool AutoSyncActresses
+        {
+            get { return Settings.Get().AutoSyncActresses; }
+            set
+            {
+                if (value != Settings.Get().AutoSyncActresses)
+                {
+                    Settings.Get().AutoSyncActresses = value;
+                    Parent.Collection.AutoSyncActresses = value;
+                    NotifyPropertyChanged("AutoSyncActresses");
+                }
+            }
+        }
+
         public string Subtitles
         {
             get { return Settings.Get().Subtitles; }
