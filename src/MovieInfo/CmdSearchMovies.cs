@@ -84,7 +84,7 @@ namespace MovieInfo
             MovieCollection collection,
             CacheData cacheData, 
             string searchText, 
-            string actressName,
+            ActressData searchActress,
             SortMoviesBy sortMoviesBy, 
             bool showUnratedOnly, 
             bool showSubtitlesOnly
@@ -93,7 +93,7 @@ namespace MovieInfo
             m_movieCollection = collection;
             m_cacheData = cacheData;
             m_searchText = searchText;
-            m_actressName = actressName;
+            m_searchActress = searchActress;
             m_sortMoviesBy = sortMoviesBy;
             m_showUnratedOnly = showUnratedOnly;
             m_showSubtitlesOnly = showSubtitlesOnly;
@@ -114,11 +114,11 @@ namespace MovieInfo
             // First start with actress name if available, or the full list of movies otherwise
             lock (m_cacheData)
             {
-                if (String.IsNullOrEmpty(m_actressName) == false)
+                if (m_searchActress != null)
                 {
                     foreach (MovieData movie in m_cacheData.Movies)
                     {
-                        if (SearchMovieForActress(movie, m_actressName))
+                        if (SearchMovieForActress(movie, m_searchActress))
                             m_availableMovies.Add(movie);
                     }
                 }
@@ -159,7 +159,7 @@ namespace MovieInfo
                     totalRating += movie.Metadata.UserRating;
                 }
             }
-            if (String.IsNullOrEmpty(m_actressName) == false && totalCount > 0)
+            if (m_searchActress != null && totalCount > 0)
                 m_movieCollection.AverageMovieRating = (int)Math.Ceiling((double)totalRating / (double)totalCount);
             else
                 m_movieCollection.AverageMovieRating = 0;
@@ -228,13 +228,11 @@ namespace MovieInfo
             return false;
         }
 
-        private bool SearchMovieForActress(MovieData movie, string actress)
+        private bool SearchMovieForActress(MovieData movie, ActressData actress)
         {
             foreach (var actor in movie.Metadata.Actors)
             {
-                if (String.Equals(actress, actor.Name, StringComparison.OrdinalIgnoreCase))
-                    return true;
-                if (Utilities.Equals(actress, actor.Aliases, StringComparison.OrdinalIgnoreCase))
+                if (MovieUtils.ActressMatchesActor(actress, actor))
                     return true;
             }
             return false;
@@ -277,7 +275,7 @@ namespace MovieInfo
         private SortMoviesBy m_sortMoviesBy = SortMoviesBy.Title;
         private bool m_showUnratedOnly;
         private bool m_showSubtitlesOnly;
-        private string m_actressName;
+        private ActressData m_searchActress;
 
         #endregion
     }

@@ -22,7 +22,7 @@ namespace JavLuv
             m_browserItem = browserItem;
             m_actressData = m_browserItem.ActressData;
             LoadCurrentImage();
-            Parent.Parent.Collection.MovieSearchActress = m_actressData.Name;
+            Parent.Parent.Collection.MovieSearchActress = m_actressData;
             Parent.Parent.Collection.MoviesDisplayedChanged += OnMoviesDisplayedChanged;
             Parent.Parent.Collection.SearchMovies();
         }

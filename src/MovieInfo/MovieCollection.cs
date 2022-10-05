@@ -198,7 +198,7 @@ namespace MovieInfo
             get { return m_cacheData.Movies.Count; }
         }
 
-        public string MovieSearchActress { get; set; }
+        public ActressData MovieSearchActress { get; set; }
 
         #endregion
 
@@ -438,12 +438,12 @@ namespace MovieInfo
 
         public void RenameActress(ActressData actress)
         {
-            UpdateActressNames();
             lock (m_actressesDatabase)
             {
                 RemoveActressNoLock(actress, false);
                 AddActressNoLock(actress);
             }
+            UpdateActressNames();
             SearchActresses();
             Save();
         }

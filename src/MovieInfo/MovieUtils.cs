@@ -234,6 +234,29 @@ namespace MovieInfo
             return genresChanged;
         }
 
+        public static bool ActressHasName(ActressData actress, string name)
+        {
+            if (String.Compare(actress.Name, name, true) == 0)
+                return true;
+            if (String.Compare(actress.JapaneseName, name, true) == 0)
+                return true;
+            if (Utilities.Equals(name, actress.AltNames, StringComparison.OrdinalIgnoreCase))
+                return true;
+            return false;
+        }
+
+        public static bool ActressMatchesActor(ActressData actress, ActorData actor)
+        {
+            if (ActressHasName(actress, actor.Name))
+                return true;
+            foreach (string alias in actor.Aliases)
+            {
+                if (ActressHasName(actress, alias))
+                    return true;
+            }
+            return false;
+        }
+
         public static void MergeActresses(ActressData primary, ActressData secondary)
         {
             if (Utilities.Equals(secondary.Name, primary.AltNames, StringComparison.OrdinalIgnoreCase) == false)

@@ -450,7 +450,7 @@ namespace JavLuv
                     SidePanel.IsSearchViewEnabled = true;
                     SidePanel.MovieControlsVisibility = Visibility.Visible;
                     SidePanel.ActressControlsVisibility = Visibility.Collapsed;
-                    Collection.MovieSearchActress = String.Empty;
+                    Collection.MovieSearchActress = null;
                     Collection.SearchMovies();
                     break;
                 case AppState.MovieDetail:
