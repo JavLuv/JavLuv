@@ -123,16 +123,21 @@ namespace JavLuv
                     break;
                 case SortActressesBy.Age_Youngest:
                 case SortActressesBy.Age_Oldest:
+                    m_displayTitle += "\nAge ";
                     if (m_actressData.DobYear == 0)
+                    {
+                        m_displayTitle += TextManager.GetString("Text.UnknownData");
                         break;
+                    }
                     int years = MovieUtils.GetAgeFromDateOfBirth(m_actressData.DobYear, m_actressData.DobMonth, m_actressData.DobDay);
-                    m_displayTitle += "\nAge " + years.ToString();
+                    m_displayTitle += years.ToString();
                     break;
                 case SortActressesBy.Birthday:
-                    if (m_actressData.DobMonth == 0 || m_actressData.DobDay == 0)
-                        m_displayTitle += "\n" + String.Format("{0}-{1}-{2}", m_actressData.DobYear, "??", "??");
-                    else
-                        m_displayTitle += "\n" + String.Format("{0}-{1}-{2}", m_actressData.DobYear, m_actressData.DobMonth, m_actressData.DobDay);
+                    m_displayTitle += "\n" + String.Format("{0}-{1}-{2}", 
+                        m_actressData.DobYear == 0 ? "????" : m_actressData.DobYear.ToString(), 
+                        m_actressData.DobMonth == 0 ? "??" : m_actressData.DobMonth.ToString(), 
+                        m_actressData.DobDay == 0 ? "??" : m_actressData.DobDay.ToString()
+                    );
                     break;
                 case SortActressesBy.MovieCount:
                     m_displayTitle += "\nMovies: " + m_actressData.MovieCount.ToString();

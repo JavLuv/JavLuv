@@ -5,7 +5,6 @@ using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Security.Policy;
 using System.Text;
 using System.Text.RegularExpressions;
 
@@ -305,29 +304,25 @@ namespace MovieInfo
             }
         }
 
-        public static bool IsActressUnknonwn(ActressData actress)
+        public static bool IsActressWorthShowing(ActressData actress)
         {
             if (actress == null)
-                return true;
+                return false;
+            if (actress.ImageFileNames.Count == 0)
+                return false;
             if (String.IsNullOrEmpty(actress.JapaneseName) == false)
-                return false;
+                return true;
             if (actress.DobYear != 0 && actress.DobMonth != 0 && actress.DobDay != 0)
-                return false;
+                return true;
             if (actress.Height != 0)
-                return false;
+                return true;
             if (String.IsNullOrEmpty(actress.Cup) == false)
-                return false;
-            if (actress.Bust != 0)
-                return false;
-            if (actress.Waist != 0)
-                return false;
-            if (actress.Hips != 0)
-                return false;
+                return true;
+            if (actress.Bust != 0 && actress.Waist != 0 && actress.Hips != 0)
+                return true;
             if (String.IsNullOrEmpty(actress.BloodType) == false)
-                return false;
-            if (actress.ImageFileNames.Count > 0)
-                return false;
-            return true;
+                return true;
+            return false;
         }
 
         public static int GetAgeFromDateOfBirth(int year, int month, int day)

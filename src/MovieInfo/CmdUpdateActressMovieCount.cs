@@ -43,7 +43,7 @@
         private void UpdateActressCount(string name)
         {
             ActressData actress = m_collection.FindActress(name);
-            if (m_actressesDatabase != null)
+            if (actress != null)
                 actress.MovieCount++;
         }
 

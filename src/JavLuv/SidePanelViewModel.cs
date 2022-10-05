@@ -22,7 +22,7 @@ namespace JavLuv
             Parent.Collection.SearchText = SearchText;
             Parent.Collection.ShowUnratedOnly = ShowUnratedOnly;
             Parent.Collection.ShowSubtitlesOnly = ShowSubtitlesOnly;
-            Parent.Collection.ShowUnknownActresses = ShowUnknownActresses;
+            Parent.Collection.ShowAllActresses = ShowAllActresses;
 
             m_sortMovieByList.Add(new SortMoviesByPair("Text.SortByTitle", SortMoviesBy.Title));
             m_sortMovieByList.Add(new SortMoviesByPair("Text.SortByID", SortMoviesBy.ID));
@@ -194,16 +194,16 @@ namespace JavLuv
             }
         }
 
-        public bool ShowUnknownActresses
+        public bool ShowAllActresses
         {
-            get { return Settings.Get().ShowUnknownActresses; }
+            get { return Settings.Get().ShowAllActresses; }
             set
             {
-                if (value != Settings.Get().ShowUnknownActresses)
+                if (value != Settings.Get().ShowAllActresses)
                 {
-                    Settings.Get().ShowUnknownActresses = value;
-                    Parent.Collection.ShowUnknownActresses = value;
-                    NotifyPropertyChanged("ShowUnknownActresses");
+                    Settings.Get().ShowAllActresses = value;
+                    Parent.Collection.ShowAllActresses = value;
+                    NotifyPropertyChanged("ShowAllActresses");
                 }
             }
         }

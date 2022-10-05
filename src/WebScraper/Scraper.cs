@@ -133,7 +133,7 @@ namespace WebScraper
             }
 
             // Log success or failure
-            if (MovieUtils.IsActressUnknonwn(actressData))
+            if (MovieUtils.IsActressWorthShowing(actressData) == false)
                 Logger.WriteWarning("Unable to find online information for " + actressData.Name + " or aliases");
             else
                 Logger.WriteInfo("Found information for " + actressData.Name);

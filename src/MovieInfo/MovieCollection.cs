@@ -177,7 +177,7 @@ namespace MovieInfo
             }
         }
 
-        public bool ShowUnknownActresses
+        public bool ShowAllActresses
         {
             private get
             {

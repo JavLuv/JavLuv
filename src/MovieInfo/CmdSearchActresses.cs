@@ -29,6 +29,14 @@ namespace MovieInfo
     {
         public int Compare(ActressData left, ActressData right)
         {
+            if (left.DobYear == 0 && right.DobYear == 0)
+                return String.Compare(left.Name, right.Name);
+            if (left.DobYear == 0)
+                return 1;
+            if (right.DobYear == 0)
+                return -1;
+            if (left.DobDay == 0 || left.DobMonth == 0 || right.DobDay == 0 || right.DobMonth == 0)
+                return (left.DobDay == right.DobDay) ? 0 : (left.DobDay < right.DobDay) ? 1 : -1;
             return DateTime.Compare(new DateTime(right.DobYear, right.DobMonth, right.DobDay), new DateTime(left.DobYear, left.DobMonth, left.DobDay));
         }
     }
@@ -37,7 +45,14 @@ namespace MovieInfo
     {
         public int Compare(ActressData left, ActressData right)
         {
-            return DateTime.Compare(new DateTime(left.DobYear, left.DobMonth, left.DobDay), new DateTime(right.DobYear, right.DobMonth, right.DobDay));
+            if (left.DobYear == 0 && right.DobYear == 0)
+                return String.Compare(left.Name, right.Name);
+            if (left.DobYear == 0)
+                return 1;
+            if (right.DobYear == 0)
+                return -1;
+            var c = new ActressAgeYoungestComparer();
+            return c.Compare(right, left);
         }
     }
 
@@ -45,6 +60,12 @@ namespace MovieInfo
     {
         public int Compare(ActressData left, ActressData right)
         {
+            if (left.DobDay == 0 && right.DobDay == 0)
+                return String.Compare(left.Name, right.Name);
+            if (left.DobDay == 0 || left.DobMonth == 0)
+                return 1;
+            if (right.DobDay == 0 || right.DobMonth == 0)
+                return -1;
             if (left.DobMonth == right.DobMonth)
                 return (left.DobDay < right.DobDay) ? -1 : 1;
             return (left.DobMonth < right.DobMonth) ? -1 : 1;
@@ -77,12 +98,12 @@ namespace MovieInfo
     {
         #region Constructors
 
-        public CmdSearchActresses(ActressesDatabase actressesData, string searchText, SortActressesBy sortActressesBy, bool showUnknownActresses)
+        public CmdSearchActresses(ActressesDatabase actressesData, string searchText, SortActressesBy sortActressesBy, bool showAllActresses)
         {
             m_actressesData = actressesData;
             m_searchText = searchText;
             m_sortActressesBy = sortActressesBy;
-            m_showUnknownActresses = showUnknownActresses;
+            m_showAllActresses = showAllActresses;
         }
 
         #endregion;
@@ -98,7 +119,7 @@ namespace MovieInfo
         public void Execute()
         {
             // Perform keyword-based search if required
-            if (String.IsNullOrEmpty(m_searchText) == false || m_showUnknownActresses == false)
+            if (String.IsNullOrEmpty(m_searchText) == false || m_showAllActresses == false)
             {
                 Search();
             }
@@ -126,9 +147,9 @@ namespace MovieInfo
             HashSet<ActressData> foundActresses = new HashSet<ActressData>();
             foreach (ActressData actress in m_actressesData.Actresses)
             {
-                if (m_showUnknownActresses == false)
+                if (m_showAllActresses == false)
                 {
-                    if (MovieUtils.IsActressUnknonwn(actress))
+                    if (MovieUtils.IsActressWorthShowing(actress) == false)
                         continue;
                     if (m_sortActressesBy == SortActressesBy.Age_Youngest || 
                         m_sortActressesBy == SortActressesBy.Age_Oldest)
@@ -209,7 +230,8 @@ namespace MovieInfo
         private List<ActressData> m_filteredActresses = new List<ActressData>();
         private string m_searchText = String.Empty;
         private SortActressesBy m_sortActressesBy = SortActressesBy.Name;
-        private bool m_showUnknownActresses;
+        private bool m_showAllActresses;
+
         #endregion
     }
 }
