@@ -71,7 +71,7 @@ namespace WebScraper
                         int year = 0;
                         int month = 0;
                         int day = 0;
-                        Utilities.DateTimeToString(nextSibling.TextContent, out year, out month, out day);
+                        Utilities.StringToDateTime(nextSibling.TextContent, out year, out month, out day);
                         Actress.DobYear = year;
                         Actress.DobMonth = month;
                         Actress.DobDay = day;

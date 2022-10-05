@@ -4,7 +4,6 @@ using System;
 using System.IO;
 using System.Linq;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
@@ -217,6 +216,8 @@ namespace JavLuv
         {
             get 
             {
+                if (m_actressData.DobYear == 0 && m_actressData.DobMonth == 0 && m_actressData.DobDay == 0)
+                    return String.Empty;
                 return Utilities.DateTimeToString(m_actressData.DobYear, m_actressData.DobMonth, m_actressData.DobDay);
             }
             set
@@ -227,11 +228,19 @@ namespace JavLuv
                     int year = 0;
                     int month = 0;
                     int day = 0;
-                    Utilities.DateTimeToString(value, out year, out month, out day);
-                    m_actressData.DobYear = year;
-                    m_actressData.DobMonth = month;
-                    m_actressData.DobDay = day;
-                    NotifyPropertyChanged("DateOfBirth");
+                    try
+                    {
+                        Utilities.StringToDateTime(value, out year, out month, out day);
+                        m_actressData.DobYear = year;
+                        m_actressData.DobMonth = month;
+                        m_actressData.DobDay = day;
+                        NotifyPropertyChanged("DateOfBirth");
+                        NotifyPropertyChanged("Age");
+                    }
+                    catch (Exception)
+                    {
+                        Logger.WriteInfo("User entered invalid actress date");
+                    }
                 }      
             }
         }

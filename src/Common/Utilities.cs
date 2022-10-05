@@ -259,7 +259,7 @@ namespace Common
         {
             return String.Format("{0}-{1}-{2}", year == 0 ? "????" : year.ToString(), month == 0 ? "??" : month.ToString(), day == 0 ? "??" : day.ToString());
         }
-        public static void DateTimeToString(string str, out int year, out int month, out int day)
+        public static void StringToDateTime(string str, out int year, out int month, out int day)
         {
             year = 0;
             month = 0;
@@ -270,6 +270,9 @@ namespace Common
                 int.TryParse(dateParts[1], out month);
             if (dateParts.Length > 2)
                 int.TryParse(dateParts[2], out day);
+            // Validate that this is a legit date
+            if (month != 0 && day != 0)
+                new DateTime(year, month, day);
         }
 
         public static string StringListToString(List<string> stringList)
