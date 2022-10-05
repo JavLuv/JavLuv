@@ -198,6 +198,11 @@ namespace MovieInfo
             get { return m_cacheData.Movies.Count; }
         }
 
+        public int NumActresses
+        {
+            get { return m_actressesDatabase.Actresses.Count; }
+        }
+
         public ActressData MovieSearchActress { get; set; }
 
         #endregion

@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Text;
 using System.Windows;
 using System.Windows.Input;
 
@@ -110,16 +111,31 @@ namespace JavLuv
             }
         }
 
-        public System.Windows.Visibility PlayMovieVisibility { get; set; }
-
-        public System.Windows.Visibility PlayRandomMovieVisibility { get; set; }
-
         #endregion
 
         #region Event Handlers
 
         private void SelectedItems_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
+            if (SelectedItems.Count == 0)
+            {
+                Parent.SelectedDescription = "";
+            }
+            else if (SelectedItems.Count == 1)
+            {
+                Parent.SelectedDescription = SelectedItems[0].ActressData.Name;
+            }
+            else if (SelectedItems.Count > 1)
+            {
+                var str = new StringBuilder();
+                foreach (var item in SelectedItems)
+                {
+                    str.Append(item.ActressData.Name);
+                    if (SelectedItems.IndexOf(item) != SelectedItems.Count - 1)
+                        str.Append(", ");
+                }
+                Parent.SelectedDescription = str.ToString();
+            }
         }
 
         private void Collection_ActressesDisplayedChanged(object sender, EventArgs e)

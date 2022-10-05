@@ -130,11 +130,11 @@
                     </Button>
                 </StatusBarItem>
                 <Separator Grid.Column="3" />
-                <StatusBarItem Grid.Column="4">
-                    <TextBlock Text="{Binding MovieBrowser.SelectedDescription}" />
+                <StatusBarItem Grid.Column="4" Visibility="{Binding StatusVisibility}">
+                    <TextBlock Text="{Binding SelectedDescription}" />
                 </StatusBarItem>
                 <Separator Grid.Column="5" />
-                <StatusBarItem Grid.Column="6">
+                <StatusBarItem Grid.Column="6"  Visibility="{Binding StatusVisibility}">
                     <TextBlock Text="{Binding DisplayCountText}" />
                 </StatusBarItem>
 

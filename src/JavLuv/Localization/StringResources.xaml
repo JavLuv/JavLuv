@@ -109,6 +109,7 @@
     <system:String x:Key="Text.DownloadingActressData">Downloading actress data {0}/{1}</system:String>
     <system:String x:Key="Text.ScanningFolders">Scanning {0} folders</system:String>
     <system:String x:Key="Text.DisplayingMovies">Displaying {0} of {1} movies</system:String>
+    <system:String x:Key="Text.DisplayingActresses">Displaying {0} of {1} actresses</system:String>
     <system:String x:Key="Text.ExitJavLuvScanningFiles">JavLuv is currently scanning files.\nWould you like to exit anyways and cancel this operation?</system:String>
     <system:String x:Key="Text.ExitAndCancelScan">Exit and cancel scan?</system:String>
     <system:String x:Key="Text.JavLuvScanningFiles">JavLuv is currently scanning files.\nWould you like to cancel this operation?</system:String>

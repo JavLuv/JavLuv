@@ -56,6 +56,7 @@ namespace JavLuv
             m_movieScanner.ScanUpdate += OnMovieScannerUpdate;
             m_movieScanner.ScanComplete += OnMovieScannerComplete;
             m_movieCollection.MoviesDisplayedChanged += MovieCollection_MoviesDisplayedChanged;
+            m_movieCollection.ActressesDisplayedChanged += M_movieCollection_ActressesDisplayedChanged;
 
             // Set initial state for settings
             m_movieCollection.AutoSyncActresses = JavLuv.Settings.Get().AutoSyncActresses;
@@ -230,6 +231,20 @@ namespace JavLuv
             }
         }
 
+
+        public string SelectedDescription
+        {
+            get { return m_selectedDescription; }
+            set
+            {
+                if (value != m_selectedDescription)
+                {
+                    m_selectedDescription = value;
+                    NotifyPropertyChanged("SelectedDescription");
+                }
+            }
+        }
+
         public string DisplayCountText
         {
             get
@@ -242,6 +257,22 @@ namespace JavLuv
                 {
                     m_displayCountText = value;
                     NotifyPropertyChanged("DisplayCountText");
+                }
+            }
+        }
+
+        public Visibility StatusVisibility
+        {
+            get
+            {
+                return m_statusVisibility;
+            }
+            set
+            {
+                if (value != m_statusVisibility)
+                {
+                    m_statusVisibility = value;
+                    NotifyPropertyChanged("StatusVisibility");
                 }
             }
         }
@@ -316,6 +347,15 @@ namespace JavLuv
                 m_movieCollection.MoviesDisplayed.Count,
                 m_movieCollection.NumMovies
                 );        
+        }
+
+        private void M_movieCollection_ActressesDisplayedChanged(object sender, EventArgs e)
+        {
+            DisplayCountText = String.Format(
+                TextManager.GetString("Text.DisplayingActresses"),
+                m_movieCollection.ActressesDisplayed.Count,
+                m_movieCollection.NumActresses
+                );
         }
 
         private void CheckVersion_FinishedVersionCheck(object sender, EventArgs e)
@@ -450,6 +490,7 @@ namespace JavLuv
                     SidePanel.IsSearchViewEnabled = true;
                     SidePanel.MovieControlsVisibility = Visibility.Visible;
                     SidePanel.ActressControlsVisibility = Visibility.Collapsed;
+                    StatusVisibility = Visibility.Visible;
                     Collection.MovieSearchActress = null;
                     Collection.SearchMovies();
                     break;
@@ -458,6 +499,7 @@ namespace JavLuv
                     ActressBrowser.IsEnabled = false;
                     SidePanel.IsCommandViewEnabled = false;
                     SidePanel.IsSearchViewEnabled = false;
+                    StatusVisibility = Visibility.Collapsed;
                     break;
                 case AppState.ActressBrowser:
                     MovieBrowser.IsEnabled = false;
@@ -466,6 +508,7 @@ namespace JavLuv
                     SidePanel.IsSearchViewEnabled = true;
                     SidePanel.MovieControlsVisibility = Visibility.Collapsed;
                     SidePanel.ActressControlsVisibility = Visibility.Visible;
+                    StatusVisibility = Visibility.Visible;
                     Collection.SearchActresses();
                     break;
                 case AppState.ActressDetail:
@@ -475,6 +518,7 @@ namespace JavLuv
                     SidePanel.IsSearchViewEnabled = true;
                     SidePanel.MovieControlsVisibility = Visibility.Visible;
                     SidePanel.ActressControlsVisibility = Visibility.Collapsed;
+                    StatusVisibility = Visibility.Visible;
                     break;
                 case AppState.Settings:
                     MovieBrowser.IsEnabled = false;
@@ -510,7 +554,9 @@ namespace JavLuv
         private CmdCheckVersion m_checkVersion;
         private int m_percentComplete = 0;
         private string m_scanStatus = String.Empty;
+        private string m_selectedDescription = String.Empty;
         private string m_displayCountText = String.Empty;
+        private Visibility m_statusVisibility;
 
         #endregion
     }

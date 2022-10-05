@@ -68,19 +68,6 @@ namespace JavLuv
             }
         }
 
-        public string SelectedDescription
-        {
-            get { return m_selectedDescription; }
-            set
-            {
-                if (value != m_selectedDescription)
-                {
-                    m_selectedDescription = value;
-                    NotifyPropertyChanged("SelectedDescription");
-                }
-            }
-        }
-
         public System.Windows.Visibility EnableMoveRenameVisibility
         {
             get
@@ -126,13 +113,13 @@ namespace JavLuv
         {
             if (SelectedItems.Count == 0)
             {
-                SelectedDescription = "";
+                Parent.SelectedDescription = "";
                 PlayMovieVisibility = Visibility.Collapsed;
                 PlayRandomMovieVisibility = Visibility.Collapsed;
             }
             else if (SelectedItems.Count == 1)
             {
-                SelectedDescription = SelectedItems[0].DisplayTitle;
+                Parent.SelectedDescription = SelectedItems[0].DisplayTitle;
                 PlayMovieVisibility = Visibility.Visible;
                 PlayRandomMovieVisibility = Visibility.Collapsed;
             }
@@ -145,7 +132,7 @@ namespace JavLuv
                     if (SelectedItems.IndexOf(item) != SelectedItems.Count - 1)
                         str.Append(", ");
                 }
-                SelectedDescription = str.ToString();
+                Parent.SelectedDescription = str.ToString();
                 PlayMovieVisibility = Visibility.Collapsed;
                 PlayRandomMovieVisibility = Visibility.Visible;
             }
@@ -555,7 +542,6 @@ namespace JavLuv
         private MainWindowViewModel m_parent;
         private ObservableCollection<MovieBrowserItemViewModel> m_movies = new ObservableCollection<MovieBrowserItemViewModel>();
         private ObservableCollection<MovieBrowserItemViewModel> m_selectedItems = new ObservableCollection<MovieBrowserItemViewModel>();
-        private string m_selectedDescription = String.Empty;
         private bool m_isEnabled = true;
         private Random m_random = new Random();
 
