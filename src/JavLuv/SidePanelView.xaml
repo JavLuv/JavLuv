@@ -78,7 +78,7 @@
                     ItemsSource="{Binding SortMovieByList}"
                     SelectedItem="{Binding CurrentSortMovieBy}"
                     Height="24" 
-                    Width="100"
+                    Width="110"
                     DisplayMemberPath="Name"
                     />
                 <ComboBox 
@@ -88,7 +88,7 @@
                     ItemsSource="{Binding SortActressByList}"
                     SelectedItem="{Binding CurrentSortActressesBy}"
                     Height="24" 
-                    Width="100"
+                    Width="110"
                     DisplayMemberPath="Name"
                     />
             </Grid>
