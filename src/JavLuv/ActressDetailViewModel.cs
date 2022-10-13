@@ -268,7 +268,7 @@ namespace JavLuv
                 string currentVal = String.Format(TextManager.GetString("Text.ActressHeightValue"), m_actressData.Height);
                 if (value != currentVal)
                 {
-                    m_actressData.Height = Utilities.ParseInitialDigits(currentVal);
+                    m_actressData.Height = Utilities.ParseInitialDigits(value);
                     NotifyPropertyChanged("Height");
                 }
             }
@@ -297,17 +297,16 @@ namespace JavLuv
             }
             set
             {
-                if (String.IsNullOrEmpty(value))
-                    return;
-                string[] values = value.Split('-');
-                if (values.Length < 3)
-                    return;
                 int bust = 0;
                 int waist = 0;
                 int hips = 0;
-                int.TryParse(values[0], out bust);
-                int.TryParse(values[1], out waist);
-                int.TryParse(values[2], out hips);
+                string[] values = value.Split('-');
+                if (values.Length == 3)
+                {
+                    int.TryParse(values[0], out bust);
+                    int.TryParse(values[1], out waist);
+                    int.TryParse(values[2], out hips);
+                }
                 if (bust != m_actressData.Bust || waist != m_actressData.Waist || hips != m_actressData.Hips)
                 {
                     m_actressData.Bust = bust;
