@@ -84,6 +84,7 @@ namespace JavLuv
         public void Start(List<ActressData> actresses)
         {
             Actresses = actresses;
+            m_directoriesToScan = new List<string>();
             Start();
         }
 
