@@ -49,7 +49,7 @@ namespace JavLuv
             get
             {
                 var today = DateTime.Now;
-                if (today.Month == m_actressData.DobMonth && today.Year == m_actressData.DobYear)
+                if (today.Month == m_actressData.DobMonth && today.Day == m_actressData.DobDay)
                     return Visibility.Visible;
                 return Visibility.Collapsed;
             }
