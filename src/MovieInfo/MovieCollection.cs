@@ -1,4 +1,4 @@
-﻿using Common;
+using Common;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -11,7 +11,7 @@ namespace MovieInfo
     {
         #region Constructors
 
-        public MovieCollection(System.Windows.Threading.Dispatcher dispatcher)
+        public MovieCollection(Dispatcher dispatcher)
         {
             m_dispatcher = dispatcher;
             CommandQueue.Command().CommandFinished += CommandQueue_CommandFinished;
@@ -400,6 +400,11 @@ namespace MovieInfo
                 if (m_backupData.Actresses.TryGetValue(new ActressData(actressName), out value))
                     return value;
                 NamePair altNameData;
+                if (m_backupData.JapaneseNames.TryGetValue(new NamePair(actressName), out altNameData))
+                {
+                    if (m_backupData.Actresses.TryGetValue(new ActressData(altNameData.Name), out value))
+                        return value;
+                }
                 if (m_backupData.AltNames.TryGetValue(new NamePair(actressName), out altNameData))
                 {
                     if (m_backupData.Actresses.TryGetValue(new ActressData(altNameData.Name), out value))

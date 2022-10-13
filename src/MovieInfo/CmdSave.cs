@@ -50,6 +50,7 @@ namespace MovieInfo
                             if (m_backupData.Actresses.Contains(actress))
                                 m_backupData.Actresses.Remove(actress);
                             m_backupData.Actresses.Add(actress);
+                            m_backupData.JapaneseNames.Add(new NamePair(actress.JapaneseName, actress.Name));
                             foreach (var altName in actress.AltNames)
                             {
                                 var key = new NamePair(altName);

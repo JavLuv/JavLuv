@@ -266,6 +266,11 @@ namespace MovieInfo
             SubtitleFileNames.AddRange(movieData.SubtitleFileNames);
         }
 
+        public MovieData(string uniqueID) : this()
+        {
+            Metadata = new MovieMetadata(uniqueID);
+        }
+
         #endregion
 
         #region Public Functions

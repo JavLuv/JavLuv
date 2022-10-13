@@ -12,6 +12,7 @@ namespace MovieInfo
         {
             Movies = new HashSet<MovieMetadata>();
             Actresses = new HashSet<ActressData>();
+            JapaneseNames = new HashSet<NamePair>();
             AltNames = new HashSet<NamePair>();
         }
 
@@ -21,6 +22,7 @@ namespace MovieInfo
 
         public HashSet<MovieMetadata> Movies { get; set; }
         public HashSet<ActressData> Actresses { get; set; }
+        public HashSet<NamePair> JapaneseNames { get; set; }
         public HashSet<NamePair> AltNames { get; set; }
     }
 
