@@ -14,7 +14,6 @@ namespace MovieInfo
             m_labelFilter = labelFilter;
             m_directorFilter = directorFilter;
             m_genreFilter = genreFilter;
-            m_actorFilter = actorFilter;
         }
 
         #endregion
@@ -25,7 +24,7 @@ namespace MovieInfo
         {
             foreach (var movie in m_movies)
             {
-                bool changed = MovieUtils.FilterMetadata(movie.Metadata, m_studioFilter, m_labelFilter, m_directorFilter, m_genreFilter, m_actorFilter);
+                bool changed = MovieUtils.FilterMetadata(movie.Metadata, m_studioFilter, m_labelFilter, m_directorFilter, m_genreFilter);
                 if (changed == true)
                     movie.MetadataChanged = true;
             }
@@ -40,7 +39,6 @@ namespace MovieInfo
         private List<FilterPair> m_labelFilter;
         private List<FilterPair> m_directorFilter;
         private List<FilterPair> m_genreFilter;
-        private List<FilterPair> m_actorFilter;
 
         #endregion
     }

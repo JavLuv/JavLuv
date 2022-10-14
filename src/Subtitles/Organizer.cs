@@ -155,15 +155,9 @@ namespace Subtitles
 
             // Get filename only without extension for parsing preparation
             string fn = Path.GetFileNameWithoutExtension(fileName);
-            string fnID = fn;
-
-            // Limit ID detection to first ten characters of filename
-            const int MaxNumCharsToCheck = 10;
-            if (fn.Length > MaxNumCharsToCheck)
-                fnID = fn.Substring(0, MaxNumCharsToCheck);
 
             // Parse ID from shortened filename and check results
-            string uniqueID = Utilities.ParseMovieID(fnID);
+            string uniqueID = Utilities.ParseMovieID(fn);
             if (String.IsNullOrEmpty(uniqueID))
             {
                 if (CopyOrMoveUnsorted(fileName))
@@ -417,22 +411,12 @@ namespace Subtitles
                 return false;
 
             // Check for exact checksum match
-            if (GetMD5Checksum(fn1) != GetMD5Checksum(fn2))
+            if (Utilities.GetSHA1Checksum(fn1) != Utilities.GetSHA1Checksum(fn2))
                 return false;
             
             return true;
         }
 
-        public string GetMD5Checksum(string filename)
-        {
-            using (var md5 = System.Security.Cryptography.MD5.Create())
-            {
-                using (var stream = System.IO.File.OpenRead(filename))
-                {
-                    return BitConverter.ToString(md5.ComputeHash(stream));
-                }
-            }
-        }
         private bool IsSubtitle(string fileName)
         {
             string fileExt = Path.GetExtension(fileName).Substring(1).ToLower();

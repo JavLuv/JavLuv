@@ -12,7 +12,8 @@
     <system:String x:Key="Text.Japanese">日本語</system:String>
     <system:String x:Key="Text.ShowAdvanced">Show advanced options</system:String>
     <system:String x:Key="Text.CheckForUpdates">Automatically check for updates</system:String>
-    <system:String x:Key="Text.Subtitles">Subtitle</system:String>
+    <system:String x:Key="Text.AutoSyncActresses">Automatically synchronize movie metadata to actress database</system:String>
+    <system:String x:Key="Text.Subtitles">Subtitles</system:String>
     <system:String x:Key="Text.HideMetadata">Hide metadata and cover files</system:String>
     <system:String x:Key="Text.Scanning">Scanning</system:String>
     <system:String x:Key="Text.GenerateMetadata">Generate metadata from local files if no online resources are found</system:String>
@@ -53,36 +54,62 @@
     <system:String x:Key="Text.NewVersion">New version: {0}</system:String>
     <system:String x:Key="Text.VersionDetails">Details</system:String>
 
+    <!-- Shared details -->
+    <system:String x:Key="Text.UserRating">User Rating:</system:String>
+    <system:String x:Key="Text.Notes">Notes:</system:String>
+
     <!-- Movie details -->
     <system:String x:Key="Text.MovieDetails">Movie Details</system:String>
-    <system:String x:Key="Text.ID">品番:</system:String>
-    <system:String x:Key="Text.Released">発売日:</system:String>
-    <system:String x:Key="Text.Runtime">収録時間:</system:String>
-    <system:String x:Key="Text.Minutes">分</system:String>
-    <system:String x:Key="Text.Studio">メーカー:</system:String>
-    <system:String x:Key="Text.Label">レーベル:</system:String>
-    <system:String x:Key="Text.Director">監督:</system:String>
-    <system:String x:Key="Text.UserRating">平均評価:</system:String>
-    <system:String x:Key="Text.Genres">ジャンル:</system:String>
-    <system:String x:Key="Text.Actresses">出演者:</system:String>
+    <system:String x:Key="Text.ID">ID:</system:String>
+    <system:String x:Key="Text.Released">Released:</system:String>
+    <system:String x:Key="Text.Runtime">Runtime:</system:String>
+    <system:String x:Key="Text.Minutes">min</system:String>
+    <system:String x:Key="Text.Studio">Studio:</system:String>
+    <system:String x:Key="Text.Label">Label:</system:String>
+    <system:String x:Key="Text.Director">Director:</system:String>
+    <system:String x:Key="Text.Genres">Genres:</system:String>
+    <system:String x:Key="Text.Actresses">Actresses:</system:String>
     <system:String x:Key="Text.Resolution">Resolution:</system:String>
-    <system:String x:Key="Text.Notes">Notes:</system:String>
     <system:String x:Key="Text.CopyTitle">Copy title and metadata</system:String>
     <system:String x:Key="Text.JP">JP</system:String>
     <system:String x:Key="Text.ShowOriginalJpTitle">Show original Japanese title</system:String>
 
+    <!-- Actress details -->
+    <system:String x:Key="Text.ActressDetails">Actress Details</system:String>
+    <system:String x:Key="Text.ActressJapaneseName">Japanese Name:</system:String>
+    <system:String x:Key="Text.ActressAlternateNames">Alternate Names:</system:String>
+    <system:String x:Key="Text.ActressDateOfBirth">Date of Birth:</system:String>
+    <system:String x:Key="Text.ActressHeight">Height:</system:String>
+    <system:String x:Key="Text.ActressHeightValue">{0} cm</system:String>
+    <system:String x:Key="Text.ActressCup">Cup:</system:String>
+    <system:String x:Key="Text.ActressMeasurements">Measurements:</system:String>
+    <system:String x:Key="Text.ActressBloodType">Blood Type:</system:String>
+    <system:String x:Key="Text.ActressNumMovies">Number of Movies:</system:String>
+    <system:String x:Key="Text.ActressAge">Age:</system:String>
+    <system:String x:Key="Text.ActressAverageMovieRating">Average Movie Rating:</system:String>
+    <system:String x:Key="Text.ActressRenameError">Actress Rename Error</system:String>
+    <system:String x:Key="Text.ActressRenameMessage">Name is already in use by {0}.</system:String>
+    <system:String x:Key="Text.ActressEmptyNameMessage">An actress' name can't be empty.</system:String>
+    <system:String x:Key="Text.ActressImportImage">Import images...</system:String>
+    <system:String x:Key="Text.ActressDeleteImage">Delete image</system:String>
+
     <!-- Miscellaneous -->
     <system:String x:Key="Text.JavLuvTitle">JavLuv - あなたのJAVムービーオーガナイザー</system:String>
+    <system:String x:Key="Text.MoviesTab">Movies</system:String>
+    <system:String x:Key="Text.ActressesTab">Actresses</system:String>
     <system:String x:Key="Text.Back">Back</system:String>
     <system:String x:Key="Text.Browse">Browse...</system:String>
     <system:String x:Key="Text.Close">Close</system:String>
     <system:String x:Key="Text.Cancel">Cancel</system:String>
+    <system:String x:Key="Text.Paste">Paste</system:String>
     <system:String x:Key="Text.CancellingOperation">Cancelling operation.  Plese wait...</system:String>
     <system:String x:Key="Text.ImportCoverImage">Import cover image...</system:String>
     <system:String x:Key="Text.LoadingMetadata">Loading metadata {0}/{1}</system:String>
     <system:String x:Key="Text.DownloadingMetadata">Downloading metadata {0}/{1}</system:String>
+    <system:String x:Key="Text.DownloadingActressData">Downloading actress data {0}/{1}</system:String>
     <system:String x:Key="Text.ScanningFolders">Scanning {0} folders</system:String>
     <system:String x:Key="Text.DisplayingMovies">Displaying {0} of {1} movies</system:String>
+    <system:String x:Key="Text.DisplayingActresses">Displaying {0} of {1} actresses</system:String>
     <system:String x:Key="Text.ExitJavLuvScanningFiles">JavLuv is currently scanning files.\nWould you like to exit anyways and cancel this operation?</system:String>
     <system:String x:Key="Text.ExitAndCancelScan">Exit and cancel scan?</system:String>
     <system:String x:Key="Text.JavLuvScanningFiles">JavLuv is currently scanning files.\nWould you like to cancel this operation?</system:String>
@@ -115,18 +142,31 @@
     <system:String x:Key="Text.ShowID">Show ID</system:String>
     <system:String x:Key="Text.ShowUnratedOnly">Show unrated only</system:String>
     <system:String x:Key="Text.ShowSubtitlesOnly">Show subtitles only</system:String>
+    <system:String x:Key="Text.SortByName">Name</system:String>
+    <system:String x:Key="Text.SortByAgeYoungest">Age (youngest)</system:String>
+    <system:String x:Key="Text.SortByAgeOldest">Age (oldest)</system:String>
+    <system:String x:Key="Text.SortByBirthday">Birthday</system:String>
+    <system:String x:Key="Text.SortByMovieCount">Movie count</system:String>
+    <system:String x:Key="Text.ShowAllActresses">Show all actresses</system:String>
 
-    <!-- Browser Item View -->
+    <!-- Shared Browser Item View -->
+    <system:String x:Key="Text.RemoveFromLibrary">Remove from library</system:String>
+    <system:String x:Key="Text.UnknownData">(Unknown)</system:String>
+
+    <!-- Movie Browser Item View -->
     <system:String x:Key="Text.PlayMovie">Play movie</system:String>
     <system:String x:Key="Text.PlayRandomMovie">Play random movie</system:String>
     <system:String x:Key="Text.MoveRename">Move / rename...</system:String>
     <system:String x:Key="Text.MoveToFolder">Move to folder...</system:String>
     <system:String x:Key="Text.RescanFiles">Rescan files</system:String>
-    <system:String x:Key="Text.RemoveFromLibrary">Remove from library</system:String>
     <system:String x:Key="Text.FilterMetadata">Filter metadata</system:String>
     <system:String x:Key="Text.RegenerateMetadata">Regenerate metadata</system:String>
     <system:String x:Key="Text.DeleteMetadata">Delete metadata</system:String>
     <system:String x:Key="Text.FindSubtitles">Find subtitles...</system:String>
+
+    <!-- Actress Browser Item View -->
+    <system:String x:Key="Text.UpdateActresses">Update actresses</system:String>
+    <system:String x:Key="Text.MergeActressesMenu">Merge actresses...</system:String>
 
     <!-- Scan Movies View -->
     <system:String x:Key="Text.ScanMoviesTitle">Scan Movies</system:String>
@@ -159,5 +199,11 @@
     <system:String x:Key="Text.SubtitleFilesEncodingFixed">{0} subtitle files converted to UTF-8</system:String>
     <system:String x:Key="Text.SubtitleFilesExtensionFixed">{0} subtitle files with incorrect extensions</system:String>
     <system:String x:Key="Text.SubtitleFilesImported">{0} subtitle files imported</system:String>
+
+    <!-- Merge Actresses View -->
+    <system:String x:Key="Text.MergeActressesTitle">Merge Actresses</system:String>
+    <system:String x:Key="Text.MergeActressesButton">Merge</system:String>
+    <system:String x:Key="Text.MergeActressesInstructions">Select which actress entry to use when merged information conflicts.</system:String>
+    <system:String x:Key="Text.MergeActressesName">Name:</system:String>
 
 </ResourceDictionary>

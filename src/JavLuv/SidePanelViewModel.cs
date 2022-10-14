@@ -1,51 +1,14 @@
-﻿using Common;
-using MovieInfo;
+﻿using MovieInfo;
 using System.Collections.ObjectModel;
+using System.Windows;
 using System.Windows.Input;
+using SortMoviesByPair = JavLuv.ObservableStringValuePair<MovieInfo.SortMoviesBy>;
+using SortMoviesByPairList = System.Collections.ObjectModel.ObservableCollection<JavLuv.ObservableStringValuePair<MovieInfo.SortMoviesBy>>;
+using SortActressesByPair = JavLuv.ObservableStringValuePair<MovieInfo.SortActressesBy>;
+using SortActressesByPairList = System.Collections.ObjectModel.ObservableCollection<JavLuv.ObservableStringValuePair<MovieInfo.SortActressesBy>>;
 
 namespace JavLuv
 {
-    public class SortByPair : ObservableObject
-    {
-        #region Constructor
-
-        public SortByPair(SortBy sortBy, string key)
-        {
-            Type = sortBy;
-            m_key = key;
-        }
-
-        #endregion
-
-        #region Properties
-
-        public SortBy Type { get; private set; }
-        public string Name 
-        { 
-            get
-            {
-                return TextManager.GetString(m_key);
-            }
-        }
-
-        #endregion
-
-        #region Public Functions
-
-        public void Refresh()
-        {
-            NotifyAllPropertiesChanged();
-        }
-
-        #endregion
-
-        #region Private Members
-
-        private string m_key;
-
-        #endregion
-    }
-
     public class SidePanelViewModel : ObservableObject
     {
         #region Constructors
@@ -59,24 +22,44 @@ namespace JavLuv
             Parent.Collection.SearchText = SearchText;
             Parent.Collection.ShowUnratedOnly = ShowUnratedOnly;
             Parent.Collection.ShowSubtitlesOnly = ShowSubtitlesOnly;
+            Parent.Collection.ShowAllActresses = ShowAllActresses;
 
-            m_sortByList.Add(new SortByPair(SortBy.Title, "Text.SortByTitle"));
-            m_sortByList.Add(new SortByPair(SortBy.ID, "Text.SortByID"));
-            m_sortByList.Add(new SortByPair(SortBy.Actress, "Text.SortByActress"));
-            m_sortByList.Add(new SortByPair(SortBy.Date_Newest, "Text.SortByDateNewest"));
-            m_sortByList.Add(new SortByPair(SortBy.Date_Oldest, "Text.SortByDateOldest"));
-            m_sortByList.Add(new SortByPair(SortBy.UserRating, "Text.SortByUserRating"));
+            m_sortMovieByList.Add(new SortMoviesByPair("Text.SortByTitle", SortMoviesBy.Title));
+            m_sortMovieByList.Add(new SortMoviesByPair("Text.SortByID", SortMoviesBy.ID));
+            m_sortMovieByList.Add(new SortMoviesByPair("Text.SortByActress", SortMoviesBy.Actress));
+            m_sortMovieByList.Add(new SortMoviesByPair("Text.SortByDateNewest", SortMoviesBy.Date_Newest));
+            m_sortMovieByList.Add(new SortMoviesByPair("Text.SortByDateOldest", SortMoviesBy.Date_Oldest));
+            m_sortMovieByList.Add(new SortMoviesByPair("Text.SortByUserRating", SortMoviesBy.UserRating));
 
-            foreach (var sortBy in m_sortByList)
+            m_sortActressesByList.Add(new SortActressesByPair("Text.SortByName", SortActressesBy.Name));
+            m_sortActressesByList.Add(new SortActressesByPair("Text.SortByAgeYoungest", SortActressesBy.Age_Youngest));
+            m_sortActressesByList.Add(new SortActressesByPair("Text.SortByAgeOldest", SortActressesBy.Age_Oldest));
+            m_sortActressesByList.Add(new SortActressesByPair("Text.SortByBirthday", SortActressesBy.Birthday));
+            m_sortActressesByList.Add(new SortActressesByPair("Text.SortByMovieCount", SortActressesBy.MovieCount));
+            m_sortActressesByList.Add(new SortActressesByPair("Text.SortByUserRating", SortActressesBy.UserRating));
+
+            foreach (var sortBy in m_sortMovieByList)
             {
-                if (sortBy.Type == Settings.Get().SortBy)
+                if (sortBy.Value == Settings.Get().SortMoviesBy)
                 {
-                    CurrentSortBy = sortBy;
-                    Parent.Collection.SortBy = sortBy.Type;
+                    CurrentSortMovieBy = sortBy;
+                    Parent.Collection.SortMoviesBy = sortBy.Value;
                     break;
                 }
             }
-            NotifyPropertyChanged("SortByList");          
+            NotifyPropertyChanged("SortMovieByList");
+
+            foreach (var sortBy in m_sortActressesByList)
+            {
+                if (sortBy.Value == Settings.Get().SortActressesBy)
+                {
+                    CurrentSortActressesBy = sortBy;
+                    Parent.Collection.SortActressesBy = sortBy.Value;
+                    break;
+                }
+            }
+            NotifyPropertyChanged("SortActressesByList");
+
         }
 
         #endregion
@@ -86,8 +69,8 @@ namespace JavLuv
         public void NotifyAllProperty()
         {
             NotifyAllPropertiesChanged();
-            foreach (var sortByPair in Parent.SidePanel.SortByList)
-                sortByPair.Refresh();
+            foreach (var sortByPair in Parent.SidePanel.SortMovieByList)
+                sortByPair.Notify();
         }
 
         #endregion
@@ -96,18 +79,34 @@ namespace JavLuv
 
         public MainWindowViewModel Parent { get { return m_parent; } }
 
-        public bool IsEnabled 
+        public bool IsCommandViewEnabled 
         { 
             get
             {
-                return m_isEnabled;
+                return m_isCommandViewEnabled;
             }
             set
             {
-                if (value != m_isEnabled)
+                if (value != m_isCommandViewEnabled)
                 {
-                    m_isEnabled = value;
-                    NotifyPropertyChanged("IsEnabled");
+                    m_isCommandViewEnabled = value;
+                    NotifyPropertyChanged("IsCommandViewEnabled");
+                }
+            }
+        }
+
+        public bool IsSearchViewEnabled
+        {
+            get
+            {
+                return m_isSearchViewEnabled;
+            }
+            set
+            {
+                if (value != m_isSearchViewEnabled)
+                {
+                    m_isSearchViewEnabled = value;
+                    NotifyPropertyChanged("IsSearchViewEnabled");
                 }
             }
         }
@@ -195,26 +194,85 @@ namespace JavLuv
             }
         }
 
-        public ObservableCollection<SortByPair> SortByList
+        public bool ShowAllActresses
         {
-            get { return m_sortByList; }
-        }
-
-        public SortByPair CurrentSortBy
-        {
-            get { return m_currentSortBy; }
+            get { return Settings.Get().ShowAllActresses; }
             set
             {
-                if (value != m_currentSortBy)
+                if (value != Settings.Get().ShowAllActresses)
                 {
-                    m_currentSortBy = value;
-                    Settings.Get().SortBy = m_currentSortBy.Type;
-                    NotifyPropertyChanged("CurrentSortBy");
-                    Parent.Collection.SortBy = m_currentSortBy.Type;
+                    Settings.Get().ShowAllActresses = value;
+                    Parent.Collection.ShowAllActresses = value;
+                    NotifyPropertyChanged("ShowAllActresses");
                 }
             }
         }
-       
+
+        public ObservableCollection<SortMoviesByPair> SortMovieByList
+        {
+            get { return m_sortMovieByList; }
+        }
+
+        public SortMoviesByPair CurrentSortMovieBy
+        {
+            get { return m_currentSortMovieBy; }
+            set
+            {
+                if (value != m_currentSortMovieBy)
+                {
+                    m_currentSortMovieBy = value;
+                    Settings.Get().SortMoviesBy = m_currentSortMovieBy.Value;
+                    NotifyPropertyChanged("CurrentSortMovieBy");
+                    Parent.Collection.SortMoviesBy = m_currentSortMovieBy.Value;
+                }
+            }
+        }
+        public ObservableCollection<SortActressesByPair> SortActressByList
+        {
+            get { return m_sortActressesByList; }
+        }
+
+        public SortActressesByPair CurrentSortActressesBy
+        {
+            get { return m_currentSortActressesBy; }
+            set
+            {
+                if (value != m_currentSortActressesBy)
+                {
+                    m_currentSortActressesBy = value;
+                    Settings.Get().SortActressesBy = m_currentSortActressesBy.Value;
+                    NotifyPropertyChanged("CurrentSortActressesBy");
+                    Parent.Collection.SortActressesBy = m_currentSortActressesBy.Value;
+                }
+            }
+        }
+
+        public Visibility MovieControlsVisibility
+        {
+            get { return m_movieControlsVisible; }
+            set
+            {
+                if (value != m_movieControlsVisible)
+                {
+                    m_movieControlsVisible = value;
+                    NotifyPropertyChanged("MovieControlsVisibility");
+                }
+            }
+        }
+
+        public Visibility ActressControlsVisibility
+        {
+            get { return m_actressControlsVisible; }
+            set
+            {
+                if (value != m_actressControlsVisible)
+                {
+                    m_actressControlsVisible = value;
+                    NotifyPropertyChanged("ActressControlsVisibility");
+                }
+            }
+        }
+
         #endregion
 
         #region Commands
@@ -333,11 +391,17 @@ namespace JavLuv
 
         #region Private Members
 
+
         private MainWindowViewModel m_parent;
-        private bool m_isEnabled = true;
+        private bool m_isCommandViewEnabled = true;
+        private bool m_isSearchViewEnabled = true;
         private bool m_settingsIsEnabled = true;
-        private ObservableCollection<SortByPair> m_sortByList = new ObservableCollection<SortByPair>();
-        private SortByPair m_currentSortBy;
+        private SortMoviesByPairList m_sortMovieByList = new SortMoviesByPairList();
+        private SortMoviesByPair m_currentSortMovieBy;
+        private SortActressesByPairList m_sortActressesByList = new SortActressesByPairList();
+        private SortActressesByPair m_currentSortActressesBy;
+        private Visibility m_movieControlsVisible = Visibility.Visible;
+        private Visibility m_actressControlsVisible = Visibility.Visible;
 
         #endregion
     }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -67,62 +68,62 @@ namespace Common
             if (String.IsNullOrEmpty(fileName))
                 return String.Empty;
 
+            // Limit initial ID detections to first ten characters of filename
+            const int MaxNumCharsToCheck = 10;
+            string shortFileName = fileName;
+            if (fileName.Length > MaxNumCharsToCheck)
+                shortFileName = fileName.Substring(0, MaxNumCharsToCheck);
+
+            string[] shortChecks =
+            {
+                @"([a-z,A-Z]{1,6}-[0-9]{2,5}[d,D]{0,1})",
+                @"([a-z,A-Z]{1,6}[0-9]{0,2}-[0-9]{2,5}[d,D]{0,1})",
+                @"([a-z,A-Z]{1,6}[0-9]{0,2}-[0-9]{1}[d,D]{0,1})",
+                @"([a-z,A-Z]{1,6}[0-9]{2,5}[d,D]{0,1})",
+                @"([a-z,A-Z]{1,6} [0-9]{2,5}[d,D]{0,1})",
+                @"([a-z,A-Z]{1,6}_[0-9]{2,5}[d,D]{0,1})",
+            };
+
+            Regex regex = null;
+            MatchCollection matches = null;
+            foreach (string check in shortChecks)
+            {
+                regex = new Regex(check);
+                matches = regex.Matches(shortFileName);
+                if (matches.Count != 0)
+                    break;
+            }
+
+            if (matches.Count == 0)
+            {
+                // Search full filename with more explicit matching
+                string[] longChecks =
+                {
+                    @"([a-z,A-Z]{3,6}-[0-9]{3,5}[d,D]{0,1})",
+                    @"(\[[a-z,A-Z]{2,6}-[0-9]{2,5}[d,D]{0,1}\])",
+                    @"(\([a-z,A-Z]{2,6}-[0-9]{2,5}[d,D]{0,1}\))",
+                    @"( [a-z,A-Z]{2,6}[ -][0-9]{3,5}[d,D]{0,1})",
+                    @"( [a-z,A-Z]{2,6}[ -][0-9]{3,5}[d,D]{0,1}[ .])",
+                };
+
+                foreach (string check in longChecks)
+                {
+                    regex = new Regex(check);
+                    matches = regex.Matches(fileName);
+                    if (matches.Count != 0)
+                        break;
+                }
+
+            }
+
+            // Have we finallly found a match?
+            if (matches.Count == 0)
+                return String.Empty;
+
             // After match is found, split apart components for additional processing
             string alpha = String.Empty;
             string numeric = String.Empty;
-
-            // Search for AAA-000 pattern
-            Regex regex = new Regex(@"([a-z,A-Z]{1,6}-[0-9]{2,5}[d,D]{0,1})");
-            var matches = regex.Matches(fileName);
-            if (matches.Count == 0)
-            {
-                // Search for rarer A00-000 pattern
-                regex = new Regex(@"([a-z,A-Z]{1,6}[0-9]{0,2}-[0-9]{2,5}[d,D]{0,1})");
-                matches = regex.Matches(fileName);
-                if (matches.Count == 0)
-                {
-                    // Search for even rarer AAA-0 pattern
-                    regex = new Regex(@"([a-z,A-Z]{1,6}[0-9]{0,2}-[0-9]{1}[d,D]{0,1})");
-                    matches = regex.Matches(fileName);
-                    if (matches.Count == 0)
-                    {
-                        // Search for AAA000 pattern
-                        regex = new Regex(@"([a-z,A-Z]{1,6}[0-9]{2,5}[d,D]{0,1})");
-
-                        matches = regex.Matches(fileName);
-                        if (matches.Count == 0)
-                        {
-                            return String.Empty;
-                        }
-
-                        // In this particular match, we have to split the components based on
-                        // where the numbers actually start, so we'll do that split here.
-
-                        // Get first digit
-                        int alphaCount = 0;
-                        foreach (var c in matches[0].Value)
-                        {
-                            if (Char.IsDigit(c))
-                                break;
-                            ++alphaCount;
-                        }
-
-                        // Split based on the number of alpha characters
-                        alpha = matches[0].Value.Substring(0, alphaCount);
-                        numeric = matches[0].Value.Substring(alphaCount, matches[0].Value.Length - alphaCount);
-                    }
-                }
-            }
-
-            // In most cases, we can split on the dash
-            if (String.IsNullOrEmpty(alpha) || String.IsNullOrEmpty(numeric))
-            {
-                var parts = matches[0].Value.Split('-');
-                alpha = parts[0];
-                numeric = parts[1];
-                if (String.IsNullOrEmpty(alpha) || String.IsNullOrEmpty(numeric))
-                    return String.Empty;
-            }
+            SplitIDMatch(matches[0].Value, out alpha, out numeric);
 
             // Count actual digits
             int digitCount = 0;
@@ -152,6 +153,15 @@ namespace Common
             return alpha.ToUpper() + "-" + numeric.ToUpper();
         }
 
+        public static bool Equals(string str, List<string> strings, StringComparison comparison)
+        {
+            foreach (string s in strings)
+            {
+                if (String.Equals(str, s, comparison))
+                    return true;
+            }
+            return false;
+        }
 
         public static bool ContainsCaseless(this string stringToSearch, string searchTerm)
         {
@@ -159,6 +169,16 @@ namespace Common
         }
 
         public static bool ContainsCaseless(this string stringToSearch, string[] searchTerms)
+        {
+            foreach (string term in searchTerms)
+            {
+                if (stringToSearch.ContainsCaseless(term))
+                    return true;
+            }
+            return false;
+        }
+
+        public static bool ContainsCaseless(this string stringToSearch, List<string> searchTerms)
         {
             foreach (string term in searchTerms)
             {
@@ -209,12 +229,77 @@ namespace Common
             return folder;
         }
 
+        public static string GetActressImageFolder()
+        {
+            string folder = Path.Combine(GetJavLuvSettingsFolder(), "actresses");
+            if (Directory.Exists(folder) == false)
+                Directory.CreateDirectory(folder);
+            return folder;
+        }
+
+        public static string GetImagesFileFilter()
+        {
+            return "Image files (*.jpg;*.jpeg;*.png;*.webp;*.gif)|*.jpg;*.jpeg;*.png;*.webp;*.gif|All files(*.*)|*.*";
+        }
+
+        public static string GetMoviesFileFilter()
+        {
+            return "Movie files (*.mp4;*.mkv;*.wmv;*.avi)|*.mp4;*.mkv;*.wmv;*.avi|All files(*.*)|*.*";
+        }
+
         public static string[] ProcessSettingsList(string s)
         {
             string[] strings = s.ToLower().Split(';');
             for (int i = 0; i < strings.Length; ++i)
                 strings[i] = strings[i].Trim();
             return strings;
+        }
+
+        public static string DateTimeToString(int year, int month, int day)
+        {
+            return String.Format("{0}-{1}-{2}", year == 0 ? "????" : year.ToString(), month == 0 ? "??" : month.ToString(), day == 0 ? "??" : day.ToString());
+        }
+        public static void StringToDateTime(string str, out int year, out int month, out int day)
+        {
+            year = 0;
+            month = 0;
+            day = 0;
+            string[] dateParts = str.Split('-');
+            int.TryParse(dateParts[0], out year);
+            if (dateParts.Length > 1)
+                int.TryParse(dateParts[1], out month);
+            if (dateParts.Length > 2)
+                int.TryParse(dateParts[2], out day);
+            // Validate that this is a legit date
+            if (month != 0 && day != 0)
+                new DateTime(year, month, day);
+        }
+
+        public static string StringListToString(List<string> stringList)
+        {
+            if (stringList.Count == 0)
+                return String.Empty;
+            var sb = new StringBuilder(stringList.Count * 50);
+            foreach (var str in stringList)
+            {
+                sb.Append(str);
+                if (stringList.IndexOf(str) != stringList.Count - 1)
+                    sb.Append(", ");
+            }
+            return sb.ToString();
+        }
+
+        public static List<string> StringToStringList(string str)
+        {
+            var stringList = new List<string>();
+            var strings = str.Split(',');
+            foreach (var s in strings)
+            {
+                var st = s.Trim();
+                if (String.IsNullOrEmpty(st) == false)
+                    stringList.Add(st);
+            }
+            return stringList;
         }
 
         public static string FilterListToString(List<FilterPair> filterList)
@@ -579,9 +664,108 @@ namespace Common
             return uniqueFolder;
         }
 
+        public static string GetSHA1Checksum(string filename)
+        {
+            try
+            {
+                using (var md5 = System.Security.Cryptography.SHA1.Create())
+                {
+                    using (var stream = System.IO.File.OpenRead(filename))
+                    {
+                        return BitConverter.ToString(md5.ComputeHash(stream));
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.WriteError("Unable to load file " + filename, ex);
+            }
+            return String.Empty;
+        }
+
+        public static List<string> DeleteDuplicateFiles(List<string> fileNames)
+        {
+            if (fileNames.Count < 2)
+                return fileNames;
+
+            List<string> result = new List<string>();
+            Dictionary<string, string> hashFilenamePairs = new Dictionary<string, string>();
+
+            foreach (string fileName in fileNames)
+            {
+                string hash = GetSHA1Checksum(fileName);
+                if (hash != String.Empty && hashFilenamePairs.ContainsKey(hash))
+                {
+                    try
+                    {
+                        File.Delete(fileName);
+                    }
+                    catch (Exception ex)
+                    {
+                        Logger.WriteError("Unable to delete duplicate file " + fileName, ex);
+                    }
+                    continue;
+                }
+                hashFilenamePairs.Add(hash, fileName);
+                result.Add(fileName);
+            }
+
+            return result;
+        }
+
+        public static List<string> DeleteDuplicateFiles(string folder, List<string> fileNames)
+        {
+            var fullPathFilenames = new List<string>();
+            foreach (var fileName in fileNames)
+                fullPathFilenames.Add(Path.Combine(folder, fileName));
+            fullPathFilenames = DeleteDuplicateFiles(fullPathFilenames);    
+            var result = new List<string>();
+            foreach (var fullPathFilename in fullPathFilenames)
+                result.Add(Path.GetFileName(fullPathFilename));
+            return result;
+        }
+
         #endregion
 
         #region Private Functions
+
+        private static void SplitIDMatch(string match, out string alpha, out string numeric)
+        {
+            alpha = String.Empty;
+            numeric = String.Empty;
+            if (String.IsNullOrEmpty(match))
+                return;
+
+            // Fix up for extraneous characters
+            var charsToRemove = new string[] { "[", "]", "(", ")", ".", "_" };
+            foreach (var c in charsToRemove)
+                match = match.Replace(c, string.Empty);
+            match = match.Trim();
+
+            char[] splits = { '-', ' ' };
+            var parts = match.Split(splits);
+            if (parts.Length == 2 && String.IsNullOrEmpty(parts[0]) == false && String.IsNullOrEmpty(parts[1]) == false)
+            {
+                alpha = parts[0];
+                numeric = parts[1];
+                return;
+            }
+
+            // Fall back to splitting based on where alpha and numeric values appear (ABC123 pattern)
+
+            // Get first digit
+            int alphaCount = 0;
+            foreach (var c in match)
+            {
+                if (Char.IsDigit(c))
+                    break;
+                ++alphaCount;
+            }
+
+            // Split based on the number of alpha characters
+            alpha = match.Substring(0, alphaCount);
+            numeric = match.Substring(alphaCount, match.Length - alphaCount);
+        }
 
         private static string CopyDeleteFolderRecursive(string sourceDir, string destinationDir, bool deleteThisFolder)
         {
@@ -770,6 +954,7 @@ namespace Common
         private static readonly string[] s_strippedTitleWords = { "A ", "An ", "The " };
         private static readonly int s_numRetries = 10;
         private static readonly int s_retryDelayMs = 250;
+
         #endregion
     }
 }

@@ -52,7 +52,7 @@
                         Width="130"
                         ItemsSource="{Binding Languages}"
                         SelectedValue="{Binding SelectedLanguage}"
-                        DisplayMemberPath="Text"
+                        DisplayMemberPath="Value"
                         />
 
                     <CheckBox 
@@ -62,12 +62,18 @@
                         />
 
                     <CheckBox 
-                        Margin="0, 5, 0, 15" 
+                        Margin="0, 5, 0, 0" 
                         IsChecked="{Binding CheckForUpdates}"
                         Content="{DynamicResource Text.CheckForUpdates}" 
                         />
 
-                    <Label Margin="0, 5, 0, 0" Content="{DynamicResource Text.Subtitles}"/>
+                    <CheckBox 
+                        Margin="0, 5, 0, 0" 
+                        IsChecked="{Binding AutoSyncActresses}"
+                        Content="{DynamicResource Text.AutoSyncActresses}" 
+                        />
+
+                    <Label Margin="0, 15, 0, 0" Content="{DynamicResource Text.Subtitles}"/>
                     <Grid HorizontalAlignment="Stretch">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="15" />

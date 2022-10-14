@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
+﻿using System.IO;
 using System.Reflection;
 
 namespace MovieInfo
@@ -10,10 +8,12 @@ namespace MovieInfo
     {
         #region Constructors
 
-        public CmdLoad(ref CacheData cacheData, string fileName, ref BackupData backupData, string backupFilename)
+        public CmdLoad(ref CacheData cacheData, string cacheFilename, ref ActressesDatabase actressesDatabase, string actressFilename, ref BackupData backupData, string backupFilename)
         {
             m_cacheData = cacheData;
-            m_cacheFilename = fileName;
+            m_cacheFilename = cacheFilename;
+            m_actressesDatabase = actressesDatabase;
+            m_actressFilename = actressFilename;
             m_backupData = backupData;
             m_backupFilename = backupFilename;
         }
@@ -52,6 +52,23 @@ namespace MovieInfo
                     }
                 }
             }
+
+            lock (m_actressesDatabase)
+            {
+                if (File.Exists(m_actressFilename))
+                {
+                    var actresses = MovieSerializer<ActressesDatabase>.Load(m_actressFilename, ActressesDatabase.Filter);
+
+                    // Copy all public read/write properties
+                    PropertyInfo[] properties = typeof(ActressesDatabase).GetProperties();
+                    foreach (PropertyInfo property in properties)
+                    {
+                        if (property.CanRead && property.CanWrite)
+                            property.SetValue(m_actressesDatabase, property.GetValue(actresses));
+                    }
+                }
+            }
+
         }
 
         #endregion
@@ -60,6 +77,8 @@ namespace MovieInfo
 
         private CacheData m_cacheData;
         private string m_cacheFilename;
+        private ActressesDatabase m_actressesDatabase;
+        private string m_actressFilename;
         private BackupData m_backupData;
         private string m_backupFilename;
 

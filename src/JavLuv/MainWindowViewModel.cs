@@ -9,6 +9,17 @@ using System.Windows.Threading;
 
 namespace JavLuv
 {
+
+    public enum AppState
+    {
+        MovieBrowser,
+        MovieDetail,
+        ActressBrowser,
+        ActressDetail,
+        Settings,
+        Report,
+    }
+
     public class MainWindowViewModel : ObservableObject
     {
         #region Constructors
@@ -36,7 +47,8 @@ namespace JavLuv
             m_movieScanner = new MovieScanner(m_movieCollection);
             m_settingsViewModel = new SettingsViewModel(this);
             m_reportViewModel = new ReportViewModel(this);
-            m_browserViewModel = new BrowserViewModel(this);
+            m_movieBrowserViewModel = new MovieBrowserViewModel(this);
+            m_actressBrowserViewModel = new ActressBrowserViewModel(this);
             m_sidePanelViewModel = new SidePanelViewModel(this);
             Overlay = null;
 
@@ -44,6 +56,17 @@ namespace JavLuv
             m_movieScanner.ScanUpdate += OnMovieScannerUpdate;
             m_movieScanner.ScanComplete += OnMovieScannerComplete;
             m_movieCollection.MoviesDisplayedChanged += MovieCollection_MoviesDisplayedChanged;
+            m_movieCollection.ActressesDisplayedChanged += M_movieCollection_ActressesDisplayedChanged;
+
+            // Set initial state for settings
+            m_movieCollection.AutoSyncActresses = JavLuv.Settings.Get().AutoSyncActresses;
+
+            // Set loaded UI elemenets
+            SelectedTabIndex = JavLuv.Settings.Get().SelectedTabIndex;
+            State = SelectedTabIndex == 0 ? AppState.MovieBrowser : AppState.ActressBrowser;
+
+            // Set state initially
+            ChangeState(null);
 
             // Check version
             var timeToCheck = new TimeSpan(1, 0, 0, 0); // 1 day interval
@@ -67,16 +90,27 @@ namespace JavLuv
         {
             get
             {
-                return m_mainPanelViewModel;
+                return m_overlayViewModel;
             }
             set
             {
-                if (value != m_mainPanelViewModel)
+                if (value != m_overlayViewModel)
                 {
-                    m_mainPanelViewModel = value;
+                    // This is a special case.  Preserve the old overlay view model if viewing a movie
+                    // from the actress detail page, and restore it once we're done.
+                    if (m_overlayViewModel is ActressDetailViewModel && value is MovieDetailViewModel)
+                        m_previousActressDetailViewModel = m_overlayViewModel as ActressDetailViewModel;
+                    else if (value == null && m_previousActressDetailViewModel != null)
+                    {
+                        value = new ActressDetailViewModel(m_previousActressDetailViewModel);
+                        m_previousActressDetailViewModel = null;
+                    }   
+                    
+                    // Handle various conditions when changing state
+                    ChangeState(value);
+
+                    m_overlayViewModel = value;
                     NotifyPropertyChanged("Overlay");
-                    SidePanel.IsEnabled = (m_mainPanelViewModel == null) ? true : false;
-                    Browser.IsEnabled = (m_mainPanelViewModel == null) ? true : false;
                 }
             }
         }
@@ -98,13 +132,34 @@ namespace JavLuv
             }
         }
 
+        public AppState State { get; private set; }
+
         public SidePanelViewModel SidePanel { get { return m_sidePanelViewModel; } }
 
-        public BrowserViewModel Browser { get { return m_browserViewModel; } }
+        public MovieBrowserViewModel MovieBrowser { get { return m_movieBrowserViewModel; } }
+
+        public ActressBrowserViewModel ActressBrowser { get { return m_actressBrowserViewModel; } }
 
         public SettingsViewModel Settings { get { return m_settingsViewModel; } }
 
         public MovieCollection Collection { get { return m_movieCollection; } }
+
+        public int SelectedTabIndex
+        {
+            get
+            {
+                return JavLuv.Settings.Get().SelectedTabIndex;
+            }
+            set
+            {
+                if (value != JavLuv.Settings.Get().SelectedTabIndex)
+                {
+                    JavLuv.Settings.Get().SelectedTabIndex = value;
+                    NotifyPropertyChanged("SelectedTabIndex");
+                    ChangeState(null);
+                }
+            }
+        }
 
         public bool IsScanning { get { return m_movieScanner.Phase != ScanPhase.Finished; } }
 
@@ -176,6 +231,20 @@ namespace JavLuv
             }
         }
 
+
+        public string SelectedDescription
+        {
+            get { return m_selectedDescription; }
+            set
+            {
+                if (value != m_selectedDescription)
+                {
+                    m_selectedDescription = value;
+                    NotifyPropertyChanged("SelectedDescription");
+                }
+            }
+        }
+
         public string DisplayCountText
         {
             get
@@ -192,6 +261,22 @@ namespace JavLuv
             }
         }
 
+        public Visibility StatusVisibility
+        {
+            get
+            {
+                return m_statusVisibility;
+            }
+            set
+            {
+                if (value != m_statusVisibility)
+                {
+                    m_statusVisibility = value;
+                    NotifyPropertyChanged("StatusVisibility");
+                }
+            }
+        }
+
         #endregion
 
         #region Event Handlers
@@ -204,9 +289,11 @@ namespace JavLuv
             NotifyPropertyChanged("IsScanning");
             NotifyPropertyChanged("ScanVisibility");
 
+            // Add new actresses to actress database
+            m_movieCollection.AddActresses(m_movieScanner.Actresses);
+
             string errorMsg = String.Empty;
-            var moviesAdded = m_movieCollection.AddMovies(m_movieScanner.Movies, out errorMsg);
-            if (m_movieScanner.ErrorLog != String.Empty || errorMsg != String.Empty)
+            if (m_movieScanner.ErrorLog != String.Empty)
             {
                 m_reportViewModel.ErrorLog = String.Empty;
                 if (m_movieScanner.ErrorLog != String.Empty)
@@ -214,14 +301,14 @@ namespace JavLuv
                 if (errorMsg != String.Empty)
                     m_reportViewModel.ErrorLog += errorMsg;
                 Overlay = m_reportViewModel;
-                m_sidePanelViewModel.IsEnabled = false;
                 ProgressState = TaskbarItemProgressState.Error;
             }
 
             // Optionally move/rename post-scan
             if (JavLuv.Settings.Get().EnableMoveRename && JavLuv.Settings.Get().MoveRenameAfterScan && m_movieScanner.IsCancelled == false)
-                m_browserViewModel.MoveRenameMovies(moviesAdded);
+                m_movieBrowserViewModel.MoveRenameMovies(m_movieScanner.Movies);
 
+            m_movieCollection.AddMovies(m_movieScanner.Movies);
             m_movieScanner.Clear();
         }
 
@@ -245,6 +332,12 @@ namespace JavLuv
                 PercentComplete = (int)(((float)m_movieScanner.ItemsProcessed / (float)m_movieScanner.TotalItems) * 100.0);
                 ScanStatus = string.Format(TextManager.GetString("Text.DownloadingMetadata"), m_movieScanner.ItemsProcessed, m_movieScanner.TotalItems);
             }
+            else if (m_movieScanner.Phase == ScanPhase.DownloadActressData)
+            {
+                ProgressState = TaskbarItemProgressState.Normal;
+                PercentComplete = (int)(((float)m_movieScanner.ItemsProcessed / (float)m_movieScanner.TotalItems) * 100.0);
+                ScanStatus = string.Format(TextManager.GetString("Text.DownloadingActressData"), m_movieScanner.ItemsProcessed, m_movieScanner.TotalItems);
+            }
         }
 
         private void MovieCollection_MoviesDisplayedChanged(object sender, EventArgs e)
@@ -254,6 +347,15 @@ namespace JavLuv
                 m_movieCollection.MoviesDisplayed.Count,
                 m_movieCollection.NumMovies
                 );        
+        }
+
+        private void M_movieCollection_ActressesDisplayedChanged(object sender, EventArgs e)
+        {
+            DisplayCountText = String.Format(
+                TextManager.GetString("Text.DisplayingActresses"),
+                m_movieCollection.ActressesDisplayed.Count,
+                m_movieCollection.NumActresses
+                );
         }
 
         private void CheckVersion_FinishedVersionCheck(object sender, EventArgs e)
@@ -285,7 +387,7 @@ namespace JavLuv
 
         private void CloseOverlayExecute()
         {
-            CloseOverlay();
+            Overlay = null;
         }
 
         private bool CanCloseOverlayExecute()
@@ -322,20 +424,6 @@ namespace JavLuv
             Overlay = m_settingsViewModel;
         }
 
-        public void CloseOverlay()
-        {
-            if (Overlay != null)
-            {
-                if (Overlay.GetType() == typeof(DetailViewModel))
-                {
-                    Collection.Search();
-                    Collection.Save();
-                }
-            }
-            ProgressState = TaskbarItemProgressState.None;
-            Overlay = null;
-        }
-
         public void StartScan(string scanDirectory)
         {
             m_movieScanner.Start(scanDirectory);
@@ -352,6 +440,14 @@ namespace JavLuv
             NotifyPropertyChanged("ScanVisibility");
         }
 
+        public void StartScan(List<ActressData> actresses)
+        {
+            m_movieScanner.Start(actresses);
+            SidePanel.SettingsIsEnabled = false;
+            NotifyPropertyChanged("IsScanning");
+            NotifyPropertyChanged("ScanVisibility");
+        }
+
         public void CancelScan()
         {
             if (m_movieScanner != null)
@@ -363,20 +459,104 @@ namespace JavLuv
 
         #endregion
 
+        #region Private Functions
+
+        private void ChangeState(ObservableObject newOverlay)
+        {
+            // Determine new state by overlay and existing tab position
+            AppState newState = State;
+            if (newOverlay is SettingsViewModel)
+                newState = AppState.Settings;
+            else if (newOverlay is MovieDetailViewModel)
+                newState = AppState.MovieDetail;
+            else if (newOverlay is ActressDetailViewModel)
+                newState = AppState.ActressDetail;
+            else // (newOverlay == null)
+            {
+                if (SelectedTabIndex == 0)
+                    newState = AppState.MovieBrowser;
+                else
+                    newState = AppState.ActressBrowser;
+            }
+
+            Logger.WriteInfo("Switching state: " + newState.ToString());
+
+            switch (newState)
+            {
+                case AppState.MovieBrowser:
+                    MovieBrowser.IsEnabled = true;
+                    ActressBrowser.IsEnabled = false;
+                    SidePanel.IsCommandViewEnabled = true;
+                    SidePanel.IsSearchViewEnabled = true;
+                    SidePanel.MovieControlsVisibility = Visibility.Visible;
+                    SidePanel.ActressControlsVisibility = Visibility.Collapsed;
+                    StatusVisibility = Visibility.Visible;
+                    Collection.MovieSearchActress = null;
+                    Collection.SearchMovies();
+                    break;
+                case AppState.MovieDetail:
+                    MovieBrowser.IsEnabled = false;
+                    ActressBrowser.IsEnabled = false;
+                    SidePanel.IsCommandViewEnabled = false;
+                    SidePanel.IsSearchViewEnabled = false;
+                    StatusVisibility = Visibility.Collapsed;
+                    break;
+                case AppState.ActressBrowser:
+                    MovieBrowser.IsEnabled = false;
+                    ActressBrowser.IsEnabled = true;
+                    SidePanel.IsCommandViewEnabled = true;
+                    SidePanel.IsSearchViewEnabled = true;
+                    SidePanel.MovieControlsVisibility = Visibility.Collapsed;
+                    SidePanel.ActressControlsVisibility = Visibility.Visible;
+                    StatusVisibility = Visibility.Visible;
+                    Collection.SearchActresses();
+                    break;
+                case AppState.ActressDetail:
+                    MovieBrowser.IsEnabled = true;
+                    ActressBrowser.IsEnabled = false;
+                    SidePanel.IsCommandViewEnabled = false;
+                    SidePanel.IsSearchViewEnabled = true;
+                    SidePanel.MovieControlsVisibility = Visibility.Visible;
+                    SidePanel.ActressControlsVisibility = Visibility.Collapsed;
+                    StatusVisibility = Visibility.Visible;
+                    break;
+                case AppState.Settings:
+                    MovieBrowser.IsEnabled = false;
+                    ActressBrowser.IsEnabled = false;
+                    SidePanel.IsCommandViewEnabled = false;
+                    SidePanel.IsSearchViewEnabled = false;
+                    break;
+                case AppState.Report:
+                    MovieBrowser.IsEnabled = false;
+                    ActressBrowser.IsEnabled = false;
+                    SidePanel.IsCommandViewEnabled = false;
+                    SidePanel.IsSearchViewEnabled = false;
+                    break;
+            };
+
+            State = newState;
+        }
+
+        #endregion
+
         #region Private Members
 
-        SidePanelViewModel m_sidePanelViewModel;
-        SettingsViewModel m_settingsViewModel;
-        ReportViewModel m_reportViewModel;
-        BrowserViewModel m_browserViewModel;
-        ObservableObject m_mainPanelViewModel;
-        MovieScanner m_movieScanner;
-        MovieCollection m_movieCollection;
-        TaskbarItemProgressState m_progressState;
-        CmdCheckVersion m_checkVersion;
-        int m_percentComplete = 0;
-        string m_scanStatus = String.Empty;
-        string m_displayCountText = String.Empty;
+        private SidePanelViewModel m_sidePanelViewModel;
+        private SettingsViewModel m_settingsViewModel;
+        private ReportViewModel m_reportViewModel;
+        private MovieBrowserViewModel m_movieBrowserViewModel;
+        private ActressBrowserViewModel m_actressBrowserViewModel;
+        private ObservableObject m_overlayViewModel;
+        private ActressDetailViewModel m_previousActressDetailViewModel;
+        private MovieScanner m_movieScanner;
+        private MovieCollection m_movieCollection;
+        private TaskbarItemProgressState m_progressState;
+        private CmdCheckVersion m_checkVersion;
+        private int m_percentComplete = 0;
+        private string m_scanStatus = String.Empty;
+        private string m_selectedDescription = String.Empty;
+        private string m_displayCountText = String.Empty;
+        private Visibility m_statusVisibility;
 
         #endregion
     }

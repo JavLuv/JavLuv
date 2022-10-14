@@ -6,11 +6,11 @@ using Common;
 
 namespace WebScraper
 {
-    public class ModuleJavLibrary : ModuleBase
+    public class MovieJavLibrary : ModuleMovie
     {
         #region Constructors
 
-        public ModuleJavLibrary(MovieMetadata metadata, LanguageType language) : base(metadata, language)
+        public MovieJavLibrary(MovieMetadata metadata, LanguageType language) : base(metadata, language)
         {
         }
 
@@ -40,7 +40,11 @@ namespace WebScraper
             }
         }
 
-        override public void ParseDocument(IHtmlDocument document)
+        #endregion
+
+        #region Protected Functions
+
+        override protected void ParseDocument(IHtmlDocument document)
         {
             // Check to see if we've landed on a search results page.
             if (CheckResultsPage(document))
@@ -71,7 +75,7 @@ namespace WebScraper
                 {
                     if (CheckAttribute(element, "id", "video_jacket_img"))
                     {
-                        CoverImageSource = element.GetAttribute("src");
+                        ImageSource = element.GetAttribute("src");
                     }
                 }
 
@@ -112,10 +116,6 @@ namespace WebScraper
                 }
             }
         }
-
-        #endregion
-
-        #region Protected Functions
 
         protected override bool IsLanguageSupported()
         {

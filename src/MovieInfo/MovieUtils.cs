@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -101,7 +102,7 @@ namespace MovieInfo
             }
         }
 
-        public static bool FilterMetadata(MovieMetadata metadata, List<FilterPair> studioFilter, List<FilterPair> labelFilter, List<FilterPair> directorFilter, List<FilterPair> genreFilter, List<FilterPair> actorFilter)
+        public static bool FilterMetadata(MovieMetadata metadata, List<FilterPair> studioFilter, List<FilterPair> labelFilter, List<FilterPair> directorFilter, List<FilterPair> genreFilter)
         {
             bool changed = false;
             metadata.Title = metadata.Title.Trim();
@@ -116,12 +117,52 @@ namespace MovieInfo
                 metadata.Director = director;
             }
             metadata.Director = FilterField(metadata.Director, directorFilter, ref changed);
-            metadata.Actors = FilterActors(metadata.Actors, actorFilter, ref changed);
             metadata.Genres = Utilities.FilterWordList(metadata.Genres, genreFilter, ref changed);
             return changed;
         }
 
-        public static int TitleCompare(string leftTitle, string rightTitle)
+        public static List<string> SearchSplit(string stringToSplit)
+        {
+            List<string> results = new List<string>();
+            bool inQuote = false;
+            StringBuilder currentToken = new StringBuilder();
+            for (int index = 0; index < stringToSplit.Length; ++index)
+            {
+                char currentCharacter = stringToSplit[index];
+                if (currentCharacter == '"')
+                {
+                    // When we see a ", we need to decide whether we are
+                    // at the start or send of a quoted section...
+                    inQuote = !inQuote;
+                }
+                else if (currentCharacter == ' ' && inQuote == false)
+                {
+                    // We've come to the end of a token, so we find the token,
+                    // trim it and add it to the collection of results...
+                    string result = currentToken.ToString().Trim();
+                    if (result != "") results.Add(result);
+
+                    // We start a new token...
+                    currentToken = new StringBuilder();
+                }
+                else
+                {
+                    // We've got a 'normal' character, so we add it to
+                    // the curent token...
+                    currentToken.Append(currentCharacter);
+                }
+            }
+
+            // We've come to the end of the string, so we add the last token...
+            string lastResult = currentToken.ToString().Trim();
+            if (lastResult != "")
+                results.Add(lastResult);
+
+            return results;
+        }
+
+
+        public static int MovieTitleCompare(string leftTitle, string rightTitle)
         {
             return Utilities.TitleNormalize(leftTitle).CompareTo(Utilities.TitleNormalize(rightTitle));
         }
@@ -134,7 +175,7 @@ namespace MovieInfo
             return MovieIDCompareNumeric(leftID.Value, rightID.Value);
         }
 
-        public static int ActressCompare(List<ActorData> leftActors, List<ActorData> rightActors)
+        public static int MovieActressCompare(List<ActorData> leftActors, List<ActorData> rightActors)
         {
             for (int i = 0; i < Math.Min(leftActors.Count, rightActors.Count); ++i)
             {
@@ -190,6 +231,206 @@ namespace MovieInfo
                 movieData.MetadataChanged = true;
             }
             return genresChanged;
+        }
+
+        public static bool ActressHasName(ActressData actress, string name)
+        {
+            if (String.Compare(actress.Name, name, true) == 0)
+                return true;
+            if (String.Compare(actress.JapaneseName, name, true) == 0)
+                return true;
+            if (Utilities.Equals(name, actress.AltNames, StringComparison.OrdinalIgnoreCase))
+                return true;
+            return false;
+        }
+
+        public static bool ActressMatchesActor(ActressData actress, ActorData actor)
+        {
+            if (ActressHasName(actress, actor.Name))
+                return true;
+            foreach (string alias in actor.Aliases)
+            {
+                if (ActressHasName(actress, alias))
+                    return true;
+            }
+            return false;
+        }
+
+        public static void MergeActresses(ActressData primary, ActressData secondary)
+        {
+            if (Utilities.Equals(secondary.Name, primary.AltNames, StringComparison.OrdinalIgnoreCase) == false)
+                primary.AltNames.Add(secondary.Name);
+            foreach (string altName2 in secondary.AltNames)
+            {
+                if (Utilities.Equals(altName2, primary.AltNames, StringComparison.OrdinalIgnoreCase) == false)
+                    primary.AltNames.Add(altName2);
+            }
+            if (String.IsNullOrEmpty(primary.JapaneseName))
+                primary.JapaneseName = secondary.JapaneseName;
+            if (primary.DobYear == 0)
+                primary.DobYear = secondary.DobYear;
+            if (primary.DobMonth == 0)
+                primary.DobMonth = secondary.DobMonth;
+            if (primary.DobDay == 0)
+                primary.DobDay = secondary.DobDay;
+            if (primary.Height == 0)
+                primary.Height = secondary.Height;
+            if (String.IsNullOrEmpty(primary.Cup))
+                primary.Cup = secondary.Cup;
+            if (primary.Bust == 0)
+                primary.Bust = secondary.Bust;
+            if (primary.Waist == 0)
+                primary.Waist = secondary.Waist;
+            if (primary.Hips == 0)
+                primary.Hips = secondary.Hips;
+            if (String.IsNullOrEmpty(primary.BloodType))
+                primary.BloodType = secondary.BloodType;
+            if (primary.UserRating == 0)
+                primary.UserRating = secondary.UserRating;
+            if (String.IsNullOrEmpty(secondary.Notes) == false)
+            {
+                if (String.IsNullOrEmpty(primary.Notes))
+                    primary.Notes = secondary.Notes;
+                else
+                    primary.Notes += "\n" + secondary.Notes;
+            }
+            if (secondary.ImageFileNames.Count != 0)
+            {
+                foreach (string fn in secondary.ImageFileNames)
+                {
+                    if (Utilities.Equals(fn, primary.ImageFileNames, StringComparison.OrdinalIgnoreCase) == false)
+                        primary.ImageFileNames.Add(fn);
+                }
+            }
+        }
+
+        public static bool IsActressWorthShowing(ActressData actress)
+        {
+            if (actress == null)
+                return false;
+            if (actress.ImageFileNames.Count == 0)
+                return false;
+            if (String.IsNullOrEmpty(actress.JapaneseName) == false)
+                return true;
+            if (actress.DobYear != 0 && actress.DobMonth != 0 && actress.DobDay != 0)
+                return true;
+            if (actress.Height != 0)
+                return true;
+            if (String.IsNullOrEmpty(actress.Cup) == false)
+                return true;
+            if (actress.Bust != 0 && actress.Waist != 0 && actress.Hips != 0)
+                return true;
+            if (String.IsNullOrEmpty(actress.BloodType) == false)
+                return true;
+            return false;
+        }
+
+        public static int GetAgeFromDateOfBirth(int year, int month, int day)
+        {
+            if (year == 0)
+                throw new ArgumentException("Age can't be calculated without a valid year of bitth");
+
+            // We'll allow a rough estimate, assuming Jan 1 b-day if none is available
+            var dateOfBirth = new DateTime(year, Math.Max(month, 1), Math.Max(day, 1));
+
+            // Calculate age - a little trickier than you'd expect.  
+            // Still not 100% precise, but good enough in 99.999% of cases.
+            DateTime zeroTime = new DateTime(1, 1, 1);
+            DateTime a = dateOfBirth;
+            DateTime b = DateTime.Now;
+            TimeSpan span = b - a;
+            // Because we start at year 1 for the Gregorian
+            // calendar, we must subtract a year here.
+            return (zeroTime + span).Year - 1;
+        }
+
+        public static string UserRatingToStars(int userRating)
+        {
+            if (userRating == 0)
+                return "unrated";
+            StringBuilder sb = new StringBuilder(10);
+            while (userRating >= 2)
+            {
+                sb.Append("\u2605");
+                userRating -= 2;
+            }
+            if (userRating != 0)
+                sb.Append("½");
+            return sb.ToString();
+        }
+
+        public static void FilterActorName(ActorData actor)
+        {
+            // Some actors are listed as "First Last (AltFirst AltLast).
+            // This function will split these out into main and alt names
+
+            if (actor == null || String.IsNullOrEmpty(actor.Name))
+                return;
+
+            // Try cplitting name on parens
+            string[] actorNames = actor.Name.Split("()".ToCharArray());
+            if (actorNames.Length == 1)
+            {
+                // If those don't exist, just trim and return the first string
+                actor.Name = actorNames[0].Trim();
+            }
+            else
+            {
+                // Assign the trimmed first part
+                actor.Name = actorNames[0].Trim();
+
+                // If we have one or more names in parens, next try splitting on commas
+                string[] moreActorNames = actorNames[1].Split(',');
+                foreach (string name in moreActorNames)
+                {
+                    // Add each name to the alias list if it doesn't exist
+                    string trimmedName = name.Trim();
+                    bool foundAlias = false;
+                    foreach (string alias in actor.Aliases)
+                    {
+                        if (alias == trimmedName)
+                        {
+                            foundAlias = true;
+                            break;
+                        }
+                    }
+                    if (foundAlias == false)
+                        actor.Aliases.Add(trimmedName);
+                }
+            }
+
+            // Make all title case
+            TextInfo textInfo = new CultureInfo("en-US", false).TextInfo;
+            actor.Name = textInfo.ToTitleCase(actor.Name);
+            for (int i = 0; i < actor.Aliases.Count; ++i)
+                actor.Aliases[i] = textInfo.ToTitleCase(actor.Aliases[i]);
+
+            // Remove duplicates
+            var nameSet = new HashSet<string>();
+            foreach (var alias in actor.Aliases)
+            {
+                if (alias != actor.Name)
+                    nameSet.Add(alias.Trim());
+            }
+            actor.Aliases.Clear();
+            foreach (var alias in nameSet)
+                actor.Aliases.Add(alias);
+        }
+
+        public static bool AreActorsEquivalent(ActorData a, ActorData b)
+        {
+            if (a.Name == b.Name)
+                return true;
+            if (Utilities.Equals(b.Name, a.Aliases, StringComparison.OrdinalIgnoreCase))
+                return true;
+            if (Utilities.Equals(a.Name, b.Aliases, StringComparison.OrdinalIgnoreCase))
+                return true;
+            foreach (var name in a.Aliases)
+            {
+                if (Utilities.Equals(name, b.Aliases, StringComparison.OrdinalIgnoreCase))
+                    return true;
+            }
+            return AreActorsNearlyEquivalent(a, b);
         }
 
         public static string ActorsToString(List<ActorData> actors)
@@ -647,25 +888,30 @@ namespace MovieInfo
             return text;
         }
 
-        private static List<ActorData> FilterActors(List<ActorData> actorData, List<FilterPair> actorFilter, ref bool changed)
+        private static bool AreActorsNearlyEquivalent(ActorData a, ActorData b)
         {
-            if (actorData.Count == 0)
-                return actorData;
-            string actorsString = ActorsToString(actorData);
-            string[] actors = actorsString.Split(',');
-            List<string> actorList = new List<string>();
-            foreach (var actor in actors)
-                actorList.Add(actor.Trim());
-            actorList = Utilities.FilterWordList(actorList, actorFilter, ref changed);
-            StringBuilder sb = new StringBuilder(actorData.Count * 30);
-            foreach (var actor in actorList)
+            const float SimilarityThreshold = 0.65f;
+            if (Utilities.GetSimilarity(a.Name, b.Name) > SimilarityThreshold)
+                return true;
+            if (GetSimilarityMatches(b.Name, a.Aliases, SimilarityThreshold))
+                return true;
+            if (GetSimilarityMatches(a.Name, b.Aliases, SimilarityThreshold))
+                return true;
+            foreach (var name in a.Aliases)
             {
-                sb.Append(actor);
-                if (actorList.IndexOf(actor) != actorList.Count - 1)
-                    sb.Append(", ");
+                if (GetSimilarityMatches(name, b.Aliases, SimilarityThreshold))
+                    return true;
             }
-            StringToActors(sb.ToString(), ref actorData);
-            return actorData;
+            return false;
+        }
+        private static bool GetSimilarityMatches(string s, List<string> strings, float threshold)
+        {
+            foreach (var str in strings)
+            {
+                if (Utilities.GetSimilarity(s, str) > threshold)
+                    return true;
+            }
+            return false;
         }
 
         private static void MoveRenameFoldersAndFiles(MovieData movieData, MovieData newMovieData)

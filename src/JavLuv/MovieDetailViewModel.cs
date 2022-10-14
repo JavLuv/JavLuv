@@ -6,6 +6,7 @@ using System.IO;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Media.Imaging;
 
 namespace JavLuv
 {
@@ -13,7 +14,7 @@ namespace JavLuv
     {
         #region Constructors
 
-        public MovieItem(DetailViewModel parent, string movieFileName)
+        public MovieItem(MovieDetailViewModel parent, string movieFileName)
         {
             m_parent = parent;
             m_movieFileName = movieFileName;
@@ -69,17 +70,17 @@ namespace JavLuv
 
         #region Private Members
 
-        private DetailViewModel m_parent;
+        private MovieDetailViewModel m_parent;
         private string m_movieFileName;
 
         #endregion
     }
 
-    public class DetailViewModel : ObservableObject
+    public class MovieDetailViewModel : ObservableObject
     {
         #region Constructors
 
-        public DetailViewModel(BrowserViewModel parent, BrowserItemViewModel browserItem)
+        public MovieDetailViewModel(MovieBrowserViewModel parent, MovieBrowserItemViewModel browserItem)
         {
             Logger.WriteInfo("Viewing details of movie " + browserItem.MovieData.Metadata.UniqueID.Value);
             m_parent = parent;
@@ -111,13 +112,14 @@ namespace JavLuv
 
         #endregion
 
-       #region Event Handlers
+        #region Event Handlers
 
         private void LoadImage_FinishedLoading(object sender, System.EventArgs e)
         {
             Image = m_loadImage.Image;
             if (Image == null)
                 Logger.WriteWarning("Unable to load image " + Path.Combine(m_movieData.Path, m_movieData.CoverFileName));
+            m_loadImage.FinishedLoading -= LoadImage_FinishedLoading;
             m_loadImage = null;
         }
 
@@ -136,7 +138,7 @@ namespace JavLuv
 
         #region Properties
 
-        public BrowserViewModel Parent { get { return m_parent; } }
+        public MovieBrowserViewModel Parent { get { return m_parent; } }
 
         public ImageSource Image
         {
@@ -203,8 +205,7 @@ namespace JavLuv
             }
         }
 
-
-        public BrowserItemViewModel BrowserItem { get { return m_browserItem; } }
+        public MovieBrowserItemViewModel BrowserItem { get { return m_browserItem; } }
 
         public MovieData MovieData { get { return m_movieData; } }
 
@@ -225,6 +226,7 @@ namespace JavLuv
                     {
                         m_movieData.Metadata.OriginalTitle = value;
                         m_movieData.MetadataChanged = true;
+                        NotifyPropertyChanged("Title");
                     }
                 }
                 else
@@ -233,9 +235,9 @@ namespace JavLuv
                     {
                         m_movieData.Metadata.Title = value;
                         m_movieData.MetadataChanged = true;
-                    }
+                         NotifyPropertyChanged("Title");
+                   }
                 }
-                NotifyPropertyChanged("Title");
             }
         }
 
@@ -248,7 +250,7 @@ namespace JavLuv
                 {
                     m_movieData.Metadata.UniqueID.Value = value;
                     m_movieData.MetadataChanged = true;
-                    NotifyPropertyChanged("Title");
+                    NotifyPropertyChanged("ID");
                 }
             }
         }
@@ -408,6 +410,35 @@ namespace JavLuv
 
         #region Commands
 
+        #region Paste Command
+
+        private void PasteExecute()
+        {
+            var image = Clipboard.GetImage() as BitmapSource;
+            string fileName = Path.ChangeExtension(Guid.NewGuid().ToString(), ".png");
+            string fileNamePath = Path.Combine(Utilities.GetActressImageFolder(), fileName);
+            using (FileStream stream = new FileStream(fileNamePath, FileMode.Create))
+            {
+                PngBitmapEncoder encoder = new PngBitmapEncoder();
+                encoder.Interlace = PngInterlaceOption.Off;
+                encoder.Frames.Add(BitmapFrame.Create(image));
+                encoder.Save(stream);
+            }
+            m_movieData.CoverFileName = fileName;
+            m_loadImage = new CmdLoadImage(Path.Combine(m_movieData.Path, m_movieData.CoverFileName));
+            m_loadImage.FinishedLoading += LoadImage_FinishedLoading;
+            CommandQueue.ShortTask().Execute(m_loadImage, CommandOrder.First);
+        }
+
+        private bool CanPasteExecute()
+        {
+            return Clipboard.ContainsImage();
+        }
+
+        public ICommand PasteCommand { get { return new RelayCommand(PasteExecute, CanPasteExecute); } }
+
+        #endregion
+
         #region Open Folder Command
 
         private void OpenFolderExecute()
@@ -489,9 +520,9 @@ namespace JavLuv
 
         #region Private Members
 
-        private BrowserViewModel m_parent;
+        private MovieBrowserViewModel m_parent;
         private MovieData m_movieData;
-        private BrowserItemViewModel m_browserItem;
+        private MovieBrowserItemViewModel m_browserItem;
         private ImageSource m_image;
         private CmdLoadImage m_loadImage;
         private CmdGetResolution m_getResolution;

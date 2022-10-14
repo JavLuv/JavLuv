@@ -4,7 +4,6 @@ using Subtitles;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Threading;
 using System.Windows;
 using System.Xml.Linq;
@@ -31,12 +30,12 @@ namespace JavLuv
         #endregion
 
         #region Properties
+
         public LanguageType Language { get; set; }
         public List<FilterPair> StudioFilters { get; set; }
         public List<FilterPair> DirectorFilters { get; set; }
         public List<FilterPair> LabelFilters { get; set; }
         public List<FilterPair> GenreFilters { get; set; }
-        public List<FilterPair> ActorFilters { get; set; }
 
         #endregion
     }
@@ -59,6 +58,15 @@ namespace JavLuv
             MainWindowWidth = 800;
             MainWindowLeft = 100;
             MainWindowTop = 100;
+
+            ScanFolder = String.Empty;
+            ImageImportFolder = String.Empty;
+            ConcatFolder = String.Empty;
+            MoveToFolder = String.Empty;
+            FindSubtitlesFolder = String.Empty;
+            SubtitleImportFolder = String.Empty;
+            SubtitleExportFolder = String.Empty;
+
             ScanRecursively = true;
             SearchViewWidth = new GridLength(300);
             SearchText = String.Empty;
@@ -106,17 +114,24 @@ namespace JavLuv
         }
 
         // Preserved UI elements
-        public string LastFolder { get; set; }
+        public string ScanFolder { get; set; }
+        public string ImageImportFolder { get; set; }
+        public string ConcatFolder { get; set; }
+        public string MoveToFolder { get; set; }
+        public string FindSubtitlesFolder { get; set; }
         public string SubtitleImportFolder { get; set; }
         public string SubtitleExportFolder { get; set; }
+        public int SelectedTabIndex { get; set; }
         public Organizer.Mode OrganizerMode { get; set; }
         public bool ScanRecursively { get; set; }
         public bool MoveRenameAfterScan { get; set; }
         public string SearchText { get; set; }
-        public MovieInfo.SortBy SortBy { get; set; }
+        public MovieInfo.SortMoviesBy SortMoviesBy { get; set; }
+        public MovieInfo.SortActressesBy SortActressesBy { get; set; }
         public bool ShowID { get; set; }
         public bool ShowUnratedOnly { get; set; }
         public bool ShowSubtitlesOnly { get; set; }
+        public bool ShowAllActresses { get; set; }
         public bool ShowOriginalTitle { get; set; }
 
         // Misc persistent data
@@ -126,6 +141,7 @@ namespace JavLuv
 
         // Config settings
         public bool CheckForUpdates { get; set; }
+        public bool AutoSyncActresses { get; set; }
         public LanguageType Language { get; set; }
         public bool ShowAdvancedOptions { get; set; }
         public string Subtitles { get; set; }
@@ -237,7 +253,6 @@ namespace JavLuv
                     s_settings.Cultures[i].LabelFilters = MergeFilterLists(s_settings.Cultures[i].LabelFilters, defaultFilters[i].LabelFilters);
                     s_settings.Cultures[i].DirectorFilters = MergeFilterLists(s_settings.Cultures[i].DirectorFilters, defaultFilters[i].DirectorFilters);
                     s_settings.Cultures[i].GenreFilters = MergeFilterLists(s_settings.Cultures[i].GenreFilters, defaultFilters[i].GenreFilters);
-                    s_settings.Cultures[i].ActorFilters = MergeFilterLists(s_settings.Cultures[i].ActorFilters, defaultFilters[i].ActorFilters);
                 }
             }
         }
@@ -283,6 +298,27 @@ namespace JavLuv
                 englishSettings.Add(filters);
                 filters = root.Element("ActorFilters");
                 englishSettings.Add(filters);
+            }
+
+            // We're changing the name of the SortBy field
+            XElement sortBy = root.Element("SortBy");
+            if (sortBy != null)
+            {
+                sortBy.Name = "SortMoviesBy";
+            }
+
+            // LastFolder is becoming a number of specialized folders.  We'll 
+            // initialize all of them with the old LastFolder value to start with.
+            XElement lastFolder = root.Element("LastFolder");
+            if (lastFolder != null)
+            {
+                lastFolder.AddAfterSelf(new XElement("ScanFolder", lastFolder.Value));
+                lastFolder.AddAfterSelf(new XElement("ImageImportFolder", lastFolder.Value));
+                lastFolder.AddAfterSelf(new XElement("ConcatFolder", lastFolder.Value));
+                lastFolder.AddAfterSelf(new XElement("MoveToFolder", lastFolder.Value));
+                lastFolder.AddAfterSelf(new XElement("FindSubtitlesFolder", lastFolder.Value));
+                lastFolder.AddAfterSelf(new XElement("SubtitleImportFolder", lastFolder.Value));
+                lastFolder.AddAfterSelf(new XElement("SubtitleExportFolder", lastFolder.Value));
             }
         }
 
@@ -428,19 +464,12 @@ namespace JavLuv
             cs.GenreFilters.Add(new FilterPair("Single Work", "Featured Actress"));
             cs.GenreFilters.Add(new FilterPair("Subjectivity", "POV"));
 
-            cs.ActorFilters = new List<FilterPair>();
-            cs.ActorFilters.Add(new FilterPair("Natsume Inagawa", "Sumire Kurokawa"));
-            cs.ActorFilters.Add(new FilterPair("Momoka Kato", "Nonoka Sato"));
-            cs.ActorFilters.Add(new FilterPair("Momoka Katou", "Nonoka Sato"));
-            cs.ActorFilters.Add(new FilterPair("Nonoka Satou", "Nonoka Sato"));
-
             // Set Japanese defaults (currently none)
             cs = cultures[(int)LanguageType.Japanese];
             cs.StudioFilters = new List<FilterPair>();
             cs.LabelFilters = new List<FilterPair>();
             cs.DirectorFilters = new List<FilterPair>();
             cs.GenreFilters = new List<FilterPair>();
-            cs.ActorFilters = new List<FilterPair>();
 
             return cultures;
         }

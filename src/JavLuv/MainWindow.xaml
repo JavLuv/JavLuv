@@ -34,16 +34,21 @@
         </DataTemplate>
 
         <DataTemplate 
-            DataType="{x:Type local:DetailViewModel}">
-            <local:DetailView/>
+            DataType="{x:Type local:MovieDetailViewModel}">
+            <local:MovieDetailView/>
+        </DataTemplate>
+
+        <DataTemplate 
+            DataType="{x:Type local:ActressDetailViewModel}">
+            <local:ActressDetailView/>
         </DataTemplate>
 
     </Window.Resources>
 
     <Window.InputBindings>
         <KeyBinding Command="{Binding CloseOverlayCommand}" Key="Esc" />
-        <KeyBinding Command="{Binding Browser.NavigateLeftCommand}" Key="Left" />
-        <KeyBinding Command="{Binding Browser.NavigateRightCommand}" Key="Right" />
+        <KeyBinding Command="{Binding MovieBrowser.NavigateLeftCommand}" Key="Left" />
+        <KeyBinding Command="{Binding MovieBrowser.NavigateRightCommand}" Key="Right" />
     </Window.InputBindings>
     
     <Window.TaskbarItemInfo>
@@ -74,9 +79,18 @@
 
             <!-- Browser view -->
             <Grid Grid.Column="2">
-                <local:BrowserView 
-                    DataContext="{Binding Browser}"
-                   />
+                <TabControl SelectedIndex="{Binding SelectedTabIndex}">
+                    <TabItem Header="{DynamicResource Text.MoviesTab}">
+                        <local:MovieBrowserView 
+                            DataContext="{Binding MovieBrowser}"
+                           />
+                    </TabItem>
+                    <TabItem Header="{DynamicResource Text.ActressesTab}">
+                        <local:ActressBrowserView 
+                            DataContext="{Binding ActressBrowser}"
+                           />
+                    </TabItem>
+                </TabControl>
                 <ContentControl 
                     DataContext="{Binding Overlay}"
                     Content="{Binding}"
@@ -116,11 +130,11 @@
                     </Button>
                 </StatusBarItem>
                 <Separator Grid.Column="3" />
-                <StatusBarItem Grid.Column="4">
-                    <TextBlock Text="{Binding Browser.SelectedDescription}" />
+                <StatusBarItem Grid.Column="4" Visibility="{Binding StatusVisibility}">
+                    <TextBlock Text="{Binding SelectedDescription}" />
                 </StatusBarItem>
                 <Separator Grid.Column="5" />
-                <StatusBarItem Grid.Column="6">
+                <StatusBarItem Grid.Column="6"  Visibility="{Binding StatusVisibility}">
                     <TextBlock Text="{Binding DisplayCountText}" />
                 </StatusBarItem>
 

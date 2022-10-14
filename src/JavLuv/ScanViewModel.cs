@@ -17,7 +17,7 @@ namespace JavLuv
         public ScanViewModel(SidePanelViewModel parent)
         {
             m_parent = parent;
-            ScanFolder = Settings.Get().LastFolder;
+            ScanFolder = Settings.Get().ScanFolder;
             ScanRecursively = Settings.Get().ScanRecursively;
             MoveRenameAfterScan = Settings.Get().MoveRenameAfterScan;
         }
@@ -98,7 +98,7 @@ namespace JavLuv
         {
 
             System.Windows.Forms.FolderBrowserDialog dlg = new System.Windows.Forms.FolderBrowserDialog();
-            dlg.SelectedPath = Utilities.GetValidSubFolder(Settings.Get().LastFolder);
+            dlg.SelectedPath = Utilities.GetValidSubFolder(Settings.Get().ScanFolder);
             System.Windows.Forms.DialogResult result = dlg.ShowDialog();
             if (result != System.Windows.Forms.DialogResult.OK)
                 return;
@@ -118,7 +118,7 @@ namespace JavLuv
 
         private void ScanMoviesExecute()
         {
-            Settings.Get().LastFolder = ScanFolder;
+            Settings.Get().ScanFolder = ScanFolder;
             Settings.Get().ScanRecursively = ScanRecursively;
             Settings.Get().MoveRenameAfterScan = MoveRenameAfterScan;
             Parent.Parent.StartScan(ScanFolder);
