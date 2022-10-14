@@ -361,8 +361,6 @@ namespace WebScraper
             // JavLibrary gives us alternate names, which is really handy, but since we're scraping
             // actress data from JavDatabase first, we'll initially get actresses from them and 
             // try merging in other actresses later.  
-            // JAV Library seems more reliable for actors.  so don't use other sources
-            // unless there's no choice.
             combined.Actors = MergeActors(javDatabase.Actors, javLibrary.Actors);
             return combined;
         }
@@ -378,7 +376,10 @@ namespace WebScraper
             primary.Director = MergeStrings(primary.Director, secondary.Director);
             primary.Series = MergeStrings(primary.Series, secondary.Series);
             primary.Genres = MergeStringLists(primary.Genres, secondary.Genres);
-            primary.Actors = MergeActors(primary.Actors, secondary.Actors);
+
+            // For secondary sources, don't merge actors.  Just copy actors if none already exist.
+            if (primary.Actors.Count == 0 && primary.Actors.Count == secondary.Actors.Count)
+                primary.Actors = secondary.Actors;
             return primary;
         }
 

@@ -1,7 +1,7 @@
 # Changelog
 All significant changes are listed in this file.
 
-## [1.1.0] - 2022-9-29
+## [1.1.0] - 2022-10-13
 
 - Add Actress viewer
 - Fixed rare instance of import movies being moved to incorrect destination
