@@ -68,7 +68,16 @@
       </Component>     
       <Component Id="Cmp.Microsoft.Bcl.AsyncInterfaces.dll" Guid="{C87A518D-2D7D-4C1F-8E86-261350BD9FDD}" Win64="yes" >
         <File Id="File.Microsoft.Bcl.AsyncInterfaces.dll" Source="../src/JavLuv/bin/Release/Microsoft.Bcl.AsyncInterfaces.dll" KeyPath="yes" Checksum="yes" />
-      </Component>                 
+      </Component>           
+       <Component Id="Cmp.Microsoft.WindowsAPICodePack.dll" Guid="{F71AD554-4CBB-4075-B849-58140B887CE2}" Win64="yes" >
+        <File Id="File.Microsoft.WindowsAPICodePack.dll" Source="../src/JavLuv/bin/Release/Microsoft.WindowsAPICodePack.dll" KeyPath="yes" Checksum="yes" />
+      </Component>        
+       <Component Id="Cmp.Microsoft.WindowsAPICodePack.Shell.dll" Guid="{E4F3A6EF-0192-43AD-ABBF-0B7DD2303E79}" Win64="yes" >
+        <File Id="File.Microsoft.WindowsAPICodePack.Shell.dll" Source="../src/JavLuv/bin/Release/Microsoft.WindowsAPICodePack.Shell.dll" KeyPath="yes" Checksum="yes" />
+      </Component>          
+       <Component Id="Cmp.Microsoft.WindowsAPICodePack.ShellExtensions.dll" Guid="{BAB1641C-D73F-4993-9A76-82BDBCBEE38F}" Win64="yes" >
+        <File Id="File.Microsoft.WindowsAPICodePack.ShellExtensions.dll" Source="../src/JavLuv/bin/Release/Microsoft.WindowsAPICodePack.ShellExtensions.dll" KeyPath="yes" Checksum="yes" />
+      </Component>         
       <Component Id="Cmp.MovieInfo.dll" Guid="{9C6083EA-A78E-4399-8729-543B43F93C6A}" Win64="yes" >
         <File Id="File.MovieInfo.dll" Source="../src/JavLuv/bin/Release/MovieInfo.dll" KeyPath="yes" Checksum="yes" />
       </Component>     

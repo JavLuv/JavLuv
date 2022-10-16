@@ -1,4 +1,5 @@
 ﻿using Common;
+using Microsoft.WindowsAPICodePack.Dialogs;
 using Subtitles;
 using System;
 using System.Collections.ObjectModel;
@@ -135,12 +136,14 @@ namespace JavLuv
 
         private void BrowseImportFolderExecute()
         {
-            System.Windows.Forms.FolderBrowserDialog dlg = new System.Windows.Forms.FolderBrowserDialog();
-            dlg.SelectedPath = Utilities.GetValidSubFolder(ImportFolder);
-            System.Windows.Forms.DialogResult result = dlg.ShowDialog();
-            if (result != System.Windows.Forms.DialogResult.OK)
+            var dlg = new CommonOpenFileDialog();
+            dlg.IsFolderPicker = true;
+            dlg.EnsurePathExists = true;
+            dlg.InitialDirectory = Utilities.GetValidSubFolder(ImportFolder);
+            var result = dlg.ShowDialog();
+            if (result != CommonFileDialogResult.Ok)
                 return;
-            ImportFolder = dlg.SelectedPath;
+            ImportFolder = dlg.FileName;
         }
 
         private bool CanBrowseImportFolderExecute()
@@ -156,12 +159,14 @@ namespace JavLuv
 
         private void BrowseExportFolderExecute()
         {
-            System.Windows.Forms.FolderBrowserDialog dlg = new System.Windows.Forms.FolderBrowserDialog();
-            dlg.SelectedPath = Utilities.GetValidSubFolder(Utilities.GetValidSubFolder(ExportFolder));
-            System.Windows.Forms.DialogResult result = dlg.ShowDialog();
-            if (result != System.Windows.Forms.DialogResult.OK)
+            var dlg = new CommonOpenFileDialog();
+            dlg.IsFolderPicker = true;
+            dlg.EnsurePathExists = true;
+            dlg.InitialDirectory = Utilities.GetValidSubFolder(ExportFolder);
+            var result = dlg.ShowDialog();
+            if (result != CommonFileDialogResult.Ok)
                 return;
-            ExportFolder = dlg.SelectedPath;
+            ExportFolder = dlg.FileName;
         }
 
         private bool CanBrowseExportFolderExecute()

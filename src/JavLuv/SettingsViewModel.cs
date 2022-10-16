@@ -1,4 +1,5 @@
 ﻿using Common;
+using Microsoft.WindowsAPICodePack.Dialogs;
 using System;
 using System.Windows.Input;
 using LanguageTypePair = JavLuv.ObservableStringValuePair<Common.LanguageType>;
@@ -401,15 +402,14 @@ namespace JavLuv
 
         private void ChooseSubtitlesFolderExecute()
         {
-            System.Windows.Forms.FolderBrowserDialog dlg = new System.Windows.Forms.FolderBrowserDialog();
-            if (String.IsNullOrEmpty(Settings.Get().Subtitles) == false)
-                dlg.SelectedPath = Utilities.GetValidSubFolder(Settings.Get().ScanFolder);
-            else
-                dlg.SelectedPath = Utilities.GetValidSubFolder(Settings.Get().Subtitles);
-            System.Windows.Forms.DialogResult result = dlg.ShowDialog();
-            if (result != System.Windows.Forms.DialogResult.OK)
+            var dlg = new CommonOpenFileDialog();
+            dlg.IsFolderPicker = true;
+            dlg.EnsurePathExists = true;
+            dlg.InitialDirectory = Utilities.GetValidSubFolder(Subtitles);
+            var result = dlg.ShowDialog();
+            if (result != CommonFileDialogResult.Ok)
                 return;
-            Subtitles = dlg.SelectedPath;
+            Subtitles = dlg.FileName;
         }
 
         private bool CanChooseSubtitlesFolderExecute()
@@ -425,13 +425,14 @@ namespace JavLuv
 
         private void ChooseLibraryFolderExecute()
         {
-            System.Windows.Forms.FolderBrowserDialog dlg = new System.Windows.Forms.FolderBrowserDialog();
-            dlg.SelectedPath = Utilities.GetValidSubFolder(Settings.Get().SubtitleExportFolder);
-            System.Windows.Forms.DialogResult result = dlg.ShowDialog();
-            if (result != System.Windows.Forms.DialogResult.OK)
+            var dlg = new CommonOpenFileDialog();
+            dlg.IsFolderPicker = true;
+            dlg.EnsurePathExists = true;
+            dlg.InitialDirectory = Utilities.GetValidSubFolder(Library);
+            var result = dlg.ShowDialog();
+            if (result != CommonFileDialogResult.Ok)
                 return;
-            Settings.Get().SubtitleExportFolder = dlg.SelectedPath;
-            Library = dlg.SelectedPath;
+            Library = dlg.FileName;
         }
 
         private bool CanChooseLibraryFolderExecute()
@@ -498,11 +499,13 @@ namespace JavLuv
 
         private void CopyLogFileToExecute()
         {
-            System.Windows.Forms.FolderBrowserDialog dlg = new System.Windows.Forms.FolderBrowserDialog();
-            System.Windows.Forms.DialogResult result = dlg.ShowDialog();
-            if (result != System.Windows.Forms.DialogResult.OK)
+            var dlg = new CommonOpenFileDialog();
+            dlg.IsFolderPicker = true;
+            dlg.EnsurePathExists = true;
+            var result = dlg.ShowDialog();
+            if (result != CommonFileDialogResult.Ok)
                 return;
-            Logger.ZipAndCopyLogTo(dlg.SelectedPath);
+            Logger.ZipAndCopyLogTo(dlg.FileName);
         }
 
         private bool CanCopyLogFileToExecute()

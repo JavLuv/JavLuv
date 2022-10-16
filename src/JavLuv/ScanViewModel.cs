@@ -1,11 +1,5 @@
 ﻿using Common;
-using MovieInfo;
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Microsoft.WindowsAPICodePack.Dialogs;
 using System.Windows.Input;
 
 namespace JavLuv
@@ -96,13 +90,14 @@ namespace JavLuv
 
         private void BrowseFolderExecute()
         {
-
-            System.Windows.Forms.FolderBrowserDialog dlg = new System.Windows.Forms.FolderBrowserDialog();
-            dlg.SelectedPath = Utilities.GetValidSubFolder(Settings.Get().ScanFolder);
-            System.Windows.Forms.DialogResult result = dlg.ShowDialog();
-            if (result != System.Windows.Forms.DialogResult.OK)
+            var dlg = new CommonOpenFileDialog();
+            dlg.IsFolderPicker = true;
+            dlg.EnsurePathExists = true;
+            dlg.InitialDirectory = Utilities.GetValidSubFolder(Settings.Get().ScanFolder);
+            var result = dlg.ShowDialog();
+            if (result != CommonFileDialogResult.Ok)
                 return;
-            ScanFolder = dlg.SelectedPath;
+            ScanFolder = dlg.FileName;
         }
 
         private bool CanBrowseFolderExecute()
