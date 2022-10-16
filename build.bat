@@ -40,10 +40,10 @@ copy /y "setup\bin\Release\Setup-JavLuv.msi" "build\Setup-JavLuv.msi" && (
   EXIT /B 1
 )
 
-copy /y "src\JavLuv\bin\Release\*.dll" "build\JavLuv\"
-copy /y "src\JavLuv\bin\Release\*.exe" "build\JavLuv\"
-copy /y "src\JavLuv\bin\Release\JavLuv.exe.config" "build\JavLuv\"
-copy /y "src\JavLuv\bin\Release\Core14.profile.xml" "build\JavLuv\"
+copy /y "src\JavLuv\bin\x64\Release\*.dll" "build\JavLuv\"
+copy /y "src\JavLuv\bin\x64\Release\*.exe" "build\JavLuv\"
+copy /y "src\JavLuv\bin\x64\Release\JavLuv.exe.config" "build\JavLuv\"
+copy /y "src\JavLuv\bin\x64\Release\Core14.profile.xml" "build\JavLuv\"
 
 cd build
 
