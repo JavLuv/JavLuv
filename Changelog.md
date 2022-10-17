@@ -3,6 +3,7 @@ All significant changes are listed in this file.
 
 ## [1.1.1] - 2022-10-15
 
+- Eliminate scanner errors for extra files in existing folders
 - Replaced folder browser with newer version
 - Executable changed to 64-bit
 
