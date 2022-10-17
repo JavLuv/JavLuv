@@ -1,4 +1,5 @@
 ﻿using Common;
+using Microsoft.WindowsAPICodePack.Dialogs;
 using MovieInfo;
 using System;
 using System.Collections.Generic;
@@ -261,18 +262,20 @@ namespace JavLuv
         private void MoveToFoldersExecute()
         {
             // Select destination folder
-            System.Windows.Forms.FolderBrowserDialog dlg = new System.Windows.Forms.FolderBrowserDialog();
-            dlg.SelectedPath = Utilities.GetValidSubFolder(Settings.Get().MoveToFolder);
-            System.Windows.Forms.DialogResult result = dlg.ShowDialog();
-            if (result != System.Windows.Forms.DialogResult.OK)
+            var dlg = new CommonOpenFileDialog();
+            dlg.IsFolderPicker = true;
+            dlg.EnsurePathExists = true;
+            dlg.InitialDirectory = Utilities.GetValidSubFolder(Settings.Get().MoveToFolder);
+            var result = dlg.ShowDialog();
+            if (result != CommonFileDialogResult.Ok)
                 return;
 
             // Gather selected movies to move
-            Settings.Get().MoveToFolder = dlg.SelectedPath;
+            Settings.Get().MoveToFolder = dlg.FileName;
             List<MovieData> moviesToMove = new List<MovieData>();
             foreach (var item in SelectedItems)
             {
-                if (dlg.SelectedPath != item.MovieData.Path)
+                if (dlg.FileName != item.MovieData.Path)
                     moviesToMove.Add(item.MovieData);
             }
             if (moviesToMove.Count == 0)
@@ -287,7 +290,7 @@ namespace JavLuv
             progress.UpdateProgress();
 
             // Move folders as a background task
-            CommandQueue.Command().Execute(new CmdMoveToFolder(progress, dlg.SelectedPath, moviesToMove, Parent.Collection));
+            CommandQueue.Command().Execute(new CmdMoveToFolder(progress, dlg.FileName, moviesToMove, Parent.Collection));
 
             // Show progress dialog
             progress.ShowDialog();
@@ -432,14 +435,16 @@ namespace JavLuv
         private void FindSubtitlesExecute()
         {
             // Select destination folder
-            System.Windows.Forms.FolderBrowserDialog dlg = new System.Windows.Forms.FolderBrowserDialog();
-            dlg.SelectedPath = Utilities.GetValidSubFolder(Settings.Get().FindSubtitlesFolder);
-            System.Windows.Forms.DialogResult result = dlg.ShowDialog();
-            if (result != System.Windows.Forms.DialogResult.OK)
+            var dlg = new CommonOpenFileDialog();
+            dlg.IsFolderPicker = true;
+            dlg.EnsurePathExists = true;
+            dlg.InitialDirectory = Utilities.GetValidSubFolder(Settings.Get().FindSubtitlesFolder);
+            var result = dlg.ShowDialog();
+            if (result != CommonFileDialogResult.Ok)
                 return;
 
             // Gather selected movies to move
-            Settings.Get().FindSubtitlesFolder = dlg.SelectedPath;
+            Settings.Get().FindSubtitlesFolder = dlg.FileName;
             List<string> movieIDs = new List<string>();
             foreach (var item in SelectedItems)
             {
@@ -450,7 +455,7 @@ namespace JavLuv
                 return;
 
             // Move folders as a background task
-            CommandQueue.Command().Execute(new CmdFindSubtitles(movieIDs, dlg.SelectedPath));
+            CommandQueue.Command().Execute(new CmdFindSubtitles(movieIDs, dlg.FileName));
         }
 
         private bool CanFindSubtitlesExecute()

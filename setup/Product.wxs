@@ -1,120 +1,128 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
-	<Product Id="*" Name="JavLuv" Language="1033" Version="!(bind.fileVersion.File.JavLuv.exe)" Manufacturer="JavLuv" UpgradeCode="fb773215-736c-47c0-a3b5-04387cfa7eff">
-		<Package InstallerVersion="200" Compressed="yes" InstallScope="perMachine" Platform="x64" />
+    <Product Id="*" Name="JavLuv" Language="1033" Version="!(bind.fileVersion.File.JavLuv.exe)" Manufacturer="JavLuv" UpgradeCode="fb773215-736c-47c0-a3b5-04387cfa7eff">
+        <Package InstallerVersion="200" Compressed="yes" InstallScope="perMachine" Platform="x64" />
+        <MajorUpgrade AllowDowngrades="yes" />
+        <MediaTemplate EmbedCab="yes" />
 
-		<MajorUpgrade AllowDowngrades="yes" />
-		<MediaTemplate EmbedCab="yes" />
+        <!-- Define Product Features -->
+        <Feature Id="ProductFeature" Title="JavLuv Setup" Level="1">
+            <ComponentGroupRef Id="ProductComponents" />
+            <ComponentRef Id="JavLuvShortcut"/>
+        </Feature>
 
-    <!-- Define Product Features -->
-    <Feature Id="ProductFeature" Title="JavLuv Setup" Level="1">
-      <ComponentGroupRef Id="ProductComponents" />
-      <ComponentRef Id="JavLuvShortcut"/>
-    </Feature>
+        <!-- Standard Wix UI Extension -->
+        <UIRef Id="WixUI_InstallDir"/>
+        <Property Id="WIXUI_INSTALLDIR" Value="INSTALLFOLDER"/>
 
-    <!-- Standard Wix UI Extension -->
-    <UIRef Id="WixUI_InstallDir"/>
-    <Property Id="WIXUI_INSTALLDIR" Value="INSTALLFOLDER"/>
+        <!-- Don't remove shortcuts except on uninstall -->
+        <InstallExecuteSequence>
+            <RemoveShortcuts>Installed AND NOT UPGRADINGPRODUCTCODE</RemoveShortcuts>
+        </InstallExecuteSequence>
 
-    <!-- Don't remove shortcuts except on uninstall -->
-    <InstallExecuteSequence>
-      <RemoveShortcuts>Installed AND NOT UPGRADINGPRODUCTCODE</RemoveShortcuts>
-    </InstallExecuteSequence>
+        <!-- UI Customization -->
+        <WixVariable Id="WixUILicenseRtf" Value="Resources\EULA.rtf"/>
+        <WixVariable Id="WixUIDialogBmp" Value="Resources\UiDialog.bmp"/>
+        <WixVariable Id="WixUIBannerBmp" Value="Resources\UiBanner.bmp"/>
 
-    <!-- UI Customization -->
-    <WixVariable Id="WixUILicenseRtf" Value="Resources\EULA.rtf"/>
-    <WixVariable Id="WixUIDialogBmp" Value="Resources\UiDialog.bmp"/>
-    <WixVariable Id="WixUIBannerBmp" Value="Resources\UiBanner.bmp"/>
+        <!-- Directory Structure -->
+        <Directory Id="TARGETDIR" Name="SourceDir">
+            <Directory Id="ProgramFiles64Folder">
+                <Directory Id="INSTALLFOLDER" Name="JavLuv" />
+            </Directory>
+            <Directory Id="ProgramMenuFolder">
+                <Directory Id="MyShortcutsDir"  Name="JavLuv" />
+            </Directory>
+        </Directory>
 
-    <!-- Directory Structure -->
-    <Directory Id="TARGETDIR" Name="SourceDir">
-      <Directory Id="ProgramFiles64Folder">
-        <Directory Id="INSTALLFOLDER" Name="JavLuv" />
-      </Directory>
-      <Directory Id="ProgramMenuFolder">
-        <Directory Id="MyShortcutsDir"  Name="JavLuv" />
-      </Directory>
-    </Directory>
+        <!-- Menu Shortcuts -->
+        <DirectoryRef Id="MyShortcutsDir">
+            <Component Id="JavLuvShortcut" Guid="{2BC35A9A-FD6E-432B-9615-BB6050C6E5DF}">
+                <Shortcut Id="JavLuvStartMenuShortcut" Name="JavLuv" Description="Launch JavLuv" Target="[INSTALLFOLDER]JavLuv.exe" WorkingDirectory="INSTALLFOLDER" />
+                <Shortcut Id="UninstallShortcut" Name="Uninstall JavLuv" Description="Uninstalls JavLuv" Target="[System64Folder]msiexec.exe" Arguments="/x [ProductCode]" />
+                <RemoveFolder Id="RemoveMyShortcutsDir" On="uninstall" />
+                <RegistryValue Root="HKCU" Key="Software\JavLuv\JavLuv" Name="installed" Type="integer" Value="1" KeyPath="yes" />
+            </Component>
+        </DirectoryRef>
 
-    <!-- Menu Shortcuts -->
-    <DirectoryRef Id="MyShortcutsDir">
-      <Component Id="JavLuvShortcut" Guid="{2BC35A9A-FD6E-432B-9615-BB6050C6E5DF}">
-        <Shortcut Id="JavLuvStartMenuShortcut" Name="JavLuv" Description="Launch JavLuv" Target="[INSTALLFOLDER]JavLuv.exe" WorkingDirectory="INSTALLFOLDER" />
-        <Shortcut Id="UninstallShortcut" Name="Uninstall JavLuv" Description="Uninstalls JavLuv" Target="[System64Folder]msiexec.exe" Arguments="/x [ProductCode]" />
-        <RemoveFolder Id="RemoveMyShortcutsDir" On="uninstall" />
-        <RegistryValue Root="HKCU" Key="Software\JavLuv\JavLuv" Name="installed" Type="integer" Value="1" KeyPath="yes" />
-      </Component>
-    </DirectoryRef>
-
-    <!-- Components to install -->
-    <ComponentGroup Id="ProductComponents" Directory="INSTALLFOLDER">
-      <Component Id="Cmp.AngleSharp.dll" Guid="{32CF82D9-7B39-405B-B4F3-6398CC38110D}" Win64="yes" >
-        <File Id="File.AngleSharp.dll" Source="../src/JavLuv/bin/Release/AngleSharp.dll" KeyPath="yes" Checksum="yes" />
-      </Component>
-      <Component Id="Cmp.Common.dll" Guid="{9E311276-C787-43BA-B90C-FCFF1BBDCD27}" Win64="yes" >
-        <File Id="File.Common.dll" Source="../src/JavLuv/bin/Release/Common.dll" KeyPath="yes" Checksum="yes" />
-      </Component>    
-      <Component Id="Cmp.Core14.profile.xml" Guid="{3EB00DFB-4CA7-47F2-9C76-F55E116FD7EC}" Win64="yes" >
-        <File Id="File.Core14.profile.xml" Source="../src/JavLuv/bin/Release/Core14.profile.xml" KeyPath="yes" Checksum="yes" />
-      </Component>           
-      <Component Id="Cmp.Ffmpeg.exe" Guid="{D3B96BD8-7B66-48F9-9167-E586AD363933}" Win64="yes" >
-        <File Id="File.Ffmpeg.exe" Source="../src/JavLuv/bin/Release/ffmpeg.exe" KeyPath="yes" Checksum="yes" />
-      </Component>
-      <Component Id="Cmp.JavLuv.exe" Guid="{CD7D4962-62DD-4286-9C04-D1E3A38C51C4}" Win64="yes" >
-        <File Id="File.JavLuv.exe" Source="../src/JavLuv/bin/Release/JavLuv.exe" KeyPath="yes" Checksum="yes" />
-      </Component>
-      <Component Id="Cmp.JavLuv.exe.config" Guid="{7ABAE244-06B1-4C69-861C-CE89BF7BF821}" Win64="yes" >
-        <File Id="File.JavLuv.exe.config" Source="../src/JavLuv/bin/Release/JavLuv.exe.config" KeyPath="yes" Checksum="yes" />
-      </Component>     
-      <Component Id="Cmp.Microsoft.Bcl.AsyncInterfaces.dll" Guid="{C87A518D-2D7D-4C1F-8E86-261350BD9FDD}" Win64="yes" >
-        <File Id="File.Microsoft.Bcl.AsyncInterfaces.dll" Source="../src/JavLuv/bin/Release/Microsoft.Bcl.AsyncInterfaces.dll" KeyPath="yes" Checksum="yes" />
-      </Component>                 
-      <Component Id="Cmp.MovieInfo.dll" Guid="{9C6083EA-A78E-4399-8729-543B43F93C6A}" Win64="yes" >
-        <File Id="File.MovieInfo.dll" Source="../src/JavLuv/bin/Release/MovieInfo.dll" KeyPath="yes" Checksum="yes" />
-      </Component>     
-      <Component Id="Cmp.NTextCat.dll" Guid="{5C7A71BC-6F85-4219-BFEC-4E7F6CEF717C}" Win64="yes" >
-        <File Id="File.NTextCat.dll" Source="../src/JavLuv/bin/Release/NTextCat.dll" KeyPath="yes" Checksum="yes" />
-      </Component>     
-      <Component Id="Cmp.Subtitles.dll" Guid="{A630CD0E-622D-4731-AFFC-CF3A1CCC5192}" Win64="yes" >
-        <File Id="File.Subtitles.dll" Source="../src/JavLuv/bin/Release/Subtitles.dll" KeyPath="yes" Checksum="yes" />
-      </Component>
-      <Component Id="Cmp.System.Buffers.dll" Guid="{94480749-7D21-4191-86A3-1C1AC68CEC42}" Win64="yes" >
-        <File Id="File.System.Buffers.dll" Source="../src/JavLuv/bin/Release/System.Buffers.dll" KeyPath="yes" Checksum="yes" />
-      </Component>       
-       <Component Id="Cmp.System.Memory.dll" Guid="{ABB3C143-12EE-4172-AA6F-184E759E7BFA}" Win64="yes" >
-        <File Id="File.System.Memory.dll" Source="../src/JavLuv/bin/Release/System.Memory.dll" KeyPath="yes" Checksum="yes" />
-      </Component>        
-      <Component Id="Cmp.System.Numerics.Vectors.dll" Guid="{70679696-3EBD-49FA-9796-20B6C955B4D7}" Win64="yes" >
-        <File Id="File.System.Numerics.Vectors.dll" Source="../src/JavLuv/bin/Release/System.Numerics.Vectors.dll" KeyPath="yes" Checksum="yes" />
-      </Component>              
-      <Component Id="Cmp.System.Runtime.CompilerServices.Unsafe.dll" Guid="{5E098BFD-81F6-4C31-859C-35CF74B4E333}" Win64="yes" >
-        <File Id="File.System.Runtime.CompilerServices.Unsafe.dll" Source="../src/JavLuv/bin/Release/System.Runtime.CompilerServices.Unsafe.dll" KeyPath="yes" Checksum="yes" />
-      </Component>
-      <Component Id="Cmp.System.Text.Encoding.CodePages.dll" Guid="{FAD986A9-C01B-459D-9C70-F3B3B5D0BC25}" Win64="yes" >
-        <File Id="File.System.Text.Encoding.CodePages.dll" Source="../src/JavLuv/bin/Release/System.Text.Encoding.CodePages.dll" KeyPath="yes" Checksum="yes" />
-      </Component>           
-      <Component Id="Cmp.System.Text.Encodings.Web.dll" Guid="{A9BCA417-5F62-4CBA-B4FF-A7AFC35ED4DA}" Win64="yes" >
-        <File Id="File.System.Text.Encodings.Web.dll" Source="../src/JavLuv/bin/Release/System.Text.Encodings.Web.dll" KeyPath="yes" Checksum="yes" />
-      </Component>     
-      <Component Id="Cmp.System.Text.Json.dll" Guid="{CC026A72-008E-48B5-95F7-9757A6533545}" Win64="yes" >
-        <File Id="File.System.Text.Json.dll" Source="../src/JavLuv/bin/Release/System.Text.Json.dll" KeyPath="yes" Checksum="yes" />
-      </Component>              
-      <Component Id="Cmp.System.Threading.Tasks.Extensions.dll" Guid="{540C4C29-2C8D-4923-8A3F-6CBBF33A86ED}" Win64="yes" >
-        <File Id="File.System.Threading.Tasks.Extensions.dll" Source="../src/JavLuv/bin/Release/System.Threading.Tasks.Extensions.dll" KeyPath="yes" Checksum="yes" />
-      </Component>      
-      <Component Id="Cmp.System.ValueTuple.dll" Guid="{FCC8A72E-06DC-4932-BC6A-796BF5BE645B}" Win64="yes" >
-        <File Id="File.System.ValueTuple.dll" Source="../src/JavLuv/bin/Release/System.ValueTuple.dll" KeyPath="yes" Checksum="yes" />
-      </Component>            
-      <Component Id="Cmp.UtfUnknown.dll" Guid="{E57BA934-D095-4CE5-B55D-3ECC3E30720E}" Win64="yes" >
-        <File Id="File.UtfUnknown.dll" Source="../src/JavLuv/bin/Release/UtfUnknown.dll" KeyPath="yes" Checksum="yes" />
-      </Component>     
-      <Component Id="Cmp.VirtualizingWrapPanel.dll" Guid="{8F248F7B-C012-4123-BAAA-1554CD8E7D9C}" Win64="yes" >
-        <File Id="File.VirtualizingWrapPanel.dll" Source="../src/JavLuv/bin/Release/VirtualizingWrapPanel.dll" KeyPath="yes" Checksum="yes" />
-      </Component>
-      <Component Id="Cmp.WebScraper.dll" Guid="{F392AD0F-3664-4014-8078-B80EFB254348}" Win64="yes" >
-        <File Id="File.WebScraper.dll" Source="../src/JavLuv/bin/Release/WebScraper.dll" KeyPath="yes" Checksum="yes" />
-      </Component>
-    </ComponentGroup>
+        <!-- Components to install -->
+        <ComponentGroup Id="ProductComponents" Directory="INSTALLFOLDER">
+            <Component Id="Cmp.AngleSharp.dll" Guid="{32CF82D9-7B39-405B-B4F3-6398CC38110D}" Win64="yes" >
+                <File Id="File.AngleSharp.dll" Source="../src/JavLuv/bin/x64/Release/AngleSharp.dll" KeyPath="yes" Checksum="yes" />
+            </Component>
+            <Component Id="Cmp.Common.dll" Guid="{9E311276-C787-43BA-B90C-FCFF1BBDCD27}" Win64="yes" >
+                <File Id="File.Common.dll" Source="../src/JavLuv/bin/x64/Release/Common.dll" KeyPath="yes" Checksum="yes" />
+            </Component>    
+            <Component Id="Cmp.Core14.profile.xml" Guid="{3EB00DFB-4CA7-47F2-9C76-F55E116FD7EC}" Win64="yes" >
+                <File Id="File.Core14.profile.xml" Source="../src/JavLuv/bin/x64/Release/Core14.profile.xml" KeyPath="yes" Checksum="yes" />
+            </Component>           
+            <Component Id="Cmp.Ffmpeg.exe" Guid="{D3B96BD8-7B66-48F9-9167-E586AD363933}" Win64="yes" >
+                <File Id="File.Ffmpeg.exe" Source="../src/JavLuv/bin/x64/Release/ffmpeg.exe" KeyPath="yes" Checksum="yes" />
+            </Component>
+            <Component Id="Cmp.JavLuv.exe" Guid="{CD7D4962-62DD-4286-9C04-D1E3A38C51C4}" Win64="yes" >
+                <File Id="File.JavLuv.exe" Source="../src/JavLuv/bin/x64/Release/JavLuv.exe" KeyPath="yes" Checksum="yes" />
+            </Component>
+            <Component Id="Cmp.JavLuv.exe.config" Guid="{7ABAE244-06B1-4C69-861C-CE89BF7BF821}" Win64="yes" >
+                <File Id="File.JavLuv.exe.config" Source="../src/JavLuv/bin/x64/Release/JavLuv.exe.config" KeyPath="yes" Checksum="yes" />
+            </Component>     
+            <Component Id="Cmp.Microsoft.Bcl.AsyncInterfaces.dll" Guid="{C87A518D-2D7D-4C1F-8E86-261350BD9FDD}" Win64="yes" >
+                <File Id="File.Microsoft.Bcl.AsyncInterfaces.dll" Source="../src/JavLuv/bin/x64/Release/Microsoft.Bcl.AsyncInterfaces.dll" KeyPath="yes" Checksum="yes" />
+            </Component>           
+            <Component Id="Cmp.Microsoft.WindowsAPICodePack.dll" Guid="{F71AD554-4CBB-4075-B849-58140B887CE2}" Win64="yes" >
+                <File Id="File.Microsoft.WindowsAPICodePack.dll" Source="../src/JavLuv/bin/x64/Release/Microsoft.WindowsAPICodePack.dll" KeyPath="yes" Checksum="yes" />
+            </Component>        
+            <Component Id="Cmp.Microsoft.WindowsAPICodePack.Shell.dll" Guid="{E4F3A6EF-0192-43AD-ABBF-0B7DD2303E79}" Win64="yes" >
+                <File Id="File.Microsoft.WindowsAPICodePack.Shell.dll" Source="../src/JavLuv/bin/x64/Release/Microsoft.WindowsAPICodePack.Shell.dll" KeyPath="yes" Checksum="yes" />
+            </Component>          
+            <Component Id="Cmp.Microsoft.WindowsAPICodePack.ShellExtensions.dll" Guid="{BAB1641C-D73F-4993-9A76-82BDBCBEE38F}" Win64="yes" >
+                <File Id="File.Microsoft.WindowsAPICodePack.ShellExtensions.dll" Source="../src/JavLuv/bin/x64/Release/Microsoft.WindowsAPICodePack.ShellExtensions.dll" KeyPath="yes" Checksum="yes" />
+            </Component>         
+            <Component Id="Cmp.MovieInfo.dll" Guid="{9C6083EA-A78E-4399-8729-543B43F93C6A}" Win64="yes" >
+                <File Id="File.MovieInfo.dll" Source="../src/JavLuv/bin/x64/Release/MovieInfo.dll" KeyPath="yes" Checksum="yes" />
+            </Component>     
+            <Component Id="Cmp.NTextCat.dll" Guid="{5C7A71BC-6F85-4219-BFEC-4E7F6CEF717C}" Win64="yes" >
+                <File Id="File.NTextCat.dll" Source="../src/JavLuv/bin/x64/Release/NTextCat.dll" KeyPath="yes" Checksum="yes" />
+            </Component>     
+            <Component Id="Cmp.Subtitles.dll" Guid="{A630CD0E-622D-4731-AFFC-CF3A1CCC5192}" Win64="yes" >
+                <File Id="File.Subtitles.dll" Source="../src/JavLuv/bin/x64/Release/Subtitles.dll" KeyPath="yes" Checksum="yes" />
+            </Component>
+            <Component Id="Cmp.System.Buffers.dll" Guid="{94480749-7D21-4191-86A3-1C1AC68CEC42}" Win64="yes" >
+                <File Id="File.System.Buffers.dll" Source="../src/JavLuv/bin/x64/Release/System.Buffers.dll" KeyPath="yes" Checksum="yes" />
+            </Component>       
+            <Component Id="Cmp.System.Memory.dll" Guid="{ABB3C143-12EE-4172-AA6F-184E759E7BFA}" Win64="yes" >
+                <File Id="File.System.Memory.dll" Source="../src/JavLuv/bin/x64/Release/System.Memory.dll" KeyPath="yes" Checksum="yes" />
+            </Component>        
+            <Component Id="Cmp.System.Numerics.Vectors.dll" Guid="{70679696-3EBD-49FA-9796-20B6C955B4D7}" Win64="yes" >
+                <File Id="File.System.Numerics.Vectors.dll" Source="../src/JavLuv/bin/x64/Release/System.Numerics.Vectors.dll" KeyPath="yes" Checksum="yes" />
+            </Component>              
+            <Component Id="Cmp.System.Runtime.CompilerServices.Unsafe.dll" Guid="{5E098BFD-81F6-4C31-859C-35CF74B4E333}" Win64="yes" >
+                <File Id="File.System.Runtime.CompilerServices.Unsafe.dll" Source="../src/JavLuv/bin/x64/Release/System.Runtime.CompilerServices.Unsafe.dll" KeyPath="yes" Checksum="yes" />
+            </Component>
+            <Component Id="Cmp.System.Text.Encoding.CodePages.dll" Guid="{FAD986A9-C01B-459D-9C70-F3B3B5D0BC25}" Win64="yes" >
+                <File Id="File.System.Text.Encoding.CodePages.dll" Source="../src/JavLuv/bin/x64/Release/System.Text.Encoding.CodePages.dll" KeyPath="yes" Checksum="yes" />
+            </Component>           
+            <Component Id="Cmp.System.Text.Encodings.Web.dll" Guid="{A9BCA417-5F62-4CBA-B4FF-A7AFC35ED4DA}" Win64="yes" >
+                <File Id="File.System.Text.Encodings.Web.dll" Source="../src/JavLuv/bin/x64/Release/System.Text.Encodings.Web.dll" KeyPath="yes" Checksum="yes" />
+            </Component>     
+            <Component Id="Cmp.System.Text.Json.dll" Guid="{CC026A72-008E-48B5-95F7-9757A6533545}" Win64="yes" >
+                <File Id="File.System.Text.Json.dll" Source="../src/JavLuv/bin/x64/Release/System.Text.Json.dll" KeyPath="yes" Checksum="yes" />
+            </Component>              
+            <Component Id="Cmp.System.Threading.Tasks.Extensions.dll" Guid="{540C4C29-2C8D-4923-8A3F-6CBBF33A86ED}" Win64="yes" >
+                <File Id="File.System.Threading.Tasks.Extensions.dll" Source="../src/JavLuv/bin/x64/Release/System.Threading.Tasks.Extensions.dll" KeyPath="yes" Checksum="yes" />
+            </Component>      
+            <Component Id="Cmp.System.ValueTuple.dll" Guid="{FCC8A72E-06DC-4932-BC6A-796BF5BE645B}" Win64="yes" >
+                <File Id="File.System.ValueTuple.dll" Source="../src/JavLuv/bin/x64/Release/System.ValueTuple.dll" KeyPath="yes" Checksum="yes" />
+            </Component>            
+            <Component Id="Cmp.UtfUnknown.dll" Guid="{E57BA934-D095-4CE5-B55D-3ECC3E30720E}" Win64="yes" >
+                <File Id="File.UtfUnknown.dll" Source="../src/JavLuv/bin/x64/Release/UtfUnknown.dll" KeyPath="yes" Checksum="yes" />
+            </Component>     
+            <Component Id="Cmp.VirtualizingWrapPanel.dll" Guid="{8F248F7B-C012-4123-BAAA-1554CD8E7D9C}" Win64="yes" >
+                <File Id="File.VirtualizingWrapPanel.dll" Source="../src/JavLuv/bin/x64/Release/VirtualizingWrapPanel.dll" KeyPath="yes" Checksum="yes" />
+            </Component>
+            <Component Id="Cmp.WebScraper.dll" Guid="{F392AD0F-3664-4014-8078-B80EFB254348}" Win64="yes" >
+                <File Id="File.WebScraper.dll" Source="../src/JavLuv/bin/x64/Release/WebScraper.dll" KeyPath="yes" Checksum="yes" />
+            </Component>
+        </ComponentGroup>
 
   </Product>
 </Wix>

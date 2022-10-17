@@ -390,6 +390,7 @@ namespace JavLuv
             cs.DirectorFilters.Add(new FilterPair("Roshilvia Takiguchi", "Silvia Takiguchi"));
             cs.DirectorFilters.Add(new FilterPair("Takiguchi Shiruvia", "Silvia Takiguchi"));
             cs.DirectorFilters.Add(new FilterPair("Aoi Rena", "Rena Aoi"));
+            cs.DirectorFilters.Add(new FilterPair("Masaki Nao", "Nao Masaki"));
 
             cs.GenreFilters = new List<FilterPair>();
             cs.GenreFilters.Add(new FilterPair("Facesitting", "Face Sitting"));

@@ -242,6 +242,11 @@ namespace JavLuv
                     // Check to see if if this movie is already in the cache.  
                     if (String.IsNullOrEmpty(fileInfo.ID) == false && m_movieCollection.MovieExists(fileInfo.ID))
                     {
+                        MovieData movieData = m_movieCollection.GetMovie(fileInfo.ID);
+                        string path = Path.GetDirectoryName(fn);
+                        if (String.Equals(path, movieData.Path, StringComparison.OrdinalIgnoreCase))
+                            continue;
+
                         // Mark this as a shared folder, since we may have extra files in it now.  Otherwise, if
                         // only one successful file remains, the directory could be inadvertently be moved instead
                         // of selected files copied.
@@ -674,7 +679,7 @@ namespace JavLuv
 
             if (movieData.MovieFileNames.Count == 0)
             {
-                LogError("No movies found", movieData.Path);
+                Logger.WriteWarning("No movies found in " + movieData.Path);
                 return;
             }
 
