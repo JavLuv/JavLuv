@@ -4,6 +4,7 @@ All significant changes are listed in this file.
 ## [1.1.2] - 2022-10-17
 
 - Actress notes field is now searchable
+- Fix actress movie miscount when listed as alias
 
 ## [1.1.1] - 2022-10-15
 

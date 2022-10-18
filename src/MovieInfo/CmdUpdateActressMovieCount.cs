@@ -37,14 +37,28 @@
         private void UpdateActressesCount(MovieData movie)
         {
             foreach (var actor in movie.Metadata.Actors)
-                UpdateActressCount(actor.Name);
+                UpdateActressCount(actor);
         }
 
-        private void UpdateActressCount(string name)
+        private void UpdateActressCount(ActorData actor)
         {
-            ActressData actress = m_collection.FindActress(name);
+            ActressData actress = m_collection.FindActress(actor.Name);
             if (actress != null)
+            {
                 actress.MovieCount++;
+            }
+            else
+            {
+                foreach (var alias in actor.Aliases)
+                {
+                    actress = m_collection.FindActress(alias);
+                    if (actress != null)
+                    {
+                        actress.MovieCount++;
+                        break;
+                    }
+                }
+            }
         }
 
         #endregion
