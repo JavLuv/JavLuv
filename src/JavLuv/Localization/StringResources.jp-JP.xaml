@@ -55,20 +55,20 @@
     <system:String x:Key="Text.VersionDetails">Details</system:String>
 
     <!-- Shared details -->
-    <system:String x:Key="Text.UserRating">User Rating:</system:String>
+    <system:String x:Key="Text.UserRating">平均評価:</system:String>
     <system:String x:Key="Text.Notes">Notes:</system:String>
 
     <!-- Movie details -->
     <system:String x:Key="Text.MovieDetails">Movie Details</system:String>
-    <system:String x:Key="Text.ID">ID:</system:String>
-    <system:String x:Key="Text.Released">Released:</system:String>
-    <system:String x:Key="Text.Runtime">Runtime:</system:String>
-    <system:String x:Key="Text.Minutes">min</system:String>
-    <system:String x:Key="Text.Studio">Studio:</system:String>
-    <system:String x:Key="Text.Label">Label:</system:String>
-    <system:String x:Key="Text.Director">Director:</system:String>
-    <system:String x:Key="Text.Genres">Genres:</system:String>
-    <system:String x:Key="Text.Actresses">Actresses:</system:String>
+    <system:String x:Key="Text.ID">品番:</system:String>
+    <system:String x:Key="Text.Released">発売日:</system:String>
+    <system:String x:Key="Text.Runtime">収録時間:</system:String>
+    <system:String x:Key="Text.Minutes">分</system:String>
+    <system:String x:Key="Text.Studio">メーカー:</system:String>
+    <system:String x:Key="Text.Label">レーベル:</system:String>
+    <system:String x:Key="Text.Director">監督:</system:String>
+    <system:String x:Key="Text.Genres">ジャンル:</system:String>
+    <system:String x:Key="Text.Actresses">出演者:</system:String>
     <system:String x:Key="Text.Resolution">Resolution:</system:String>
     <system:String x:Key="Text.CopyTitle">Copy title and metadata</system:String>
     <system:String x:Key="Text.JP">JP</system:String>
