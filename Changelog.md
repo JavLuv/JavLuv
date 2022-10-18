@@ -1,6 +1,10 @@
 # Changelog
 All significant changes are listed in this file.
 
+## [1.1.2] - 2022-10-17
+
+- Actress notes field is now searchable
+
 ## [1.1.1] - 2022-10-15
 
 - Eliminate scanner errors for extra files in existing folders

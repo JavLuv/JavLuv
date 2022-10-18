@@ -197,6 +197,8 @@ namespace MovieInfo
                 if (altName.ContainsCaseless(term))
                     return true;
             }
+            if (actress.Notes.ContainsCaseless(term))
+                return true;
             return false;
         }
 
