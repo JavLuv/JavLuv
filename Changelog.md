@@ -5,6 +5,7 @@ All significant changes are listed in this file.
 
 - Actress notes field is now searchable
 - Fix actress movie miscount when listed as alias
+- Normalize director name in JavLibrary scraper
 
 ## [1.1.1] - 2022-10-15
 

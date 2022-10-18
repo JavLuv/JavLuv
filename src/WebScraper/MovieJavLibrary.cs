@@ -96,7 +96,7 @@ namespace WebScraper
                 else if (ParseInfoPair(element, GetToken(Token.Director), out value))
                 {
                     if (value != "----")
-                        m_metadata.Director = value;
+                        m_metadata.Director = Utilities.ReverseNames(value);
                 }
                 else if (ParseInfoPair(element, GetToken(Token.Maker), out value))
                 {
