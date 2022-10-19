@@ -7,6 +7,7 @@ All significant changes are listed in this file.
 - Fix actress movie miscount when listed as alias
 - Fix issue causing certain movies to incorrectly display on actress detail view
 - Normalize director name in JavLibrary scraper
+- Actresses now sort by name if other criteria is equal
 
 ## [1.1.1] - 2022-10-15
 
