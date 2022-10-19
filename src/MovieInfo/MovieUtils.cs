@@ -235,9 +235,11 @@ namespace MovieInfo
 
         public static bool ActressHasName(ActressData actress, string name)
         {
+            if (String.IsNullOrEmpty(actress.Name) || String.IsNullOrEmpty(name))
+                return false;
             if (String.Compare(actress.Name, name, true) == 0)
                 return true;
-            if (String.Compare(actress.JapaneseName, name, true) == 0)
+            if (String.IsNullOrEmpty(actress.JapaneseName) == false && String.Compare(actress.JapaneseName, name, true) == 0)
                 return true;
             if (Utilities.Equals(name, actress.AltNames, StringComparison.OrdinalIgnoreCase))
                 return true;
