@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Xml.Linq;
-using System.Xml.Serialization;
 
 namespace MovieInfo
 {
@@ -20,6 +18,7 @@ namespace MovieInfo
             Cup = String.Empty;
             BloodType = String.Empty;
             ImageFileNames = new List<string>();
+            Notes = String.Empty;
         }
 
         public ActressData(string name) : this()

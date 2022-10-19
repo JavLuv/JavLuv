@@ -35,10 +35,11 @@ namespace MovieInfo
                 return 1;
             if (right.DobYear == 0)
                 return -1;
-            return DateTime.Compare(
-                new DateTime(right.DobYear, Math.Max(right.DobMonth, 1), Math.Max(right.DobDay, 1)),
-                new DateTime(left.DobYear, Math.Max(left.DobMonth, 1), Math.Max(left.DobDay, 1))
-            );
+            int l = MovieUtils.GetAgeFromDateOfBirth(left.DobYear, left.DobMonth, left.DobDay);
+            int r = MovieUtils.GetAgeFromDateOfBirth(right.DobYear, right.DobMonth, right.DobDay);
+            if (l != r)
+                return (l < r) ? -1 : 1;
+            return String.Compare(left.Name, right.Name);
         }
     }
 
@@ -47,15 +48,16 @@ namespace MovieInfo
         public int Compare(ActressData left, ActressData right)
         {
             if (left.DobYear == 0 && right.DobYear == 0)
-                return String.Compare(left.Name, right.Name);
+                return String.Compare(right.Name, left.Name);
             if (left.DobYear == 0)
                 return 1;
             if (right.DobYear == 0)
                 return -1;
-            return DateTime.Compare(
-                new DateTime(left.DobYear, Math.Max(left.DobMonth, 1), Math.Max(left.DobDay, 1)),
-                new DateTime(right.DobYear, Math.Max(right.DobMonth, 1), Math.Max(right.DobDay, 1))
-            );
+            int l = MovieUtils.GetAgeFromDateOfBirth(left.DobYear, left.DobMonth, left.DobDay);
+            int r = MovieUtils.GetAgeFromDateOfBirth(right.DobYear, right.DobMonth, right.DobDay);
+            if (l != r)
+                return (l < r) ? 1 : -1;
+            return String.Compare(left.Name, right.Name);
         }
     }
 
@@ -69,9 +71,11 @@ namespace MovieInfo
                 return 1;
             if (right.DobDay == 0 || right.DobMonth == 0)
                 return -1;
-            if (left.DobMonth == right.DobMonth)
+            if (left.DobMonth != right.DobMonth)
+                return (left.DobMonth < right.DobMonth) ? -1 : 1;
+            if (left.DobDay != right.DobDay)
                 return (left.DobDay < right.DobDay) ? -1 : 1;
-            return (left.DobMonth < right.DobMonth) ? -1 : 1;
+            return String.Compare(left.Name, right.Name);
         }
     }
 
@@ -81,7 +85,9 @@ namespace MovieInfo
         {
             int l = left.MovieCount;
             int r = right.MovieCount;
-            return (l == r) ? 0 : (l < r) ? 1 : -1;
+            if (l != r)
+                return (l < r) ? 1 : -1;
+            return String.Compare(left.Name, right.Name);
         }
     }
 
@@ -91,7 +97,9 @@ namespace MovieInfo
         {
             int l = left.UserRating;
             int r = right.UserRating;
-            return (l == r) ? 0 : (l < r) ? 1 : -1;
+            if (l != r)
+                return (l < r) ? 1 : -1;
+            return String.Compare(left.Name, right.Name);
         }
     }
 
@@ -197,6 +205,8 @@ namespace MovieInfo
                 if (altName.ContainsCaseless(term))
                     return true;
             }
+            if (actress.Notes.ContainsCaseless(term))
+                return true;
             return false;
         }
 
