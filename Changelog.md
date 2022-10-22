@@ -1,6 +1,10 @@
 # Changelog
 All significant changes are listed in this file.
 
+## [1.1.3] - 2022-10-17
+
+- Movie metadata is scanned after changing auto actress synchronize on in settings
+
 ## [1.1.2] - 2022-10-17
 
 - Actress notes field is now searchable
