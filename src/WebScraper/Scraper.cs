@@ -545,7 +545,7 @@ namespace WebScraper
                 a.DobMonth = b.DobMonth;
             if (a.DobDay == 0)
                 a.DobDay = b.DobDay;
-            if (a.Height == 0)
+            if (a.Height < 50)
                 a.Height = b.Height;
             if (String.IsNullOrEmpty(a.Cup))
                 a.Cup = b.Cup;

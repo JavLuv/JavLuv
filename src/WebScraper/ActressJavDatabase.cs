@@ -82,12 +82,7 @@ namespace WebScraper
                     var nextSibling = element.NextSibling;
                     if (IsValidNode(nextSibling))
                     {
-                        try
-                        {
-                            Actress.Height = int.Parse(nextSibling.TextContent);
-                        }
-                        catch (Exception)
-                        { }
+                        Actress.Height = Utilities.ParseInitialDigits(nextSibling.TextContent);
                     }
                 }
                 else if (element.TextContent == "Cup")

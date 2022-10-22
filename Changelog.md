@@ -5,6 +5,7 @@ All significant changes are listed in this file.
 
 - Movie metadata is scanned after changing auto actress synchronize on in settings
 - Actress movie counts are refreshed after scanning movies
+- Fix issue causing actress height to fail to parse on JavDatabase.com
 
 ## [1.1.2] - 2022-10-17
 
