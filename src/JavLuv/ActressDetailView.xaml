@@ -296,8 +296,8 @@
                                 <ColumnDefinition Width="10" />
                                 <ColumnDefinition Width="*" />
                             </Grid.ColumnDefinitions>
-                            <Label Style="{StaticResource DetailLabelStyle}" Content="{DynamicResource Text.ActressHeight}" />
-                            <TextBox Style="{StaticResource DetailTextBoxStyle}" Text="{Binding Height, UpdateSourceTrigger=LostFocus}" />
+                            <Label Style="{StaticResource DetailLabelStyle}" Content="{DynamicResource Text.ActressHeight}"  ToolTip="{Binding ImperialHeight}" />
+                            <TextBox Style="{StaticResource DetailTextBoxStyle}" Text="{Binding Height, UpdateSourceTrigger=LostFocus}" ToolTip="{Binding ImperialHeight}" />
                         </Grid>
                         <Grid>
                             <Grid.ColumnDefinitions>

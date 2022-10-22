@@ -1,11 +1,12 @@
 # Changelog
 All significant changes are listed in this file.
 
-## [1.1.3] - 2022-10-17
+## [1.1.3] - 2022-10-22
 
-- Movie metadata is scanned after changing auto actress synchronize on in settings
+- Actresses in movie metadata are updated after turning auto actress synchronize on in settings
 - Actress movie counts are refreshed after scanning movies
 - Fix issue causing actress height to fail to parse on JavDatabase.com
+- Hover mouse above actress height to show value in feet and inches
 
 ## [1.1.2] - 2022-10-17
 

@@ -275,6 +275,43 @@ namespace Common
                 new DateTime(year, month, day);
         }
 
+        public static string CentimetersToFeetAndInchesString(int cm)
+        {
+            if (cm <= 0)
+                return String.Empty;
+            double inches = cm * 0.393701;
+            int feet = 0;
+            while (inches >= 12.0)
+            {
+                feet++;
+                inches -= 12.0;
+            }
+            int iPart = (int)inches;
+            double dPart = inches % 1.0;
+            bool halfInch = false;
+            if (dPart >= (1.0 / 4.0) && dPart <= (3.0 / 4.0))
+                halfInch = true;
+            else if (dPart <= (5.0 / 8.0))
+                halfInch = true;
+            else if (dPart > (3.0 / 4.0))
+            {
+                iPart++;
+                if (iPart == 12)
+                {
+                    iPart = 0;
+                    feet++;
+                }
+            }
+            string s = feet.ToString();
+            s += "' ";
+            if ((iPart == 0 && halfInch) == false)
+                s += iPart.ToString();
+            if (halfInch)
+                s += "½";
+            s += "\"";
+            return s;
+        }
+
         public static string StringListToString(List<string> stringList)
         {
             if (stringList.Count == 0)

@@ -270,7 +270,16 @@ namespace JavLuv
                 {
                     m_actressData.Height = Utilities.ParseInitialDigits(value);
                     NotifyPropertyChanged("Height");
+                    NotifyPropertyChanged("ImperialHeight");
                 }
+            }
+        }
+
+        public string ImperialHeight
+        {
+            get
+            {
+                return Utilities.CentimetersToFeetAndInchesString(m_actressData.Height);
             }
         }
 
