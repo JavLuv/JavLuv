@@ -220,6 +220,7 @@ namespace MovieInfo
                 }
             }
             SearchMovies();
+            SearchActresses();
             Save();
         }
 
