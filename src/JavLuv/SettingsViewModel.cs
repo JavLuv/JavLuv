@@ -386,6 +386,8 @@ namespace JavLuv
 
         private void CloseSettingsExecute()
         {
+            if (Settings.Get().AutoSyncActresses == true)
+                Parent.Collection.UpdateActressNames();
             Parent.Overlay = null;
         }
 

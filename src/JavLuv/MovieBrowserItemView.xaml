@@ -33,10 +33,11 @@
                     <MenuItem Header="{DynamicResource Text.RescanFiles}" Command="{Binding Parent.RescanFilesCommand}"/>
                     <MenuItem Header="{DynamicResource Text.RemoveFromLibrary}" Command="{Binding Parent.RemoveFromLibraryCommand}"/>
                     <MenuItem Header="{DynamicResource Text.FilterMetadata}" Command="{Binding Parent.FilterMetadataCommand}"/>
+                    <Separator Visibility="{Binding Parent.ShowAdvancedOptionsVisibility}" />
                     <MenuItem Header="{DynamicResource Text.ImportCoverImage}" Command="{Binding Parent.ImportCoverImageCommand}"  Visibility="{Binding Parent.ShowAdvancedOptionsVisibility}"/>
+                    <MenuItem Header="{DynamicResource Text.FindSubtitles}" Command="{Binding Parent.FindSubtitlesCommand}" Visibility="{Binding Parent.FindSubtitlesVisibility}"/>
                     <MenuItem Header="{DynamicResource Text.RegenerateMetadata}" Command="{Binding Parent.RegenerateMetadataCommand}"  Visibility="{Binding Parent.ShowAdvancedOptionsVisibility}"/>
                     <MenuItem Header="{DynamicResource Text.DeleteMetadata}" Command="{Binding Parent.DeleteMetadataCommand}" Visibility="{Binding Parent.ShowAdvancedOptionsVisibility}"/>
-                    <MenuItem Header="{DynamicResource Text.FindSubtitles}" Command="{Binding Parent.FindSubtitlesCommand}" Visibility="{Binding Parent.FindSubtitlesVisibility}"/>
                 </ContextMenu>
             </Border.ContextMenu>
             

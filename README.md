@@ -1,54 +1,63 @@
 # JavLuv
-JavLuv is a tool for organizing your Japanese Adult Video collection.  
 
-# Requirements
-JavLuv runs on Microsoft Windows 10 or later.  Visual Studio 2022 is required to compile the editor from source.  The Wix plugin is required to compile the installer.
+JavLuv is an application for browsing and organizing your Japanese adult video collection. 
 
-# Features
+## Requirements
+
+JavLuv runs on Microsoft Windows 10 or later.  You can find the [latest releases here](https://github.com/JavLuv/JavLuv/releases).  To install, simply download and install JavLuv using the msi installer, or unzip and run JavaLuv.exe.
+
+## Features
+
 * Automatic identification of movies by ID embedded in file or folder names
 * Generation of Kodi-compatible .nfo metadata
-* Blocking or renaming genre keywords
-* Visual display of movies in thumbnail or in details
+* Automated filtering of most movie metadata
+* Visual display of movies and actresses in thumbnail or in details
 * Filter instantly by any keywords, such as ID, title, actrees, genres, folder names, etc
-* Sort by title, ID, folder name, date, and rating
-* Supports user ratings to identify favorites
+* Sort momvies by title, ID, actress, date, and user rating
+* Sort actresses by name, age, birthday, movie count, and user rating
+* Supports user ratings to identify movie and actress favorites
 * Automatic moving / renaming of movie folders and filenames according to configurable rules
+
+## JavLuv Views
+
+JavLuv lets you conveniently view your entire movie collection using the movie browser.  You can search for nearly any metadata to filter the movie collection, like title, genre, actress, and more.  You can also sort by title, ID, actresses, release date (both directsions), and user rating.
+
+![JavLuv Movie Browser](media/movie_browser.png)
+_JavLuv movie browser_
+
+<br>
+
+Double-clicking on a movie in the browser view shows you the movie details view, which displays the movies title, cover, and all associated metadata.
+
+![JavLuv Movie Details](media/movie_details.png)
+_JavLuv movie details_
+
+<br>
+
+You can also browse individual actresses in the actress browser by selecting the Actress tab at the top of the page, which are gathered from online sources when you scan movies.  You can sort by name, age (both directions), birthday, number of movies, and user rating.
+
+![JavLuv Actress Browser](media/actress_browser.png)
+_JavLuv actress browser_
+
+<br>
+
+Double-clicking an actress in the actress browser brings you to the actress detail view, where you can see a photo, the actress' name in English and Japanese (including alternate names), various additional information, and a listing of all movies she appears in.
+
+![JavLuv Actress Details](media/actress_details.png)
+_JavLuv actress details_
+
+## Getting Started
+
+To populate JavLuv with movies, click on the _Scan movies..._ button on the left-hand pane, select a folder with movies in it, and click _Scan_.  Assuming your movies are named correctly, JavLuv will proceed automatically from there.
 
 JavLuv identifies movies by a alpha-numeric code (e.g. \[ABC-123\]) to identify a movie, and then retrieves information from a number of websites to generate metadata for the identified movie.
 
 Metadata is stored in a Kodi-compatible XML file typically named the same as the movie file, but with a .nfo extension.  A local cache of this data is used, but the .nfo metadata is considered to be the authoritative source for the movies.
 
-# Moving / Renaming
-JavLuv has an automatic renaming feature.  It can move and rename folders and files according to a set of rules.  Metadata can be used to generate paths for filenames.  They are surrounded by curly brackets and a keyword, sometimes with additional parameters.  
+## Compiling JavLuv
 
-## Metadata identifiers:
-* {DVD-ID} - The unique ID of the movie, often in a form ABC-123 or similar.
-* {TITLE #} - Title of the movie, followed by a number that indicates how many characters are allowed.  Folder concatenation attempts to break on the nearest word, and indicates this with an elipse.
-* {ACTRESS #} - Name of actress(es) in title, with optional maximum number of actresses to list (default is 1).
-* {STUDIO} - Name of the studio
-* {YEAR} - Year movie was released
-* {USER_RATING #-#="Folder1" #-#="Folder2"} - Allows substitution of multiple folder names according to the user rating (a value between 0 and 10).
-* {SEQUENCE "-" ALPHA/ALPHA_LOWER/NUMBER} - Creates a consacutive set of trailing identifiers depending on the last identifier.  ALPHA creates uppercase letters (A, B, C), ALPHA_LOWER creates lowercase letters (a, b, c), and NUMBER creates a sequence of numbers (1, 2, 3).
+Visual Studio 2022 is required to compile the editor from source.  The Wix plugin is required to compile the installer.  You can build the project by running build.bat in the root folder, after which the installer and zip will be copied to the /build folder.  You can also open the solution in the /src folder and build using Visual Studio's IDE.
 
-Metadata identifiers and other path for filename data can be used in various fields used for different purposes.  
+## Additional Information
 
-## Fields:
-* Library Folder - Identifies the folder containing your JAV library.  Metadata cannot be used in this field.
-* Folder - Defines the folder used to contain all files associated with a single movie.  If this field is blank, all files are stored in a single folder.
-* Movie - Defines the filename used for movies.  Because multiple filenames of this type may be present, this field must end with a SEQUENCE.
-* Cover - Defines the filename used for cover imagas.
-* Preview - Defines the filename used for preview (thumbnail) images.  Because multiple filenames of this type may be present, this field must end with a SEQUENCE.
-* Metadata - Defines the filename used for metadata (generated .nfo file).
-
-The Folder field can define any terms that expand to a legal path.  For instance, it can be as simple as the name of a folder, although that wouldn't be all that useful.  It becomes more useful when combined with unique metadata.  For example, the following folder field:
-
-    {USER_RATING 9-10="Favorites" 1-8="Library" 0="New"}\{ACTRESS}\{STUDIO}\{YEAR}\[{DVD-ID}] {TITLE 80}
-
-will, given a movie with a user rating of 9, starring Sakura Sakuraba, a studio name of Example Studio, a release year of 2020, a DVD-ID of ABC-123, and a title of "Example Movie" will be moved or renamed as follows:
-
-    Favorites\Sakura Sakuraba\Example Studio\2020\[ABC-123] Example Movie\
-
-## Performing Move / Rename:
-There are two ways to move / rename your movies.  If you check the Move / rename after scan option in the Scan Movies dialog, then this will be performed every time you scan a new movie.  It will automatically be moved into your library folder and named according to your preferred rules.
-
-Alternately, you can select any number of movies in the browser view (CTRL-A selects all files), right click, and select Move / Rename... from the context menu.  It does no harm to attempt to move / rename files that have already had this operation performed on them.  If nothing needs moving or renaming, nothing will occur.
+If you want more information about all the features of JavLuv in detail, you can learn about all it on the [JavLuv Wiki](https://github.com/JavLuv/JavLuv/wiki).
