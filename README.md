@@ -34,7 +34,7 @@ _JavLuv movie details_
 
 <br>
 
-You can also browse individual actresses in the actress browser, which are gathered from online sources when you scan movies.  You can sort by name, age (both directions), birthday, number of movies, and user rating.
+You can also browse individual actresses in the actress browser by selecting the Actress tab at the top of the page, which are gathered from online sources when you scan movies.  You can sort by name, age (both directions), birthday, number of movies, and user rating.
 
 ![JavLuv Actress Browser](media/actress_browser.png)
 _JavLuv actress browser_
@@ -58,4 +58,6 @@ Metadata is stored in a Kodi-compatible XML file typically named the same as the
 
 Visual Studio 2022 is required to compile the editor from source.  The Wix plugin is required to compile the installer.  You can build the project by running build.bat in the root folder, after which the installer and zip will be copied to the /build folder.  You can also open the solution in the /src folder and build using Visual Studio's IDE.
 
+## Additional Information
 
+If you want more information about all the features of JavLuv in detail, you can learn about all it on the [JavLuv Wiki](https://github.com/JavLuv/JavLuv/wiki).
