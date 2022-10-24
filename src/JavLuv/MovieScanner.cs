@@ -92,8 +92,6 @@ namespace JavLuv
         {
             Logger.WriteInfo("Cancel scanner");
             IsCancelled = true;
-            m_dispatcher.Invoke(DispatcherPriority.Normal, new Action(delegate () { ScanComplete?.Invoke(this, new EventArgs()); }));
-            m_thread = null;
         }
 
         public void Clear()
