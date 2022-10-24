@@ -6,6 +6,7 @@ All significant changes are listed in this file.
 
 - Disable update actress command when scanner is in use
 - Fix exception when cancelling actress update scan
+- Search can now use 'or' or negate terms by prepending with '-'
 
 ## [1.1.3] - 2022-10-23
 

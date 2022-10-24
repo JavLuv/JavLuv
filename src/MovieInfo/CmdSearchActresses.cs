@@ -136,7 +136,7 @@ namespace MovieInfo
             }
             else
             {
-                // Populate filtered movie list with all movies
+                // Populate filtered actress list with all actresses
                 lock (m_actressesData)
                 {
                     foreach (var actress in m_actressesData.Actresses)
@@ -144,7 +144,7 @@ namespace MovieInfo
                 }
             }
 
-            // Sort the filtered movies
+            // Sort the filtered actresses
             Sort();
         }
 
@@ -154,7 +154,7 @@ namespace MovieInfo
 
         private void Search()
         {
-            var terms = MovieUtils.SearchSplit(m_searchText);
+            var termsList = MovieUtils.SearchSplit(m_searchText);
             HashSet<ActressData> foundActresses = new HashSet<ActressData>();
             foreach (ActressData actress in m_actressesData.Actresses)
             {
@@ -176,18 +176,21 @@ namespace MovieInfo
                             continue;
                     }
                 }
-                bool found = true;
-                foreach (string term in terms)
-                {
 
-                    if (!SearchActresses(actress, term))
+                foreach (var terms in termsList)
+                {
+                    bool found = true;
+                    foreach (string term in terms)
                     {
-                        found = false;
-                        continue;
+                        if (!SearchActresses(actress, term))
+                        {
+                            found = false;
+                            continue;
+                        }
                     }
+                    if (found)
+                        foundActresses.Add(actress);
                 }
-                if (found)
-                    foundActresses.Add(actress);
             }
 
             foreach (ActressData actress in foundActresses)
@@ -196,18 +199,23 @@ namespace MovieInfo
 
         private bool SearchActresses(ActressData actress, string term)
         {
+            if (term == "-")
+                return true;
+            bool retVal = term.StartsWith("-") == false;
+            if (retVal == false)
+                term = term.Substring(1);
             if (actress.Name.ContainsCaseless(term))
-                return true;
+                return retVal;
             if (actress.JapaneseName.ContainsCaseless(term))
-                return true;
+                return retVal;
             foreach (var altName in actress.AltNames)
             {
                 if (altName.ContainsCaseless(term))
-                    return true;
+                    return retVal;
             }
             if (actress.Notes.ContainsCaseless(term))
-                return true;
-            return false;
+                return retVal;
+            return !retVal;
         }
 
         private void Sort()
@@ -233,6 +241,11 @@ namespace MovieInfo
                     m_filteredActresses.Sort(new ActressUserRatingComparer());
                     break;
             };
+        }
+
+        private bool CheckExclusion(string term)
+        {
+            return term.StartsWith("-") == false;
         }
 
         #endregion
