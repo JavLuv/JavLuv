@@ -2,6 +2,10 @@
 
 All significant changes are listed in this file.
 
+## [1.1.4] - 2022-10-24
+
+- Disable update actress command when scanner is in use
+
 ## [1.1.3] - 2022-10-23
 
 - Actresses in movie metadata are updated after turning auto actress synchronize on in settings

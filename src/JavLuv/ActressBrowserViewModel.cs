@@ -77,7 +77,7 @@ namespace JavLuv
                 }
             }
         }
-
+/*
         public System.Windows.Visibility EnableMoveRenameVisibility
         {
             get
@@ -110,7 +110,7 @@ namespace JavLuv
                     return System.Windows.Visibility.Collapsed;
             }
         }
-
+*/
         #endregion
 
         #region Event Handlers
@@ -235,7 +235,7 @@ namespace JavLuv
 
         private bool CanUpdateActressesExecute()
         {
-            return SelectedItems.Count > 0;
+            return Parent.IsScanning == false && SelectedItems.Count > 0;
         }
 
         public ICommand UpdateActressesCommand { get { return new RelayCommand(UpdateActressesExecute, CanUpdateActressesExecute); } }
