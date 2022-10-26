@@ -42,6 +42,7 @@
     <system:String x:Key="Text.ResetDefaults">Reset to defaults</system:String>
     <system:String x:Key="Text.ResetFilters">Reset filters</system:String>
     <system:String x:Key="Text.MergeFilters">Merge filters</system:String>
+    <system:String x:Key="Text.LabelMiscellaneous">Miscellaneous</system:String>
     <system:String x:Key="Text.CopyLogFile">Copy log file to...</system:String>
     <system:String x:Key="Text.LicenseInformation">License information:</system:String>
     <system:String x:Key="Text.JavLuvDistributed">JavLuv is distributed under the MIT Open Source License:</system:String>

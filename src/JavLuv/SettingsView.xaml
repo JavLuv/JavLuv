@@ -219,19 +219,7 @@
                         Text="{Binding GenreFilters}"
                         TextWrapping="Wrap"
                         />
-                    <Label Margin="0, 10, 0, 0" Content="{DynamicResource Text.ActressFilters}" />
-                    <TextBox
-                        Text="{Binding ActorFilters}"
-                        TextWrapping="Wrap"
-                        />
-                    <StackPanel Margin="0, 25, 0, 0" Orientation="Horizontal">
-                        <Button
-                            Width="120"
-                            HorizontalAlignment="Left"
-                            Margin="0, 0, 15, 0"
-                            Command="{Binding ResetToDefaultsCommand}"
-                            Content="{DynamicResource Text.ResetDefaults}"
-                            />
+                    <StackPanel Margin="0, 15, 0, 0" Orientation="Horizontal">
                         <Button
                             Width="120"
                             HorizontalAlignment="Left"
@@ -246,18 +234,25 @@
                             Command="{Binding MergeFiltersCommand}"
                             Content="{DynamicResource Text.MergeFilters}"
                             />
-
                     </StackPanel>
-                    <Button
-                        Width="120"
-                        HorizontalAlignment="Left"
-                        Margin="0, 25, 0, 0"
-                        Command="{Binding CopyLogFileToCommand}"
-                        Content="{DynamicResource Text.CopyLogFile}"
-                        />
-
-                    <Label Margin="0, 25, 0, 0" Content="{DynamicResource Text.LicenseInformation}" />
-
+                    <Label Margin="0, 25, 0, 0"  Style="{StaticResource PanelLabelStyle}" Content="{DynamicResource Text.LabelMiscellaneous}"/>
+                    <StackPanel Margin="0, 10, 0, 0" Orientation="Horizontal">
+                        <Button
+                            Width="120"
+                            HorizontalAlignment="Left"
+                            Margin="0, 0, 15, 0"
+                            Command="{Binding ResetToDefaultsCommand}"
+                            Content="{DynamicResource Text.ResetDefaults}"
+                            />
+                        <Button
+                            Width="120"
+                            HorizontalAlignment="Left"
+                            Margin="0, 0, 15, 0"
+                            Command="{Binding CopyLogFileToCommand}"
+                            Content="{DynamicResource Text.CopyLogFile}"
+                            />
+                    </StackPanel>
+                    <Label Margin="0, 20, 0, 0" Content="{DynamicResource Text.LicenseInformation}" />
                     <StackPanel Orientation="Horizontal">
                         <Label Content="{DynamicResource Text.JavLuvDistributed}" />
                         <Label>
@@ -270,7 +265,6 @@
                             <Hyperlink RequestNavigate="Hyperlink_RequestNavigate"  NavigateUri="https://www.ffmpeg.org/">www.ffmpeg.org</Hyperlink>
                         </Label>
                     </StackPanel>
-
                 </StackPanel>
             </Grid>
         </ScrollViewer>
