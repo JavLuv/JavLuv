@@ -2,11 +2,12 @@
 
 All significant changes are listed in this file.
 
-## [1.1.4] - 2022-10-24
+## [1.1.4] - 2022-10-26
 
+- Search can now use 'or' or negate terms by prepending with '-'
 - Disable update actress command when scanner is in use
 - Fix exception when cancelling actress update scan
-- Search can now use 'or' or negate terms by prepending with '-'
+- Fix scanner recognition of longer movie IDs
 
 ## [1.1.3] - 2022-10-23
 

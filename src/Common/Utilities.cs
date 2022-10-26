@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -69,19 +68,19 @@ namespace Common
                 return String.Empty;
 
             // Limit initial ID detections to first ten characters of filename
-            const int MaxNumCharsToCheck = 10;
+            const int MaxNumCharsToCheck = 13;
             string shortFileName = fileName;
             if (fileName.Length > MaxNumCharsToCheck)
                 shortFileName = fileName.Substring(0, MaxNumCharsToCheck);
 
             string[] shortChecks =
             {
-                @"([a-z,A-Z]{1,6}-[0-9]{2,5}[d,D]{0,1})",
-                @"([a-z,A-Z]{1,6}[0-9]{0,2}-[0-9]{2,5}[d,D]{0,1})",
-                @"([a-z,A-Z]{1,6}[0-9]{0,2}-[0-9]{1}[d,D]{0,1})",
-                @"([a-z,A-Z]{1,6}[0-9]{2,5}[d,D]{0,1})",
-                @"([a-z,A-Z]{1,6} [0-9]{2,5}[d,D]{0,1})",
-                @"([a-z,A-Z]{1,6}_[0-9]{2,5}[d,D]{0,1})",
+                @"([a-z,A-Z]{1,7}-[0-9]{2,5}[d,D]{0,1})",
+                @"([a-z,A-Z]{1,7}[0-9]{0,2}-[0-9]{2,5}[d,D]{0,1})",
+                @"([a-z,A-Z]{1,7}[0-9]{0,2}-[0-9]{1}[d,D]{0,1})",
+                @"([a-z,A-Z]{1,7}[0-9]{2,5}[d,D]{0,1})",
+                @"([a-z,A-Z]{1,7} [0-9]{2,5}[d,D]{0,1})",
+                @"([a-z,A-Z]{1,7}_[0-9]{2,5}[d,D]{0,1})",
             };
 
             Regex regex = null;
@@ -100,10 +99,10 @@ namespace Common
                 string[] longChecks =
                 {
                     @"([a-z,A-Z]{3,6}-[0-9]{3,5}[d,D]{0,1})",
-                    @"(\[[a-z,A-Z]{2,6}-[0-9]{2,5}[d,D]{0,1}\])",
-                    @"(\([a-z,A-Z]{2,6}-[0-9]{2,5}[d,D]{0,1}\))",
-                    @"( [a-z,A-Z]{2,6}[ -][0-9]{3,5}[d,D]{0,1})",
-                    @"( [a-z,A-Z]{2,6}[ -][0-9]{3,5}[d,D]{0,1}[ .])",
+                    @"(\[[a-z,A-Z]{2,7}-[0-9]{2,5}[d,D]{0,1}\])",
+                    @"(\([a-z,A-Z]{2,7}-[0-9]{2,5}[d,D]{0,1}\))",
+                    @"( [a-z,A-Z]{2,7}[ -][0-9]{3,5}[d,D]{0,1})",
+                    @"( [a-z,A-Z]{2,7}[ -][0-9]{3,5}[d,D]{0,1}[ .])",
                 };
 
                 foreach (string check in longChecks)
