@@ -121,9 +121,10 @@ namespace MovieInfo
             return changed;
         }
 
-        public static List<string> SearchSplit(string stringToSplit)
+        public static List<List<string>> SearchSplit(string stringToSplit)
         {
-            List<string> results = new List<string>();
+            // Initially parse into a single list
+            var initialSplit = new List<string>();
             bool inQuote = false;
             StringBuilder currentToken = new StringBuilder();
             for (int index = 0; index < stringToSplit.Length; ++index)
@@ -140,7 +141,8 @@ namespace MovieInfo
                     // We've come to the end of a token, so we find the token,
                     // trim it and add it to the collection of results...
                     string result = currentToken.ToString().Trim();
-                    if (result != "") results.Add(result);
+                    if (result != "") 
+                        initialSplit.Add(result);
 
                     // We start a new token...
                     currentToken = new StringBuilder();
@@ -156,7 +158,24 @@ namespace MovieInfo
             // We've come to the end of the string, so we add the last token...
             string lastResult = currentToken.ToString().Trim();
             if (lastResult != "")
-                results.Add(lastResult);
+                initialSplit.Add(lastResult);
+
+            // Now break into multiple list separated by the 'or' keyword
+            var results = new List<List<string>>();
+            var currTerms = new List<string>();
+            results.Add(currTerms);
+            foreach (string term in initialSplit)
+            {
+                if (String.Compare(term, "or", true) == 0)
+                {
+                    currTerms = new List<string>();
+                    results.Add(currTerms);
+                }
+                else
+                {
+                    currTerms.Add(term);
+                }
+            }
 
             return results;
         }

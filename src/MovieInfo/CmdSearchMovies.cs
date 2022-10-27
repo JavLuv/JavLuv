@@ -173,7 +173,7 @@ namespace MovieInfo
         {
             HashSet<MovieData> foundMovies = new HashSet<MovieData>();
 
-            var terms = MovieUtils.SearchSplit(m_searchText);   
+            var termsList = MovieUtils.SearchSplit(m_searchText);   
             foreach (MovieData movie in m_availableMovies)
             {
                 if (m_showUnratedOnly && movie.Metadata.UserRating != 0)
@@ -181,17 +181,20 @@ namespace MovieInfo
                 if (m_showSubtitlesOnly && movie.SubtitleFileNames.Count() == 0)
                     continue;
 
-                bool found = true;
-                foreach (string term in terms)
+                foreach (var terms in termsList)
                 {
-                    if (!SearchMovieForTerm(movie, term))
+                    bool found = true;
+                    foreach (string term in terms)
                     {
-                        found = false;
-                        continue;
+                        if (!SearchMovieForTerm(movie, term))
+                        {
+                            found = false;
+                            continue;
+                        }
                     }
+                    if (found)
+                        foundMovies.Add(movie);
                 }
-                if (found)
-                    foundMovies.Add(movie);
             }
 
             foreach (MovieData movie in foundMovies)
@@ -200,32 +203,37 @@ namespace MovieInfo
 
         private bool SearchMovieForTerm(MovieData movie, string term)
         {
+            if (term == "-")
+                return true;
+            bool retVal = term.StartsWith("-") == false;
+            if (retVal == false)
+                term = term.Substring(1);
             if (movie.Metadata.Title.ContainsCaseless(term))
-                return true;
+                return retVal;
             if (movie.Metadata.UniqueID.Value.ContainsCaseless(term))
-                return true;
+                return retVal;
             if (movie.Metadata.Genres.ContainsCaseless(term))
-                return true;
+                return retVal;
             foreach (var actor in movie.Metadata.Actors)
             {
                 if (actor.Name.ContainsCaseless(term))
-                    return true;
+                    return retVal;
                 if (actor.Aliases.ContainsCaseless(term))
-                    return true;
+                    return retVal;
             }
             if (movie.Metadata.Studio.ContainsCaseless(term))
-                return true;
+                return retVal;
             if (movie.Metadata.Label.ContainsCaseless(term))
-                return true;
+                return retVal;
             if (movie.Metadata.Studio.ContainsCaseless(term))
-                return true;
+                return retVal;
             if (movie.Metadata.Director.ContainsCaseless(term))
-                return true;
+                return retVal;
             if (movie.Metadata.Plot.ContainsCaseless(term))
-                return true;
+                return retVal;
             if (movie.Path.ContainsCaseless(term))
-                return true;
-            return false;
+                return retVal;
+            return !retVal;
         }
 
         private bool SearchMovieForActress(MovieData movie, ActressData actress)
