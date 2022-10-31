@@ -7,7 +7,7 @@
     xmlns:local="clr-namespace:JavLuv"
     Background="{StaticResource UserControl.Background}"
     mc:Ignorable="d" 
-    d:DesignHeight="450" 
+    d:DesignHeight="550" 
     d:DesignWidth="900"
     >
     <UserControl.Resources>
@@ -261,6 +261,15 @@
                             </Grid.ColumnDefinitions>
                             <Label Style="{StaticResource DetailLabelStyle}" Content="{DynamicResource Text.Director}" />
                             <TextBox Style="{StaticResource DetailTextBoxStyle}" Text="{Binding Director, UpdateSourceTrigger=LostFocus}" />
+                        </Grid>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="1*" MinWidth="95"/>
+                                <ColumnDefinition Width="10" />
+                                <ColumnDefinition Width="2*" />
+                            </Grid.ColumnDefinitions>
+                            <Label Style="{StaticResource DetailLabelStyle}" Content="{DynamicResource Text.Series}" />
+                            <TextBox Style="{StaticResource DetailTextBoxStyle}" Text="{Binding Series, UpdateSourceTrigger=LostFocus}" />
                         </Grid>
                         <Grid>
                             <Grid.ColumnDefinitions>

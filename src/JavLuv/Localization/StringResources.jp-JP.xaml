@@ -68,6 +68,7 @@
     <system:String x:Key="Text.Studio">メーカー:</system:String>
     <system:String x:Key="Text.Label">レーベル:</system:String>
     <system:String x:Key="Text.Director">監督:</system:String>
+    <system:String x:Key="Text.Series">Series:</system:String>
     <system:String x:Key="Text.Genres">ジャンル:</system:String>
     <system:String x:Key="Text.Actresses">出演者:</system:String>
     <system:String x:Key="Text.Resolution">Resolution:</system:String>

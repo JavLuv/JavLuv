@@ -482,6 +482,12 @@ namespace WebScraper
                 return false;
             if (String.IsNullOrEmpty(metadata.Studio))
                 return false;
+            if (String.IsNullOrEmpty(metadata.Label))
+                return false;
+            if (String.IsNullOrEmpty(metadata.Director))
+                return false;
+            if (String.IsNullOrEmpty(metadata.Series))
+                return false;
             if (metadata.Year == 0)
                 return false;
             if (metadata.Runtime == 0)

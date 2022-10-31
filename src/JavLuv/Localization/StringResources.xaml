@@ -68,6 +68,7 @@
     <system:String x:Key="Text.Studio">Studio:</system:String>
     <system:String x:Key="Text.Label">Label:</system:String>
     <system:String x:Key="Text.Director">Director:</system:String>
+    <system:String x:Key="Text.Series">Series:</system:String>
     <system:String x:Key="Text.Genres">Genres:</system:String>
     <system:String x:Key="Text.Actresses">Actresses:</system:String>
     <system:String x:Key="Text.Resolution">Resolution:</system:String>

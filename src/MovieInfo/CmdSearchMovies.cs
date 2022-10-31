@@ -229,6 +229,8 @@ namespace MovieInfo
                 return retVal;
             if (movie.Metadata.Director.ContainsCaseless(term))
                 return retVal;
+            if (movie.Metadata.Series.ContainsCaseless(term))
+                return retVal;
             if (movie.Metadata.Plot.ContainsCaseless(term))
                 return retVal;
             if (movie.Path.ContainsCaseless(term))
