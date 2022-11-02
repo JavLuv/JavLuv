@@ -326,6 +326,20 @@ namespace JavLuv
             }
         }
 
+        public string Series
+        {
+            get { return m_movieData.Metadata.Series; }
+            set
+            {
+                if (value != m_movieData.Metadata.Series)
+                {
+                    m_movieData.Metadata.Series = value;
+                    m_movieData.MetadataChanged = true;
+                    NotifyPropertyChanged("Series");
+                }
+            }
+        }
+
         public int UserRating
         {
             get { return m_movieData.Metadata.UserRating; }

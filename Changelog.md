@@ -2,6 +2,12 @@
 
 All significant changes are listed in this file.
 
+## [1.1.5] - 2022-10-27
+
+- Add support for "series" movie metadata
+- Fixed incorrect count type showing on status bar
+- Fixed issues in ID detection algorithm
+
 ## [1.1.4] - 2022-10-26
 
 - Search can now use 'or' or negate terms by prepending with '-'

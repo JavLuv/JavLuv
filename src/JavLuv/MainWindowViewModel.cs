@@ -55,8 +55,8 @@ namespace JavLuv
             // Get events for property changes
             m_movieScanner.ScanUpdate += OnMovieScannerUpdate;
             m_movieScanner.ScanComplete += OnMovieScannerComplete;
-            m_movieCollection.MoviesDisplayedChanged += MovieCollection_MoviesDisplayedChanged;
-            m_movieCollection.ActressesDisplayedChanged += M_movieCollection_ActressesDisplayedChanged;
+            m_movieCollection.MoviesDisplayedChanged += OnMoviesDisplayedChanged;
+            m_movieCollection.ActressesDisplayedChanged += OnActressesDisplayedChanged;
 
             // Set initial state for settings
             m_movieCollection.AutoSyncActresses = JavLuv.Settings.Get().AutoSyncActresses;
@@ -77,7 +77,7 @@ namespace JavLuv
             {
                 JavLuv.Settings.Get().LastVersionCheckTime = DateTime.Now;
                 m_checkVersion = new CmdCheckVersion();
-                m_checkVersion.FinishedVersionCheck += CheckVersion_FinishedVersionCheck;
+                m_checkVersion.FinishedVersionCheck += OnFinishedVersionCheck;
                 CommandQueue.LongTask().Execute(m_checkVersion);
             }
         }
@@ -340,25 +340,31 @@ namespace JavLuv
             }
         }
 
-        private void MovieCollection_MoviesDisplayedChanged(object sender, EventArgs e)
+        private void OnMoviesDisplayedChanged(object sender, EventArgs e)
         {
-            DisplayCountText = String.Format(
-                TextManager.GetString("Text.DisplayingMovies"),
-                m_movieCollection.MoviesDisplayed.Count,
-                m_movieCollection.NumMovies
-                );        
+            if (State == AppState.MovieBrowser || State == AppState.ActressDetail)
+            {
+                DisplayCountText = String.Format(
+                    TextManager.GetString("Text.DisplayingMovies"),
+                    m_movieCollection.MoviesDisplayed.Count,
+                    m_movieCollection.NumMovies
+                    );        
+            }
         }
 
-        private void M_movieCollection_ActressesDisplayedChanged(object sender, EventArgs e)
+        private void OnActressesDisplayedChanged(object sender, EventArgs e)
         {
-            DisplayCountText = String.Format(
-                TextManager.GetString("Text.DisplayingActresses"),
-                m_movieCollection.ActressesDisplayed.Count,
-                m_movieCollection.NumActresses
-                );
+            if (State == AppState.ActressBrowser)
+            {
+                DisplayCountText = String.Format(
+                    TextManager.GetString("Text.DisplayingActresses"),
+                    m_movieCollection.ActressesDisplayed.Count,
+                    m_movieCollection.NumActresses
+                    );
+            }
         }
 
-        private void CheckVersion_FinishedVersionCheck(object sender, EventArgs e)
+        private void OnFinishedVersionCheck(object sender, EventArgs e)
         {
             if (m_checkVersion.IsNewVersionAvailable && 
                 m_checkVersion.LatestVersion.CompareTo(JavLuv.Settings.Get().LastVersionChecked) != 0)
