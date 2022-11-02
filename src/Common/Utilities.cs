@@ -67,52 +67,21 @@ namespace Common
             if (String.IsNullOrEmpty(fileName))
                 return String.Empty;
 
-            // Limit initial ID detections to first ten characters of filename
-            const int MaxNumCharsToCheck = 13;
-            string shortFileName = fileName;
-            if (fileName.Length > MaxNumCharsToCheck)
-                shortFileName = fileName.Substring(0, MaxNumCharsToCheck);
-
-            string[] shortChecks =
+            string[] checks =
             {
-                @"([a-z,A-Z]{1,7}-[0-9]{2,5}[d,D]{0,1})",
-                @"([a-z,A-Z]{1,7}[0-9]{0,2}-[0-9]{2,5}[d,D]{0,1})",
-                @"([a-z,A-Z]{1,7}[0-9]{0,2}-[0-9]{1}[d,D]{0,1})",
-                @"([a-z,A-Z]{1,7}[0-9]{2,5}[d,D]{0,1})",
-                @"([a-z,A-Z]{1,7} [0-9]{2,5}[d,D]{0,1})",
-                @"([a-z,A-Z]{1,7}_[0-9]{2,5}[d,D]{0,1})",
+                @"([a-z,A-Z]{2,5}(-| |_){0,1}[0-9]{3,5}[d,D]{0,1})",
+                @"([a-z,A-Z]{1,7}(-| |_){0,1}[0-9]{2,5}[d,D]{0,1})",
+                @"([a-z,A-Z]{1,7}[0-9]{0,2}(-| |_){0,1}[0-9]{1}[d,D]{0,1})",
             };
 
             Regex regex = null;
             MatchCollection matches = null;
-            foreach (string check in shortChecks)
+            foreach (string check in checks)
             {
                 regex = new Regex(check);
-                matches = regex.Matches(shortFileName);
+                matches = regex.Matches(fileName);
                 if (matches.Count != 0)
                     break;
-            }
-
-            if (matches.Count == 0)
-            {
-                // Search full filename with more explicit matching
-                string[] longChecks =
-                {
-                    @"([a-z,A-Z]{3,6}-[0-9]{3,5}[d,D]{0,1})",
-                    @"(\[[a-z,A-Z]{2,7}-[0-9]{2,5}[d,D]{0,1}\])",
-                    @"(\([a-z,A-Z]{2,7}-[0-9]{2,5}[d,D]{0,1}\))",
-                    @"( [a-z,A-Z]{2,7}[ -][0-9]{3,5}[d,D]{0,1})",
-                    @"( [a-z,A-Z]{2,7}[ -][0-9]{3,5}[d,D]{0,1}[ .])",
-                };
-
-                foreach (string check in longChecks)
-                {
-                    regex = new Regex(check);
-                    matches = regex.Matches(fileName);
-                    if (matches.Count != 0)
-                        break;
-                }
-
             }
 
             // Have we finallly found a match?

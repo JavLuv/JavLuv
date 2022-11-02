@@ -6,6 +6,7 @@ All significant changes are listed in this file.
 
 - Add support for "series" movie metadata
 - Fixed incorrect count type showing on status bar
+- Fixed issues in ID detection algorithm
 
 ## [1.1.4] - 2022-10-26
 
