@@ -2,7 +2,7 @@
 
 All significant changes are listed in this file.
 
-## [1.1.5] - 2022-10-27
+## [1.1.5] - 2022-11-1
 
 - Add support for "series" movie metadata
 - Fixed incorrect count type showing on status bar
