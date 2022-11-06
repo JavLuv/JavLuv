@@ -41,6 +41,7 @@ namespace JavLuv
                 }));
 
                 Logger.WriteError("Unhandled exception", ex);
+                Logger.Close();
             };
 
             m_movieCollection = new MovieCollection(Application.Current.Dispatcher);

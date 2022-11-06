@@ -2,9 +2,11 @@
 
 All significant changes are listed in this file.
 
-## [1.1.5] - 2022-11-2
+## [1.1.6] - 2022-11-2
 
-- 
+- Add command to clean up actress images
+- Add code to mitigate image duplication bug
+- Block username from appearing in log
 
 ## [1.1.5] - 2022-11-1
 

@@ -14,6 +14,11 @@ namespace Common
         {
             try
             {
+                // Search user folder in strings and replace with censored version
+                s_userFolder = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+                s_userFolderCensored = Path.GetDirectoryName(s_userFolder);
+                s_userFolderCensored = Path.Combine(s_userFolderCensored, "****");
+
                 var folder = Utilities.GetJavLuvSettingsFolder();
 
                 string logFilename = Path.Combine(folder, "JavLuv.log");
@@ -109,6 +114,11 @@ namespace Common
 
         private static void Write(LogType type, string text, Exception ex)
         {
+            // Don't allow user's name into the log
+            if (text.Contains(s_userFolder))
+                text.Replace(s_userFolder, s_userFolderCensored);
+
+            // Append exception details to text if available
             if (ex != null)
             {
                 text += ": ";
@@ -122,6 +132,7 @@ namespace Common
                 }
             }
 
+            // Add structured log data to the queue
             LogData data;
             data.logTime = DateTime.Now;
             data.logType = type;
@@ -197,11 +208,13 @@ namespace Common
             public string logText;
         }
 
-        // Queued commands
+        // Logging data
         private static bool s_shutdown;
         private static Thread s_thread;
         private static Queue<LogData> s_queue;
         private static TextWriter s_textWriter;
+        private static string s_userFolder = String.Empty;
+        private static string s_userFolderCensored = String.Empty;
 
         #endregion
     }
