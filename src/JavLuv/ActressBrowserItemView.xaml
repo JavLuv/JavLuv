@@ -29,7 +29,8 @@
                 <ContextMenu>
                     <MenuItem Header="{DynamicResource Text.UpdateActresses}" Command="{Binding Parent.UpdateActressesCommand}"/>
                     <MenuItem Header="{DynamicResource Text.MergeActressesMenu}" Command="{Binding Parent.MergeActressesCommand}"/>
-                    <MenuItem Header="{DynamicResource Text.RemoveFromLibrary}" Command="{Binding Parent.RemoveFromLibraryCommand}"/>
+                    <MenuItem Header="{DynamicResource Text.RemoveFromLibrary}" Visibility="{Binding Parent.AdvancedOptionsVisibility}" Command="{Binding Parent.RemoveFromLibraryCommand}"/>
+                    <MenuItem Header="{DynamicResource Text.CleanActressImages}" Visibility="{Binding Parent.AdvancedOptionsVisibility}" Command="{Binding Parent.CleanActressImagesCommand}"/>
                 </ContextMenu>
             </Border.ContextMenu>
 

@@ -52,6 +52,17 @@ namespace JavLuv
             }
         }
 
+        public Visibility AdvancedOptionsVisibility
+        {
+            get
+            {
+                if (Settings.Get().ShowAdvancedOptions)
+                    return Visibility.Visible;
+                else
+                    return Visibility.Collapsed;
+            }
+        }
+
         public ObservableCollection<ActressBrowserItemViewModel> SelectedItems
         {
             get { return m_selectedItems; }
@@ -276,6 +287,22 @@ namespace JavLuv
         }
 
         public ICommand RemoveFromLibraryCommand { get { return new RelayCommand(RemoveFromLibraryExecute, CanRemoveFromLibraryExecute); } }
+
+        #endregion
+
+        #region Clean Actress Images Command
+
+        private void CleanActressImagesExecute()
+        {
+            Parent.Collection.CleanActressImages();
+        }
+
+        private bool CanCleanActressImagesExecute()
+        {
+            return Parent.IsScanning == false;
+        }
+
+        public ICommand CleanActressImagesCommand { get { return new RelayCommand(CleanActressImagesExecute, CanCleanActressImagesExecute); } }
 
         #endregion
 

@@ -558,6 +558,11 @@ namespace MovieInfo
                 CommandQueue.Command().Execute(new CmdUpdateActressNames(this, m_cacheData, m_actressesDatabase));
         }
 
+        public void CleanActressImages()
+        {
+            CommandQueue.Command().Execute(new CmdCleanActressImages(m_actressesDatabase));
+        }
+
         #endregion
 
         #region Private Functions

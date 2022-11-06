@@ -2,6 +2,10 @@
 
 All significant changes are listed in this file.
 
+## [1.1.5] - 2022-11-2
+
+- 
+
 ## [1.1.5] - 2022-11-1
 
 - Add support for "series" movie metadata

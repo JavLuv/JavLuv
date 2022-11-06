@@ -62,6 +62,7 @@
   <ItemGroup>
     <Compile Include="ActressData.cs" />
     <Compile Include="CacheData.cs" />
+    <Compile Include="CmdCleanActressImages.cs" />
     <Compile Include="CmdFilter.cs" />
     <Compile Include="CmdLoad.cs" />
     <Compile Include="CmdMarkSharedFolders.cs" />

@@ -549,6 +549,17 @@ namespace JavLuv
                         break;
                     if (m_movieCollection.ActressExists(actor.Name))
                         continue;
+                    bool foundAlias = false;
+                    foreach (var alias in actor.Aliases)
+                    {
+                        if (m_movieCollection.ActressExists(actor.Name))
+                        {
+                            foundAlias = true;
+                            break;
+                        }
+                    }
+                    if (foundAlias)
+                        continue;
                     actorsToProcess.Add(actor);
                 }
             }
@@ -564,22 +575,8 @@ namespace JavLuv
             {
                 if (IsCancelled)
                     break;
-                if (m_movieCollection.ActressExists(actor.Name))
-                    continue;
-                bool foundAlias = false;
-                foreach (var alias in actor.Aliases)
-                {
-                    if (m_movieCollection.ActressExists(actor.Name))
-                    {
-                        foundAlias = true;
-                        break;
-                    }
-                }
-                if (foundAlias)
-                    continue;
-                var scraper = new Scraper();
-                string idolImagePath = String.Empty;
 
+                var scraper = new Scraper();
                 var actressData = scraper.ScrapeActress(actor, LanguageType.English);
 
                 // Check to see if we want to restore from backup instead of using scraped metadata
@@ -595,12 +592,18 @@ namespace JavLuv
                                 break;
                         }
                     }
+                    if (backupActressData == null && String.IsNullOrEmpty(actressData.JapaneseName) == false)
+                        backupActressData = m_movieCollection.GetBackupActress(actressData.JapaneseName);
+                    
                     if (backupActressData != null)
                     {
-                        backupActressData.ImageFileNames.Clear();
-                        backupActressData.ImageIndex = 0;
-                        backupActressData.ImageFileNames = actressData.ImageFileNames;
+                        backupActressData.ImageFileNames.Concat(actressData.ImageFileNames);
                         actressData = backupActressData;
+                        if (actressData.ImageFileNames.Count > 0)
+                        {
+                            Utilities.DeleteDuplicateFiles(Utilities.GetActressImageFolder(), actressData.ImageFileNames);
+                            actressData.ImageIndex = Math.Min(actressData.ImageIndex, actressData.ImageFileNames.Count - 1);
+                        }            
                     }
                 }
 
