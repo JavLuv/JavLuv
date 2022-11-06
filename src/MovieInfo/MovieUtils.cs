@@ -317,11 +317,10 @@ namespace MovieInfo
             }
             if (secondary.ImageFileNames.Count != 0)
             {
-                foreach (string fn in secondary.ImageFileNames)
-                {
-                    if (Utilities.Equals(fn, primary.ImageFileNames, StringComparison.OrdinalIgnoreCase) == false)
-                        primary.ImageFileNames.Add(fn);
-                }
+                primary.ImageFileNames.Concat(secondary.ImageFileNames);
+                primary.ImageFileNames = Utilities.DeleteDuplicateFiles(Utilities.GetActressImageFolder(), primary.ImageFileNames);
+                if (primary.ImageIndex >= primary.ImageFileNames.Count)
+                    primary.ImageIndex = 0;
             }
         }
 
