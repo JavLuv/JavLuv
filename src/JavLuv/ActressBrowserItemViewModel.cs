@@ -85,10 +85,6 @@ namespace JavLuv
 
         #endregion
 
-        #region Public Functions
-
-        #endregion
-
         #region Protected Functions
 
         protected override void OnShow()
