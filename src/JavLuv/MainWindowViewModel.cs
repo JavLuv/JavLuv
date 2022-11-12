@@ -105,7 +105,11 @@ namespace JavLuv
                     {
                         value = new ActressDetailViewModel(m_previousActressDetailViewModel);
                         m_previousActressDetailViewModel = null;
-                    }   
+                    }
+
+                    // Turn off error state when finished with the report overlay
+                    if (m_overlayViewModel is ReportViewModel && m_progressState == TaskbarItemProgressState.Error)
+                        m_progressState = TaskbarItemProgressState.Normal;
                     
                     // Handle various conditions when changing state
                     ChangeState(value);
