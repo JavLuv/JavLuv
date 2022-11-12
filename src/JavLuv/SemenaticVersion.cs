@@ -69,9 +69,9 @@ namespace JavLuv
 
         public int CompareTo(object obj)
         {
-            SemanticVersion other = obj as SemanticVersion;
-            if (other == null)
+            if (obj is SemanticVersion == false)
                 throw new ArgumentException("Type not supported");
+            SemanticVersion other = obj as SemanticVersion;
             if (Major < other.Major)
                 return -1;
             else if (Major > other.Major)
@@ -91,6 +91,36 @@ namespace JavLuv
                 }
             }
             return 0;
+        }
+
+        public static bool operator < (SemanticVersion s1, SemanticVersion s2)
+        {
+            return s1.CompareTo(s2) < 0;
+        }
+
+        public static bool operator > (SemanticVersion s1, SemanticVersion s2)
+        {
+            return s1.CompareTo(s2) > 0;
+        }
+
+        public static bool operator == (SemanticVersion s1, SemanticVersion s2)
+        {
+            return s1.Major == s2.Major && s1.Minor == s2.Minor && s1.Patch == s2.Patch;
+        }
+
+        public static bool operator != (SemanticVersion s1, SemanticVersion s2)
+        {
+            return s1.Major != s2.Major || s1.Minor != s2.Minor || s1.Patch != s2.Patch;
+        }
+
+        public override bool Equals(object o)
+        {
+            return CompareTo(o) == 0;
+        }
+
+        public override int GetHashCode()
+        {
+            return Major.GetHashCode() ^ Minor.GetHashCode() ^ Patch.GetHashCode();
         }
 
         #endregion

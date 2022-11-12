@@ -290,22 +290,6 @@ namespace JavLuv
 
         #endregion
 
-        #region Clean Actress Images Command
-
-        private void CleanActressImagesExecute()
-        {
-            Parent.Collection.CleanActressImages();
-        }
-
-        private bool CanCleanActressImagesExecute()
-        {
-            return Parent.IsScanning == false;
-        }
-
-        public ICommand CleanActressImagesCommand { get { return new RelayCommand(CleanActressImagesExecute, CanCleanActressImagesExecute); } }
-
-        #endregion
-
         #endregion
 
         #region Public Functions

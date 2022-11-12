@@ -2,7 +2,7 @@
 
 All significant changes are listed in this file.
 
-## [1.1.6] - 2022-11-11
+## [1.1.6] - 2022-11-12
 
 - Add one-time automatic command to clean up actress images
 - Add code to mitigate image duplication bug

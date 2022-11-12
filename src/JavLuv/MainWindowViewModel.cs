@@ -81,6 +81,12 @@ namespace JavLuv
                 m_checkVersion.FinishedVersionCheck += OnFinishedVersionCheck;
                 CommandQueue.LongTask().Execute(m_checkVersion);
             }
+
+            // Perform a one-time cleanup of actress image folder to fix previous bugs
+            if (JavLuv.Settings.Get().LastVersionRun < new SemanticVersion(1, 1, 6))
+            {
+                Collection.CleanActressImages();
+            }
         }
 
         #endregion

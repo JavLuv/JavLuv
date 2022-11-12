@@ -67,6 +67,7 @@ namespace JavLuv
         private void Window_Closed(object sender, EventArgs e)
         {
             Logger.WriteInfo("Main window closed");
+            Settings.Get().LastVersionRun = SemanticVersion.Current;
             var mainWindowModelView = DataContext as MainWindowViewModel;
             mainWindowModelView.Collection.Save();
             Settings.Save();
