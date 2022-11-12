@@ -52,6 +52,17 @@ namespace JavLuv
             }
         }
 
+        public Visibility AdvancedOptionsVisibility
+        {
+            get
+            {
+                if (Settings.Get().ShowAdvancedOptions)
+                    return Visibility.Visible;
+                else
+                    return Visibility.Collapsed;
+            }
+        }
+
         public ObservableCollection<ActressBrowserItemViewModel> SelectedItems
         {
             get { return m_selectedItems; }

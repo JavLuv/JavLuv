@@ -154,6 +154,7 @@ namespace JavLuv
                             );
                         return;
                     }
+                    Parent.Parent.Collection.RemoveActress(m_actressData, false);
                     if (Utilities.Equals(m_actressData.Name, m_actressData.AltNames) == false)
                         m_actressData.AltNames.Add(m_actressData.Name);
                     var index = m_actressData.AltNames.FindIndex(x => x == value);
@@ -161,7 +162,8 @@ namespace JavLuv
                         m_actressData.AltNames.RemoveAt(index);
                     m_actressData.Name = value;
                     NotifyPropertyChanged("Name");
-                    Parent.Parent.Collection.RenameActress(m_actressData);
+                    NotifyPropertyChanged("AlternateNames");
+                    Parent.Parent.Collection.AddActress(m_actressData);
                 }
             }
         }
@@ -176,9 +178,10 @@ namespace JavLuv
             {
                 if (value != m_actressData.JapaneseName)
                 {
+                    Parent.Parent.Collection.RemoveActress(m_actressData, false);
                     m_actressData.JapaneseName = value;
                     NotifyPropertyChanged("JapaneseName");
-                    Parent.Parent.Collection.RenameActress(m_actressData);
+                    Parent.Parent.Collection.AddActress(m_actressData);
                 }
             }
         }
@@ -205,9 +208,10 @@ namespace JavLuv
                             return;
                         }
                     }
+                    Parent.Parent.Collection.RemoveActress(m_actressData, false);
                     m_actressData.AltNames = altNames;
                     NotifyPropertyChanged("AlternateNames");
-                    Parent.Parent.Collection.RenameActress(m_actressData);
+                    Parent.Parent.Collection.AddActress(m_actressData);
                 }
             }
         }

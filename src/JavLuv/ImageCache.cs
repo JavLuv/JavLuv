@@ -33,7 +33,12 @@ namespace JavLuv
             try
             {
                 if (Directory.Exists(oldfolder))
-                    Directory.Move(oldfolder, m_folder);
+                {
+                    if (Directory.Exists(m_folder))
+                        Directory.Delete(oldfolder, true);
+                    else
+                        Directory.Move(oldfolder, m_folder);
+                }
             }
             catch (Exception ex)
             {

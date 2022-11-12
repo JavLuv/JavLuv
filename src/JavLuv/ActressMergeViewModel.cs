@@ -148,13 +148,13 @@ namespace JavLuv
         {
             if (m_actressMergeItemA.IsChecked)
             {
-                MovieUtils.MergeActresses(m_parent.SelectedItems[0].ActressData, m_parent.SelectedItems[1].ActressData);
-                 m_parent.Parent.Collection.RemoveActress(m_parent.SelectedItems[1].ActressData);
-           }
+                 MovieUtils.MergeActresses(m_parent.SelectedItems[0].ActressData, m_parent.SelectedItems[1].ActressData);
+                 m_parent.Parent.Collection.RemoveActress(m_parent.SelectedItems[1].ActressData, false);
+            }
             else
             {
                 MovieUtils.MergeActresses(m_parent.SelectedItems[1].ActressData, m_parent.SelectedItems[0].ActressData);
-                m_parent.Parent.Collection.RemoveActress(m_parent.SelectedItems[0].ActressData);
+                m_parent.Parent.Collection.RemoveActress(m_parent.SelectedItems[0].ActressData, false);
             }
             m_parent.Parent.Collection.UpdateActressNames();
         }

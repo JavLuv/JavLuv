@@ -429,9 +429,9 @@ namespace MovieInfo
             Save();
         }
 
-        public void RemoveActress(ActressData actress)
+        public void RemoveActress(ActressData actress, bool deleteImages)
         {
-            RemoveActressNoLock(actress, true);
+            RemoveActressNoLock(actress, deleteImages);
             SearchActresses();
             Save();
         }
@@ -443,18 +443,6 @@ namespace MovieInfo
                 foreach (var actress in actresses)
                     RemoveActressNoLock(actress, true);
             }
-            SearchActresses();
-            Save();
-        }
-
-        public void RenameActress(ActressData actress)
-        {
-            lock (m_actressesDatabase)
-            {
-                RemoveActressNoLock(actress, false);
-                AddActressNoLock(actress);
-            }
-            UpdateActressNames();
             SearchActresses();
             Save();
         }
@@ -556,6 +544,11 @@ namespace MovieInfo
         {
             if (AutoSyncActresses)
                 CommandQueue.Command().Execute(new CmdUpdateActressNames(this, m_cacheData, m_actressesDatabase));
+        }
+
+        public void CleanActressImages()
+        {
+            CommandQueue.Command().Execute(new CmdCleanActressImages(m_actressesDatabase));
         }
 
         #endregion

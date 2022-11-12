@@ -688,36 +688,6 @@ namespace Common
             return String.Empty;
         }
 
-        public static List<string> DeleteDuplicateFiles(List<string> fileNames)
-        {
-            if (fileNames.Count < 2)
-                return fileNames;
-
-            List<string> result = new List<string>();
-            Dictionary<string, string> hashFilenamePairs = new Dictionary<string, string>();
-
-            foreach (string fileName in fileNames)
-            {
-                string hash = GetSHA1Checksum(fileName);
-                if (hash != String.Empty && hashFilenamePairs.ContainsKey(hash))
-                {
-                    try
-                    {
-                        File.Delete(fileName);
-                    }
-                    catch (Exception ex)
-                    {
-                        Logger.WriteError("Unable to delete duplicate file " + fileName, ex);
-                    }
-                    continue;
-                }
-                hashFilenamePairs.Add(hash, fileName);
-                result.Add(fileName);
-            }
-
-            return result;
-        }
-
         public static List<string> DeleteDuplicateFiles(string folder, List<string> fileNames)
         {
             var fullPathFilenames = new List<string>();
@@ -950,6 +920,39 @@ namespace Common
             while (success == false && retries < s_numRetries);
             if (success == false)
                 throw new Exception("Issue deleting folder " + folderName);
+        }
+
+        private static List<string> DeleteDuplicateFiles(List<string> fileNames)
+        {
+            if (fileNames.Count < 2)
+                return fileNames;
+
+            List<string> result = new List<string>();
+            Dictionary<string, string> hashFilenamePairs = new Dictionary<string, string>();
+
+            foreach (string fileName in fileNames)
+            {
+                if (File.Exists(fileName) == false)
+                    continue;
+                string hash = GetSHA1Checksum(fileName);
+                if (hash != String.Empty && hashFilenamePairs.ContainsKey(hash))
+                {
+                    try
+                    {
+                        Logger.WriteInfo("Deleting duplicate file " + fileName);
+                        File.Delete(fileName);
+                        continue;
+                    }
+                    catch (Exception ex)
+                    {
+                        Logger.WriteError("Unable to delete duplicate file " + fileName, ex);
+                    }
+                }
+                hashFilenamePairs.Add(hash, fileName);
+                result.Add(fileName);
+            }
+
+            return result;
         }
 
         #endregion

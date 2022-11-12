@@ -110,17 +110,12 @@ namespace WebScraper
         {
             Logger.WriteInfo("Attempting to scrape information for " + actressData.Name);
 
-            // Create destination filename and path
-            string actressImagefolder = Utilities.GetActressImageFolder();
-            string actressFileName = Guid.NewGuid().ToString();
-            string actressFullPath = Path.Combine(actressImagefolder, actressFileName);
-
             // Check JavDatabase actresses, merge new data, and attempt alts in required
             var javDatabase = new ActressJavDatabase(actressData.Name, language);
             javDatabase.Scrape();
             MergeActressData(actressData, javDatabase.Actress);
             ScrapeAltNamesIfNotAcceptable(actressData, javDatabase);
-            DownloadActressImage(actressData, javDatabase, actressFullPath);
+            DownloadActressImage(actressData, javDatabase);
 
             // If we don't have a complete set of data, try alternative sites
             if (IsActressDataComplete(actressData) == false)
@@ -129,7 +124,14 @@ namespace WebScraper
                 javModel.Scrape();
                 MergeActressData(actressData, javModel.Actress);
                 ScrapeAltNamesIfNotAcceptable(actressData, javModel);
-                DownloadActressImage(actressData, javModel, actressFullPath);
+                DownloadActressImage(actressData, javModel);
+            }
+
+            // Check to make sure there are no duplicates images, and the index is still in range
+            if (actressData.ImageFileNames.Count > 0)
+            {
+                actressData.ImageFileNames = Utilities.DeleteDuplicateFiles(Utilities.GetActressImageFolder(), actressData.ImageFileNames);
+                actressData.ImageIndex = Math.Min(actressData.ImageIndex, actressData.ImageFileNames.Count - 1);
             }
 
             // Log success or failure
@@ -228,14 +230,19 @@ namespace WebScraper
             return combinedMetadata;
         }
 
-        private void DownloadActressImage(ActressData actressData, ModuleActress module, string imagePath)
+        private void DownloadActressImage(ActressData actressData, ModuleActress module)
         {
             if (String.IsNullOrEmpty(module.ImageSource) == false)
             {
-                if (DownloadImage(ref imagePath, module.ImageSource))
+                // Create destination filename and path
+                string actressImagefolder = Utilities.GetActressImageFolder();
+                string actressImagePath = Path.Combine(actressImagefolder, Guid.NewGuid().ToString());
+
+                // Download image
+                if (DownloadImage(ref actressImagePath, module.ImageSource))
                 {
-                    actressData.ImageFileNames.Add(Path.GetFileName(imagePath));
-                    actressData.ImageFileNames = Utilities.DeleteDuplicateFiles(Utilities.GetActressImageFolder(), actressData.ImageFileNames);
+                    // Add the downloaded image to image filenames
+                    actressData.ImageFileNames.Add(Path.GetFileName(actressImagePath));
                 }
             }
         }
@@ -536,6 +543,7 @@ namespace WebScraper
 
         private void MergeActressData(ActressData a, ActressData b)
         {
+            a.ImageFileNames.Concat(b.ImageFileNames);
             if (IsActressDataComplete(a))
                 return;
             if (String.IsNullOrEmpty(a.JapaneseName))

@@ -169,6 +169,7 @@
     <!-- Actress Browser Item View -->
     <system:String x:Key="Text.UpdateActresses">Update actresses</system:String>
     <system:String x:Key="Text.MergeActressesMenu">Merge actresses...</system:String>
+    <system:String x:Key="Text.CleanActressImages">Clean actress images</system:String>
 
     <!-- Scan Movies View -->
     <system:String x:Key="Text.ScanMoviesTitle">Scan Movies</system:String>
