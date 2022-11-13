@@ -19,6 +19,7 @@ namespace MovieInfo
 
         public void Execute()
         {
+            Logger.WriteInfo("Performing actress image cleaning");
             string imageFolder = Utilities.GetActressImageFolder();
 
             HashSet<string> referencedFileSet = new HashSet<string>();
@@ -37,10 +38,11 @@ namespace MovieInfo
             {
                 if (referencedFileSet.Contains(imeageFile) == false)
                 {
-                    Logger.WriteWarning("Deleting unreferenced actress image: " + Path.GetFileName(imageFolder));
+                    Logger.WriteWarning("Deleting unreferenced actress image: " + Path.GetFileName(imeageFile));
                     File.Delete(imeageFile);
                 }
             }
+            Logger.WriteInfo("Finished actress image cleaning");
         }
 
         #endregion

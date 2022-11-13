@@ -28,6 +28,12 @@ namespace JavLuv
         {
             Logger.WriteInfo("Main window view model initialized");
 
+            // Log version
+            var currentVersion = SemanticVersion.Current;
+            Logger.WriteInfo("Running JavLuv version " + currentVersion);
+            if (JavLuv.Settings.Get().LastVersionRun < currentVersion)
+                Logger.WriteInfo("Upgraded from version " + JavLuv.Settings.Get().LastVersionRun);
+
             // Catch any unhandled exceptions and display them
             AppDomain.CurrentDomain.UnhandledException += (sender, args) =>
             {
