@@ -2,6 +2,7 @@
 using MovieInfo;
 using System;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.IO;
 using System.Windows;
 using System.Windows.Input;
@@ -459,11 +460,12 @@ namespace JavLuv
         {
             try
             {
-                System.Diagnostics.ProcessStartInfo psi = new System.Diagnostics.ProcessStartInfo();
-                psi.UseShellExecute = true;
-                psi.FileName = m_movieData.Path;
-                psi.Verb = "open";
-                System.Diagnostics.Process.Start(psi);
+                string p = Path.Combine(m_movieData.Path, m_movieData.MovieFileNames[0]);
+                string args = string.Format("/e, /select, \"{0}\"", p);
+                ProcessStartInfo psi = new ProcessStartInfo();
+                psi.FileName = "explorer";
+                psi.Arguments = args;
+                Process.Start(psi);
             }
             catch(Exception)
             {

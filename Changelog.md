@@ -2,6 +2,10 @@
 
 All significant changes are listed in this file.
 
+## [1.1.7] - 2022-11-14
+
+- Opening folder in movie detail view now highlights first movie
+
 ## [1.1.6] - 2022-11-12
 
 - Add one-time automatic command to clean up actress images
