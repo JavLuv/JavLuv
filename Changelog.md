@@ -5,6 +5,7 @@ All significant changes are listed in this file.
 ## [1.1.7] - 2022-11-14
 
 - Opening folder in movie detail view now highlights first movie
+- Fix issue with launching actress clean up command
 
 ## [1.1.6] - 2022-11-12
 
