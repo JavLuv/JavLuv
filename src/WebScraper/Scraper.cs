@@ -284,7 +284,9 @@ namespace WebScraper
                             ImageSource newImage = LoadImageFromFile(tempFileName);                   
                             if (newImage.Width > currentImage.Width && newImage.Height > currentImage.Height)
                             {
-                                Logger.WriteInfo("Replacing image: " + imageFilename);
+                                Logger.WriteInfo("New image is bigger than old image... Deleting " + imagePath);
+                                File.Delete(imagePath);
+                                Logger.WriteInfo("Replacing with new image: " + imageFilename);
                                 File.Copy(tempFileName, imageFilename, true);
                                 imagePath = imageFilename;
                                 retVal = true;
