@@ -4,8 +4,8 @@ All significant changes are listed in this file.
 
 ## [1.1.7] - 2022-11-16
 
-- External .nfo files are saved over time instead of all at once, improving performance of batch editing
-- "Delete local cache" button has been removed, since cache deleting the cache may now cause data loss until movie metadata is finished saving
+- External movie metadata files are saved over time instead of all at once, improving performance of batch editing
+- "Delete local cache" button has been removed, since deleting the cache may now cause data loss until movie metadata is finished saving
 - Added "date added" field to metadata and an option to sort by most recently added movies
 - Opening folder in movie detail view now highlights first movie
 - Fix issue with sorting by date

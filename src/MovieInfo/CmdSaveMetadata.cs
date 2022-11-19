@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using Common;
+using System.IO;
 
 namespace MovieInfo
 {
@@ -31,10 +32,12 @@ namespace MovieInfo
                         MovieSerializer<MovieMetadata>.Save(path, movie.Metadata);
                         movie.MetadataChanged = false;
                         saveCount++;
-                        if (saveCount > 15)
+                        if (saveCount >= 10)
                             break;
                     }
-                }                   
+                }
+                if (saveCount > 0)
+                    Logger.WriteInfo("Saved " + saveCount.ToString() + " external metadata files");
             }
         }
 

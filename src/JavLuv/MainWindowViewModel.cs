@@ -26,18 +26,6 @@ namespace JavLuv
 
         public MainWindowViewModel()
         {
-            Logger.WriteInfo("Main window view model initialized");
-
-            // Log version
-            var currentVersion = SemanticVersion.Current;
-            Logger.WriteInfo("Running JavLuv version " + currentVersion);
-            bool upgradeVersion = false;
-            if (JavLuv.Settings.Get().LastVersionRun < currentVersion)
-            {
-                Logger.WriteInfo("Upgraded from version " + JavLuv.Settings.Get().LastVersionRun);
-                upgradeVersion = true;
-            }
-
             // Catch any unhandled exceptions and display them
             AppDomain.CurrentDomain.UnhandledException += (sender, args) =>
             {
@@ -53,6 +41,18 @@ namespace JavLuv
                 Logger.WriteError("Unhandled exception", ex);
                 Logger.Close();
             };
+
+            Logger.WriteInfo("Main window view model initialized");
+
+            // Log version
+            var currentVersion = SemanticVersion.Current;
+            Logger.WriteInfo("Running JavLuv " + currentVersion);
+            bool upgradeVersion = false;
+            if (JavLuv.Settings.Get().LastVersionRun < currentVersion)
+            {
+                Logger.WriteInfo("Upgraded from " + JavLuv.Settings.Get().LastVersionRun);
+                upgradeVersion = true;
+            }
 
             m_movieCollection = new MovieCollection(Application.Current.Dispatcher);
             m_movieScanner = new MovieScanner(m_movieCollection);
