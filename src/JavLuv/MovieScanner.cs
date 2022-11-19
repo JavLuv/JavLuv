@@ -402,8 +402,6 @@ namespace JavLuv
         {
             MovieData movieData = new MovieData();
             movieData.Metadata.UniqueID.Value = directoryInfo.ID;
-            var dt = DateTime.Now;
-            movieData.Metadata.DateAdded = Utilities.DateTimeToString(dt.Year, dt.Month, dt.Day);
             movieData.SharedPath = directoryInfo.IsSharedFolder;
             movieData.Path = directoryInfo.Path;
             movieData.Folder = directoryInfo.Folder;
@@ -748,6 +746,13 @@ namespace JavLuv
                         LogError(String.Format("Unable to find online metadata for {0}", movieID), movieData.Path);
                         return;
                     }
+                }
+
+                if (metadata != null)
+                {
+                    // Fill in the 'date added' field
+                    var dt = DateTime.Now;
+                    metadata.DateAdded = Utilities.DateTimeToString(dt.Year, dt.Month, dt.Day);
                 }
 
                 // Check to see if we instead want to restore from backup instead of using scraped metadata
