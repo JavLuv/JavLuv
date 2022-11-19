@@ -29,6 +29,7 @@ namespace JavLuv
             m_sortMovieByList.Add(new SortMoviesByPair("Text.SortByActress", SortMoviesBy.Actress));
             m_sortMovieByList.Add(new SortMoviesByPair("Text.SortByDateNewest", SortMoviesBy.Date_Newest));
             m_sortMovieByList.Add(new SortMoviesByPair("Text.SortByDateOldest", SortMoviesBy.Date_Oldest));
+            m_sortMovieByList.Add(new SortMoviesByPair("Text.SortByRecentlyAdded", SortMoviesBy.RecentlyAdded));
             m_sortMovieByList.Add(new SortMoviesByPair("Text.SortByUserRating", SortMoviesBy.UserRating));
 
             m_sortActressesByList.Add(new SortActressesByPair("Text.SortByName", SortActressesBy.Name));
@@ -324,30 +325,6 @@ namespace JavLuv
         }
 
         public ICommand ScanMoviesCommand { get { return new RelayCommand(ScanMoviesExecute, CanScanMoviesExecute); } }
-
-        #endregion
-
-        #region Delete Cache Command
-
-        private void DeleteCacheExecute()
-        {
-            var msgRes = System.Windows.Forms.MessageBox.Show(
-                TextManager.GetString("Text.JavLuvDeleteCache"),
-                TextManager.GetString("Text.DeleteLocalCache"),
-                System.Windows.Forms.MessageBoxButtons.YesNo);
-            if (msgRes == System.Windows.Forms.DialogResult.Yes)
-            {
-                Parent.Collection.DeleteCache();
-                ImageCache.Get().DeleteAll();
-            }    
-        }
-
-        private bool CanDeleteCacheExecute()
-        {
-            return true;
-        }
-
-        public ICommand DeleteCacheCommand { get { return new RelayCommand(DeleteCacheExecute, CanDeleteCacheExecute); } }
 
         #endregion
 

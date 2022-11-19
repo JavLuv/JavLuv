@@ -137,10 +137,16 @@ namespace JavLuv
                 case SortMoviesBy.Date_Newest:
                     goto case SortMoviesBy.Date_Oldest;
                 case SortMoviesBy.Date_Oldest:
-                    string date = m_movieData.Metadata.Premiered;
-                    if (String.IsNullOrEmpty(date))
-                        date = "Unknown";
-                    m_displayTitle = String.Format("({0}) {1}", date, GetOptionalIdAndTitle());
+                    string datePremiered = m_movieData.Metadata.Premiered;
+                    if (String.IsNullOrEmpty(datePremiered))
+                        datePremiered = "Unknown";
+                    m_displayTitle = String.Format("({0}) {1}", datePremiered, GetOptionalIdAndTitle());
+                    break;
+                case SortMoviesBy.RecentlyAdded:
+                    string dateAdded = m_movieData.Metadata.DateAdded;
+                    if (String.IsNullOrEmpty(dateAdded))
+                        dateAdded = "Unknown";
+                    m_displayTitle = String.Format("({0}) {1}", dateAdded, GetOptionalIdAndTitle());
                     break;
                 case SortMoviesBy.UserRating:
                     m_displayTitle = String.Format("({0}) {1}", MovieUtils.UserRatingToStars(m_movieData.Metadata.UserRating), GetOptionalIdAndTitle());

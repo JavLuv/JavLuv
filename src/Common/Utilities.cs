@@ -227,6 +227,7 @@ namespace Common
         {
             return String.Format("{0}-{1}-{2}", year == 0 ? "????" : year.ToString(), month == 0 ? "??" : month.ToString(), day == 0 ? "??" : day.ToString());
         }
+
         public static void StringToDateTime(string str, out int year, out int month, out int day)
         {
             year = 0;
@@ -241,6 +242,62 @@ namespace Common
             // Validate that this is a legit date
             if (month != 0 && day != 0)
                 new DateTime(year, month, day);
+        }
+
+        public static int DataTimeCompare(string dt1, string dt2)
+        {
+            // Check for null
+            if (String.IsNullOrEmpty(dt1) && String.IsNullOrEmpty(dt2)) 
+                return 0;
+            if (String.IsNullOrEmpty(dt1))
+                return 1;
+            if (String.IsNullOrEmpty(dt2))
+                return -1;
+
+            // Split components
+            string[] dt1Parts = dt1.Split('-');
+            string[] dt2Parts = dt2.Split('-');
+
+            // Compare year
+            int year1 = 0;
+            int year2 = 0;
+            if (int.TryParse(dt1Parts[0], out year1) == false)
+                return 1;
+            if (int.TryParse(dt2Parts[0], out year2) == false)
+                return -1;
+            if (year1 != year2)
+                return year1 < year2 ? -1 : 1;
+
+            // Compare month
+            if (dt1Parts.Length < 2)
+                return -1;
+            if (dt2Parts.Length < 2)
+                return 1;
+            int month1 = 0;
+            int month2 = 0;
+            if (int.TryParse(dt1Parts[1], out month1) == false)
+                return 1;
+            if (int.TryParse(dt2Parts[1], out month2) == false)
+                return -1;
+            if (month1 != month2)
+                return month1 < month2 ? -1 : 1;
+
+            // Compare days
+            if (dt1Parts.Length < 3)
+                return -1;
+            if (dt2Parts.Length < 3)
+                return 1;
+            int day1 = 0;
+            int day2 = 0;
+            if (int.TryParse(dt1Parts[2], out day1) == false)
+                return 1;
+            if (int.TryParse(dt2Parts[2], out day2) == false)
+                return -1;
+            if (day1 != day2)
+                return day1 < day2 ? -1 : 1;
+
+            // Dates are equivalent
+            return 0;
         }
 
         public static string CentimetersToFeetAndInchesString(int cm)

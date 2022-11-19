@@ -95,7 +95,7 @@ namespace WebScraper
                     {
                         nextSibling = nextSibling.NextSibling;
                         if (IsValidNode(nextSibling))
-                            Actress.Height = Utilities.ParseInitialDigits(nextSibling.TextContent);
+                            Actress.Height = Utilities.ParseInitialDigits(nextSibling.TextContent, 0);
                     }
                 }
                 else if (element.TextContent == " Breast : ")
@@ -105,7 +105,7 @@ namespace WebScraper
                     {
                         nextSibling = nextSibling.NextSibling;
                         if (IsValidNode(nextSibling))
-                            Actress.Bust = Utilities.ParseInitialDigits(nextSibling.TextContent);
+                            Actress.Bust = Utilities.ParseInitialDigits(nextSibling.TextContent, 0);
                     }
                 }
                 else if (element.TextContent == " Waist : ")
@@ -115,7 +115,7 @@ namespace WebScraper
                     {
                         nextSibling = nextSibling.NextSibling;
                         if (IsValidNode(nextSibling))
-                            Actress.Waist = Utilities.ParseInitialDigits(nextSibling.TextContent);
+                            Actress.Waist = Utilities.ParseInitialDigits(nextSibling.TextContent, 0);
                     }
                 }
                 else if (element.TextContent == " Hips : ")
@@ -125,7 +125,7 @@ namespace WebScraper
                     {
                         nextSibling = nextSibling.NextSibling;
                         if (IsValidNode(nextSibling))
-                            Actress.Hips = Utilities.ParseInitialDigits(nextSibling.TextContent);
+                            Actress.Hips = Utilities.ParseInitialDigits(nextSibling.TextContent, 0);
                     }
                 }
                 else if (element.TextContent == " Blood Type : ")

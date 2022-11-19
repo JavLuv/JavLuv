@@ -748,6 +748,13 @@ namespace JavLuv
                     }
                 }
 
+                if (metadata != null)
+                {
+                    // Fill in the 'date added' field
+                    var dt = DateTime.Now;
+                    metadata.DateAdded = Utilities.DateTimeToString(dt.Year, dt.Month, dt.Day);
+                }
+
                 // Check to see if we instead want to restore from backup instead of using scraped metadata
                 if (m_autoRestoreMetadata)
                 {

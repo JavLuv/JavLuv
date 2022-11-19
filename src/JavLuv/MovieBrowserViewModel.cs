@@ -367,6 +367,43 @@ namespace JavLuv
 
         #endregion
 
+        #region Find Subtitles Command
+
+        private void FindSubtitlesExecute()
+        {
+            // Select destination folder
+            var dlg = new CommonOpenFileDialog();
+            dlg.IsFolderPicker = true;
+            dlg.EnsurePathExists = true;
+            dlg.InitialDirectory = Utilities.GetValidSubFolder(Settings.Get().FindSubtitlesFolder);
+            var result = dlg.ShowDialog();
+            if (result != CommonFileDialogResult.Ok)
+                return;
+
+            // Gather selected movies to move
+            Settings.Get().FindSubtitlesFolder = dlg.FileName;
+            List<string> movieIDs = new List<string>();
+            foreach (var item in SelectedItems)
+            {
+                if (item.MovieData.SubtitleFileNames.Count == 0)
+                    movieIDs.Add(item.MovieData.Metadata.UniqueID.Value);
+            }
+            if (movieIDs.Count == 0)
+                return;
+
+            // Move folders as a background task
+            CommandQueue.Command().Execute(new CmdFindSubtitles(movieIDs, dlg.FileName));
+        }
+
+        private bool CanFindSubtitlesExecute()
+        {
+            return true;
+        }
+
+        public ICommand FindSubtitlesCommand { get { return new RelayCommand(FindSubtitlesExecute, CanFindSubtitlesExecute); } }
+
+        #endregion
+
         #region Regenerate Metadata Command
 
         private void RegenerateMetadataExecute()
@@ -430,40 +467,48 @@ namespace JavLuv
 
         #endregion
 
-        #region Find Subtitles Command
+        #region Delete Movie Command
 
-        private void FindSubtitlesExecute()
+        private void DeleteMovieExecute()
         {
-            // Select destination folder
-            var dlg = new CommonOpenFileDialog();
-            dlg.IsFolderPicker = true;
-            dlg.EnsurePathExists = true;
-            dlg.InitialDirectory = Utilities.GetValidSubFolder(Settings.Get().FindSubtitlesFolder);
-            var result = dlg.ShowDialog();
-            if (result != CommonFileDialogResult.Ok)
+            var msgRes = MessageBox.Show(
+                TextManager.GetString("Text.ConfirmDeleteMoviesMessage"),
+                TextManager.GetString("Text.ConfirmDeleteMoviesTitle"),
+                MessageBoxButton.YesNo);
+            if (msgRes == MessageBoxResult.No)
                 return;
 
-            // Gather selected movies to move
-            Settings.Get().FindSubtitlesFolder = dlg.FileName;
-            List<string> movieIDs = new List<string>();
+            // Gather selected movies to delete
+            List<MovieData> moviesToMove = new List<MovieData>();
             foreach (var item in SelectedItems)
-            {
-                if (item.MovieData.SubtitleFileNames.Count == 0)
-                    movieIDs.Add(item.MovieData.Metadata.UniqueID.Value);
-            }
-            if (movieIDs.Count == 0)
+                moviesToMove.Add(item.MovieData);  
+            if (moviesToMove.Count == 0)
                 return;
+
+            // Create progress window to display modally as movies are deleted
+            var progress = new ProgressWindow();
+            progress.Owner = App.Current.MainWindow;
+            progress.Title = TextManager.GetString("Text.DeletingMoviesTitle");
+            progress.Message = TextManager.GetString("Text.DeletingMoviesMessage");
+            progress.TotalActions = moviesToMove.Count;
+            progress.UpdateProgress();
 
             // Move folders as a background task
-            CommandQueue.Command().Execute(new CmdFindSubtitles(movieIDs, dlg.FileName));
+            CommandQueue.Command().Execute(new CmdDeleteMovies(progress, moviesToMove, Parent.Collection));
+
+            // Show progress dialog
+            progress.ShowDialog();
+
+            // Save collection, which will update folder status
+            m_parent.Collection.Save();
         }
 
-        private bool CanFindSubtitlesExecute()
+        private bool CanDeleteMovieExecute()
         {
             return true;
         }
 
-        public ICommand FindSubtitlesCommand { get { return new RelayCommand(FindSubtitlesExecute, CanFindSubtitlesExecute); } }
+        public ICommand DeleteMovieCommand { get { return new RelayCommand(DeleteMovieExecute, CanDeleteMovieExecute); } }
 
         #endregion
 

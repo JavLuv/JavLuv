@@ -26,8 +26,6 @@ namespace JavLuv
 
         public MainWindowViewModel()
         {
-            Logger.WriteInfo("Main window view model initialized");
-
             // Catch any unhandled exceptions and display them
             AppDomain.CurrentDomain.UnhandledException += (sender, args) =>
             {
@@ -43,6 +41,18 @@ namespace JavLuv
                 Logger.WriteError("Unhandled exception", ex);
                 Logger.Close();
             };
+
+            Logger.WriteInfo("Main window view model initialized");
+
+            // Log version
+            var currentVersion = SemanticVersion.Current;
+            Logger.WriteInfo("Running JavLuv " + currentVersion);
+            bool upgradeVersion = false;
+            if (JavLuv.Settings.Get().LastVersionRun < currentVersion)
+            {
+                Logger.WriteInfo("Upgraded from " + JavLuv.Settings.Get().LastVersionRun);
+                upgradeVersion = true;
+            }
 
             m_movieCollection = new MovieCollection(Application.Current.Dispatcher);
             m_movieScanner = new MovieScanner(m_movieCollection);
@@ -69,7 +79,7 @@ namespace JavLuv
             // Set state initially
             ChangeState(null);
 
-            // Check version
+            // Check for new version if conditions are met
             var timeToCheck = new TimeSpan(1, 0, 0, 0); // 1 day interval
             var interval = new TimeSpan(0, 0, 0, 0);
             if (JavLuv.Settings.Get().LastVersionCheckTime != null)
@@ -82,10 +92,11 @@ namespace JavLuv
                 CommandQueue.LongTask().Execute(m_checkVersion);
             }
 
-            // Perform a one-time cleanup of actress image folder to fix previous bugs
-            if (JavLuv.Settings.Get().LastVersionRun < new SemanticVersion(1, 1, 6))
+            // Perform updates only on version upgrade
+            if (upgradeVersion)
             {
                 Collection.CleanActressImages();
+                Collection.UpdateDateAdded();          
             }
         }
 

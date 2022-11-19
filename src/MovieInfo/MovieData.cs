@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Common;
+using System;
 using System.Collections.Generic;
 using System.Xml.Linq;
 using System.Xml.Serialization;
@@ -125,6 +126,8 @@ namespace MovieInfo
             Rating = 0.0f;
             Ratings = new List<RatingData>();
             Plot = String.Empty;
+            Status = String.Empty;
+            DateAdded = String.Empty;
         }
 
         public MovieMetadata(string uniqueID) : this()
@@ -230,6 +233,14 @@ namespace MovieInfo
         [XmlElement("actor")]
         public List<ActorData> Actors { get; set; }
 
+        // Unused by Kodi but part of the spec.  Can put some extra data here
+        [XmlElement("status")]
+        public string Status { get; set; }
+
+        [XmlElement("dateadded")]
+        public string DateAdded { get; set; }
+
+
         #endregion
     }
 
@@ -333,7 +344,6 @@ namespace MovieInfo
         // Deprecated
         public string SubtitleFileName { get; set; }
 
-        [XmlIgnore]
         public bool MetadataChanged { get; set; }
 
         #endregion

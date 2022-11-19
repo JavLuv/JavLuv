@@ -67,9 +67,11 @@
     <Compile Include="CmdLoad.cs" />
     <Compile Include="CmdMarkSharedFolders.cs" />
     <Compile Include="CmdSave.cs" />
+    <Compile Include="CmdSaveMetadata.cs" />
     <Compile Include="CmdSearchActresses.cs" />
     <Compile Include="CmdUpdateActressMovieCount.cs" />
     <Compile Include="CmdUpdateActressNames.cs" />
+    <Compile Include="CmdUpdateDateAdded.cs" />
     <Compile Include="CommandQueue.cs" />
     <Compile Include="MovieCollection.cs" />
     <Compile Include="MovieData.cs" />
