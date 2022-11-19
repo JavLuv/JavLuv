@@ -43,14 +43,6 @@
                 Content="{DynamicResource Text.ScanMovies}"
                 />
 
-            <Button
-                Command="{Binding DeleteCacheCommand}"
-                Visibility="{Binding AdvancedVisibility}"
-                Margin="5, 5, 5, 5"
-                HorizontalAlignment="Stretch"
-                Height="24"
-                Content="{DynamicResource Text.DeleteLocalCacheEx}"
-                />
         </StackPanel>
         <StackPanel IsEnabled="{Binding IsSearchViewEnabled}">
             <Label

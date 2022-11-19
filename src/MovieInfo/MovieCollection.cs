@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using System.Threading;
 using System.Windows.Threading;
 
 namespace MovieInfo
@@ -15,6 +16,9 @@ namespace MovieInfo
         {
             m_dispatcher = dispatcher;
             CommandQueue.Command().CommandFinished += CommandQueue_CommandFinished;
+            m_timer = new System.Timers.Timer(15000);
+            m_timer.Start();
+            m_timer.Elapsed += OnTimerElapsed;
             var folder = Utilities.GetJavLuvSettingsFolder();
             m_cacheFilename = Path.Combine(folder, "JavLuv.cache");
             m_actressesFilename = Path.Combine(folder, "Actresses.xml");
@@ -79,6 +83,11 @@ namespace MovieInfo
                     }
                 }));
             }
+        }
+
+        private void OnTimerElapsed(object sender, System.Timers.ElapsedEventArgs e)
+        {
+            CommandQueue.Command().Execute(new CmdSaveMetadata(m_cacheData));
         }
 
         #endregion
@@ -498,24 +507,6 @@ namespace MovieInfo
             Save();
         }
 
-        public void DeleteCache()
-        {
-            lock (m_cacheData)
-            {
-                m_cacheData = new CacheData();
-            }
-            m_moviesDisplayed.Clear();
-            try
-            {
-                if (File.Exists(m_cacheFilename))
-                    File.Delete(m_cacheFilename);
-            }
-            catch(Exception)
-            {
-            }
-            NotifyMoviesDisplayedChanged();
-        }
-
         public void SearchMovies()
         {
             if (m_loaded == false)
@@ -549,6 +540,11 @@ namespace MovieInfo
         public void CleanActressImages()
         {
             CommandQueue.Command().Execute(new CmdCleanActressImages(m_actressesDatabase));
+        }
+
+        public void UpdateDateAdded()
+        {
+            CommandQueue.LongTask().Execute(new CmdUpdateDateAdded(m_cacheData));
         }
 
         #endregion
@@ -644,6 +640,7 @@ namespace MovieInfo
 
         // Internal data
         private System.Windows.Threading.Dispatcher m_dispatcher;
+        private System.Timers.Timer m_timer;
         private CacheData m_cacheData = new CacheData();
         private BackupData m_backupData = new BackupData();
         private ActressesDatabase m_actressesDatabase = new ActressesDatabase();

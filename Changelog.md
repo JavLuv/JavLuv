@@ -2,12 +2,16 @@
 
 All significant changes are listed in this file.
 
-## [1.1.7] - 2022-11-14
+## [1.1.7] - 2022-11-16
 
+- External .nfo files are saved over time instead of all at once, improving performance of batch editing
+- "Delete local cache" button has been removed, since cache deleting the cache may now cause data loss until movie metadata is finished saving
+- Added "date added" field to metadata and an option to sort by most recently added movies
 - Opening folder in movie detail view now highlights first movie
-- Fix issue with launching actress clean up command
-- Fix corrupted measurement data when website info is unavailable
-- Fix bug causing occasional leftover covers
+- Fix issue with sorting by date
+- Fix issue with launching actress images clean up command
+- Fix issue corrupted actress measurement data when website info is unavailable
+- Fix issue causing occasional leftover cover images
 
 ## [1.1.6] - 2022-11-12
 

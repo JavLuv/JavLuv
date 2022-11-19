@@ -27,17 +27,9 @@ namespace MovieInfo
                 lock (m_actressesDatabase)
                 {
                     lock (m_backupData)
-                    {                  
-                        // Save any metadata whose information has changed
+                    {
                         foreach (var movie in m_cacheData.Movies)
                         {
-                            if (movie.MetadataChanged)
-                            {
-                                string path = Path.Combine(movie.Path, movie.MetadataFileName);
-                                MovieSerializer<MovieMetadata>.Save(path, movie.Metadata);
-                                movie.MetadataChanged = false;
-                            }
-
                             // Add this metadata to backup data
                             if (m_backupData.Movies.Contains(movie.Metadata))
                                 m_backupData.Movies.Remove(movie.Metadata);

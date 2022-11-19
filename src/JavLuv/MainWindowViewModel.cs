@@ -92,9 +92,12 @@ namespace JavLuv
                 CommandQueue.LongTask().Execute(m_checkVersion);
             }
 
-            // Perform a cleanup of actress image folder on version upgrade to fix previous bugs
+            // Perform updates only on version upgrade
             if (upgradeVersion)
+            {
                 Collection.CleanActressImages();
+                Collection.UpdateDateAdded();          
+            }
         }
 
         #endregion

@@ -12,6 +12,7 @@ namespace MovieInfo
         Actress,
         Date_Newest,
         Date_Oldest,
+        RecentlyAdded,
         UserRating,
     }
 
@@ -45,7 +46,7 @@ namespace MovieInfo
     {
         public int Compare(MovieData left, MovieData right)
         {
-            int cmpVal = right.Metadata.Premiered.CompareTo(left.Metadata.Premiered);
+            int cmpVal = Utilities.DataTimeCompare(right.Metadata.Premiered, (left.Metadata.Premiered));
             if (cmpVal == 0)
                 return left.Metadata.Title.CompareTo(right.Metadata.Title);
             return cmpVal;
@@ -56,7 +57,18 @@ namespace MovieInfo
     {
         public int Compare(MovieData left, MovieData right)
         {
-            int cmpVal = left.Metadata.Premiered.CompareTo(right.Metadata.Premiered);
+            int cmpVal = Utilities.DataTimeCompare(left.Metadata.Premiered, (right.Metadata.Premiered));
+            if (cmpVal == 0)
+                return left.Metadata.Title.CompareTo(right.Metadata.Title);
+            return cmpVal;
+        }
+    }
+
+    public class MovieRecentlyAddedComparer : IComparer<MovieData>
+    {
+        public int Compare(MovieData left, MovieData right)
+        {
+            int cmpVal = Utilities.DataTimeCompare(right.Metadata.DateAdded, (left.Metadata.DateAdded));
             if (cmpVal == 0)
                 return left.Metadata.Title.CompareTo(right.Metadata.Title);
             return cmpVal;
@@ -266,6 +278,9 @@ namespace MovieInfo
                     break;
                 case SortMoviesBy.Date_Oldest:
                     m_filteredMovies.Sort(new MovieDateOldestComparer());
+                    break;
+                case SortMoviesBy.RecentlyAdded:
+                    m_filteredMovies.Sort(new MovieRecentlyAddedComparer());
                     break;
                 case SortMoviesBy.UserRating:
                     m_filteredMovies.Sort(new MovieUserRatingComparer());

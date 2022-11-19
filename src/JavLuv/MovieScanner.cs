@@ -402,6 +402,8 @@ namespace JavLuv
         {
             MovieData movieData = new MovieData();
             movieData.Metadata.UniqueID.Value = directoryInfo.ID;
+            var dt = DateTime.Now;
+            movieData.Metadata.DateAdded = Utilities.DateTimeToString(dt.Year, dt.Month, dt.Day);
             movieData.SharedPath = directoryInfo.IsSharedFolder;
             movieData.Path = directoryInfo.Path;
             movieData.Folder = directoryInfo.Folder;
