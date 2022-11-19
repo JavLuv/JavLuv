@@ -38,6 +38,7 @@
                     <MenuItem Header="{DynamicResource Text.FindSubtitles}" Command="{Binding Parent.FindSubtitlesCommand}" Visibility="{Binding Parent.FindSubtitlesVisibility}"/>
                     <MenuItem Header="{DynamicResource Text.RegenerateMetadata}" Command="{Binding Parent.RegenerateMetadataCommand}"  Visibility="{Binding Parent.ShowAdvancedOptionsVisibility}"/>
                     <MenuItem Header="{DynamicResource Text.DeleteMetadata}" Command="{Binding Parent.DeleteMetadataCommand}" Visibility="{Binding Parent.ShowAdvancedOptionsVisibility}"/>
+                    <MenuItem Header="{DynamicResource Text.DeleteMovie}" Command="{Binding Parent.DeleteMovieCommand}" Visibility="{Binding Parent.ShowAdvancedOptionsVisibility}"/>
                 </ContextMenu>
             </Border.ContextMenu>
             

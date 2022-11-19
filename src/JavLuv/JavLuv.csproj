@@ -141,6 +141,7 @@
       <DependentUpon>ActressMergeView.xaml</DependentUpon>
     </Compile>
     <Compile Include="ActressMergeViewModel.cs" />
+    <Compile Include="CmdDeleteMovies.cs" />
     <Compile Include="MovieBrowserItemView.xaml.cs">
       <DependentUpon>MovieBrowserItemView.xaml</DependentUpon>
     </Compile>

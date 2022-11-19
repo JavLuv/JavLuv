@@ -120,13 +120,16 @@
     <system:String x:Key="Text.LibraryFolderInSettings">Library folder in settings must be valid to perform move/rename operation.</system:String>
     <system:String x:Key="Text.MoveRenameError">Move / Rename Error</system:String>
     <system:String x:Key="Text.ErrorMovingFolder">Error moving folder or files</system:String>
+    <system:String x:Key="Text.ErrorDeletingMovie">Error deleting movie</system:String>
     <system:String x:Key="Text.ErrorMovieScanner">Unexpected error in movie scanner</system:String>
-    <system:String x:Key="Text.JavLuvDeleteCache">JavLuv will delete the local cache.  This operation\nwill not delete any movies or metadata files.\n\nWould you like to proceed?</system:String>
-    <system:String x:Key="Text.DeleteLocalCache">Delete local cache?</system:String>
     <system:String x:Key="Text.MovingMoviesTitle">Moving Movies</system:String>
     <system:String x:Key="Text.MovingMoviesMessage">Moving movies to new location:</system:String>
     <system:String x:Key="Text.MovingRenamingMoviesTitle">Moving / Renaming Movies</system:String>
     <system:String x:Key="Text.MovingRenamingMoviesMessage">Moving / renaming movies and related files / folders:</system:String>
+    <system:String x:Key="Text.ConfirmDeleteMoviesTitle">Delete Selected Movies?</system:String>
+    <system:String x:Key="Text.ConfirmDeleteMoviesMessage">JavLuv will delete all selected movies and associated files.  \nThis action cannot be undone.  Proceed?</system:String>
+    <system:String x:Key="Text.DeletingMoviesTitle">Deleting Movies</system:String>
+    <system:String x:Key="Text.DeletingMoviesMessage">Deleting movies and associated files:</system:String>
 
     <!-- Side Panel View -->
     <system:String x:Key="Text.ConcatenateMovies">Concatenate movies...</system:String>
@@ -162,10 +165,11 @@
     <system:String x:Key="Text.MoveRename">Move / rename...</system:String>
     <system:String x:Key="Text.MoveToFolder">Move to folder...</system:String>
     <system:String x:Key="Text.RescanFiles">Rescan files</system:String>
+    <system:String x:Key="Text.FindSubtitles">Find subtitles...</system:String>
     <system:String x:Key="Text.FilterMetadata">Filter metadata</system:String>
     <system:String x:Key="Text.RegenerateMetadata">Regenerate metadata</system:String>
     <system:String x:Key="Text.DeleteMetadata">Delete metadata</system:String>
-    <system:String x:Key="Text.FindSubtitles">Find subtitles...</system:String>
+    <system:String x:Key="Text.DeleteMovie">Delete movie</system:String>
 
     <!-- Actress Browser Item View -->
     <system:String x:Key="Text.UpdateActresses">Update actresses</system:String>
