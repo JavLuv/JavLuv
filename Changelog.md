@@ -11,7 +11,7 @@ All significant changes are listed in this file.
 - Opening folder in movie detail view now highlights first movie
 - Fix issue with sorting by date
 - Fix issue with launching actress images clean up command
-- Fix issue corrupted actress measurement data when website info is unavailable
+- Fix issue with corrupted actress measurement data when website info is unavailable
 - Fix issue causing occasional leftover cover images
 
 ## [1.1.6] - 2022-11-12
