@@ -41,6 +41,7 @@
     <Color x:Key="Theme.Default.Foreground">#FF777777</Color>
     <Color x:Key="Theme.Alternate.Background">#FF444444</Color>
     <Color x:Key="Theme.Alternate.Foreground">#FF666666</Color>
+    <Color x:Key="Theme.Default.Border">#FF555555</Color>
 
     <!-- Common Control Color Brushes -->
     <Color x:Key="Theme.Control.Default.Background">#FF292929</Color>
@@ -60,6 +61,10 @@
     <Color x:Key="Theme.Control.Pressed.Border">#FFB1B1B1</Color>
     <Color x:Key="Theme.Control.Textbox.Default.Border">#FF343434</Color>
     <Color x:Key="Theme.Control.Textbox.Selected.Border">#FFD1D1D1</Color>
+
+    <!-- Generic Browser Item Style -->
+    <SolidColorBrush x:Key="BrowserItem.Background" Color="{DynamicResource Theme.Default.Background}"/>
+    <SolidColorBrush x:Key="BrowserItem.Border" Color="{DynamicResource Theme.Default.Border}"/>
 
     <!-- Panel Label Style -->
     <SolidColorBrush x:Key="PanelLabel.Foreground" Color="{DynamicResource Theme.Alternate.Foreground}"/>

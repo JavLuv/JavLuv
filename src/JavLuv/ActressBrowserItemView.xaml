@@ -16,8 +16,8 @@
         <Border       
             BorderThickness="2" 
             CornerRadius="10,10,10,10" 
-            BorderBrush="#FF555555" 
-            Background="#FF222222"
+            BorderBrush="{DynamicResource BrowserItem.Border}" 
+            Background="{DynamicResource BrowserItem.Background}"
             >
             <Border.InputBindings>
                 <MouseBinding MouseAction="LeftDoubleClick"
