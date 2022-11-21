@@ -33,7 +33,7 @@ namespace JavLuv
             ActressDetailViewModel current = Parent.Overlay as ActressDetailViewModel;
             if (current == null)
                 return;
-            Parent.Overlay = new ActressDetailViewModel(this, Actresses[Actresses.IndexOf(current.BrowserItem) - 1]);
+            Parent.Overlay = new ActressDetailViewModel(this, Actresses[GetOverlayIndex() - 1]);
         }
 
         public bool CanNavigateLeft()
@@ -41,7 +41,8 @@ namespace JavLuv
             ActressDetailViewModel current = Parent.Overlay as ActressDetailViewModel;
             if (current == null)
                 return false;
-            if (Actresses.IndexOf(current.BrowserItem) == 0)
+            int index = GetOverlayIndex();
+            if (index <= 0)
                 return false;
             return true;
         }
@@ -51,7 +52,7 @@ namespace JavLuv
             ActressDetailViewModel current = Parent.Overlay as ActressDetailViewModel;
             if (current == null)
                 return;
-            Parent.Overlay = new ActressDetailViewModel(this, Actresses[Actresses.IndexOf(current.BrowserItem) + 1]);
+            Parent.Overlay = new ActressDetailViewModel(this, Actresses[GetOverlayIndex() + 1]);
         }
 
         public bool CanNavigateRight()
@@ -59,7 +60,10 @@ namespace JavLuv
             ActressDetailViewModel current = Parent.Overlay as ActressDetailViewModel;
             if (current == null)
                 return false;
-            if (Actresses.IndexOf(current.BrowserItem) >= Actresses.Count - 1)
+            int index = GetOverlayIndex();
+            if (index == -1)
+                return false;
+            if (index >= Actresses.Count - 1)
                 return false;
             return true;
         }
@@ -285,6 +289,24 @@ namespace JavLuv
         public void OpenDetailView(ActressBrowserItemViewModel browserItem)
         {
             Parent.Overlay = new ActressDetailViewModel(this, browserItem);
+        }
+
+        #endregion
+
+        #region Private Functions
+
+        private int GetOverlayIndex()
+        {
+            ActressDetailViewModel current = Parent.Overlay as ActressDetailViewModel;
+            if (current == null)
+                return -1;
+            string Name = current.Name;
+            for (int i = 0; i < Actresses.Count; ++i)
+            {
+                if (Actresses[i].ActressData.Name == Name)
+                    return i;
+            }
+            return -1;
         }
 
         #endregion

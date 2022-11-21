@@ -1,6 +1,7 @@
 ﻿using MovieInfo;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 
 namespace JavLuv
 {
@@ -15,6 +16,7 @@ namespace JavLuv
             var SortList = new List<MovieDetailActressItemViewModel>();
             foreach (ActorData actor in Parent.MovieData.Metadata.Actors)
                 SortList.Add(new MovieDetailActressItemViewModel(this, actor));
+            SortList.Sort((first, second) => second.MovieCount.CompareTo(first.MovieCount));
             Actresses = new ObservableCollection<MovieDetailActressItemViewModel>();
             foreach (var actressViewModel in SortList)
             {
@@ -26,6 +28,11 @@ namespace JavLuv
                 if (actressViewModel.HasImage == false)
                     Actresses.Add(actressViewModel);
             }
+            for (int i = 0; i < Actresses.Count; i++)
+            {
+                if (i >= 6)
+                    Actresses[i].SuppressVisibility = true;
+            }
         }
 
         #endregion
@@ -35,11 +42,6 @@ namespace JavLuv
         public MovieDetailViewModel Parent { get; private set; }
 
         public ObservableCollection<MovieDetailActressItemViewModel> Actresses { get; private set; }
-
-        #endregion
-
-        #region Private Members
-
 
         #endregion
     }

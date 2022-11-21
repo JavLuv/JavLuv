@@ -29,11 +29,6 @@ namespace JavLuv
             m_collection.SearchMovies();
         }
 
-        public ActressDetailViewModel(ActressDetailViewModel actressDetailViewModel) : 
-            this(actressDetailViewModel.m_actressBrowserViewModel, actressDetailViewModel.m_browserItem)
-        {
-        }
-
         public ActressDetailViewModel(MovieDetailActressItemViewModel parent, ActressData actressData)
         {
             Logger.WriteInfo("Viewing details of actress " + actressData.Name);

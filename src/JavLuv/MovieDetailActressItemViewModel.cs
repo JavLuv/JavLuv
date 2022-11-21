@@ -64,13 +64,23 @@ namespace JavLuv
         {
             get
             {
-                if (Image == null)
+                if (Image == null || SuppressVisibility)
                     return Visibility.Collapsed;
                 return Visibility.Visible;
             }
         }
 
+        public bool SuppressVisibility { get; set; }
+
         public string Name { get; private set; }
+
+        public int MovieCount
+        {
+            get
+            {
+                return m_actressData.MovieCount;
+            }
+        }
 
         #endregion
 
