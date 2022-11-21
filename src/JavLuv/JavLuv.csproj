@@ -161,6 +161,14 @@
       <DependentUpon>ConcatView.xaml</DependentUpon>
     </Compile>
     <Compile Include="ConcatViewModel.cs" />
+    <Compile Include="MovieDetailActressItemView.xaml.cs">
+      <DependentUpon>MovieDetailActressItemView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="MovieDetailActressItemViewModel.cs" />
+    <Compile Include="MovieDetailActressView.xaml.cs">
+      <DependentUpon>MovieDetailActressView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="MovieDetailActressViewModel.cs" />
     <Compile Include="MovieDetailView.xaml.cs">
       <DependentUpon>MovieDetailView.xaml</DependentUpon>
     </Compile>
@@ -227,6 +235,14 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="ConcatView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="MovieDetailActressItemView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="MovieDetailActressView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -357,6 +373,7 @@
     <Content Include="ffmpeg.exe">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Resource Include="Resources\edit.png" />
     <Resource Include="Resources\birthday.png" />
     <Resource Include="Resources\nav_arrow.png" />
   </ItemGroup>

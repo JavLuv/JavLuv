@@ -193,7 +193,8 @@ namespace JavLuv
             MovieDetailViewModel current = Parent.Overlay as MovieDetailViewModel;
             if (current == null)
                 return;
-            Parent.Overlay = new MovieDetailViewModel(this, Movies[Movies.IndexOf(current.BrowserItem) - 1]);
+
+            Parent.Overlay = new MovieDetailViewModel(this, Movies[GetOverlayIndex() - 1]);
         }
 
         private bool CanNavigateLeftExecute()
@@ -201,7 +202,8 @@ namespace JavLuv
             MovieDetailViewModel current = Parent.Overlay as MovieDetailViewModel;
             if (current == null)
                 return false;
-            if (Movies.IndexOf(current.BrowserItem) == 0)
+            int index = GetOverlayIndex();
+            if (index <= 0)
                 return false;
             return true;
         }
@@ -217,7 +219,7 @@ namespace JavLuv
             MovieDetailViewModel current = Parent.Overlay as MovieDetailViewModel;
             if (current == null)
                 return;
-            Parent.Overlay = new MovieDetailViewModel(this, Movies[Movies.IndexOf(current.BrowserItem) + 1]);
+            Parent.Overlay = new MovieDetailViewModel(this, Movies[GetOverlayIndex() + 1]);
         }
 
         private bool CanNavigateRightExecute()
@@ -225,7 +227,10 @@ namespace JavLuv
             MovieDetailViewModel current = Parent.Overlay as MovieDetailViewModel;
             if (current == null)
                 return false;
-            if (Movies.IndexOf(current.BrowserItem) >= Movies.Count - 1)
+            int index = GetOverlayIndex();
+            if (index == -1)
+                return false;
+            if (index >= Movies.Count - 1)
                 return false;
             return true;
         }
@@ -583,6 +588,24 @@ namespace JavLuv
 
 
             return true;
+        }
+
+        #endregion
+
+        #region Private Functions
+
+        private int GetOverlayIndex()
+        {
+            MovieDetailViewModel current = Parent.Overlay as MovieDetailViewModel;
+            if (current == null)
+                return -1;
+            string ID = current.ID;
+            for (int i = 0; i < Movies.Count; ++i)
+            {
+                if (Movies[i].ID== ID) 
+                    return i; 
+            }
+            return -1;
         }
 
         #endregion

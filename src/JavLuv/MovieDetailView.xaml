@@ -14,6 +14,7 @@
 
         <Image x:Key="ImageFolder" x:Shared="false" Source="Resources/folder.png" />
         <Image x:Key="ImageSubtitles" x:Shared="false" Source="Resources/subtitles.png" />
+        <Image x:Key="ImageEdit" x:Shared="false" Source="Resources/edit.png" />
 
         <Style x:Key="DetailLabelStyle" TargetType="Label" BasedOn="{StaticResource {x:Type Label}}">
             <Setter Property="FontSize" Value="16" />
@@ -29,6 +30,9 @@
             <Setter Property="Margin" Value="0,4,0,0" />
             <Setter Property="BorderBrush" Value="Transparent" />
             <Setter Property="TextWrapping" Value="Wrap" />
+        </Style>
+        <Style x:Key="DetailActressTextBoxStyle" TargetType="TextBox" BasedOn="{StaticResource DetailTextBoxStyle}">
+            <Setter Property="Grid.Column" Value="0" />
         </Style>
     </UserControl.Resources>
 
@@ -296,7 +300,35 @@
                                 <ColumnDefinition Width="2*" />
                             </Grid.ColumnDefinitions>
                             <Label Style="{StaticResource DetailLabelStyle}" Content="{DynamicResource Text.Actresses}" />
-                            <TextBox Style="{StaticResource DetailTextBoxStyle}" Text="{Binding Actors, UpdateSourceTrigger=LostFocus}" />
+                            <Grid Grid.Column="2">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="30" />
+                                </Grid.ColumnDefinitions>
+                                <TextBox 
+                                    Style="{StaticResource DetailActressTextBoxStyle}" 
+                                    Visibility="{Binding ActressTextBoxVisible}" 
+                                    Text="{Binding Actors, UpdateSourceTrigger=LostFocus}" 
+                                    />
+                                <local:MovieDetailActressView 
+                                    Grid.Column="0" 
+                                    Visibility="{Binding Parent.ActressViewerVisible}" 
+                                    DataContext="{Binding Actresses}" 
+                                    />
+                                <ToggleButton
+                                    Grid.Column="1"
+                                    Margin="1, 5, 1, 1"
+                                    HorizontalAlignment="Right"
+                                    VerticalAlignment="Top"
+                                    IsChecked="{Binding ActressEditing}"
+                                    Width="25"
+                                    Height="25"
+                                    Content="{StaticResource ImageEdit}"
+                                    ToolTip="{DynamicResource Text.EditActresses}"
+                                    />
+
+                            </Grid>
+
                         </Grid>
                         <Grid>
                             <Grid.ColumnDefinitions>
