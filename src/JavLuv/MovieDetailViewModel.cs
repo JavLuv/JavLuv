@@ -109,6 +109,10 @@ namespace JavLuv
                 getOrigTitle.FinishedScraping += GetOriginalTitle_Finished;
                 CommandQueue.LongTask().Execute(getOrigTitle, ShowOriginalTitle ? CommandOrder.First : CommandOrder.Last);
             }
+
+            // The actress viewer / editor has it's own viewmodel, since it's a slightly more complex control
+            Actresses = new MovieDetailActressViewModel(this);
+            ActressTextBoxVisible = Visibility.Collapsed;
         }
 
         #endregion
@@ -389,6 +393,60 @@ namespace JavLuv
             }
         }
 
+        public MovieDetailActressViewModel Actresses { get; private set; }
+
+        public Visibility ActressViewerVisible 
+        {
+            get { return m_actressViewerVisible; }
+            set
+            {
+                if (m_actressViewerVisible != value)
+                {
+                    m_actressViewerVisible = value;
+                    NotifyPropertyChanged("ActressViewerVisible");
+                }
+            }
+        }
+
+        public Visibility ActressTextBoxVisible
+        {
+            get { return m_actressTextBoxVisible; }
+            set
+            {
+                if (m_actressTextBoxVisible != value)
+                {
+                    m_actressTextBoxVisible = value;
+                    NotifyPropertyChanged("ActressTextBoxVisible");
+                }
+            }
+        }
+
+        public bool ActressEditing
+        {
+            get
+            {
+                return m_actressEditing;
+            }
+            set
+            {
+                if (m_actressEditing != value)
+                {
+                    m_actressEditing = value;
+                    NotifyPropertyChanged("ActressEditing");
+                    if (m_actressEditing)
+                    {
+                        ActressViewerVisible = Visibility.Collapsed;
+                        ActressTextBoxVisible = Visibility.Visible;
+                    }
+                    else
+                    {
+                        ActressViewerVisible = Visibility.Visible;
+                        ActressTextBoxVisible = Visibility.Collapsed;
+                    }
+                }
+            }
+        }
+
         public string Resolution
         {
             get { return m_movieData.MovieResolution; }
@@ -542,6 +600,9 @@ namespace JavLuv
         private ImageSource m_image;
         private CmdLoadImage m_loadImage;
         private CmdGetResolution m_getResolution;
+        private bool m_actressEditing = false;
+        private Visibility m_actressViewerVisible = Visibility.Visible;
+        private Visibility m_actressTextBoxVisible = Visibility.Visible;
 
         #endregion
     }

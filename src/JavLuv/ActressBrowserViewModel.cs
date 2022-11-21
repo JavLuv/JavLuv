@@ -28,6 +28,42 @@ namespace JavLuv
             NotifyAllPropertiesChanged();
         }
 
+        public void NavigateLeft()
+        {
+            ActressDetailViewModel current = Parent.Overlay as ActressDetailViewModel;
+            if (current == null)
+                return;
+            Parent.Overlay = new ActressDetailViewModel(this, Actresses[Actresses.IndexOf(current.BrowserItem) - 1]);
+        }
+
+        public bool CanNavigateLeft()
+        {
+            ActressDetailViewModel current = Parent.Overlay as ActressDetailViewModel;
+            if (current == null)
+                return false;
+            if (Actresses.IndexOf(current.BrowserItem) == 0)
+                return false;
+            return true;
+        }
+
+        public void NavigateRight()
+        {
+            ActressDetailViewModel current = Parent.Overlay as ActressDetailViewModel;
+            if (current == null)
+                return;
+            Parent.Overlay = new ActressDetailViewModel(this, Actresses[Actresses.IndexOf(current.BrowserItem) + 1]);
+        }
+
+        public bool CanNavigateRight()
+        {
+            ActressDetailViewModel current = Parent.Overlay as ActressDetailViewModel;
+            if (current == null)
+                return false;
+            if (Actresses.IndexOf(current.BrowserItem) >= Actresses.Count - 1)
+                return false;
+            return true;
+        }
+
         #endregion
 
         #region Properties
@@ -185,54 +221,6 @@ namespace JavLuv
         #endregion
 
         #region Commands
-
-        #region Navigate Left Command
-
-        private void NavigateLeftExecute()
-        {
-            ActressDetailViewModel current = Parent.Overlay as ActressDetailViewModel;
-            if (current == null)
-                return;
-            Parent.Overlay = new ActressDetailViewModel(this, Actresses[Actresses.IndexOf(current.BrowserItem) - 1]);
-        }
-
-        private bool CanNavigateLeftExecute()
-        {
-            ActressDetailViewModel current = Parent.Overlay as ActressDetailViewModel;
-            if (current == null)
-                return false;
-            if (Actresses.IndexOf(current.BrowserItem) == 0)
-                return false;
-            return true;
-        }
-
-        public ICommand NavigateLeftCommand { get { return new RelayCommand(NavigateLeftExecute, CanNavigateLeftExecute); } }
-
-        #endregion
-
-        #region Navigate Right Command
-
-        private void NavigateRightExecute()
-        {
-            ActressDetailViewModel current = Parent.Overlay as ActressDetailViewModel;
-            if (current == null)
-                return;
-            Parent.Overlay = new ActressDetailViewModel(this, Actresses[Actresses.IndexOf(current.BrowserItem) + 1]);
-        }
-
-        private bool CanNavigateRightExecute()
-        {
-            ActressDetailViewModel current = Parent.Overlay as ActressDetailViewModel;
-            if (current == null)
-                return false;
-            if (Actresses.IndexOf(current.BrowserItem) >= Actresses.Count - 1)
-                return false;
-            return true;
-        }
-
-        public ICommand NavigateRightCommand { get { return new RelayCommand(NavigateRightExecute, CanNavigateRightExecute); } }
-
-        #endregion
 
         #region Update Actresses Command
 

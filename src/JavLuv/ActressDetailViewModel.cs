@@ -14,21 +14,37 @@ namespace JavLuv
     {
         #region Constructors
 
-        public ActressDetailViewModel(ActressBrowserViewModel parent, ActressBrowserItemViewModel browserItem)
+        public ActressDetailViewModel(ActressBrowserViewModel actressBrowserViewModel, ActressBrowserItemViewModel browserItem)
         {
             Logger.WriteInfo("Viewing details of actress " + browserItem.ActressData.Name);
-            m_parent = parent;
+            m_actressBrowserViewModel = actressBrowserViewModel;
+            MovieBrowser = actressBrowserViewModel.Parent.MovieBrowser;
+            m_collection = actressBrowserViewModel.Parent.Collection;
+            m_mainWindowViewModel = m_actressBrowserViewModel.Parent;
             m_browserItem = browserItem;
             m_actressData = m_browserItem.ActressData;
             LoadCurrentImage();
-            Parent.Parent.Collection.MovieSearchActress = m_actressData;
-            Parent.Parent.Collection.MoviesDisplayedChanged += OnMoviesDisplayedChanged;
-            Parent.Parent.Collection.SearchMovies();
+            m_collection.MovieSearchActress = m_actressData;
+            m_collection.MoviesDisplayedChanged += OnMoviesDisplayedChanged;
+            m_collection.SearchMovies();
         }
 
         public ActressDetailViewModel(ActressDetailViewModel actressDetailViewModel) : 
-            this(actressDetailViewModel.m_parent, actressDetailViewModel.m_browserItem)
+            this(actressDetailViewModel.m_actressBrowserViewModel, actressDetailViewModel.m_browserItem)
         {
+        }
+
+        public ActressDetailViewModel(MovieDetailActressItemViewModel parent, ActressData actressData)
+        {
+            Logger.WriteInfo("Viewing details of actress " + actressData.Name);
+            m_actressData = actressData;
+            MovieBrowser = parent.Parent.Parent.Parent.Parent.MovieBrowser;
+            m_mainWindowViewModel = parent.Parent.Parent.Parent.Parent;
+            LoadCurrentImage();
+            m_collection = parent.Parent.Parent.Parent.Parent.Collection;
+            m_collection.MovieSearchActress = m_actressData;
+            m_collection.MoviesDisplayedChanged += OnMoviesDisplayedChanged;
+            m_collection.SearchMovies();
         }
 
         #endregion
@@ -37,8 +53,8 @@ namespace JavLuv
 
         private void OnMoviesDisplayedChanged(object sender, EventArgs e)
         {
-            AverageMovieRating = Parent.Parent.Collection.AverageMovieRating;
-            Parent.Parent.Collection.MoviesDisplayedChanged -= OnMoviesDisplayedChanged;
+            AverageMovieRating = m_collection.AverageMovieRating;
+            m_collection.MoviesDisplayedChanged -= OnMoviesDisplayedChanged;
         }
 
         private void OnImageFinishedLoading(object sender, System.EventArgs e)
@@ -59,7 +75,7 @@ namespace JavLuv
 
         #region Properties
 
-        public ActressBrowserViewModel Parent { get { return m_parent; } }
+        public MovieBrowserViewModel MovieBrowser { get; private set; }
 
         public ImageSource Image
         {
@@ -145,7 +161,7 @@ namespace JavLuv
                             );
                         return;
                     }
-                    ActressData actress = Parent.Parent.Collection.FindActress(value);
+                    ActressData actress = m_collection.FindActress(value);
                     if (actress != null && Name != actress.Name)
                     {
                         MessageBox.Show(
@@ -154,7 +170,7 @@ namespace JavLuv
                             );
                         return;
                     }
-                    Parent.Parent.Collection.RemoveActress(m_actressData, false);
+                    m_collection.RemoveActress(m_actressData, false);
                     if (Utilities.Equals(m_actressData.Name, m_actressData.AltNames) == false)
                         m_actressData.AltNames.Add(m_actressData.Name);
                     var index = m_actressData.AltNames.FindIndex(x => x == value);
@@ -163,7 +179,7 @@ namespace JavLuv
                     m_actressData.Name = value;
                     NotifyPropertyChanged("Name");
                     NotifyPropertyChanged("AlternateNames");
-                    Parent.Parent.Collection.AddActress(m_actressData);
+                    m_collection.AddActress(m_actressData);
                 }
             }
         }
@@ -178,10 +194,10 @@ namespace JavLuv
             {
                 if (value != m_actressData.JapaneseName)
                 {
-                    Parent.Parent.Collection.RemoveActress(m_actressData, false);
+                    m_collection.RemoveActress(m_actressData, false);
                     m_actressData.JapaneseName = value;
                     NotifyPropertyChanged("JapaneseName");
-                    Parent.Parent.Collection.AddActress(m_actressData);
+                    m_collection.AddActress(m_actressData);
                 }
             }
         }
@@ -198,7 +214,7 @@ namespace JavLuv
                     var altNames = Utilities.StringToStringList(value);
                     foreach (var name in altNames)
                     {
-                        ActressData actress = Parent.Parent.Collection.FindActress(value);
+                        ActressData actress = m_collection.FindActress(value);
                         if (actress != null && Name != actress.Name)
                         {
                             MessageBox.Show(
@@ -208,10 +224,10 @@ namespace JavLuv
                             return;
                         }
                     }
-                    Parent.Parent.Collection.RemoveActress(m_actressData, false);
+                    m_collection.RemoveActress(m_actressData, false);
                     m_actressData.AltNames = altNames;
                     NotifyPropertyChanged("AlternateNames");
-                    Parent.Parent.Collection.AddActress(m_actressData);
+                    m_collection.AddActress(m_actressData);
                 }
             }
         }
@@ -383,6 +399,60 @@ namespace JavLuv
         #endregion
 
         #region Commands
+
+        #region Close Overlay Command
+
+        private void CloseOverlayExecute()
+        {
+            m_mainWindowViewModel.Overlay = null;
+        }
+
+        private bool CanCloseOverlayExecute()
+        {
+            return true;
+        }
+
+        public ICommand CloseOverlayCommand { get { return new RelayCommand(CloseOverlayExecute, CanCloseOverlayExecute); } }
+
+        #endregion
+
+        #region Navigate Left Command
+
+        private void NavigateLeftExecute()
+        {
+            m_actressBrowserViewModel.NavigateLeft();
+        }
+
+        private bool CanNavigateLeftExecute()
+        {
+            if (m_actressBrowserViewModel != null)
+                return m_actressBrowserViewModel.CanNavigateLeft();
+            return false;
+        }
+
+        public ICommand NavigateLeftCommand { get { return new RelayCommand(NavigateLeftExecute, CanNavigateLeftExecute); } }
+
+        #endregion
+
+        #region Navigate Right Command
+
+        private void NavigateRightExecute()
+        {
+            m_actressBrowserViewModel.NavigateRight();
+        }
+
+        private bool CanNavigateRightExecute()
+        {
+            if (m_actressBrowserViewModel != null)
+                return m_actressBrowserViewModel.CanNavigateRight();
+            return false;
+        }
+
+        public ICommand NavigateRightCommand { get { return new RelayCommand(NavigateRightExecute, CanNavigateRightExecute); } }
+
+        #endregion
+
+
 
         #region Next Image Command
 
@@ -559,9 +629,11 @@ namespace JavLuv
 
         #region Private Members
 
-        private ActressBrowserViewModel m_parent;
+        private ActressBrowserViewModel m_actressBrowserViewModel;
         private ActressData m_actressData;
         private ActressBrowserItemViewModel m_browserItem;
+        private MovieCollection m_collection;
+        private MainWindowViewModel m_mainWindowViewModel;
         private ImageSource m_image;
         private CmdLoadImage m_loadImage;
         private int m_averageMovieCollection;
