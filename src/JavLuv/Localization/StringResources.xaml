@@ -75,6 +75,7 @@
     <system:String x:Key="Text.CopyTitle">Copy title and metadata</system:String>
     <system:String x:Key="Text.JP">JP</system:String>
     <system:String x:Key="Text.ShowOriginalJpTitle">Show original Japanese title</system:String>
+    <system:String x:Key="Text.EditActresses">Edit actresses</system:String>
 
     <!-- Actress details -->
     <system:String x:Key="Text.ActressDetails">Actress Details</system:String>

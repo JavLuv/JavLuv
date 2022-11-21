@@ -324,7 +324,7 @@
                                     Width="25"
                                     Height="25"
                                     Content="{StaticResource ImageEdit}"
-                                    ToolTip="{DynamicResource Text.ShowOriginalJpTitle}"
+                                    ToolTip="{DynamicResource Text.EditActresses}"
                                     />
 
                             </Grid>
