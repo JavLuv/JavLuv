@@ -207,6 +207,7 @@
     <Compile Include="SubtitleOrganizeViewModel.cs" />
     <Compile Include="TextManager.cs" />
     <Compile Include="SemenaticVersion.cs" />
+    <Compile Include="ThemeManager.cs" />
     <Compile Include="VersionCheckView.xaml.cs">
       <DependentUpon>VersionCheckView.xaml</DependentUpon>
     </Compile>
@@ -298,9 +299,13 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Themes\Default.xaml">
-      <Generator>MSBuild:Compile</Generator>
+    <Page Include="Themes\Dark.xaml">
       <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Themes\Light.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="VersionCheckView.xaml">
       <SubType>Designer</SubType>

@@ -3,39 +3,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:Themes="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero2"
     >
-
-    <SolidColorBrush x:Key="{x:Static SystemColors.ActiveBorderBrushKey}" Color="#FFB4B4B4" />
-    <SolidColorBrush x:Key="{x:Static SystemColors.ActiveCaptionBrushKey}" Color="#FF888888" />
-    <SolidColorBrush x:Key="{x:Static SystemColors.ActiveCaptionTextBrushKey}" Color="#FF000000" />
-    <SolidColorBrush x:Key="{x:Static SystemColors.AppWorkspaceBrushKey}" Color="#FFABABAB" />
-    <SolidColorBrush x:Key="{x:Static SystemColors.ControlBrushKey}" Color="#FF222222" />
-    <SolidColorBrush x:Key="{x:Static SystemColors.ControlDarkBrushKey}" Color="#FFA0A0A0" />
-    <SolidColorBrush x:Key="{x:Static SystemColors.ControlDarkDarkBrushKey}" Color="#FF696969" />
-    <SolidColorBrush x:Key="{x:Static SystemColors.ControlLightBrushKey}" Color="#FF888888" />
-    <SolidColorBrush x:Key="{x:Static SystemColors.ControlLightLightBrushKey}" Color="#FF000000" />
-    <SolidColorBrush x:Key="{x:Static SystemColors.ControlTextBrushKey}" Color="#FF000000" />
-    <SolidColorBrush x:Key="{x:Static SystemColors.DesktopBrushKey}" Color="#FF000000" />
-    <SolidColorBrush x:Key="{x:Static SystemColors.GradientActiveCaptionBrushKey}" Color="#FF777777" />
-    <SolidColorBrush x:Key="{x:Static SystemColors.GradientInactiveCaptionBrushKey}" Color="#FFDFDFDF" />
-    <SolidColorBrush x:Key="{x:Static SystemColors.GrayTextBrushKey}" Color="#FF6D6D6D" />
-    <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="#FF444444" />
-    <SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}" Color="#FFFFFFFF" />
-    <SolidColorBrush x:Key="{x:Static SystemColors.HotTrackBrushKey}" Color="#FF777777" />
-    <SolidColorBrush x:Key="{x:Static SystemColors.InactiveBorderBrushKey}" Color="#FFF4F7FC" />
-    <SolidColorBrush x:Key="{x:Static SystemColors.InactiveCaptionBrushKey}" Color="#FFBFCDDB" />
-    <SolidColorBrush x:Key="{x:Static SystemColors.InactiveCaptionTextBrushKey}" Color="#FF434343" />
-    <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}" Color="#FFE3E3E3" />
-    <SolidColorBrush x:Key="{x:Static SystemColors.InfoBrushKey}" Color="#FFFFFFE1" />
-    <SolidColorBrush x:Key="{x:Static SystemColors.InfoTextBrushKey}" Color="#FF000000" />
-    <SolidColorBrush x:Key="{x:Static SystemColors.MenuBarBrushKey}" Color="#FFF0F0F0" />
-    <SolidColorBrush x:Key="{x:Static SystemColors.MenuBrushKey}" Color="#FFF0F0F0" />
-    <SolidColorBrush x:Key="{x:Static SystemColors.MenuHighlightBrushKey}" Color="#FF999999" />
-    <SolidColorBrush x:Key="{x:Static SystemColors.MenuTextBrushKey}" Color="#FF000000" />
-    <SolidColorBrush x:Key="{x:Static SystemColors.ScrollBarBrushKey}" Color="#FFC8C8C8" />
-    <SolidColorBrush x:Key="{x:Static SystemColors.WindowBrushKey}" Color="#FF222222" />
-    <SolidColorBrush x:Key="{x:Static SystemColors.WindowFrameBrushKey}" Color="#FF646464" />
-    <SolidColorBrush x:Key="{x:Static SystemColors.WindowTextBrushKey}" Color="#FF000000" />
-
+    
     <!-- Common Color Brushes -->
     <Color x:Key="Theme.Default.Background">#FF222222</Color>
     <Color x:Key="Theme.Default.Foreground">#FF777777</Color>
@@ -2870,5 +2838,6 @@
             </Setter.Value>
         </Setter>
     </Style>
+
 
 </ResourceDictionary>

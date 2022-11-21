@@ -55,6 +55,15 @@
                         DisplayMemberPath="Name"
                         />
 
+                    <Label Content="{DynamicResource Text.Theme}"/>
+                    <ComboBox 
+                        HorizontalAlignment="Left"
+                        Width="130"
+                        ItemsSource="{Binding Themes}"
+                        SelectedValue="{Binding SelectedTheme}"
+                        DisplayMemberPath="Name"
+                        />
+
                     <CheckBox 
                         Margin="0, 15, 0, 0" 
                         IsChecked="{Binding ShowAdvancedOptions}"

@@ -4,6 +4,8 @@ using System;
 using System.Windows.Input;
 using LanguageTypePair = JavLuv.ObservableStringValuePair<Common.LanguageType>;
 using LanguageTypePairList = System.Collections.ObjectModel.ObservableCollection<JavLuv.ObservableStringValuePair<Common.LanguageType>>;
+using ThemeTypePair = JavLuv.ObservableStringValuePair<JavLuv.ThemeType>;
+using ThemeTypePairList = System.Collections.ObjectModel.ObservableCollection<JavLuv.ObservableStringValuePair<JavLuv.ThemeType>>;
 
 namespace JavLuv
 {
@@ -23,6 +25,18 @@ namespace JavLuv
                 if (Settings.Get().Language == language.Value)
                 {
                     SelectedLanguage = language;
+                    break;
+                }
+            }
+            Themes = new ThemeTypePairList();
+            Themes.Add(new ThemeTypePair("Text.Dark", ThemeType.Dark));
+            Themes.Add(new ThemeTypePair("Text.Light", ThemeType.Light));
+            ThemeType currentTheme = Settings.Get().Theme;
+            foreach (var theme in Themes)
+            {
+                if (Settings.Get().Theme == theme.Value)
+                {
+                    SelectedTheme = theme;
                     break;
                 }
             }
@@ -68,6 +82,30 @@ namespace JavLuv
         }
 
         public LanguageTypePairList Languages { get; private set; }
+
+        public ThemeTypePair SelectedTheme
+        {
+            get
+            {
+                return m_selectedTheme;
+            }
+            set
+            {
+                if (m_selectedTheme == null || value.Value != m_selectedTheme.Value)
+                {
+                    m_selectedTheme = value;
+                    Settings.Get().Theme = m_selectedTheme.Value;
+                    ThemeManager.Get().SetTheme(m_selectedTheme.Value);
+                    foreach (var themeData in Themes)
+                        themeData.Notify();
+                    if (Parent.SidePanel != null)
+                        Parent.SidePanel.NotifyAllProperty();
+                    NotifyAllPropertiesChanged();
+                }
+            }
+        }
+
+        public ThemeTypePairList Themes { get; private set; }
 
         public bool ShowAdvancedOptions
         {
@@ -525,6 +563,7 @@ namespace JavLuv
 
         private MainWindowViewModel m_parent;
         private LanguageTypePair m_selectedLanguage;
+        private ThemeTypePair m_selectedTheme;
 
         #endregion
     }
