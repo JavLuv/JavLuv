@@ -2,6 +2,7 @@
 using MovieInfo;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Shell;
@@ -114,14 +115,17 @@ namespace JavLuv
             {
                 if (value != m_overlayViewModel)
                 {
-                    // This is a special case.  Preserve the old overlay view model if viewing a movie
-                    // from the actress detail page, and restore it once we're done.
+                    // Keep track of previous overlays in case we jump from overlay to overlay.  This
+                    // allows the back button to return to the previous overlay.  We deliberately only
+                    // keep one level of history though.
                     if (m_overlayViewModel is ActressDetailViewModel && value is MovieDetailViewModel)
-                        m_previousActressDetailViewModel = m_overlayViewModel as ActressDetailViewModel;
-                    else if (value == null && m_previousActressDetailViewModel != null)
+                        m_previousOverlayViewModel = m_overlayViewModel;
+                    else if (m_overlayViewModel is MovieDetailViewModel && value is ActressDetailViewModel)
+                        m_previousOverlayViewModel = m_overlayViewModel;
+                    else if (value == null && m_previousOverlayViewModel != null)
                     {
-                        value = new ActressDetailViewModel(m_previousActressDetailViewModel);
-                        m_previousActressDetailViewModel = null;
+                        value = m_previousOverlayViewModel;
+                        m_previousOverlayViewModel = null;
                     }
 
                     // Turn off error state when finished with the report overlay
@@ -130,7 +134,7 @@ namespace JavLuv
                     
                     // Handle various conditions when changing state
                     ChangeState(value);
-
+               
                     m_overlayViewModel = value;
                     NotifyPropertyChanged("Overlay");
                 }
@@ -528,6 +532,11 @@ namespace JavLuv
                     SidePanel.IsCommandViewEnabled = false;
                     SidePanel.IsSearchViewEnabled = false;
                     StatusVisibility = Visibility.Collapsed;
+                    if (Collection.MovieSearchActress != null)
+                    {
+                        Collection.MovieSearchActress = null;
+                        Collection.SearchMovies();
+                    }
                     break;
                 case AppState.ActressBrowser:
                     MovieBrowser.IsEnabled = false;
@@ -575,7 +584,7 @@ namespace JavLuv
         private MovieBrowserViewModel m_movieBrowserViewModel;
         private ActressBrowserViewModel m_actressBrowserViewModel;
         private ObservableObject m_overlayViewModel;
-        private ActressDetailViewModel m_previousActressDetailViewModel;
+        private ObservableObject m_previousOverlayViewModel;
         private MovieScanner m_movieScanner;
         private MovieCollection m_movieCollection;
         private TaskbarItemProgressState m_progressState;

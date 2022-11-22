@@ -6,7 +6,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:local="clr-namespace:JavLuv"
     mc:Ignorable="d"
-    Background="{StaticResource UserControl.Background}"
+    Style="{DynamicResource DefaultWindowStyle}"
     WindowStartupLocation="CenterOwner"
     ResizeMode="NoResize"
     Title="{DynamicResource Text.ConcatMovies}" 

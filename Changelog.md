@@ -2,7 +2,12 @@
 
 All significant changes are listed in this file.
 
-## [1.1.7] - 2022-11-16
+## [1.1.8] - 2022-11-22
+
+- Added visual actress viewer to movie detail view
+- Added support for multiple themes with light theme
+
+## [1.1.7] - 2022-11-19
 
 - Add 'Delete movie' command, visible when showing advanced options
 - External movie metadata files are saved over time instead of all at once, improving performance of batch editing
@@ -11,7 +16,7 @@ All significant changes are listed in this file.
 - Opening folder in movie detail view now highlights first movie
 - Fix issue with sorting by date
 - Fix issue with launching actress images clean up command
-- Fix issue corrupted actress measurement data when website info is unavailable
+- Fix issue with corrupted actress measurement data when website info is unavailable
 - Fix issue causing occasional leftover cover images
 
 ## [1.1.6] - 2022-11-12

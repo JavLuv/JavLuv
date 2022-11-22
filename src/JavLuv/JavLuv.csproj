@@ -161,6 +161,14 @@
       <DependentUpon>ConcatView.xaml</DependentUpon>
     </Compile>
     <Compile Include="ConcatViewModel.cs" />
+    <Compile Include="MovieDetailActressItemView.xaml.cs">
+      <DependentUpon>MovieDetailActressItemView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="MovieDetailActressItemViewModel.cs" />
+    <Compile Include="MovieDetailActressView.xaml.cs">
+      <DependentUpon>MovieDetailActressView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="MovieDetailActressViewModel.cs" />
     <Compile Include="MovieDetailView.xaml.cs">
       <DependentUpon>MovieDetailView.xaml</DependentUpon>
     </Compile>
@@ -199,6 +207,7 @@
     <Compile Include="SubtitleOrganizeViewModel.cs" />
     <Compile Include="TextManager.cs" />
     <Compile Include="SemenaticVersion.cs" />
+    <Compile Include="ThemeManager.cs" />
     <Compile Include="VersionCheckView.xaml.cs">
       <DependentUpon>VersionCheckView.xaml</DependentUpon>
     </Compile>
@@ -227,6 +236,14 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="ConcatView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="MovieDetailActressItemView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="MovieDetailActressView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -282,9 +299,13 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Themes\Default.xaml">
-      <Generator>MSBuild:Compile</Generator>
+    <Page Include="Themes\Dark.xaml">
       <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Themes\Light.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="VersionCheckView.xaml">
       <SubType>Designer</SubType>
@@ -357,6 +378,7 @@
     <Content Include="ffmpeg.exe">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Resource Include="Resources\edit.png" />
     <Resource Include="Resources\birthday.png" />
     <Resource Include="Resources\nav_arrow.png" />
   </ItemGroup>

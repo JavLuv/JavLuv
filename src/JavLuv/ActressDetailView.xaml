@@ -40,8 +40,8 @@
         </Grid.RowDefinitions>
 
         <Grid.InputBindings>
-            <KeyBinding Command="{Binding Parent.NavigateLeftCommand}" Key="Left" />
-            <KeyBinding Command="{Binding Parent.NavigateRightCommand}" Key="Right" />
+            <KeyBinding Command="{Binding NavigateLeftCommand}" Key="Left" />
+            <KeyBinding Command="{Binding NavigateRightCommand}" Key="Right" />
             <KeyBinding Command="{Binding PreviousImageCommand}" Key="Left" Modifiers="Ctrl" />
             <KeyBinding Command="{Binding NextImageCommand}" Key="Right" Modifiers="Ctrl"/>
         </Grid.InputBindings>
@@ -65,14 +65,14 @@
 
             <Button
                 IsEnabled="True"
-                Command="{Binding Parent.Parent.CloseOverlayCommand}"
+                Command="{Binding CloseOverlayCommand}"
                 Background="Transparent" 
                 BorderThickness="0" 
                 Margin="4, 4, 4, 4"
                 >
                 <Grid>
-                    <Polyline Margin="8, 8, 0, 0" StrokeThickness="2" Stroke="WhiteSmoke" Points="10, 0 -10, 0" />
-                    <Polyline Margin="8, 8, 0, 0" StrokeThickness="2" Stroke="WhiteSmoke" Points="0,-8 -8,0 0,8" />
+                    <Polyline Margin="8, 8, 0, 0" StrokeThickness="2" Stroke="{DynamicResource Icon.Foreground}" Points="10, 0 -10, 0" />
+                    <Polyline Margin="8, 8, 0, 0" StrokeThickness="2" Stroke="{DynamicResource Icon.Foreground}" Points="0,-8 -8,0 0,8" />
                 </Grid>
             </Button>
             <TextBlock Margin="5,0,0,0" VerticalAlignment="Center" Grid.Column="1" Text="{DynamicResource Text.Back}"/>
@@ -85,15 +85,15 @@
                     <ColumnDefinition Width="1*" />
                 </Grid.ColumnDefinitions>
                 <Button 
-                    Command="{Binding Parent.NavigateLeftCommand}"
+                    Command="{Binding NavigateLeftCommand}"
                     Background="Transparent" 
                     BorderThickness="0" 
                     Margin="4, 4, 4, 4"
                     Grid.Column="1"
                     >
                     <Grid>
-                        <Polyline Margin="8, 8, 0, 0" StrokeThickness="2" Stroke="WhiteSmoke" Points="10, 0 -10, 0" />
-                        <Polyline Margin="8, 8, 0, 0" StrokeThickness="2" Stroke="WhiteSmoke" Points="0,-8 -8,0 0,8" />
+                        <Polyline Margin="8, 8, 0, 0" StrokeThickness="2" Stroke="{DynamicResource Icon.Foreground}" Points="10, 0 -10, 0" />
+                        <Polyline Margin="8, 8, 0, 0" StrokeThickness="2" Stroke="{DynamicResource Icon.Foreground}" Points="0,-8 -8,0 0,8" />
                     </Grid>
                 </Button>
                 <TextBlock 
@@ -105,15 +105,15 @@
                     Text="{DynamicResource Text.ActressDetails}" 
                     />
                 <Button 
-                    Command="{Binding Parent.NavigateRightCommand}"
+                    Command="{Binding NavigateRightCommand}"
                     Background="Transparent" 
                     BorderThickness="0" 
                     Margin="4, 4, 4, 4"
                     Grid.Column="3"
                     >
                     <Grid Background="Transparent" >
-                        <Polyline Margin="8, 8, 0, 0" StrokeThickness="2" Stroke="WhiteSmoke" Points="-10,0 10,0" />
-                        <Polyline Margin="8, 8, 0, 0" StrokeThickness="2" Stroke="WhiteSmoke" Points="0,-8 8,0 0,8" />
+                        <Polyline Margin="8, 8, 0, 0" StrokeThickness="2" Stroke="{DynamicResource Icon.Foreground}" Points="-10,0 10,0" />
+                        <Polyline Margin="8, 8, 0, 0" StrokeThickness="2" Stroke="{DynamicResource Icon.Foreground}" Points="0,-8 8,0 0,8" />
                     </Grid>
                 </Button>
             </Grid>
@@ -248,8 +248,8 @@
                     VerticalScrollBarVisibility="Auto" 
                     >
                     <ScrollViewer.InputBindings>
-                        <KeyBinding Command="{Binding Parent.NavigateLeftCommand}" Key="Left" />
-                        <KeyBinding Command="{Binding Parent.NavigateRightCommand}" Key="Right" />
+                        <KeyBinding Command="{Binding NavigateLeftCommand}" Key="Left" />
+                        <KeyBinding Command="{Binding NavigateRightCommand}" Key="Right" />
                         <KeyBinding Command="{Binding PreviousImageCommand}" Key="Left" Modifiers="Ctrl" />
                         <KeyBinding Command="{Binding NextImageCommand}" Key="Right" Modifiers="Ctrl"/>
                     </ScrollViewer.InputBindings>
@@ -352,7 +352,7 @@
 
         <!--Browser View-->
         <Grid Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" >
-            <local:MovieBrowserView DataContext="{Binding Parent.Parent.MovieBrowser}" />
+            <local:MovieBrowserView DataContext="{Binding MovieBrowser}" />
         </Grid>
     </Grid>
 </UserControl>

@@ -39,13 +39,12 @@ namespace JavLuv
             if (String.IsNullOrEmpty(culture) || culture == m_currentCulture)
                 return;
 
-            // Copy all MergedDictionarys into a auxiliar list.
+            // Copy all MergedDictionarys into a auxiliary list.
             var dictionaryList = Application.Current.Resources.MergedDictionaries.ToList();
 
             // Search for the specified culture.     
             string requestedCulture = string.Format("Localization/StringResources.{0}.xaml", culture);
-            var resourceDictionary = dictionaryList.
-                FirstOrDefault(d => d.Source.OriginalString == requestedCulture);
+            var resourceDictionary = dictionaryList.FirstOrDefault(d => d.Source.OriginalString == requestedCulture);
 
             if (resourceDictionary == null)
             {

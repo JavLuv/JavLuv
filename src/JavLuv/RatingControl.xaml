@@ -13,12 +13,6 @@
     MouseLeave="UserControl_MouseLeave"
     >
     <UserControl.Resources>
-
-        <Image x:Key="ImageStarLeftOutline" x:Shared="false" Source="Resources/star_left_outline.png" />
-        <Image x:Key="ImageStarRightOutline" x:Shared="false" Source="Resources/star_right_outline.png" />
-        <Image x:Key="ImageStarLeftFilled" x:Shared="false" Source="Resources/star_left_filled.png" />
-        <Image x:Key="ImageStarRightFilled" x:Shared="false" Source="Resources/star_right_filled.png" />
-
         <Style x:Key="StarStyle" TargetType="Button" BasedOn="{StaticResource BaseButtonStyle}">
             <Setter Property="OverridesDefaultStyle" Value="True"/>
             <Setter Property="Width" Value="15"/>
@@ -38,66 +32,247 @@
             </Setter>
         </Style>
     </UserControl.Resources>
+    
     <StackPanel Orientation="Horizontal">
         <Button x:Name="m_button0" Width="5" Style="{StaticResource StarStyle}" Click="m_button0_Click" MouseMove="m_button0_MouseMove"/>
         <Button x:Name="m_button1" Style="{StaticResource StarStyle}" Click="m_button1_Click" MouseMove="m_button1_MouseMove" >
             <Grid>
-                <ContentControl Content="{StaticResource ImageStarLeftOutline}" />
-                <ContentControl x:Name="m_starFilled1" Content="{StaticResource ImageStarLeftFilled}" />
+                <ContentControl>
+                    <Rectangle Width="15" Height="32">
+                        <Rectangle.Fill>
+                            <SolidColorBrush Color="{DynamicResource Theme.Icon.Foreground}"/>
+                        </Rectangle.Fill>
+                        <Rectangle.OpacityMask>
+                            <ImageBrush ImageSource="Resources/star_left_outline.png"/>
+                        </Rectangle.OpacityMask>
+                    </Rectangle>
+                </ContentControl>
+                <ContentControl x:Name="m_starFilled1" >
+                    <Rectangle Width="15" Height="32">
+                        <Rectangle.Fill>
+                            <SolidColorBrush Color="{DynamicResource Theme.Icon.Foreground}"/>
+                        </Rectangle.Fill>
+                        <Rectangle.OpacityMask>
+                            <ImageBrush ImageSource="Resources/star_left_filled.png"/>
+                        </Rectangle.OpacityMask>
+                    </Rectangle>
+                </ContentControl>
             </Grid>
         </Button>
         <Button x:Name="m_button2" Style="{StaticResource StarStyle}" Click="m_button2_Click" MouseMove="m_button2_MouseMove" >
             <Grid>
-                <ContentControl Content="{StaticResource ImageStarRightOutline}" />
-                <ContentControl x:Name="m_starFilled2" Content="{StaticResource ImageStarRightFilled}" />
+                <ContentControl>
+                    <Rectangle Margin="-1,0,0,0" Width="15" Height="32">
+                        <Rectangle.Fill>
+                            <SolidColorBrush Color="{DynamicResource Theme.Icon.Foreground}"/>
+                        </Rectangle.Fill>
+                        <Rectangle.OpacityMask>
+                            <ImageBrush ImageSource="Resources/star_right_outline.png"/>
+                        </Rectangle.OpacityMask>
+                    </Rectangle>
+                </ContentControl>
+                <ContentControl x:Name="m_starFilled2" >
+                    <Rectangle Margin="-1,0,0,0" Width="15" Height="32">
+                        <Rectangle.Fill>
+                            <SolidColorBrush Color="{DynamicResource Theme.Icon.Foreground}"/>
+                        </Rectangle.Fill>
+                        <Rectangle.OpacityMask>
+                            <ImageBrush ImageSource="Resources/star_right_filled.png"/>
+                        </Rectangle.OpacityMask>
+                    </Rectangle>
+                </ContentControl>
             </Grid>
         </Button>
         <Button x:Name="m_button3" Style="{StaticResource StarStyle}" Click="m_button3_Click" MouseMove="m_button3_MouseMove" >
             <Grid>
-                <ContentControl Content="{StaticResource ImageStarLeftOutline}" />
-                <ContentControl x:Name="m_starFilled3" Content="{StaticResource ImageStarLeftFilled}" />
+                <ContentControl>
+                    <Rectangle Width="15" Height="32">
+                        <Rectangle.Fill>
+                            <SolidColorBrush Color="{DynamicResource Theme.Icon.Foreground}"/>
+                        </Rectangle.Fill>
+                        <Rectangle.OpacityMask>
+                            <ImageBrush ImageSource="Resources/star_left_outline.png"/>
+                        </Rectangle.OpacityMask>
+                    </Rectangle>
+                </ContentControl>
+                <ContentControl x:Name="m_starFilled3" >
+                    <Rectangle Width="15" Height="32">
+                        <Rectangle.Fill>
+                            <SolidColorBrush Color="{DynamicResource Theme.Icon.Foreground}"/>
+                        </Rectangle.Fill>
+                        <Rectangle.OpacityMask>
+                            <ImageBrush ImageSource="Resources/star_left_filled.png"/>
+                        </Rectangle.OpacityMask>
+                    </Rectangle>
+                </ContentControl>
             </Grid>
         </Button>
         <Button x:Name="m_button4" Style="{StaticResource StarStyle}" Click="m_button4_Click" MouseMove="m_button4_MouseMove" >
             <Grid>
-                <ContentControl Content="{StaticResource ImageStarRightOutline}" />
-                <ContentControl x:Name="m_starFilled4" Content="{StaticResource ImageStarRightFilled}" />
+                <ContentControl>
+                    <Rectangle Margin="-1,0,0,0" Width="15" Height="32">
+                        <Rectangle.Fill>
+                            <SolidColorBrush Color="{DynamicResource Theme.Icon.Foreground}"/>
+                        </Rectangle.Fill>
+                        <Rectangle.OpacityMask>
+                            <ImageBrush ImageSource="Resources/star_right_outline.png"/>
+                        </Rectangle.OpacityMask>
+                    </Rectangle>
+                </ContentControl>
+                <ContentControl x:Name="m_starFilled4" >
+                    <Rectangle Margin="-1,0,0,0" Width="15" Height="32">
+                        <Rectangle.Fill>
+                            <SolidColorBrush Color="{DynamicResource Theme.Icon.Foreground}"/>
+                        </Rectangle.Fill>
+                        <Rectangle.OpacityMask>
+                            <ImageBrush ImageSource="Resources/star_right_filled.png"/>
+                        </Rectangle.OpacityMask>
+                    </Rectangle>
+                </ContentControl>
             </Grid>
         </Button>
         <Button x:Name="m_button5" Style="{StaticResource StarStyle}" Click="m_button5_Click" MouseMove="m_button5_MouseMove" >
             <Grid>
-                <ContentControl Content="{StaticResource ImageStarLeftOutline}" />
-                <ContentControl x:Name="m_starFilled5" Content="{StaticResource ImageStarLeftFilled}" />
+                <ContentControl>
+                    <Rectangle Width="15" Height="32">
+                        <Rectangle.Fill>
+                            <SolidColorBrush Color="{DynamicResource Theme.Icon.Foreground}"/>
+                        </Rectangle.Fill>
+                        <Rectangle.OpacityMask>
+                            <ImageBrush ImageSource="Resources/star_left_outline.png"/>
+                        </Rectangle.OpacityMask>
+                    </Rectangle>
+                </ContentControl>
+                <ContentControl x:Name="m_starFilled5" >
+                    <Rectangle Width="15" Height="32">
+                        <Rectangle.Fill>
+                            <SolidColorBrush Color="{DynamicResource Theme.Icon.Foreground}"/>
+                        </Rectangle.Fill>
+                        <Rectangle.OpacityMask>
+                            <ImageBrush ImageSource="Resources/star_left_filled.png"/>
+                        </Rectangle.OpacityMask>
+                    </Rectangle>
+                </ContentControl>
             </Grid>
         </Button>
         <Button x:Name="m_button6" Style="{StaticResource StarStyle}" Click="m_button6_Click" MouseMove="m_button6_MouseMove" >
             <Grid>
-                <ContentControl Content="{StaticResource ImageStarRightOutline}" />
-                <ContentControl x:Name="m_starFilled6" Content="{StaticResource ImageStarRightFilled}" />
+                <ContentControl>
+                    <Rectangle Margin="-1,0,0,0" Width="15" Height="32">
+                        <Rectangle.Fill>
+                            <SolidColorBrush Color="{DynamicResource Theme.Icon.Foreground}"/>
+                        </Rectangle.Fill>
+                        <Rectangle.OpacityMask>
+                            <ImageBrush ImageSource="Resources/star_right_outline.png"/>
+                        </Rectangle.OpacityMask>
+                    </Rectangle>
+                </ContentControl>
+                <ContentControl x:Name="m_starFilled6" >
+                    <Rectangle Margin="-1,0,0,0" Width="15" Height="32">
+                        <Rectangle.Fill>
+                            <SolidColorBrush Color="{DynamicResource Theme.Icon.Foreground}"/>
+                        </Rectangle.Fill>
+                        <Rectangle.OpacityMask>
+                            <ImageBrush ImageSource="Resources/star_right_filled.png"/>
+                        </Rectangle.OpacityMask>
+                    </Rectangle>
+                </ContentControl>
             </Grid>
         </Button>
         <Button x:Name="m_button7" Style="{StaticResource StarStyle}" Click="m_button7_Click" MouseMove="m_button7_MouseMove" >
             <Grid>
-                <ContentControl Content="{StaticResource ImageStarLeftOutline}" />
-                <ContentControl x:Name="m_starFilled7" Content="{StaticResource ImageStarLeftFilled}" />
+                <ContentControl>
+                    <Rectangle Width="15" Height="32">
+                        <Rectangle.Fill>
+                            <SolidColorBrush Color="{DynamicResource Theme.Icon.Foreground}"/>
+                        </Rectangle.Fill>
+                        <Rectangle.OpacityMask>
+                            <ImageBrush ImageSource="Resources/star_left_outline.png"/>
+                        </Rectangle.OpacityMask>
+                    </Rectangle>
+                </ContentControl>
+                <ContentControl x:Name="m_starFilled7" >
+                    <Rectangle Width="15" Height="32">
+                        <Rectangle.Fill>
+                            <SolidColorBrush Color="{DynamicResource Theme.Icon.Foreground}"/>
+                        </Rectangle.Fill>
+                        <Rectangle.OpacityMask>
+                            <ImageBrush ImageSource="Resources/star_left_filled.png"/>
+                        </Rectangle.OpacityMask>
+                    </Rectangle>
+                </ContentControl>
             </Grid>
         </Button>
         <Button x:Name="m_button8" Style="{StaticResource StarStyle}" Click="m_button8_Click" MouseMove="m_button8_MouseMove" >
             <Grid>
-                <ContentControl Content="{StaticResource ImageStarRightOutline}" />
-                <ContentControl x:Name="m_starFilled8" Content="{StaticResource ImageStarRightFilled}" />
+                <ContentControl>
+                    <Rectangle Margin="-1,0,0,0" Width="15" Height="32">
+                        <Rectangle.Fill>
+                            <SolidColorBrush Color="{DynamicResource Theme.Icon.Foreground}"/>
+                        </Rectangle.Fill>
+                        <Rectangle.OpacityMask>
+                            <ImageBrush ImageSource="Resources/star_right_outline.png"/>
+                        </Rectangle.OpacityMask>
+                    </Rectangle>
+                </ContentControl>
+                <ContentControl x:Name="m_starFilled8" >
+                    <Rectangle Margin="-1,0,0,0" Width="15" Height="32">
+                        <Rectangle.Fill>
+                            <SolidColorBrush Color="{DynamicResource Theme.Icon.Foreground}"/>
+                        </Rectangle.Fill>
+                        <Rectangle.OpacityMask>
+                            <ImageBrush ImageSource="Resources/star_right_filled.png"/>
+                        </Rectangle.OpacityMask>
+                    </Rectangle>
+                </ContentControl>
             </Grid>
         </Button>
         <Button x:Name="m_button9" Style="{StaticResource StarStyle}" Click="m_button9_Click" MouseMove="m_button9_MouseMove" >
             <Grid>
-                <ContentControl Content="{StaticResource ImageStarLeftOutline}" />
-                <ContentControl x:Name="m_starFilled9" Content="{StaticResource ImageStarLeftFilled}" />
+                <ContentControl>
+                    <Rectangle Width="15" Height="32">
+                        <Rectangle.Fill>
+                            <SolidColorBrush Color="{DynamicResource Theme.Icon.Foreground}"/>
+                        </Rectangle.Fill>
+                        <Rectangle.OpacityMask>
+                            <ImageBrush ImageSource="Resources/star_left_outline.png"/>
+                        </Rectangle.OpacityMask>
+                    </Rectangle>
+                </ContentControl>
+                <ContentControl x:Name="m_starFilled9" >
+                    <Rectangle Width="15" Height="32">
+                        <Rectangle.Fill>
+                            <SolidColorBrush Color="{DynamicResource Theme.Icon.Foreground}"/>
+                        </Rectangle.Fill>
+                        <Rectangle.OpacityMask>
+                            <ImageBrush ImageSource="Resources/star_left_filled.png"/>
+                        </Rectangle.OpacityMask>
+                    </Rectangle>
+                </ContentControl>
             </Grid>
         </Button>
         <Button x:Name="m_button10" Style="{StaticResource StarStyle}" Click="m_button10_Click" MouseMove="m_button10_MouseMove" >
             <Grid>
-                <ContentControl Content="{StaticResource ImageStarRightOutline}" />
-                <ContentControl x:Name="m_starFilled10" Content="{StaticResource ImageStarRightFilled}" />
+                <ContentControl>
+                    <Rectangle Margin="-1,0,0,0" Width="16" Height="32">
+                        <Rectangle.Fill>
+                            <SolidColorBrush Color="{DynamicResource Theme.Icon.Foreground}"/>
+                        </Rectangle.Fill>
+                        <Rectangle.OpacityMask>
+                            <ImageBrush ImageSource="Resources/star_right_outline.png"/>
+                        </Rectangle.OpacityMask>
+                    </Rectangle>
+                </ContentControl>
+                <ContentControl x:Name="m_starFilled10" >
+                    <Rectangle Margin="-1,0,0,0" Width="16" Height="32">
+                        <Rectangle.Fill>
+                            <SolidColorBrush Color="{DynamicResource Theme.Icon.Foreground}"/>
+                        </Rectangle.Fill>
+                        <Rectangle.OpacityMask>
+                            <ImageBrush ImageSource="Resources/star_right_filled.png"/>
+                        </Rectangle.OpacityMask>
+                    </Rectangle>
+                </ContentControl>
             </Grid>
         </Button>
     </StackPanel>
