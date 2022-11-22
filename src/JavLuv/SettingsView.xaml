@@ -26,8 +26,8 @@
             Margin="4, 4, 4, 4"
             >
             <Grid>
-                <Polyline Margin="8, 8, 0, 0" StrokeThickness="2" Stroke="WhiteSmoke" Points="10, 0 -10, 0" />
-                <Polyline Margin="8, 8, 0, 0" StrokeThickness="2" Stroke="WhiteSmoke" Points="0,-8 -8,0 0,8" />
+                <Polyline Margin="8, 8, 0, 0" StrokeThickness="2" Stroke="{DynamicResource Icon.Foreground}" Points="10, 0 -10, 0" />
+                <Polyline Margin="8, 8, 0, 0" StrokeThickness="2" Stroke="{DynamicResource Icon.Foreground}" Points="0,-8 -8,0 0,8" />
             </Grid>
         </Button>
         <TextBlock Margin="5,0,0,0" VerticalAlignment="Center" Grid.Column="1" Text="{DynamicResource Text.Back}"/>
@@ -52,6 +52,15 @@
                         Width="130"
                         ItemsSource="{Binding Languages}"
                         SelectedValue="{Binding SelectedLanguage}"
+                        DisplayMemberPath="Name"
+                        />
+
+                    <Label Content="{DynamicResource Text.Theme}"/>
+                    <ComboBox 
+                        HorizontalAlignment="Left"
+                        Width="130"
+                        ItemsSource="{Binding Themes}"
+                        SelectedValue="{Binding SelectedTheme}"
                         DisplayMemberPath="Name"
                         />
 

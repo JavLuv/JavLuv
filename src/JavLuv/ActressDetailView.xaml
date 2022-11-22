@@ -71,8 +71,8 @@
                 Margin="4, 4, 4, 4"
                 >
                 <Grid>
-                    <Polyline Margin="8, 8, 0, 0" StrokeThickness="2" Stroke="WhiteSmoke" Points="10, 0 -10, 0" />
-                    <Polyline Margin="8, 8, 0, 0" StrokeThickness="2" Stroke="WhiteSmoke" Points="0,-8 -8,0 0,8" />
+                    <Polyline Margin="8, 8, 0, 0" StrokeThickness="2" Stroke="{DynamicResource Icon.Foreground}" Points="10, 0 -10, 0" />
+                    <Polyline Margin="8, 8, 0, 0" StrokeThickness="2" Stroke="{DynamicResource Icon.Foreground}" Points="0,-8 -8,0 0,8" />
                 </Grid>
             </Button>
             <TextBlock Margin="5,0,0,0" VerticalAlignment="Center" Grid.Column="1" Text="{DynamicResource Text.Back}"/>
@@ -92,8 +92,8 @@
                     Grid.Column="1"
                     >
                     <Grid>
-                        <Polyline Margin="8, 8, 0, 0" StrokeThickness="2" Stroke="WhiteSmoke" Points="10, 0 -10, 0" />
-                        <Polyline Margin="8, 8, 0, 0" StrokeThickness="2" Stroke="WhiteSmoke" Points="0,-8 -8,0 0,8" />
+                        <Polyline Margin="8, 8, 0, 0" StrokeThickness="2" Stroke="{DynamicResource Icon.Foreground}" Points="10, 0 -10, 0" />
+                        <Polyline Margin="8, 8, 0, 0" StrokeThickness="2" Stroke="{DynamicResource Icon.Foreground}" Points="0,-8 -8,0 0,8" />
                     </Grid>
                 </Button>
                 <TextBlock 
@@ -112,8 +112,8 @@
                     Grid.Column="3"
                     >
                     <Grid Background="Transparent" >
-                        <Polyline Margin="8, 8, 0, 0" StrokeThickness="2" Stroke="WhiteSmoke" Points="-10,0 10,0" />
-                        <Polyline Margin="8, 8, 0, 0" StrokeThickness="2" Stroke="WhiteSmoke" Points="0,-8 8,0 0,8" />
+                        <Polyline Margin="8, 8, 0, 0" StrokeThickness="2" Stroke="{DynamicResource Icon.Foreground}" Points="-10,0 10,0" />
+                        <Polyline Margin="8, 8, 0, 0" StrokeThickness="2" Stroke="{DynamicResource Icon.Foreground}" Points="0,-8 8,0 0,8" />
                     </Grid>
                 </Button>
             </Grid>

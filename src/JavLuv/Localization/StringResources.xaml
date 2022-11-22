@@ -10,6 +10,9 @@
     <system:String x:Key="Text.Language">Language</system:String>
     <system:String x:Key="Text.English">English</system:String>
     <system:String x:Key="Text.Japanese">Japanese</system:String>
+    <system:String x:Key="Text.Theme">Theme</system:String>
+    <system:String x:Key="Text.Dark">Dark</system:String>
+    <system:String x:Key="Text.Light">Light</system:String>
     <system:String x:Key="Text.ShowAdvanced">Show advanced options</system:String>
     <system:String x:Key="Text.CheckForUpdates">Automatically check for updates</system:String>
     <system:String x:Key="Text.AutoSyncActresses">Automatically synchronize movie metadata to actress database</system:String>

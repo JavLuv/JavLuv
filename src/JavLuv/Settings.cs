@@ -143,6 +143,7 @@ namespace JavLuv
         public bool CheckForUpdates { get; set; }
         public bool AutoSyncActresses { get; set; }
         public LanguageType Language { get; set; }
+        public ThemeType Theme { get; set; }
         public bool ShowAdvancedOptions { get; set; }
         public string Subtitles { get; set; }
         public bool GenerateLocalMetadata { get; set; }

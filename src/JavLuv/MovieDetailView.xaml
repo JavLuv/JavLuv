@@ -12,10 +12,6 @@
     >
     <UserControl.Resources>
 
-        <Image x:Key="ImageFolder" x:Shared="false" Source="Resources/folder.png" />
-        <Image x:Key="ImageSubtitles" x:Shared="false" Source="Resources/subtitles.png" />
-        <Image x:Key="ImageEdit" x:Shared="false" Source="Resources/edit.png" />
-
         <Style x:Key="DetailLabelStyle" TargetType="Label" BasedOn="{StaticResource {x:Type Label}}">
             <Setter Property="FontSize" Value="16" />
             <Setter Property="HorizontalAlignment" Value="Right" />
@@ -61,8 +57,8 @@
             Margin="4, 4, 4, 4"
             >
             <Grid>
-                <Polyline Margin="8, 8, 0, 0" StrokeThickness="2" Stroke="WhiteSmoke" Points="10, 0 -10, 0" />
-                <Polyline Margin="8, 8, 0, 0" StrokeThickness="2" Stroke="WhiteSmoke" Points="0,-8 -8,0 0,8" />
+                <Polyline Margin="8, 8, 0, 0" StrokeThickness="2" Stroke="{DynamicResource Icon.Foreground}" Points="10, 0 -10, 0" />
+                <Polyline Margin="8, 8, 0, 0" StrokeThickness="2" Stroke="{DynamicResource Icon.Foreground}" Points="0,-8 -8,0 0,8" />
             </Grid>
         </Button>
         <TextBlock Margin="5,0,0,0" VerticalAlignment="Center" Grid.Column="1" Text="{DynamicResource Text.Back}"/>
@@ -82,8 +78,8 @@
                 Grid.Column="1"
                 >
                 <Grid>
-                    <Polyline Margin="8, 8, 0, 0" StrokeThickness="2" Stroke="WhiteSmoke" Points="10, 0 -10, 0" />
-                    <Polyline Margin="8, 8, 0, 0" StrokeThickness="2" Stroke="WhiteSmoke" Points="0,-8 -8,0 0,8" />
+                    <Polyline Margin="8, 8, 0, 0" StrokeThickness="2" Stroke="{DynamicResource Icon.Foreground}" Points="10, 0 -10, 0" />
+                    <Polyline Margin="8, 8, 0, 0" StrokeThickness="2" Stroke="{DynamicResource Icon.Foreground}" Points="0,-8 -8,0 0,8" />
                 </Grid>
             </Button>
             <TextBlock Grid.Column="2" Margin="5,0,0,0" FontSize="18" VerticalAlignment="Center" HorizontalAlignment="Center" Text="{DynamicResource Text.MovieDetails}" />
@@ -95,8 +91,8 @@
                 Grid.Column="3"
                 >
                 <Grid Background="Transparent" >
-                    <Polyline Margin="8, 8, 0, 0" StrokeThickness="2" Stroke="WhiteSmoke" Points="-10,0 10,0" />
-                    <Polyline Margin="8, 8, 0, 0" StrokeThickness="2" Stroke="WhiteSmoke" Points="0,-8 8,0 0,8" />
+                    <Polyline Margin="8, 8, 0, 0" StrokeThickness="2" Stroke="{DynamicResource Icon.Foreground}" Points="-10,0 10,0" />
+                    <Polyline Margin="8, 8, 0, 0" StrokeThickness="2" Stroke="{DynamicResource Icon.Foreground}" Points="0,-8 8,0 0,8" />
                 </Grid>
             </Button>
             <ToggleButton
@@ -159,9 +155,17 @@
                                 Width="36"
                                 Height="36"
                                 DockPanel.Dock="Left"
-                                Content="{StaticResource ImageFolder}"
                                 ToolTip="{Binding FolderPath}"
-                                />
+                                >
+                                <Rectangle Width="36" Height="36">
+                                    <Rectangle.Fill>
+                                        <SolidColorBrush Color="{DynamicResource Theme.Icon.Foreground}"/>
+                                    </Rectangle.Fill>
+                                    <Rectangle.OpacityMask>
+                                        <ImageBrush ImageSource="Resources/folder.png"/>
+                                    </Rectangle.OpacityMask>
+                                </Rectangle>
+                            </Button>
                             <ContentControl
                                 VerticalAlignment="Top"
                                 Margin="0, 10, 0, 0"
@@ -170,8 +174,16 @@
                                 Height="36"
                                 Visibility="{Binding SubtitlesVisible}"
                                 DockPanel.Dock="Right"
-                                Content="{StaticResource ImageSubtitles}"
-                                />
+                                >
+                                <Rectangle>
+                                    <Rectangle.Fill>
+                                        <SolidColorBrush Color="{DynamicResource Theme.Icon.Foreground}"/>
+                                    </Rectangle.Fill>
+                                    <Rectangle.OpacityMask>
+                                        <ImageBrush ImageSource="Resources/subtitles.png"/>
+                                    </Rectangle.OpacityMask>
+                                </Rectangle>
+                            </ContentControl>
                             <ListView
                                 Background="Transparent"
                                 BorderThickness="0"
@@ -323,12 +335,18 @@
                                     IsChecked="{Binding ActressEditing}"
                                     Width="25"
                                     Height="25"
-                                    Content="{StaticResource ImageEdit}"
                                     ToolTip="{DynamicResource Text.EditActresses}"
-                                    />
-
+                                    >
+                                    <Rectangle Width="21" Height="21">
+                                        <Rectangle.Fill>
+                                            <SolidColorBrush Color="{DynamicResource Theme.Icon.Foreground}"/>
+                                        </Rectangle.Fill>
+                                        <Rectangle.OpacityMask>
+                                            <ImageBrush ImageSource="Resources/edit.png"/>
+                                        </Rectangle.OpacityMask>
+                                    </Rectangle>
+                                </ToggleButton>
                             </Grid>
-
                         </Grid>
                         <Grid>
                             <Grid.ColumnDefinitions>
