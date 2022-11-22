@@ -5,6 +5,7 @@ All significant changes are listed in this file.
 ## [1.1.8] - 2022-11-21
 
 - Added visual actress viewer to movie detail view
+- Added theme support
 
 ## [1.1.7] - 2022-11-19
 
