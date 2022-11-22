@@ -59,6 +59,15 @@
         </Style.Triggers>
     </Style>
 
+    <!-- Sets rectangle opacity if disabled -->
+    <Style TargetType="{x:Type Rectangle}">
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding IsEnabled, RelativeSource={RelativeSource Mode=Self}}" Value="False">
+                <Setter Property="Opacity" Value="0.33"/>
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+
     <!-- Shared FocusVisual Style -->
     <SolidColorBrush x:Key="FocusVisual.Foreground" Color="{DynamicResource Theme.Control.Default.Foreground}"/>
     <Style x:Key="FocusVisual">
