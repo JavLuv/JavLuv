@@ -5,24 +5,24 @@
     >
     
     <!-- Common Color Brushes -->
-    <Color x:Key="Theme.Default.Background">#FFDDDDDD</Color>
+    <Color x:Key="Theme.Default.Background">#FFCFCFCF</Color>
     <Color x:Key="Theme.Default.Foreground">#FF333333</Color>
-    <Color x:Key="Theme.Alternate.Background">#FFBBBBBB</Color>
+    <Color x:Key="Theme.Alternate.Background">#FFA0A0A0</Color>
     <Color x:Key="Theme.Alternate.Foreground">#FF777777</Color>
     <Color x:Key="Theme.Default.Border">#FF555555</Color>
     <Color x:Key="Theme.Light.Highlight">#1A5555FF</Color>
     <Color x:Key="Theme.Icon.Foreground">#FF000000</Color>
 
     <!-- Common Control Color Brushes -->
-    <Color x:Key="Theme.Control.Default.Background">#FFBBBBBB</Color>
+    <Color x:Key="Theme.Control.Default.Background">#FFAFAFAF</Color>
     <Color x:Key="Theme.Control.Default.Foreground">#FF000000</Color>
     <Color x:Key="Theme.Control.Default.Border">#FF333333</Color>
     <Color x:Key="Theme.Control.Selected.Background">#FFAAAAAA</Color>
     <Color x:Key="Theme.Control.Selected.Foreground">#FF333333</Color>
     <Color x:Key="Theme.Control.Selected.Border">#FF2D2D2D</Color>
-    <Color x:Key="Theme.Control.Highlighted.Background">#FFDDDDDD</Color>
+    <Color x:Key="Theme.Control.Highlighted.Background">#FFCBCBCB</Color>
     <Color x:Key="Theme.Control.Highlighted.Foreground">#FF6666AA</Color>
-    <Color x:Key="Theme.Control.Highlighted.Border">#FFBBBBBB</Color>
+    <Color x:Key="Theme.Control.Highlighted.Border">#FF777777</Color>
     <Color x:Key="Theme.Control.Disabled.Background">#FF999999</Color>
     <Color x:Key="Theme.Control.Disabled.Foreground">#FF595959</Color>
     <Color x:Key="Theme.Control.Disabled.Border">#FF8D8D8D</Color>
@@ -289,7 +289,7 @@
     <SolidColorBrush x:Key="TextBox.Static.Border" Color="{DynamicResource Theme.Control.Textbox.Default.Border}"/>
     <SolidColorBrush x:Key="TextBox.MouseOver.Border" Color="{DynamicResource Theme.Control.Highlighted.Border}"/>
     <SolidColorBrush x:Key="TextBox.Focus.Border" Color="{DynamicResource Theme.Control.Textbox.Selected.Border}"/>
-    <SolidColorBrush x:Key="TextBox.SelectionBrush" Color="{DynamicResource Theme.Control.Highlighted.Background}"/>
+    <SolidColorBrush x:Key="TextBox.SelectionBrush" Color="#EE555588"/>
     <Style TargetType="{x:Type TextBox}">
         <Setter Property="Background" Value="{StaticResource TextBox.Static.Background}"/>
         <Setter Property="BorderBrush" Value="{StaticResource TextBox.Static.Border}"/>
@@ -1419,9 +1419,9 @@
     <SolidColorBrush x:Key="ScrollBar.Pressed.Border" Color="{DynamicResource Theme.Alternate.Background}"/>
     <SolidColorBrush x:Key="ScrollBar.Disabled.Background" Color="{DynamicResource Theme.Control.Disabled.Background}"/>
     <SolidColorBrush x:Key="ScrollBar.Disabled.Border" Color="{DynamicResource Theme.Control.Disabled.Background}"/>
-    <SolidColorBrush x:Key="ScrollBar.MouseOver.Thumb" Color="{DynamicResource Theme.Alternate.Background}"/>
-    <SolidColorBrush x:Key="ScrollBar.Pressed.Thumb" Color="{DynamicResource Theme.Alternate.Background}"/>
-    <SolidColorBrush x:Key="ScrollBar.Static.Thumb" Color="{DynamicResource Theme.Alternate.Background}"/>
+    <SolidColorBrush x:Key="ScrollBar.MouseOver.Thumb" Color="#FF999999"/>
+    <SolidColorBrush x:Key="ScrollBar.Pressed.Thumb" Color="#FF909090"/>
+    <SolidColorBrush x:Key="ScrollBar.Static.Thumb" Color="#FF888888"/>
     <Style x:Key="ScrollBarButton" TargetType="{x:Type RepeatButton}">
         <Setter Property="FocusVisualStyle" Value="{StaticResource FocusVisual}"/>
         <Setter Property="BorderThickness" Value="1"/>
