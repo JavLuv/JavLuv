@@ -2,6 +2,10 @@
 
 All significant changes are listed in this file.
 
+## [1.1.9] - 2022-11-23
+
+- Fix issue with scraper downloading incorrect movie metadata in rare circumstances
+
 ## [1.1.8] - 2022-11-22
 
 - Added visual actress viewer to movie detail view

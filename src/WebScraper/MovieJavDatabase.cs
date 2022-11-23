@@ -77,6 +77,20 @@ namespace WebScraper
                         m_metadata.Title = FixCensored(nextElement.TextContent);
                     }
                 }
+                else if (element.TextContent == "DVD ID:")
+                {
+                    var nextElement = element.NextElementSibling;
+                    if (nextElement != null)
+                    {
+                        // If the ID doesn't match, we've landed on the wrong page.  Clear metaddata and exit
+                        if (Utilities.MovieIDEquals(m_metadata.UniqueID.Value, nextElement.TextContent) == false)
+                        {
+                            m_metadata = new MovieMetadata(m_metadata.UniqueID.Value);
+                            ImageSource = String.Empty;
+                            return;
+                        }
+                    }
+                }
                 else if (element.TextContent == "Release Date:")
                 {
                     var nextElement = element.NextElementSibling;

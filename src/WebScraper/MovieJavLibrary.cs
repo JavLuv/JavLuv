@@ -202,7 +202,7 @@ namespace WebScraper
                 if (element.HasAttribute("title") && element.HasAttribute("href"))
                 {
                     var nextElement = element.FirstChild;
-                    if (nextElement != null && nextElement.TextContent == m_metadata.UniqueID.Value)
+                    if (nextElement != null && Utilities.MovieIDEquals(nextElement.TextContent, m_metadata.UniqueID.Value))
                     {
                         string href = element.Attributes["href"].Value;
                         m_pageLink = "https://www.javlibrary.com/" + GetLanguageString() + "/" + href;

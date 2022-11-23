@@ -388,6 +388,7 @@ namespace JavLuv
                 {
                     m_movieData.Metadata.Actors = actors;
                     m_movieData.MetadataChanged = true;
+                    Actresses = new MovieDetailActressViewModel(this);
                     NotifyPropertyChanged("Actors");
                 }
             }
