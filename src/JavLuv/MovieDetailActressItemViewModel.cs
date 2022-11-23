@@ -16,7 +16,7 @@ namespace JavLuv
         {
             Parent = parent;
             m_actressData = Parent.Parent.Parent.Parent.Collection.FindActress(actor.Name);
-            if (m_actressData != null)
+            if (m_actressData == null)
             {
                 m_actressData = new ActressData();
                 m_actressData.Name = actor.Name;
