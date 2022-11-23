@@ -31,6 +31,7 @@ namespace WebScraper
             javLibraryMetadata.UniqueID.Value = movieID;
             var javLibrary = new MovieJavLibrary(javLibraryMetadata, language);
             javLibrary.Scrape();
+            javLibraryMetadata = javLibrary.Metadata;
             if (downloadCoverImage)
                 DownloadImage(ref coverImagePath, javLibrary.ImageSource);
 
@@ -39,6 +40,7 @@ namespace WebScraper
             javDatabaseMetadata.UniqueID.Value = movieID;
             var javDatabase = new MovieJavDatabase(javDatabaseMetadata, language);
             javDatabase.Scrape();
+            javDatabaseMetadata = javDatabase.Metadata;
             if (downloadCoverImage)
                 DownloadImage(ref coverImagePath, javDatabase.ImageSource);
 
@@ -59,6 +61,7 @@ namespace WebScraper
                     javLandMetadata.UniqueID.Value = movieID;
                     var javLand = new MovieJavLand(javLandMetadata, language);
                     javLand.Scrape();
+                    javLandMetadata = javLand.Metadata;
                     if (downloadCoverImage)
                         DownloadImage(ref coverImagePath, javLand.ImageSource);
                     mergedMetadata = MergeSecondary(mergedMetadata, javLandMetadata);
@@ -70,6 +73,7 @@ namespace WebScraper
                         javBusMetadata.UniqueID.Value = movieID;
                         var javBus = new MovieJavBus(javBusMetadata, language);
                         javBus.Scrape();
+                        javBusMetadata = javBus.Metadata;
                         if (downloadCoverImage)
                             DownloadImage(ref coverImagePath, javBus.ImageSource);
                         mergedMetadata = MergeSecondary(mergedMetadata, javBusMetadata);
@@ -522,7 +526,6 @@ namespace WebScraper
             // If failed to find or adequately populate data, try existing aliases
             if (IsActressDataAcceptable(actressData) == false)
             {
-
                 foreach (string altName in actressData.AltNames)
                 {
                     module.Name = altName;

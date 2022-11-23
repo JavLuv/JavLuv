@@ -24,6 +24,12 @@ namespace WebScraper
 
         #endregion
 
+        #region Properties
+
+        public MovieMetadata Metadata { get {  return m_metadata; } }
+
+        #endregion
+
         #region Protected Functions
 
         protected string GetToken(Token token)

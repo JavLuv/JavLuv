@@ -69,7 +69,6 @@ namespace Common
 
             string[] checks =
             {
-                @"([a-z,A-Z]{2,5}(-| |_){0,1}[0-9]{3,5}[d,D]{0,1})",
                 @"([a-z,A-Z]{1,7}(-| |_){0,1}[0-9]{2,5}[d,D]{0,1})",
                 @"([a-z,A-Z]{1,7}[0-9]{0,2}(-| |_){0,1}[0-9]{1}[d,D]{0,1})",
             };
@@ -93,32 +92,27 @@ namespace Common
             string numeric = String.Empty;
             SplitIDMatch(matches[0].Value, out alpha, out numeric);
 
-            // Count actual digits
-            int digitCount = 0;
-            foreach (var c in numeric)
-            {
-                if (Char.IsDigit(c))
-                    ++digitCount;
-            }
-
-            // Strip leading zeros greater than three
-            if (digitCount > 3)
-            {
-                int leadingZeroes = 0;
-                for (int i = 0; i < digitCount - 3; ++i)
-                {
-                    if (numeric[i] != '0')
-                        break;
-                    leadingZeroes++;
-                }
-                if (leadingZeroes > 0)
-                {
-                    numeric = numeric.Substring(leadingZeroes, numeric.Length - leadingZeroes);
-                }
-            }
-
             // Return normalized ID
             return alpha.ToUpper() + "-" + numeric.ToUpper();
+        }
+
+        public static bool MovieIDEquals(string movieID1, string movieID2)
+        {
+            if (movieID1 == movieID2)
+                return true;
+            string[] parts1 = movieID1.Split('-');
+            string[] parts2 = movieID2.Split('-');
+            if (parts1.Length != parts2.Length)
+                return false;
+            if (parts1.Length != 2)
+                return false;
+            if (parts1[0] != parts2[0]) 
+                return false;
+            int num1 = ParseInitialDigits(parts1[1]);
+            int num2 = ParseInitialDigits(parts2[1]);
+            if (num1 == num2 && num1 != -1)
+                return true;
+            return false;
         }
 
         public static bool Equals(string str, List<string> strings, StringComparison comparison)
