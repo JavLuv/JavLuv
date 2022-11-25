@@ -128,6 +128,27 @@ namespace JavLuv
                     int years = MovieUtils.GetAgeFromDateOfBirth(m_actressData.DobYear, m_actressData.DobMonth, m_actressData.DobDay);
                     m_displayTitle += years.ToString();
                     break;
+                case SortActressesBy.Height_Shortest:
+                case SortActressesBy.Height_Tallest:
+                    m_displayTitle += "\nHeight: ";
+                    if (m_actressData.Height <= 0)
+                    {
+                        m_displayTitle += TextManager.GetString("Text.UnknownData");
+                        break;
+                    }
+                    m_displayTitle += m_actressData.Height.ToString();
+                    m_displayTitle += " cm";
+                    break;
+                case SortActressesBy.Cup_Smallest:
+                case SortActressesBy.Cup_Biggest:
+                    m_displayTitle += "\nCup: ";
+                    if (String.IsNullOrEmpty(m_actressData.Cup))
+                    {
+                        m_displayTitle += TextManager.GetString("Text.UnknownData");
+                        break;
+                    }
+                    m_displayTitle += m_actressData.Cup;
+                    break;
                 case SortActressesBy.Birthday:
                     m_displayTitle += "\n" + String.Format("{0}-{1}-{2}", 
                         m_actressData.DobYear == 0 ? "????" : m_actressData.DobYear.ToString(), 

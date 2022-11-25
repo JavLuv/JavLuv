@@ -10,6 +10,10 @@ namespace MovieInfo
         Name,
         Age_Youngest,
         Age_Oldest,
+        Height_Shortest,
+        Height_Tallest,
+        Cup_Smallest,
+        Cup_Biggest,
         Birthday,
         MovieCount,
         UserRating,
@@ -57,6 +61,46 @@ namespace MovieInfo
             int r = MovieUtils.GetAgeFromDateOfBirth(right.DobYear, right.DobMonth, right.DobDay);
             if (l != r)
                 return (l < r) ? 1 : -1;
+            return String.Compare(left.Name, right.Name);
+        }
+    }
+
+    public class ActressHeightShortestComparer : IComparer<ActressData>
+    {
+        public int Compare(ActressData left, ActressData right)
+        {
+            if (left.Height != right.Height)
+                return left.Height.CompareTo(right.Height);
+            return String.Compare(left.Name, right.Name);
+        }
+    }
+
+    public class ActressHeightTallestComparer : IComparer<ActressData>
+    {
+        public int Compare(ActressData left, ActressData right)
+        {
+            if (left.Height != right.Height)
+                return right.Height.CompareTo(left.Height);
+            return String.Compare(left.Name, right.Name);
+        }
+    }
+
+    public class ActressCupSmallestComparer : IComparer<ActressData>
+    {
+        public int Compare(ActressData left, ActressData right)
+        {
+            if (left.Cup != right.Cup)
+                return left.Cup.CompareTo(right.Cup);
+            return String.Compare(left.Name, right.Name);
+        }
+    }
+
+    public class ActressCupBiggestComparer : IComparer<ActressData>
+    {
+        public int Compare(ActressData left, ActressData right)
+        {
+            if (left.Cup != right.Cup)
+                return right.Cup.CompareTo(left.Cup);
             return String.Compare(left.Name, right.Name);
         }
     }
@@ -175,6 +219,18 @@ namespace MovieInfo
                         if (actress.DobYear == 0 || actress.DobMonth == 0 || actress.DobDay == 0)
                             continue;
                     }
+                    else if (m_sortActressesBy == SortActressesBy.Height_Shortest ||
+                        m_sortActressesBy == SortActressesBy.Height_Tallest)
+                    {
+                        if (actress.Height <= 0)
+                            continue;
+                    }
+                    else if (m_sortActressesBy == SortActressesBy.Cup_Smallest ||
+                        m_sortActressesBy == SortActressesBy.Cup_Biggest)
+                    {
+                        if (String.IsNullOrEmpty(actress.Cup))
+                            continue;
+                    }
                 }
 
                 foreach (var terms in termsList)
@@ -230,6 +286,18 @@ namespace MovieInfo
                     break;
                 case SortActressesBy.Age_Oldest:
                     m_filteredActresses.Sort(new ActressAgeOldestComparer());
+                    break;
+                case SortActressesBy.Height_Shortest:
+                    m_filteredActresses.Sort(new ActressHeightShortestComparer());
+                    break;
+                case SortActressesBy.Height_Tallest:
+                    m_filteredActresses.Sort(new ActressHeightTallestComparer());
+                    break;
+                case SortActressesBy.Cup_Smallest:
+                    m_filteredActresses.Sort(new ActressCupSmallestComparer());
+                    break;
+                case SortActressesBy.Cup_Biggest:
+                    m_filteredActresses.Sort(new ActressCupBiggestComparer());
                     break;
                 case SortActressesBy.Birthday:
                     m_filteredActresses.Sort(new ActressBirthdayComparer());
