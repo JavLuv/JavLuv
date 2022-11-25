@@ -35,6 +35,10 @@ namespace JavLuv
             m_sortActressesByList.Add(new SortActressesByPair("Text.SortByName", SortActressesBy.Name));
             m_sortActressesByList.Add(new SortActressesByPair("Text.SortByAgeYoungest", SortActressesBy.Age_Youngest));
             m_sortActressesByList.Add(new SortActressesByPair("Text.SortByAgeOldest", SortActressesBy.Age_Oldest));
+            m_sortActressesByList.Add(new SortActressesByPair("Text.SortByHeightShortest", SortActressesBy.Height_Shortest));
+            m_sortActressesByList.Add(new SortActressesByPair("Text.SortByHeightTallest", SortActressesBy.Height_Tallest));
+            m_sortActressesByList.Add(new SortActressesByPair("Text.SortByCupSmallest", SortActressesBy.Cup_Smallest));
+            m_sortActressesByList.Add(new SortActressesByPair("Text.SortByCupBiggest", SortActressesBy.Cup_Biggest));
             m_sortActressesByList.Add(new SortActressesByPair("Text.SortByBirthday", SortActressesBy.Birthday));
             m_sortActressesByList.Add(new SortActressesByPair("Text.SortByMovieCount", SortActressesBy.MovieCount));
             m_sortActressesByList.Add(new SortActressesByPair("Text.SortByUserRating", SortActressesBy.UserRating));

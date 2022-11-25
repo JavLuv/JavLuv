@@ -155,6 +155,10 @@
     <system:String x:Key="Text.SortByName">Name</system:String>
     <system:String x:Key="Text.SortByAgeYoungest">Age (youngest)</system:String>
     <system:String x:Key="Text.SortByAgeOldest">Age (oldest)</system:String>
+    <system:String x:Key="Text.SortByHeightShortest">Height (shortest)</system:String>
+    <system:String x:Key="Text.SortByHeightTallest">Height (tallest)</system:String>
+    <system:String x:Key="Text.SortByCupSmallest">Cup (smallest)</system:String>
+    <system:String x:Key="Text.SortByCupBiggest">Cup (biggest)</system:String>
     <system:String x:Key="Text.SortByBirthday">Birthday</system:String>
     <system:String x:Key="Text.SortByMovieCount">Movie count</system:String>
     <system:String x:Key="Text.ShowAllActresses">Show all actresses</system:String>
