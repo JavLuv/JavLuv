@@ -447,8 +447,6 @@ namespace JavLuv
 
         #endregion
 
-
-
         #region Next Image Command
 
         private void NextImageExecute()

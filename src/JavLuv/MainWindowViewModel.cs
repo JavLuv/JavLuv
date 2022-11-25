@@ -556,6 +556,15 @@ namespace JavLuv
                     SidePanel.MovieControlsVisibility = Visibility.Visible;
                     SidePanel.ActressControlsVisibility = Visibility.Collapsed;
                     StatusVisibility = Visibility.Visible;
+                    if (Collection.MovieSearchActress == null)
+                    {
+                        var actressDetailViewModel = newOverlay as ActressDetailViewModel;
+                        if (actressDetailViewModel!= null)
+                        {
+                            Collection.MovieSearchActress = actressDetailViewModel.ActressData;
+                            Collection.SearchMovies();
+                        }
+                    }
                     break;
                 case AppState.Settings:
                     MovieBrowser.IsEnabled = false;
