@@ -1,6 +1,7 @@
 ﻿using Common;
 using Microsoft.WindowsAPICodePack.Dialogs;
 using System;
+using System.Windows;
 using System.Windows.Input;
 using LanguageTypePair = JavLuv.ObservableStringValuePair<Common.LanguageType>;
 using LanguageTypePairList = System.Collections.ObjectModel.ObservableCollection<JavLuv.ObservableStringValuePair<Common.LanguageType>>;
@@ -416,6 +417,18 @@ namespace JavLuv
             }
         }
 
+        public Visibility DebugVisible
+        {
+            get
+            {
+                #if DEBUG
+                return Visibility.Visible;
+                #else
+                return Visibility.Collapsed;
+                #endif
+            }
+        }
+
         #endregion
 
         #region Commands
@@ -554,6 +567,27 @@ namespace JavLuv
         }
 
         public ICommand CopyLogFileToCommand { get { return new RelayCommand(CopyLogFileToExecute, CanCopyLogFileToExecute); } }
+
+        #endregion
+
+        #region Open Settings Folder Command
+
+        private void OpenSettingsFolderExecute()
+        {
+            System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo()
+            {
+                FileName = Utilities.GetJavLuvSettingsFolder(),
+                UseShellExecute = true,
+                Verb = "open"
+            });
+        }
+
+        private bool CanOpenSettingsFolderExecute()
+        {
+            return true;
+        }
+
+        public ICommand OpenSettingsFolderCommand { get { return new RelayCommand(OpenSettingsFolderExecute, CanOpenSettingsFolderExecute); } }
 
         #endregion
 
