@@ -116,7 +116,7 @@ namespace JavLuv
             foreach (ActressData actress in Actresses)
                 Logger.WriteInfo("Update actress: " + actress.Name);
 
-            // Branchinb behavior based on input data
+            // Branching behavior based on input data
             if (m_directoriesToScan.Count > 0)
             {
                 Phase = ScanPhase.ScanningFolders;
@@ -131,11 +131,18 @@ namespace JavLuv
             m_hideMetadataAndCovers = Settings.Get().HideMetadataAndCovers;
             m_autoRestoreMetadata = Settings.Get().AutoRestoreMetadata;
             m_scanRecursively = Settings.Get().ScanRecursively;
+            m_language = Settings.Get().Language;
             m_movieExts = Utilities.ProcessSettingsList(Settings.Get().MovieExts);
             m_subtitleExts = Utilities.ProcessSettingsList(Settings.Get().SubtitleExts);
             m_coverNames = Utilities.ProcessSettingsList(Settings.Get().CoverNames);
             m_thumbnailNames = Utilities.ProcessSettingsList(Settings.Get().ThumbnailNames);
             m_movieExclusions = Utilities.ProcessSettingsList(Settings.Get().MovieExclusions);
+            m_studioFilters = Settings.Get().Culture.StudioFilters.ToList();
+            m_labelFilters = Settings.Get().Culture.LabelFilters.ToList();
+            m_directorFilters = Settings.Get().Culture.DirectorFilters.ToList();
+            m_genreFilters = Settings.Get().Culture.GenreFilters.ToList();
+            m_generateLocalMetadata = Settings.Get().GenerateLocalMetadata;
+            m_useFolderAsTitle = Settings.Get().UseFolderAsTitle;
             m_errorLog = String.Empty;
             m_moviesToProcess.Clear();
             Movies.Clear();
@@ -144,7 +151,6 @@ namespace JavLuv
             m_thread = new Thread(new ThreadStart(ThreadRun));
             m_thread.Start();
         }
-
 
         private void ThreadRun()
         {
@@ -577,7 +583,7 @@ namespace JavLuv
                     break;
 
                 var scraper = new Scraper();
-                var actressData = scraper.ScrapeActress(actor, LanguageType.English);
+                var actressData = scraper.ScrapeActress(actor, m_language);
 
                 // Check to see if we want to restore from backup instead of using scraped metadata
                 if (m_autoRestoreMetadata)
@@ -632,7 +638,7 @@ namespace JavLuv
                 if (IsCancelled)
                     break;
                 var scraper = new Scraper();
-                scraper.ScrapeActress(actress, Settings.Get().Language);
+                scraper.ScrapeActress(actress, m_language);
 
                 ItemsProcessed++;
                 if (m_dispatcher.HasShutdownStarted == false)
@@ -707,13 +713,12 @@ namespace JavLuv
                 }
 
                 // Scrape metadata and optionally download cover image as well
-                metadata = scraper.ScrapeMovie(movieID, ref coverImagePath, Settings.Get().Language);
+                metadata = scraper.ScrapeMovie(movieID, ref coverImagePath, m_language);
 
                 if (metadata != null)
                 {
                     // Clean up metadata
-                    MovieUtils.FilterMetadata(metadata, Settings.Get().Culture.StudioFilters, Settings.Get().Culture.LabelFilters, 
-                        Settings.Get().Culture.DirectorFilters, Settings.Get().Culture.GenreFilters);
+                    MovieUtils.FilterMetadata(metadata, m_studioFilters, m_labelFilters, m_directorFilters, m_genreFilters);
 
                     // Check to see if we've successfully downloaded a cover file, and if so, set that value
                     if (String.IsNullOrEmpty(movieData.CoverFileName) && String.IsNullOrEmpty(coverImagePath) == false && File.Exists(coverImagePath))
@@ -722,11 +727,11 @@ namespace JavLuv
                 else
                 {
                     // check to see if we want to generate metadata anyway
-                    if (Settings.Get().GenerateLocalMetadata)
+                    if (m_generateLocalMetadata)
                     {
                         metadata = new MovieMetadata();
                         metadata.UniqueID.Value = movieID;
-                        if (Settings.Get().UseFolderAsTitle)
+                        if (m_useFolderAsTitle)
                         {
                             metadata.Title = movieData.Folder;
                         }
@@ -900,12 +905,18 @@ namespace JavLuv
         private string[] m_subtitleExts;
         private string[] m_coverNames;
         private string[] m_thumbnailNames;
-        private string[] m_metaDataNames = { "nfo" };
         private string[] m_movieExclusions;
+        private List<FilterPair> m_studioFilters;
+        private List<FilterPair> m_labelFilters;
+        private List<FilterPair> m_directorFilters;
+        private List<FilterPair> m_genreFilters;
+        private bool m_generateLocalMetadata;
+        private bool m_useFolderAsTitle;
         private HashSet<string> m_filesInCache;
         private List<MovieData> m_moviesToProcess = new List<MovieData>();
         private HashSet<MovieMetadata> m_backupMetadata = new HashSet<MovieMetadata>();
         private string m_settingsFolder = String.Empty;
+        private LanguageType m_language;
         private bool m_scanRecursively = true;
         private bool m_hideMetadataAndCovers = false;
         private bool m_autoRestoreMetadata = false;
