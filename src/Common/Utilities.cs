@@ -201,12 +201,24 @@ namespace Common
 
         public static string GetImagesFileFilter()
         {
-            return "Image files (*.jpg;*.jpeg;*.png;*.webp;*.gif)|*.jpg;*.jpeg;*.png;*.webp;*.gif|All files(*.*)|*.*";
+            return ExtensionsToFileFilter("Image files", GetImageFileExts());
         }
 
         public static string GetMoviesFileFilter()
         {
-            return "Movie files (*.mp4;*.mkv;*.wmv;*.avi)|*.mp4;*.mkv;*.wmv;*.avi|All files(*.*)|*.*";
+            return ExtensionsToFileFilter("Movie files", GetMovieFileExts());
+        }
+
+        public static string[] GetImageFileExts()
+        {
+            string[] exts = { "jpg", "jpeg", "png", "tif", "gif", "webp" };
+            return exts;
+        }
+
+        public static string[] GetMovieFileExts()
+        {
+            string[] exts = { "mp4", "mkv", "m4v", "avi", "wmv", "mpg", "mov", "ts" };
+            return exts;
         }
 
         public static string[] ProcessSettingsList(string s)
@@ -1004,6 +1016,30 @@ namespace Common
             }
 
             return result;
+        }
+
+        private static string ExtensionsToFileFilter(string initial, string[] extensions)
+        {
+            StringBuilder sb = new StringBuilder(100);
+            sb.Append(initial);
+            sb.Append(" (");
+            for (int i = 0; i < extensions.Count(); ++i)
+            {
+                sb.Append("*.");
+                sb.Append(extensions[i]);
+                if (i < extensions.Count() - 1)
+                    sb.Append(";");
+            }
+            sb.Append(")|");
+            for (int i = 0; i < extensions.Count(); ++i)
+            {
+                sb.Append("*.");
+                sb.Append(extensions[i]);
+                if (i < extensions.Count() - 1)
+                    sb.Append(";");
+            }
+            sb.Append("|All files(*.*)|*.*");
+            return sb.ToString();
         }
 
         #endregion

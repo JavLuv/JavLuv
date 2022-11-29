@@ -2,8 +2,9 @@
 
 All significant changes are listed in this file.
 
-## [1.1.11] - 2022-11-28
+## [1.1.11] - 2022-11-29
 
+- Add support for .ts movies
 - Fix issue preventing actress images from merging in Merge Actresses dialog
 
 ## [1.1.10] - 2022-11-25

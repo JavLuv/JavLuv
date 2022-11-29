@@ -132,7 +132,6 @@ namespace JavLuv
             m_autoRestoreMetadata = Settings.Get().AutoRestoreMetadata;
             m_scanRecursively = Settings.Get().ScanRecursively;
             m_language = Settings.Get().Language;
-            m_movieExts = Utilities.ProcessSettingsList(Settings.Get().MovieExts);
             m_subtitleExts = Utilities.ProcessSettingsList(Settings.Get().SubtitleExts);
             m_coverNames = Utilities.ProcessSettingsList(Settings.Get().CoverNames);
             m_thumbnailNames = Utilities.ProcessSettingsList(Settings.Get().ThumbnailNames);
@@ -652,9 +651,9 @@ namespace JavLuv
             if (String.IsNullOrEmpty(ext))
                 return FileType.Unknown;
             ext = ext.Split('.')[1];
-            if (m_movieExts.Contains(ext))
+            if (Utilities.GetMovieFileExts().Contains(ext))
                 return FileType.Movie;
-            if (m_imageExts.Contains(ext))
+            if (Utilities.GetImageFileExts().Contains(ext))
                 return FileType.Image;
             if (m_subtitleExts.Contains(ext))
                 return FileType.Subtitle;
@@ -900,8 +899,6 @@ namespace JavLuv
         private MovieCollection m_movieCollection;
         private List<string> m_directoriesToScan;
         private Thread m_thread;
-        private string[] m_movieExts;
-        private string[] m_imageExts = { "jpg", "jpeg", "png", "tif", "gif", "webp" };
         private string[] m_subtitleExts;
         private string[] m_coverNames;
         private string[] m_thumbnailNames;
