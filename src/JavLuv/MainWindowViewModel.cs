@@ -532,11 +532,6 @@ namespace JavLuv
                     SidePanel.IsCommandViewEnabled = false;
                     SidePanel.IsSearchViewEnabled = false;
                     StatusVisibility = Visibility.Collapsed;
-                    if (Collection.MovieSearchActress != null)
-                    {
-                        Collection.MovieSearchActress = null;
-                        Collection.SearchMovies();
-                    }
                     break;
                 case AppState.ActressBrowser:
                     MovieBrowser.IsEnabled = false;

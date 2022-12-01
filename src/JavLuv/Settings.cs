@@ -151,7 +151,6 @@ namespace JavLuv
         public bool UseMovieFilenameAsTitle { get; set; }
         public bool HideMetadataAndCovers { get; set; }
         public bool AutoRestoreMetadata { get; set; }
-        public string MovieExts { get; set; }
         public string SubtitleExts { get; set; }
         public string CoverNames { get; set; }
         public string ThumbnailNames { get; set; }
@@ -335,8 +334,6 @@ namespace JavLuv
             AutoRestoreMetadata = true;
             LastVersionRun = SemanticVersion.Current;
             LastVersionCheckTime = new DateTime(2022, 1, 1);
-
-            MovieExts = "mp4; mkv; m4v; avi; wmv; mpg; mov";
             SubtitleExts = "srt; vtt; ssa; ass; smi";
 
             // Some settings should be common, but defaults may differ by language

@@ -317,7 +317,7 @@ namespace MovieInfo
             }
             if (secondary.ImageFileNames.Count != 0)
             {
-                primary.ImageFileNames.Concat(secondary.ImageFileNames);
+                primary.ImageFileNames = primary.ImageFileNames.Concat(secondary.ImageFileNames).ToList();
                 primary.ImageFileNames = Utilities.DeleteDuplicateFiles(Utilities.GetActressImageFolder(), primary.ImageFileNames);
                 if (primary.ImageIndex >= primary.ImageFileNames.Count)
                     primary.ImageIndex = 0;
