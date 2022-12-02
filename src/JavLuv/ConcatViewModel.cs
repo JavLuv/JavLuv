@@ -223,7 +223,12 @@ namespace JavLuv
                 using (StreamWriter writer = new StreamWriter(file))
                 {
                     foreach (string filename in Files)
-                        writer.WriteLine("file '" + filename + "'");
+                    {
+                        // We need to replace any single quotes in the filename with escaped quotes,
+                        // or else ffmpeg will fail to read the file correctly.
+                        string escapedFilename = filename.Replace("'", @"'\''");
+                        writer.WriteLine("file '" + escapedFilename + "'");
+                    }
                 }
                 file.Close();
             }

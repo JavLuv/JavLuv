@@ -2,9 +2,10 @@
 
 All significant changes are listed in this file.
 
-## [1.1.11] - 2022-12-01
+## [1.1.12] - 2022-12-02
 
 - Actresses in movie detail auto collapse with large numbers to avoid visual overflow
+- Fix issue in concatenation function due to single quote in path
 
 ## [1.1.11] - 2022-11-29
 
