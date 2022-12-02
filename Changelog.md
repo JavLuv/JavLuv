@@ -4,8 +4,9 @@ All significant changes are listed in this file.
 
 ## [1.1.12] - 2022-12-02
 
-- Actresses in movie detail auto collapse with large numbers to avoid visual overflow
-- Fix issue in concatenation function due to single quote in path
+- Actresses in movie detail auto collapses with large numbers to avoid visual overflow
+- Fix issue in movie concatenation function when path contains one or more single quotes
+- Fix issue with actress' average movie rating updating after initial display
 
 ## [1.1.11] - 2022-11-29
 
