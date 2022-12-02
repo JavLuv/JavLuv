@@ -2,6 +2,10 @@
 
 All significant changes are listed in this file.
 
+## [1.1.11] - 2022-12-01
+
+- Actresses in movie detail auto collapse with large numbers to avoid visual overflow
+
 ## [1.1.11] - 2022-11-29
 
 - Add support for .ts movie extension
