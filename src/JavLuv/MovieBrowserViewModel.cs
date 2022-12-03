@@ -186,6 +186,36 @@ namespace JavLuv
 
         #endregion
 
+        #region Play Random Movie Command
+
+        private void PlayRandomMovieExecute()
+        {
+            try
+            {
+                if (Movies.Count == 0)
+                    return;
+                MovieBrowserItemViewModel movieItem = Movies[m_random.Next(Movies.Count)];
+                string movieFileName = Path.Combine(movieItem.MovieData.Path, movieItem.MovieData.MovieFileNames[0]);
+                System.Diagnostics.ProcessStartInfo psi = new System.Diagnostics.ProcessStartInfo();
+                psi.UseShellExecute = true;
+                psi.FileName = movieFileName;
+                System.Diagnostics.Process.Start(psi);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, TextManager.GetString("Text.ErrorPlayingMovie"));
+            }
+        }
+
+        private bool CanPlayRandomMovieExecute()
+        {
+            return true;
+        }
+
+        public ICommand PlayRandomMovieCommand { get { return new RelayCommand(PlayRandomMovieExecute, CanPlayRandomMovieExecute); } }
+
+        #endregion
+
         #region Navigate Left Command
 
         private void NavigateLeftExecute()

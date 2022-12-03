@@ -49,6 +49,7 @@
         <KeyBinding Command="{Binding CloseOverlayCommand}" Key="Esc" />
         <KeyBinding Command="{Binding MovieBrowser.NavigateLeftCommand}" Key="Left" />
         <KeyBinding Command="{Binding MovieBrowser.NavigateRightCommand}" Key="Right" />
+        <KeyBinding Command="{Binding MovieBrowser.PlayRandomMovieCommand}" Key="Space" Modifiers="Ctrl" />
     </Window.InputBindings>
     
     <Window.TaskbarItemInfo>

@@ -4,6 +4,7 @@ All significant changes are listed in this file.
 
 ## [1.1.12] - 2022-12-02
 
+- Pressing Ctrl-Space will play a random movie from your entire collection
 - Actresses in movie detail auto collapses with large numbers to avoid visual overflow
 - When scanning, JavLuv will no longer report manually moved movies as duplicates
 - Fix issue in movie concatenation function when path contains one or more single quotes
