@@ -504,6 +504,9 @@ namespace JavLuv
             Phase = ScanPhase.LoadingMetadata;
             ItemsProcessed = 0;
             TotalItems = moviesToLoad.Count;
+            if (m_dispatcher.HasShutdownStarted == false)
+                m_dispatcher.Invoke(DispatcherPriority.Normal, new Action(delegate () { ScanUpdate?.Invoke(this, new EventArgs()); }));
+
             foreach (MovieData movieData in moviesToLoad)
             {
                 if (IsCancelled || m_dispatcher.HasShutdownStarted)
