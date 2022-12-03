@@ -5,6 +5,7 @@ All significant changes are listed in this file.
 ## [1.1.12] - 2022-12-02
 
 - Actresses in movie detail auto collapses with large numbers to avoid visual overflow
+- When scanning, JavLuv will no longer report manually moved movies as duplicates
 - Fix issue in movie concatenation function when path contains one or more single quotes
 - Fix issue with actress' average movie rating updating after initial display
 

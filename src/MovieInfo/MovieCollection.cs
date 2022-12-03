@@ -423,6 +423,17 @@ namespace MovieInfo
             return null;
         }
 
+        public void RemoveMovie(MovieData movie)
+        {
+            lock (m_cacheData)
+            {
+                if (m_cacheData.Movies.Contains(movie))
+                    m_cacheData.Movies.Remove(movie);           
+            }
+            SearchMovies();
+            Save();
+        }
+
         public void RemoveMovies(List<MovieData> movies)
         {
             lock (m_cacheData)
