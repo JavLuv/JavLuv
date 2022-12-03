@@ -71,9 +71,18 @@
 
             <!-- Search view -->
             <Grid Grid.Column="0">
-                <local:SidePanelView 
-                DataContext="{Binding Path=SidePanel}"
-                />
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="32" />
+                </Grid.RowDefinitions>
+                <local:SidePanelView Grid.Row="0" DataContext="{Binding Path=SidePanel}"/>
+                <StackPanel Grid.Row="1" Orientation="Horizontal">
+                    <Label Content="{DynamicResource Text.JavLuvWiki}" />
+                    <Label>
+                        <Hyperlink RequestNavigate="Hyperlink_RequestNavigate"  NavigateUri="https://github.com/JavLuv/JavLuv/wiki">github.com/JavLuv/JavLuv/wiki</Hyperlink>
+                    </Label>
+                </StackPanel>
+
             </Grid>
 
             <GridSplitter Grid.Column="1" Grid.ColumnSpan="1" HorizontalAlignment="Stretch"/>
