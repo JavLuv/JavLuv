@@ -341,9 +341,6 @@ namespace MovieInfo
 
         public List<string> SubtitleFileNames { get; set; }
 
-        // Deprecated
-        public string SubtitleFileName { get; set; }
-
         public bool MetadataChanged { get; set; }
 
         #endregion

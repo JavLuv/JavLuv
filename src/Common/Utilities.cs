@@ -209,6 +209,11 @@ namespace Common
             return ExtensionsToFileFilter("Movie files", GetMovieFileExts());
         }
 
+        public static string GetSubtitlesFileFilter(string[] subtitlesExts)
+        {
+            return ExtensionsToFileFilter("Subtitles files", subtitlesExts);
+        }
+
         public static string[] GetImageFileExts()
         {
             string[] exts = { "jpg", "jpeg", "png", "tif", "gif", "webp" };

@@ -541,6 +541,23 @@ namespace JavLuv
 
         #endregion
 
+        #region Import Subtitles Command
+
+        private void ImportSubtitlesExecute()
+        {
+            if (Parent.ImportSubtitles(m_movieData))
+                NotifyPropertyChanged("SubtitlesVisible");
+        }
+
+        private bool CanImportSubtitlesExecute()
+        {
+            return true;
+        }
+
+        public ICommand ImportSubtitlesCommand { get { return new RelayCommand(ImportSubtitlesExecute, CanImportSubtitlesExecute); } }
+
+        #endregion
+
         #region Import Cover Image Command
 
         private void ImportCoverImageExecute()

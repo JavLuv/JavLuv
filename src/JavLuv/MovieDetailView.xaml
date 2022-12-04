@@ -141,6 +141,7 @@
                             >
                             <Image.ContextMenu>
                                 <ContextMenu>
+                                    <MenuItem Header="{DynamicResource Text.ImportSubtitles}" Command="{Binding ImportSubtitlesCommand}" />
                                     <MenuItem Header="{DynamicResource Text.ImportCoverImage}" Command="{Binding ImportCoverImageCommand}" />
                                     <MenuItem Header="{DynamicResource Text.Paste}" Command="{Binding PasteCommand}" />
                                 </ContextMenu>
