@@ -150,6 +150,19 @@ namespace JavLuv
             }
         }
 
+        public bool ShowActressAgeAtPremier
+        {
+            get { return Settings.Get().ShowActressAgeAtPremier; }
+            set
+            {
+                if (value != Settings.Get().ShowActressAgeAtPremier)
+                {
+                    Settings.Get().ShowActressAgeAtPremier = value;
+                    NotifyPropertyChanged("ShowActressAgeAtPremier");
+                }
+            }
+        }
+
         public string Subtitles
         {
             get { return Settings.Get().Subtitles; }

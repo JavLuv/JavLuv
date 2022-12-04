@@ -23,6 +23,12 @@ namespace JavLuv
                 Parent.Parent.Parent.Parent.Collection.AddActress(m_actressData);
             }
             Name = m_actressData.Name;
+            if (Settings.Get().ShowActressAgeAtPremier)
+            {
+                int age = GetActressAgeAtPremier();
+                if (age != 0)
+                    Name += " (" + GetActressAgeAtPremier().ToString() + ")";
+            }
             if (m_actressData.ImageFileNames.Count > 0)
             {
                 string path = Path.Combine(Utilities.GetActressImageFolder(), m_actressData.ImageFileNames[m_actressData.ImageIndex]);
@@ -107,6 +113,19 @@ namespace JavLuv
         public ICommand ViewActressCommand { get { return new RelayCommand(ViewActressExecute, CanViewActressExecute); } }
 
         #endregion
+
+        #endregion
+
+        #region Private Functions
+
+        private int GetActressAgeAtPremier()
+        {
+            int premierdYear, premieredMonth, premieredDay;
+            Utilities.StringToDateTime(Parent.Parent.MovieData.Metadata.Premiered, out premierdYear, out premieredMonth, out premieredDay);
+            if (premierdYear == 0 || m_actressData.DobYear == 0)
+                return 0;
+            return MovieUtils.GetAgeFromDateOfBirthAndDate(m_actressData.DobYear, m_actressData.DobMonth, m_actressData.DobDay, premierdYear, premieredMonth, premieredDay);
+        }
 
         #endregion
 

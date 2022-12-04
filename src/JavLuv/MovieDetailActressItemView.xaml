@@ -34,6 +34,8 @@
                     Text="{Binding Name}" 
                     FontSize="14"
                     TextWrapping="Wrap" 
+                    LineStackingStrategy="BlockLineHeight" 
+                    LineHeight="14"
                     TextAlignment="Center" 
                     HorizontalAlignment="Center" 
                     VerticalAlignment="Center" 
