@@ -76,6 +76,7 @@
     <system:String x:Key="Text.Actresses">出演者:</system:String>
     <system:String x:Key="Text.Resolution">Resolution:</system:String>
     <system:String x:Key="Text.CopyTitle">Copy title and metadata</system:String>
+    <system:String x:Key="Text.ImportSubtitles">Import subtitles...</system:String>
     <system:String x:Key="Text.JP">JP</system:String>
     <system:String x:Key="Text.ShowOriginalJpTitle">Show original Japanese title</system:String>
     <system:String x:Key="Text.EditActresses">Edit actresses</system:String>
@@ -162,6 +163,7 @@
     <system:String x:Key="Text.SortByBirthday">Birthday</system:String>
     <system:String x:Key="Text.SortByMovieCount">Movie count</system:String>
     <system:String x:Key="Text.ShowAllActresses">Show all actresses</system:String>
+    <system:String x:Key="Text.JavLuvWiki">JavLuv Wiki:</system:String>
 
     <!-- Shared Browser Item View -->
     <system:String x:Key="Text.RemoveFromLibrary">Remove from library</system:String>

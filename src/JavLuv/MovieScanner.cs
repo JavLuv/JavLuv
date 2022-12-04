@@ -245,17 +245,29 @@ namespace JavLuv
                     // Check to see if if this movie is already in the cache.  
                     if (String.IsNullOrEmpty(fileInfo.ID) == false && m_movieCollection.MovieExists(fileInfo.ID))
                     {
+                        // Is this path the same as the existing movie?  If so, we can just skip it.
                         MovieData movieData = m_movieCollection.GetMovie(fileInfo.ID);
                         string path = Path.GetDirectoryName(fn);
                         if (String.Equals(path, movieData.Path, StringComparison.OrdinalIgnoreCase))
                             continue;
-
-                        // Mark this as a shared folder, since we may have extra files in it now.  Otherwise, if
-                        // only one successful file remains, the directory could be inadvertently be moved instead
-                        // of selected files copied.
-                        directoryInfo.IsSharedFolder = true;
-                        LogError(String.Format("Error scanning file {0}.  {1} already exists in collection.", fileInfo.FileName, fileInfo.ID), directoryToScan);
-                        continue;
+                        
+                        // Does the movie actually exist?  The user may have moved it manually and not informed JavLuv.
+                        // If it doesn't exist, we can remove it from the collection and allow the scan to proceed.
+                        // We'll check for the existance of path and movie on disk. 
+                        if (Directory.Exists(movieData.Path) == false || movieData.MovieFileNames.Count < 1 || 
+                            File.Exists(Path.Combine(movieData.Path, movieData.MovieFileNames[0])) == false)
+                        {
+                            m_movieCollection.RemoveMovie(movieData);
+                        }
+                        else
+                        {
+                            // Mark this as a shared folder, since we may have extra files in it now.  Otherwise, if
+                            // only one successful file remains, the directory could be inadvertently be moved instead
+                            // of selected files copied.
+                            directoryInfo.IsSharedFolder = true;
+                            LogError(String.Format("Error scanning file {0}.  {1} already exists in collection.", fileInfo.FileName, fileInfo.ID), directoryToScan);
+                            continue;
+                        }
                     }
 
                     // Log ID
@@ -492,6 +504,9 @@ namespace JavLuv
             Phase = ScanPhase.LoadingMetadata;
             ItemsProcessed = 0;
             TotalItems = moviesToLoad.Count;
+            if (m_dispatcher.HasShutdownStarted == false)
+                m_dispatcher.Invoke(DispatcherPriority.Normal, new Action(delegate () { ScanUpdate?.Invoke(this, new EventArgs()); }));
+
             foreach (MovieData movieData in moviesToLoad)
             {
                 if (IsCancelled || m_dispatcher.HasShutdownStarted)

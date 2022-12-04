@@ -1,6 +1,7 @@
 ﻿using Common;
 using MovieInfo;
 using System;
+using System.Diagnostics;
 using System.Windows;
 
 namespace JavLuv
@@ -76,6 +77,12 @@ namespace JavLuv
             // Only close tasks, not commands
             CommandQueue.LongTask().Close();
             CommandQueue.ShortTask().Close();
+        }
+
+        private void Hyperlink_RequestNavigate(object sender, System.Windows.Navigation.RequestNavigateEventArgs e)
+        {
+            Process.Start(new ProcessStartInfo(e.Uri.AbsoluteUri));
+            e.Handled = true;
         }
 
         #endregion

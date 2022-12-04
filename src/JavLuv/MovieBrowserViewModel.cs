@@ -186,6 +186,36 @@ namespace JavLuv
 
         #endregion
 
+        #region Play Random Movie Command
+
+        private void PlayRandomMovieExecute()
+        {
+            try
+            {
+                if (Movies.Count == 0)
+                    return;
+                MovieBrowserItemViewModel movieItem = Movies[m_random.Next(Movies.Count)];
+                string movieFileName = Path.Combine(movieItem.MovieData.Path, movieItem.MovieData.MovieFileNames[0]);
+                System.Diagnostics.ProcessStartInfo psi = new System.Diagnostics.ProcessStartInfo();
+                psi.UseShellExecute = true;
+                psi.FileName = movieFileName;
+                System.Diagnostics.Process.Start(psi);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, TextManager.GetString("Text.ErrorPlayingMovie"));
+            }
+        }
+
+        private bool CanPlayRandomMovieExecute()
+        {
+            return true;
+        }
+
+        public ICommand PlayRandomMovieCommand { get { return new RelayCommand(PlayRandomMovieExecute, CanPlayRandomMovieExecute); } }
+
+        #endregion
+
         #region Navigate Left Command
 
         private void NavigateLeftExecute()
@@ -549,6 +579,47 @@ namespace JavLuv
             m_parent.Collection.Save();
         }
 
+        public bool ImportSubtitles(MovieData movieData)
+        {
+            try
+            {
+                var openFileDlg = new System.Windows.Forms.OpenFileDialog();
+                openFileDlg.Filter = Utilities.GetSubtitlesFileFilter(Utilities.ProcessSettingsList(Settings.Get().SubtitleExts));
+                openFileDlg.InitialDirectory = movieData.Path;
+                openFileDlg.CheckFileExists = true;
+                openFileDlg.CheckPathExists = true;
+                openFileDlg.Multiselect = true;
+                var results = openFileDlg.ShowDialog();
+                if (results == System.Windows.Forms.DialogResult.OK)
+                {
+                    if (openFileDlg.FileNames.Length != movieData.MovieFileNames.Count)
+                        throw new Exception("Movie count does not match subtitle count.");
+                    for (int i = 0; i < movieData.MovieFileNames.Count; ++i)
+                    {
+                        if ((i + 1) <= movieData.SubtitleFileNames.Count)
+                        {
+                            // Don't copy the file if the source is the same as the destination
+                            if (String.Compare(openFileDlg.FileNames[i], Path.Combine(movieData.Path, movieData.SubtitleFileNames[i]), true) == 0)
+                                continue;
+                            File.Copy(openFileDlg.FileNames[i], Path.Combine(movieData.Path, movieData.SubtitleFileNames[i]), true);
+                        }
+                        else
+                        {
+                            string newFileName = Path.ChangeExtension(movieData.MovieFileNames[i], Path.GetExtension(openFileDlg.FileNames[i]));
+                            File.Copy(openFileDlg.FileNames[i], Path.Combine(movieData.Path, newFileName), true);
+                            movieData.SubtitleFileNames.Add(newFileName);
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.WriteError("Issue importing subtitles", ex);
+                return false;
+            }
+            return true;
+        }
+
         public bool ImportCoverImage(MovieData movieData)
         {
             try
@@ -585,8 +656,6 @@ namespace JavLuv
                 Logger.WriteError("Issue importing cover image", ex);
                 return false;
             }
-
-
             return true;
         }
 

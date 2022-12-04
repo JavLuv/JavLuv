@@ -49,7 +49,6 @@ namespace JavLuv
         private void OnMoviesDisplayedChanged(object sender, EventArgs e)
         {
             AverageMovieRating = m_collection.AverageMovieRating;
-            m_collection.MoviesDisplayedChanged -= OnMoviesDisplayedChanged;
         }
 
         private void OnImageFinishedLoading(object sender, System.EventArgs e)

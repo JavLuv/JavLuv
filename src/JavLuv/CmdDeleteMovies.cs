@@ -68,9 +68,7 @@ namespace JavLuv
                             Directory.Delete(movie.Path);
 
                         // Remove movie from collection
-                        var movieList = new List<MovieData>();
-                        movieList.Add(movie);
-                        m_collection.RemoveMovies(movieList);
+                        m_collection.RemoveMovie(movie);
 
                         Application.Current.Dispatcher.Invoke(DispatcherPriority.Normal, new Action(delegate ()
                         {

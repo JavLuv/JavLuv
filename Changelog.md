@@ -2,6 +2,17 @@
 
 All significant changes are listed in this file.
 
+## [1.1.12] - 2022-12-04
+
+- Add context option menu to import movie subtitle
+- Pressing Ctrl-Space will play a random movie from all files currently shown in the movie browser
+- Actresses in movie detail auto collapses with large numbers to avoid visual overflow
+- When scanning, JavLuv will no longer report manually moved movies as duplicates
+- Added link to JavLuv Wiki
+- Fix crash caused by missing movie when entering movie detail view
+- Fix issue in movie concatenation function when path contains one or more single quotes
+- Fix issue with actress' average movie rating updating after initial display
+
 ## [1.1.11] - 2022-11-29
 
 - Add support for .ts movie extension
