@@ -93,7 +93,7 @@ namespace JavLuv
                 m_loadImage.FinishedLoading += LoadImage_FinishedLoading;
                 CommandQueue.ShortTask().Execute(m_loadImage, CommandOrder.First);
             }
-            if (String.IsNullOrEmpty(m_movieData.MovieResolution))
+            if (String.IsNullOrEmpty(m_movieData.MovieResolution) && m_movieData.MovieFileNames.Count > 0)
             {
                 m_getResolution = new CmdGetResolution(Path.Combine(m_movieData.Path, m_movieData.MovieFileNames[0]));
                 m_getResolution.FinishedScanning += GetResolution_FinishedScanning;
@@ -520,12 +520,23 @@ namespace JavLuv
         {
             try
             {
-                string p = Path.Combine(m_movieData.Path, m_movieData.MovieFileNames[0]);
-                string args = string.Format("/e, /select, \"{0}\"", p);
-                ProcessStartInfo psi = new ProcessStartInfo();
-                psi.FileName = "explorer";
-                psi.Arguments = args;
-                Process.Start(psi);
+                if (m_movieData.MovieFileNames.Count > 0)
+                {
+                    string p = Path.Combine(m_movieData.Path, m_movieData.MovieFileNames[0]);
+                    string args = string.Format("/e, /select, \"{0}\"", p);
+                    ProcessStartInfo psi = new ProcessStartInfo();
+                    psi.FileName = "explorer";
+                    psi.Arguments = args;
+                    Process.Start(psi);
+                }
+                else
+                {
+                    System.Diagnostics.ProcessStartInfo psi = new System.Diagnostics.ProcessStartInfo();
+                    psi.UseShellExecute = true;
+                    psi.FileName = m_movieData.Path;
+                    psi.Verb = "open";
+                    System.Diagnostics.Process.Start(psi);
+                }
             }
             catch(Exception)
             {
