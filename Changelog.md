@@ -4,6 +4,7 @@ All significant changes are listed in this file.
 
 ## [1.1.13] - 2022-12-05
 - Optionally show actress' age at movie premier date
+- Fix crash in Japanese language actress web scraper
 
 ## [1.1.12] - 2022-12-04
 
