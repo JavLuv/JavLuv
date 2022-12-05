@@ -450,8 +450,11 @@ namespace JavLuv
                 movies.Add(item.MovieData);
                 foldersToScan.Add(item.MovieData.Path);
             }
+            bool restoreFromBackup = Settings.Get().AutoRestoreMetadata;
+            Settings.Get().AutoRestoreMetadata = false;
             Parent.Collection.DeleteMetadata(movies);
             Parent.StartScan(foldersToScan.ToList());
+            Settings.Get().AutoRestoreMetadata = restoreFromBackup;
         }
 
         private bool CanRegenerateMetadataExecute()
