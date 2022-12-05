@@ -5,6 +5,7 @@ All significant changes are listed in this file.
 ## [1.1.13] - 2022-12-05
 - Optionally show actress' age at movie premier date
 - The 'Regenrate metadata' command no longer restores movie metata from backup
+- Japanese movie title is now searched
 - Fix crash in Japanese language actress web scraper
 
 ## [1.1.12] - 2022-12-04

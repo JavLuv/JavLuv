@@ -222,6 +222,8 @@ namespace MovieInfo
                 term = term.Substring(1);
             if (movie.Metadata.Title.ContainsCaseless(term))
                 return retVal;
+            if (movie.Metadata.OriginalTitle.ContainsCaseless(term))
+                return retVal;
             if (movie.Metadata.UniqueID.Value.ContainsCaseless(term))
                 return retVal;
             if (movie.Metadata.Genres.ContainsCaseless(term))
