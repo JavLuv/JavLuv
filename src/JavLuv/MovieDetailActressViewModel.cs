@@ -1,7 +1,6 @@
 ﻿using MovieInfo;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
 
 namespace JavLuv
 {
@@ -47,6 +46,70 @@ namespace JavLuv
         public MovieDetailViewModel Parent { get; private set; }
 
         public ObservableCollection<MovieDetailActressItemViewModel> Actresses { get; private set; }
+
+        #endregion
+
+        #region Public Functions
+
+        public void NavigateLeft()
+        {
+            ActressDetailViewModel current = Parent.Parent.Parent.Overlay as ActressDetailViewModel;
+            if (current == null)
+                return;
+            MovieDetailActressItemViewModel actress = Actresses[GetOverlayIndex() - 1];
+            Parent.Parent.Parent.Overlay = new ActressDetailViewModel(actress, actress.Actress);
+        }
+
+        public bool CanNavigateLeft()
+        {
+            ActressDetailViewModel current = Parent.Parent.Parent.Overlay as ActressDetailViewModel;
+            if (current == null)
+                return false;
+            int index = GetOverlayIndex();
+            if (index <= 0)
+                return false;
+            return true;
+        }
+
+        public void NavigateRight()
+        {
+            ActressDetailViewModel current = Parent.Parent.Parent.Overlay as ActressDetailViewModel;
+            if (current == null)
+                return;
+            MovieDetailActressItemViewModel actress = Actresses[GetOverlayIndex() + 1];
+            Parent.Parent.Parent.Overlay = new ActressDetailViewModel(actress, actress.Actress);
+        }
+
+        public bool CanNavigateRight()
+        {
+            ActressDetailViewModel current = Parent.Parent.Parent.Overlay as ActressDetailViewModel;
+            if (current == null)
+                return false;
+            int index = GetOverlayIndex();
+            if (index == -1)
+                return false;
+            if (index >= Actresses.Count - 1)
+                return false;
+            return true;
+        }
+
+        #endregion
+
+        #region Private Functions
+
+        private int GetOverlayIndex()
+        {
+            ActressDetailViewModel current = Parent.Parent.Parent.Overlay as ActressDetailViewModel;
+            if (current == null)
+                return -1;
+            string Name = current.Name;
+            for (int i = 0; i < Actresses.Count; ++i)
+            {
+                if (Actresses[i].Name == Name)
+                    return i;
+            }
+            return -1;
+        }
 
         #endregion
     }

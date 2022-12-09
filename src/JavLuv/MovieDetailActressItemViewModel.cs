@@ -94,6 +94,8 @@ namespace JavLuv
             }
         }
 
+        public ActressData Actress { get { return m_actressData; } }
+
         #endregion
 
         #region Commands

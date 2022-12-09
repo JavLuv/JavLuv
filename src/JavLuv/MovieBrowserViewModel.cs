@@ -674,7 +674,7 @@ namespace JavLuv
             string ID = current.ID;
             for (int i = 0; i < Movies.Count; ++i)
             {
-                if (Movies[i].ID== ID) 
+                if (Movies[i].ID == ID) 
                     return i; 
             }
             return -1;
