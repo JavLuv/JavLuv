@@ -2,8 +2,10 @@
 
 All significant changes are listed in this file.
 
-## [1.1.13] - 2022-12-10
+## [1.1.14] - 2022-12-10
 - Optimized Ctrl-A (select all) command in browser views
+- Fixed issue with actress navigation when actress age is displayed in movie detail view
+- Fix crash with actress age calculation in movie detail due to incomplete premiere date
 
 ## [1.1.13] - 2022-12-09
 - Optionally show actress' age at movie premier date

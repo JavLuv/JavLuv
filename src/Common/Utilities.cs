@@ -241,9 +241,9 @@ namespace Common
 
         public static void StringToDateTime(string date, out int year, out int month, out int day)
         {
-            year = 0;
-            month = 0;
-            day = 0;
+            year = 1;
+            month = 1;
+            day = 1;
             string[] dateParts = date.Split('-');
             int.TryParse(dateParts[0], out year);
             if (dateParts.Length > 1)
@@ -251,8 +251,7 @@ namespace Common
             if (dateParts.Length > 2)
                 int.TryParse(dateParts[2], out day);
             // Validate that this is a legit date
-            if (month != 0 && day != 0)
-                new DateTime(year, month, day);
+            new DateTime(year, month, day);
         }
 
         public static int DataTimeCompare(string dt1, string dt2)
