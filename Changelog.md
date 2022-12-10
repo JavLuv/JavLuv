@@ -2,11 +2,19 @@
 
 All significant changes are listed in this file.
 
+## [1.1.13] - 2022-12-09
+- Optionally show actress' age at movie premier date
+- Add checkbox to designate movies as hard-subbed
+- Can now navigate through all actresses in a movie
+- The 'Regenrate metadata' command no longer restores movie metadata from backup
+- Japanese movie title is now searched
+- Fix crash in Japanese language actress web scraper
+
 ## [1.1.12] - 2022-12-04
 
-- Add context option menu to import movie subtitle
+- Add context menu option to import movie subtitle
 - Pressing Ctrl-Space will play a random movie from all files currently shown in the movie browser
-- Actresses in movie detail auto collapses with large numbers to avoid visual overflow
+- Actresses in movie detail auto collapse with large numbers to avoid visual overflow
 - When scanning, JavLuv will no longer report manually moved movies as duplicates
 - Added link to JavLuv Wiki
 - Fix crash caused by missing movie when entering movie detail view

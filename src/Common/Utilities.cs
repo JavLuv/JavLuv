@@ -239,12 +239,12 @@ namespace Common
             return String.Format("{0}-{1}-{2}", year == 0 ? "????" : year.ToString(), month == 0 ? "??" : month.ToString(), day == 0 ? "??" : day.ToString());
         }
 
-        public static void StringToDateTime(string str, out int year, out int month, out int day)
+        public static void StringToDateTime(string date, out int year, out int month, out int day)
         {
             year = 0;
             month = 0;
             day = 0;
-            string[] dateParts = str.Split('-');
+            string[] dateParts = date.Split('-');
             int.TryParse(dateParts[0], out year);
             if (dateParts.Length > 1)
                 int.TryParse(dateParts[1], out month);

@@ -29,14 +29,15 @@ namespace JavLuv
             m_collection.SearchMovies();
         }
 
-        public ActressDetailViewModel(MovieDetailActressItemViewModel parent, ActressData actressData)
+        public ActressDetailViewModel(MovieDetailActressItemViewModel movieDetailActressItemViewModel, ActressData actressData)
         {
             Logger.WriteInfo("Viewing details of actress " + actressData.Name);
+            m_movieDetailActressItemViewModel = movieDetailActressItemViewModel;
             m_actressData = actressData;
-            MovieBrowser = parent.Parent.Parent.Parent.Parent.MovieBrowser;
-            m_mainWindowViewModel = parent.Parent.Parent.Parent.Parent;
+            MovieBrowser = m_movieDetailActressItemViewModel.Parent.Parent.Parent.Parent.MovieBrowser;
+            m_mainWindowViewModel = m_movieDetailActressItemViewModel.Parent.Parent.Parent.Parent;
             LoadCurrentImage();
-            m_collection = parent.Parent.Parent.Parent.Parent.Collection;
+            m_collection = m_movieDetailActressItemViewModel.Parent.Parent.Parent.Parent.Collection;
             m_collection.MovieSearchActress = m_actressData;
             m_collection.MoviesDisplayedChanged += OnMoviesDisplayedChanged;
             m_collection.SearchMovies();
@@ -414,13 +415,18 @@ namespace JavLuv
 
         private void NavigateLeftExecute()
         {
-            m_actressBrowserViewModel.NavigateLeft();
+            if (m_actressBrowserViewModel != null)
+                m_actressBrowserViewModel.NavigateLeft();
+            else if (m_movieDetailActressItemViewModel != null)
+                m_movieDetailActressItemViewModel.Parent.NavigateLeft();
         }
 
         private bool CanNavigateLeftExecute()
         {
             if (m_actressBrowserViewModel != null)
                 return m_actressBrowserViewModel.CanNavigateLeft();
+            else if (m_movieDetailActressItemViewModel != null)
+                return m_movieDetailActressItemViewModel.Parent.CanNavigateLeft();
             return false;
         }
 
@@ -432,13 +438,18 @@ namespace JavLuv
 
         private void NavigateRightExecute()
         {
-            m_actressBrowserViewModel.NavigateRight();
+            if (m_actressBrowserViewModel != null)
+                m_actressBrowserViewModel.NavigateRight();
+            else if (m_movieDetailActressItemViewModel != null)
+                m_movieDetailActressItemViewModel.Parent.NavigateRight();
         }
 
         private bool CanNavigateRightExecute()
         {
             if (m_actressBrowserViewModel != null)
                 return m_actressBrowserViewModel.CanNavigateRight();
+            else if (m_movieDetailActressItemViewModel != null)
+                return m_movieDetailActressItemViewModel.Parent.CanNavigateRight();
             return false;
         }
 
@@ -622,6 +633,7 @@ namespace JavLuv
         #region Private Members
 
         private ActressBrowserViewModel m_actressBrowserViewModel;
+        private MovieDetailActressItemViewModel m_movieDetailActressItemViewModel;
         private ActressData m_actressData;
         private ActressBrowserItemViewModel m_browserItem;
         private MovieCollection m_collection;

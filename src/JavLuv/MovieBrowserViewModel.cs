@@ -450,8 +450,11 @@ namespace JavLuv
                 movies.Add(item.MovieData);
                 foldersToScan.Add(item.MovieData.Path);
             }
+            bool restoreFromBackup = Settings.Get().AutoRestoreMetadata;
+            Settings.Get().AutoRestoreMetadata = false;
             Parent.Collection.DeleteMetadata(movies);
             Parent.StartScan(foldersToScan.ToList());
+            Settings.Get().AutoRestoreMetadata = restoreFromBackup;
         }
 
         private bool CanRegenerateMetadataExecute()
@@ -671,7 +674,7 @@ namespace JavLuv
             string ID = current.ID;
             for (int i = 0; i < Movies.Count; ++i)
             {
-                if (Movies[i].ID== ID) 
+                if (Movies[i].ID == ID) 
                     return i; 
             }
             return -1;

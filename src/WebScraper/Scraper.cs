@@ -548,6 +548,8 @@ namespace WebScraper
 
         private void MergeActressData(ActressData a, ActressData b)
         {
+            if (b == null)
+                return;
             a.ImageFileNames.Concat(b.ImageFileNames);
             if (IsActressDataComplete(a))
                 return;

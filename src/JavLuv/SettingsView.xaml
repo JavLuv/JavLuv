@@ -82,6 +82,12 @@
                         Content="{DynamicResource Text.AutoSyncActresses}" 
                         />
 
+                    <CheckBox 
+                        Margin="0, 5, 0, 0" 
+                        IsChecked="{Binding ShowActressAgeAtPremier}"
+                        Content="{DynamicResource Text.ShowActressAgeAtPremier}" 
+                        />
+
                     <Label Margin="0, 15, 0, 0" Content="{DynamicResource Text.Subtitles}"/>
                     <Grid HorizontalAlignment="Stretch">
                         <Grid.ColumnDefinitions>

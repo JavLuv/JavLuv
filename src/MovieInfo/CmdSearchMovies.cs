@@ -190,7 +190,7 @@ namespace MovieInfo
             {
                 if (m_showUnratedOnly && movie.Metadata.UserRating != 0)
                     continue;
-                if (m_showSubtitlesOnly && movie.SubtitleFileNames.Count() == 0)
+                if (m_showSubtitlesOnly && movie.SubtitleFileNames.Count() == 0 && MovieUtils.IsHardSubtitled(movie) == false)
                     continue;
 
                 foreach (var terms in termsList)
@@ -221,6 +221,8 @@ namespace MovieInfo
             if (retVal == false)
                 term = term.Substring(1);
             if (movie.Metadata.Title.ContainsCaseless(term))
+                return retVal;
+            if (movie.Metadata.OriginalTitle.ContainsCaseless(term))
                 return retVal;
             if (movie.Metadata.UniqueID.Value.ContainsCaseless(term))
                 return retVal;

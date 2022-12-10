@@ -16,6 +16,7 @@
     <system:String x:Key="Text.ShowAdvanced">Show advanced options</system:String>
     <system:String x:Key="Text.CheckForUpdates">Automatically check for updates</system:String>
     <system:String x:Key="Text.AutoSyncActresses">Automatically synchronize movie metadata to actress database</system:String>
+    <system:String x:Key="Text.ShowActressAgeAtPremier">Show actress' age at movie premier</system:String>
     <system:String x:Key="Text.Subtitles">Subtitles</system:String>
     <system:String x:Key="Text.HideMetadata">Hide metadata and cover files</system:String>
     <system:String x:Key="Text.Scanning">Scanning</system:String>
@@ -74,6 +75,7 @@
     <system:String x:Key="Text.Series">Series:</system:String>
     <system:String x:Key="Text.Genres">ジャンル:</system:String>
     <system:String x:Key="Text.Actresses">出演者:</system:String>
+    <system:String x:Key="Text.HardSubtitled">Hard Subtitled:</system:String>
     <system:String x:Key="Text.Resolution">Resolution:</system:String>
     <system:String x:Key="Text.CopyTitle">Copy title and metadata</system:String>
     <system:String x:Key="Text.ImportSubtitles">Import subtitles...</system:String>

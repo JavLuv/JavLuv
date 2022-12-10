@@ -209,7 +209,17 @@ namespace MovieInfo
             return 0;
         }
 
-         public static string GenresToString(MovieData movieData)
+        public static bool IsHardSubtitled(MovieData movieData)
+        {
+            return movieData.Metadata.Status.StartsWith("true") == true;
+        }
+
+        public static void SetHardSubtitled(MovieData movieData, bool hardSubtitled)
+        {
+            movieData.Metadata.Status = hardSubtitled ? "true" : "false";
+        }
+
+        public static string GenresToString(MovieData movieData)
         {
             var str = new StringBuilder();
             foreach (var s in movieData.Metadata.Genres)
@@ -344,24 +354,29 @@ namespace MovieInfo
                 return true;
             return false;
         }
-
-        public static int GetAgeFromDateOfBirth(int year, int month, int day)
+        public static int GetAgeFromDateOfBirthAndDate(int dobYear, int dobMonth, int dobDay, int dateYear, int dateMonth, int dateDay)
         {
-            if (year == 0)
+            if (dobYear == 0)
                 throw new ArgumentException("Age can't be calculated without a valid year of bitth");
 
             // We'll allow a rough estimate, assuming Jan 1 b-day if none is available
-            var dateOfBirth = new DateTime(year, Math.Max(month, 1), Math.Max(day, 1));
+            var dateOfBirth = new DateTime(dobYear, Math.Max(dobMonth, 1), Math.Max(dobDay, 1));
 
             // Calculate age - a little trickier than you'd expect.  
             // Still not 100% precise, but good enough in 99.999% of cases.
             DateTime zeroTime = new DateTime(1, 1, 1);
             DateTime a = dateOfBirth;
-            DateTime b = DateTime.Now;
+            DateTime b = new DateTime(dateYear, dateMonth, dateDay);
             TimeSpan span = b - a;
             // Because we start at year 1 for the Gregorian
             // calendar, we must subtract a year here.
             return (zeroTime + span).Year - 1;
+        }
+
+        public static int GetAgeFromDateOfBirth(int dobYear, int dobMonth, int dobDay)
+        {
+            DateTime now = DateTime.Now;
+            return GetAgeFromDateOfBirthAndDate(dobYear, dobMonth, dobDay, now.Year, now.Month, now.Day);
         }
 
         public static string UserRatingToStars(int userRating)
