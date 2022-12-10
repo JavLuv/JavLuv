@@ -462,6 +462,23 @@ namespace JavLuv
             }
         }
 
+        public bool HardSubtitled
+        {
+            get
+            {
+                return MovieUtils.IsHardSubtitled(m_movieData);
+            }
+            set
+            {
+                bool isHardSubtitled = MovieUtils.IsHardSubtitled(m_movieData);
+                if (isHardSubtitled != value)
+                {
+                    MovieUtils.SetHardSubtitled(m_movieData, value);
+                    NotifyPropertyChanged("HardSubtitled");
+                }
+            }
+        }
+
         public string Notes
         {
             get { return m_movieData.Metadata.Plot; }

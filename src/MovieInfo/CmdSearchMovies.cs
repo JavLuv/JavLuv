@@ -190,7 +190,7 @@ namespace MovieInfo
             {
                 if (m_showUnratedOnly && movie.Metadata.UserRating != 0)
                     continue;
-                if (m_showSubtitlesOnly && movie.SubtitleFileNames.Count() == 0)
+                if (m_showSubtitlesOnly && movie.SubtitleFileNames.Count() == 0 && MovieUtils.IsHardSubtitled(movie) == false)
                     continue;
 
                 foreach (var terms in termsList)

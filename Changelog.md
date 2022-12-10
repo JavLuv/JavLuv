@@ -2,10 +2,11 @@
 
 All significant changes are listed in this file.
 
-## [1.1.13] - 2022-12-05
+## [1.1.13] - 2022-12-09
 - Optionally show actress' age at movie premier date
+- Add checkbox to designate movies as hard-subbed
 - Can now navigate through all actresses in a movie
-- The 'Regenrate metadata' command no longer restores movie metata from backup
+- The 'Regenrate metadata' command no longer restores movie metadata from backup
 - Japanese movie title is now searched
 - Fix crash in Japanese language actress web scraper
 

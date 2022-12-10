@@ -364,6 +364,15 @@
                                 <ColumnDefinition Width="10" />
                                 <ColumnDefinition Width="2*" />
                             </Grid.ColumnDefinitions>
+                            <Label Style="{StaticResource DetailLabelStyle}" Content="{DynamicResource Text.HardSubtitled}" />
+                            <CheckBox Grid.Column="2" VerticalAlignment="Center" IsChecked="{Binding HardSubtitled}" />
+                        </Grid>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="1*" MinWidth="95"/>
+                                <ColumnDefinition Width="10" />
+                                <ColumnDefinition Width="2*" />
+                            </Grid.ColumnDefinitions>
                             <Label Style="{StaticResource DetailLabelStyle}" Content="{DynamicResource Text.Notes}" />
                             <TextBox Style="{StaticResource DetailTextBoxStyle}" TextWrapping="Wrap" AcceptsReturn="True" Text="{Binding Notes, UpdateSourceTrigger=LostFocus}" />
                         </Grid>

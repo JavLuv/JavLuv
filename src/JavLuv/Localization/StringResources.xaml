@@ -76,6 +76,7 @@
     <system:String x:Key="Text.Genres">Genres:</system:String>
     <system:String x:Key="Text.Actresses">Actresses:</system:String>
     <system:String x:Key="Text.Resolution">Resolution:</system:String>
+    <system:String x:Key="Text.HardSubtitled">Hard Subtitled:</system:String>
     <system:String x:Key="Text.CopyTitle">Copy title and metadata</system:String>
     <system:String x:Key="Text.ImportSubtitles">Import subtitles...</system:String>
     <system:String x:Key="Text.JP">JP</system:String>

@@ -209,7 +209,17 @@ namespace MovieInfo
             return 0;
         }
 
-         public static string GenresToString(MovieData movieData)
+        public static bool IsHardSubtitled(MovieData movieData)
+        {
+            return movieData.Metadata.Status.StartsWith("true") == true;
+        }
+
+        public static void SetHardSubtitled(MovieData movieData, bool hardSubtitled)
+        {
+            movieData.Metadata.Status = hardSubtitled ? "true" : "false";
+        }
+
+        public static string GenresToString(MovieData movieData)
         {
             var str = new StringBuilder();
             foreach (var s in movieData.Metadata.Genres)
