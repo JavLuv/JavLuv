@@ -102,10 +102,10 @@ namespace JavLuv
             ActressDetailViewModel current = Parent.Parent.Parent.Overlay as ActressDetailViewModel;
             if (current == null)
                 return -1;
-            string Name = current.Name;
+            string Name = current.ActressData.Name;
             for (int i = 0; i < Actresses.Count; ++i)
             {
-                if (Actresses[i].Name == Name)
+                if (Actresses[i].Actress.Name == Name)
                     return i;
             }
             return -1;
