@@ -2,11 +2,16 @@
 
 All significant changes are listed in this file.
 
+## [1.1.14] - 2022-12-10
+- Optimized Ctrl-A (select all) command in browser views
+- Fixed issue with actress navigation when actress age is displayed in movie detail view
+- Fix crash with actress age calculation in movie detail due to incomplete premiere date
+
 ## [1.1.13] - 2022-12-09
 - Optionally show actress' age at movie premier date
 - Add checkbox to designate movies as hard-subbed
 - Can now navigate through all actresses in a movie
-- The 'Regenrate metadata' command no longer restores movie metadata from backup
+- The 'Regenerate metadata' command no longer restores movie metadata from backup
 - Japanese movie title is now searched
 - Fix crash in Japanese language actress web scraper
 

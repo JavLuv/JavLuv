@@ -126,11 +126,17 @@ namespace JavLuv
             }
             else if (SelectedItems.Count > 1)
             {
-                var str = new StringBuilder();
-                foreach (var item in SelectedItems)
+                var str = new StringBuilder(1000);
+                for (int i = 0; i < SelectedItems.Count; ++i)
                 {
-                    str.Append(item.ID);
-                    if (SelectedItems.IndexOf(item) != SelectedItems.Count - 1)
+                    str.Append(SelectedItems[i].ID);
+                    if (i == 10)
+                    {
+                        if (SelectedItems.Count > 10)
+                            str.Append(" " + String.Format(TextManager.GetString("Text.AndMore"), (SelectedItems.Count - i)));
+                        break;
+                    }
+                    else if (i < SelectedItems.Count - 1)
                         str.Append(", ");
                 }
                 Parent.SelectedDescription = str.ToString();
