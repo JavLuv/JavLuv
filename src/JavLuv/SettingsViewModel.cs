@@ -78,6 +78,7 @@ namespace JavLuv
                     if (Parent.SidePanel != null)
                         Parent.SidePanel.NotifyAllProperty();
                     NotifyAllPropertiesChanged();
+                    Parent.DisplayTitle();
                }
             }
         }
@@ -119,6 +120,21 @@ namespace JavLuv
                     Parent.SidePanel.NotifyAllProperty();
                     Parent.MovieBrowser.NotifyAllProperties();
                     NotifyPropertyChanged("ShowAdvancedOptions");
+                }
+            }
+        }
+
+        public bool AllowMultipleInstances
+        {
+            get { return Settings.Get().AllowMultipleInstances; }
+            set
+            {
+                if (value != Settings.Get().AllowMultipleInstances)
+                {
+                    Settings.Get().AllowMultipleInstances = value;
+                    Parent.SidePanel.NotifyAllProperty();
+                    Settings.Save();
+                    NotifyPropertyChanged("AllowMultipleInstances");
                 }
             }
         }

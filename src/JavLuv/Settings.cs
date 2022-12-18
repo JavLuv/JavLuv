@@ -142,6 +142,7 @@ namespace JavLuv
         // Config settings
         public bool CheckForUpdates { get; set; }
         public bool AutoSyncActresses { get; set; }
+        public bool AllowMultipleInstances { get; set; }
         public LanguageType Language { get; set; }
         public ThemeType Theme { get; set; }
         public bool ShowAdvancedOptions { get; set; }

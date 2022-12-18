@@ -244,7 +244,7 @@ namespace JavLuv
 
         private bool CanUpdateActressesExecute()
         {
-            return Parent.IsScanning == false && SelectedItems.Count > 0;
+            return Parent.IsScanning == false && SelectedItems.Count > 0 && Parent.IsReadOnlyMode == false;
         }
 
         public ICommand UpdateActressesCommand { get { return new RelayCommand(UpdateActressesExecute, CanUpdateActressesExecute); } }
@@ -262,7 +262,7 @@ namespace JavLuv
 
         private bool CanMergeActressesExecute()
         {
-            return Parent.IsScanning == false && SelectedItems.Count == 2;
+            return Parent.IsScanning == false && SelectedItems.Count == 2 && Parent.IsReadOnlyMode == false;
         }
 
         public ICommand MergeActressesCommand { get { return new RelayCommand(MergeActressesExecute, CanMergeActressesExecute); } }
@@ -281,7 +281,7 @@ namespace JavLuv
 
         private bool CanRemoveFromLibraryExecute()
         {
-            return Parent.IsScanning == false;
+            return Parent.IsScanning == false && Parent.IsReadOnlyMode == false;
         }
 
         public ICommand RemoveFromLibraryCommand { get { return new RelayCommand(RemoveFromLibraryExecute, CanRemoveFromLibraryExecute); } }

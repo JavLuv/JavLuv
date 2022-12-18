@@ -69,10 +69,14 @@ namespace JavLuv
         {
             Logger.WriteInfo("Main window closed");
             Settings.Get().LastVersionRun = SemanticVersion.Current;
+            
             var mainWindowModelView = DataContext as MainWindowViewModel;
-            mainWindowModelView.Collection.Save();
-            Settings.Save();
-            Logger.Close();
+            if (mainWindowModelView.IsReadOnlyMode == false)
+            {
+                mainWindowModelView.Collection.Save();
+                Settings.Save();
+                Logger.Close();
+            }
 
             // Only close tasks, not commands
             CommandQueue.LongTask().Close();

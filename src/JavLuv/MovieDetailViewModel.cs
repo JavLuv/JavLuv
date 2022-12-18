@@ -579,7 +579,7 @@ namespace JavLuv
 
         private bool CanImportSubtitlesExecute()
         {
-            return true;
+            return Parent.Parent.IsReadOnlyMode == false;
         }
 
         public ICommand ImportSubtitlesCommand { get { return new RelayCommand(ImportSubtitlesExecute, CanImportSubtitlesExecute); } }
@@ -600,7 +600,7 @@ namespace JavLuv
 
         private bool CanImportCoverImageExecute()
         {
-            return true;
+            return Parent.Parent.IsReadOnlyMode == false;
         }
 
         public ICommand ImportCoverImageCommand { get { return new RelayCommand(ImportCoverImageExecute, CanImportCoverImageExecute); } }
@@ -613,17 +613,19 @@ namespace JavLuv
         {
             string text = String.Empty;
             text += "[" + ID + "] ";
-            text += Title;
+            text += Title + "\n";
+            if (Settings.Get().Language == LanguageType.English)
+                text += m_movieData.Metadata.OriginalTitle + "\n";
             text += "\n\n";
-            text += "ID: " + ID + "\n";
-            text += "Released: " + Released + "\n";
-            text += "Runtime: " + Runtime + "\n";
-            text += "Studio: " + Studio + "\n";
-            text += "Label: " + Label + "\n";
-            text += "Director: " + Director + "\n";
-            text += "Genres: " + Genres + "\n";
-            text += "Actresses: " + Actors + "\n\n";
-
+            text += TextManager.GetString("Text.ID") + " " + ID + "\n";
+            text += TextManager.GetString("Text.Released") + " " + Released + "\n";
+            text += TextManager.GetString("Text.Runtime") + " " + Runtime + "\n";
+            text += TextManager.GetString("Text.Studio") + " " + Studio + "\n";
+            text += TextManager.GetString("Text.Label") + " " + Label + "\n";
+            text += TextManager.GetString("Text.Director") + " " + Director + "\n";
+            text += TextManager.GetString("Text.Genres") + " " + Genres + "\n";
+            text += TextManager.GetString("Text.Actresses") + " " + Actors + "\n\n";
+            text += TextManager.GetString("Text.Resolution") + " " + Resolution + "\n\n";
             Clipboard.SetText(text);
         }
 

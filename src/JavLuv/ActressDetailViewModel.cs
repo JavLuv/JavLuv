@@ -7,6 +7,7 @@ using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.TextBox;
 
 namespace JavLuv
 {
@@ -537,7 +538,7 @@ namespace JavLuv
 
         private bool CanImportImagesExecute()
         {
-            return true;
+            return m_mainWindowViewModel.IsReadOnlyMode == false;
         }
 
         public ICommand ImportImagesCommand { get { return new RelayCommand(ImportImagesExecute, CanImportImagesExecute); } }
@@ -566,7 +567,8 @@ namespace JavLuv
 
         private bool CanPasteExecute()
         {
-            return Clipboard.ContainsImage();
+            return Clipboard.ContainsImage() && m_mainWindowViewModel.IsReadOnlyMode == false;
+            ;
         }
 
         public ICommand PasteCommand { get { return new RelayCommand(PasteExecute, CanPasteExecute); } }
@@ -595,7 +597,7 @@ namespace JavLuv
 
         private bool CanDeleteImageExecute()
         {
-            return m_actressData.ImageFileNames.Count() > 0;
+            return m_actressData.ImageFileNames.Count() > 0 && m_mainWindowViewModel.IsReadOnlyMode == false;
         }
 
         public ICommand DeleteImageCommand { get { return new RelayCommand(DeleteImageExecute, CanDeleteImageExecute); } }

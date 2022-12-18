@@ -2,6 +2,10 @@
 
 All significant changes are listed in this file.
 
+## [1.1.15] - 2022-12-18
+- Optionaly allow running multiple instances of JavLuv using read-only mode
+- Updated and localized movie details' copy to clipboard command
+
 ## [1.1.14] - 2022-12-10
 - Optimized Ctrl-A (select all) command in browser views
 - Fixed issue with actress navigation when actress age is displayed in movie detail view
