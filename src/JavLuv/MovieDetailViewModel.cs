@@ -579,7 +579,7 @@ namespace JavLuv
 
         private bool CanImportSubtitlesExecute()
         {
-            return true;
+            return Parent.Parent.IsReadOnlyMode == false;
         }
 
         public ICommand ImportSubtitlesCommand { get { return new RelayCommand(ImportSubtitlesExecute, CanImportSubtitlesExecute); } }
@@ -600,7 +600,7 @@ namespace JavLuv
 
         private bool CanImportCoverImageExecute()
         {
-            return true;
+            return Parent.Parent.IsReadOnlyMode == false;
         }
 
         public ICommand ImportCoverImageCommand { get { return new RelayCommand(ImportCoverImageExecute, CanImportCoverImageExecute); } }

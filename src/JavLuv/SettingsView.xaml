@@ -72,6 +72,12 @@
 
                     <CheckBox 
                         Margin="0, 5, 0, 0" 
+                        IsChecked="{Binding AllowMultipleInstances}"
+                        Content="{DynamicResource Text.AllowMultipleInstances}" 
+                        />
+
+                    <CheckBox 
+                        Margin="0, 5, 0, 0" 
                         IsChecked="{Binding CheckForUpdates}"
                         Content="{DynamicResource Text.CheckForUpdates}" 
                         />

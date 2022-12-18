@@ -11,13 +11,17 @@ namespace MovieInfo
     {
         #region Constructors
 
-        public MovieCollection(Dispatcher dispatcher)
+        public MovieCollection(Dispatcher dispatcher, bool readOnlyMode)
         {
             m_dispatcher = dispatcher;
+            m_readOnlyMode = readOnlyMode;
             CommandQueue.Command().CommandFinished += CommandQueue_CommandFinished;
-            m_timer = new System.Timers.Timer(15000);
-            m_timer.Start();
-            m_timer.Elapsed += OnTimerElapsed;
+            if (m_readOnlyMode == false)
+            {
+                m_timer = new System.Timers.Timer(15000);
+                m_timer.Start();
+                m_timer.Elapsed += OnTimerElapsed;
+            }
             var folder = Utilities.GetJavLuvSettingsFolder();
             m_cacheFilename = Path.Combine(folder, "JavLuv.cache");
             m_actressesFilename = Path.Combine(folder, "Actresses.xml");
@@ -537,6 +541,8 @@ namespace MovieInfo
 
         public void Save()
         {
+            if (m_readOnlyMode == true)
+                return;
             CommandQueue.Command().Execute(new CmdMarkSharedFolders(m_cacheData));
             CommandQueue.Command().Execute(new CmdSave(m_cacheData, m_cacheFilename, m_actressesDatabase, m_actressesFilename, m_backupData, m_backupFilename));
         }
@@ -658,6 +664,7 @@ namespace MovieInfo
         private string m_actressesFilename = String.Empty;
         private string m_backupFilename = String.Empty;
         private bool m_loaded = false;
+        private bool m_readOnlyMode = false;
 
         #endregion
     }

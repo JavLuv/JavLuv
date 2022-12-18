@@ -291,7 +291,7 @@ namespace JavLuv
 
         private bool CanMoveRenameExecute()
         {
-            return Parent.IsScanning == false;
+            return Parent.IsScanning == false && Parent.IsReadOnlyMode == false;
         }
 
         public ICommand MoveRenameCommand { get { return new RelayCommand(MoveRenameExecute, CanMoveRenameExecute); } }
@@ -342,7 +342,7 @@ namespace JavLuv
 
         private bool CanMoveToFoldersExecute()
         {
-            return Parent.IsScanning == false;
+            return Parent.IsScanning == false && Parent.IsReadOnlyMode == false;
         }
 
         public ICommand MoveToFolderCommand { get { return new RelayCommand(MoveToFoldersExecute, CanMoveToFoldersExecute); } }
@@ -365,7 +365,7 @@ namespace JavLuv
 
         private bool CanRescanFilesExecute()
         {
-            return Parent.IsScanning == false;
+            return Parent.IsScanning == false && Parent.IsReadOnlyMode == false;
         }
 
         public ICommand RescanFilesCommand { get { return new RelayCommand(RescanFilesExecute, CanRescanFilesExecute); } }
@@ -384,7 +384,7 @@ namespace JavLuv
 
         private bool CanRemoveFromLibraryExecute()
         {
-            return Parent.IsScanning == false;
+            return Parent.IsScanning == false && Parent.IsReadOnlyMode == false;
         }
 
         public ICommand RemoveFromLibraryCommand { get { return new RelayCommand(RemoveFromLibraryExecute, CanRemoveFromLibraryExecute); } }
@@ -401,7 +401,7 @@ namespace JavLuv
 
         private bool CanImportCoverImageExecute()
         {
-            return m_selectedItems.Count == 1;
+            return m_selectedItems.Count == 1 && Parent.IsReadOnlyMode == false;
         }
 
         public ICommand ImportCoverImageCommand { get { return new RelayCommand(ImportCoverImageExecute, CanImportCoverImageExecute); } }
@@ -465,7 +465,7 @@ namespace JavLuv
 
         private bool CanRegenerateMetadataExecute()
         {
-            return Parent.IsScanning == false;
+            return Parent.IsScanning == false && Parent.IsReadOnlyMode == false;
         }
 
         public ICommand RegenerateMetadataCommand { get { return new RelayCommand(RegenerateMetadataExecute, CanRegenerateMetadataExecute); } }
@@ -485,7 +485,7 @@ namespace JavLuv
 
         private bool CanFilterMetadataExecute()
         {
-            return Parent.IsScanning == false;
+            return Parent.IsScanning == false && Parent.IsReadOnlyMode == false;
         }
 
         public ICommand FilterMetadataCommand { get { return new RelayCommand(FilterMetadataExecute, CanFilterMetadataExecute); } }
@@ -504,7 +504,7 @@ namespace JavLuv
 
         private bool CanDeleteMetadataExecute()
         {
-            return Parent.IsScanning == false;
+            return Parent.IsScanning == false && Parent.IsReadOnlyMode == false;
         }
 
         public ICommand DeleteMetadataCommand { get { return new RelayCommand(DeleteMetadataExecute, CanDeleteMetadataExecute); } }
@@ -549,7 +549,7 @@ namespace JavLuv
 
         private bool CanDeleteMovieExecute()
         {
-            return true;
+            return Parent.IsScanning == false && Parent.IsReadOnlyMode == false;
         }
 
         public ICommand DeleteMovieCommand { get { return new RelayCommand(DeleteMovieExecute, CanDeleteMovieExecute); } }

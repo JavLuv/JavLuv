@@ -2,7 +2,9 @@
 using MovieInfo;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
+using System.Diagnostics;
+using System.Linq;
+using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Shell;
@@ -45,6 +47,11 @@ namespace JavLuv
 
             Logger.WriteInfo("Main window view model initialized");
 
+            // Check to see if another instance is already running.  If not allowed,
+            // Shut down this instance and
+            if (CheckOtherInstanceRunning())
+                return;
+
             // Log version
             var currentVersion = SemanticVersion.Current;
             Logger.WriteInfo("Running JavLuv " + currentVersion);
@@ -55,7 +62,7 @@ namespace JavLuv
                 upgradeVersion = true;
             }
 
-            m_movieCollection = new MovieCollection(Application.Current.Dispatcher);
+            m_movieCollection = new MovieCollection(Application.Current.Dispatcher, IsReadOnlyMode);
             m_movieScanner = new MovieScanner(m_movieCollection);
             m_settingsViewModel = new SettingsViewModel(this);
             m_reportViewModel = new ReportViewModel(this);
@@ -97,7 +104,7 @@ namespace JavLuv
             if (upgradeVersion)
             {
                 Collection.CleanActressImages();
-                Collection.UpdateDateAdded();          
+                Collection.UpdateDateAdded();
             }
         }
 
@@ -131,10 +138,10 @@ namespace JavLuv
                     // Turn off error state when finished with the report overlay
                     if (m_overlayViewModel is ReportViewModel && m_progressState == TaskbarItemProgressState.Error)
                         m_progressState = TaskbarItemProgressState.Normal;
-                    
+
                     // Handle various conditions when changing state
                     ChangeState(value);
-               
+
                     m_overlayViewModel = value;
                     NotifyPropertyChanged("Overlay");
                 }
@@ -187,7 +194,15 @@ namespace JavLuv
             }
         }
 
-        public bool IsScanning { get { return m_movieScanner.Phase != ScanPhase.Finished; } }
+        public bool IsScanning 
+        { 
+            get 
+            {
+                if (m_movieScanner == null)
+                    return false;
+                return m_movieScanner.Phase != ScanPhase.Finished; 
+            } 
+        }
 
         public Visibility ScanVisibility
         {
@@ -302,6 +317,8 @@ namespace JavLuv
                 }
             }
         }
+
+        public bool IsReadOnlyMode { get; private set; }
 
         #endregion
 
@@ -489,6 +506,14 @@ namespace JavLuv
             NotifyPropertyChanged("ScanVisibility");
         }
 
+        public void DisplayTitle()
+        {
+            if (IsReadOnlyMode)
+                Application.Current.MainWindow.Title = TextManager.GetString("Text.JavLuvTitle") + " " + TextManager.GetString("Text.ReadOnlyMode");
+            else
+                Application.Current.MainWindow.Title = TextManager.GetString("Text.JavLuvTitle");
+        }
+
         #endregion
 
         #region Private Functions
@@ -578,6 +603,30 @@ namespace JavLuv
             State = newState;
         }
 
+        private bool CheckOtherInstanceRunning()
+        {
+            Process currentProcess = Process.GetCurrentProcess();
+            var runningProcess = (from process in Process.GetProcesses()
+                                  where
+                                    process.Id != currentProcess.Id &&
+                                    process.ProcessName.Equals(
+                                      currentProcess.ProcessName,
+                                      StringComparison.Ordinal)
+                                  select process).FirstOrDefault();
+            if (runningProcess != null)
+            {
+                IsReadOnlyMode = true;
+                JavLuv.Settings.Get().ShowAdvancedOptions = false;
+                if (JavLuv.Settings.Get().AllowMultipleInstances == false)
+                {
+                    ShowWindow(runningProcess.MainWindowHandle, SW_SHOWMAXIMIZED);
+                    App.Current.Shutdown();
+                    return true;
+                }
+            }
+            return false;
+        }
+
         #endregion
 
         #region Private Members
@@ -598,6 +647,11 @@ namespace JavLuv
         private string m_selectedDescription = String.Empty;
         private string m_displayCountText = String.Empty;
         private Visibility m_statusVisibility;
+
+        // Send message to other instance if multiple instances are running
+        [DllImport("user32.dll")]
+        private static extern Boolean ShowWindow(IntPtr hWnd, Int32 nCmdShow);
+        private const int SW_SHOWMAXIMIZED = 3;
 
         #endregion
     }

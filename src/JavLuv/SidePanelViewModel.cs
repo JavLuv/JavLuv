@@ -291,7 +291,7 @@ namespace JavLuv
 
         private bool CanSettingsExecuteExecute()
         {
-            return true;
+            return Parent.IsReadOnlyMode == false;
         }
 
         public ICommand SettingsCommand { get { return new RelayCommand(SettingsExecute, CanSettingsExecuteExecute); } }
@@ -325,7 +325,7 @@ namespace JavLuv
 
         private bool CanScanMoviesExecute()
         {
-            return true;
+            return Parent.IsReadOnlyMode == false;
         }
 
         public ICommand ScanMoviesCommand { get { return new RelayCommand(ScanMoviesExecute, CanScanMoviesExecute); } }
