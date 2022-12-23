@@ -2,8 +2,11 @@
 
 All significant changes are listed in this file.
 
+## [1.1.16] - 2022-12-22
+- Ajusted number of actresses shown in movie view to prevent overflow
+
 ## [1.1.15] - 2022-12-18
-- Optionaly allow running multiple instances of JavLuv using read-only mode
+- Optionally allow running multiple instances of JavLuv using read-only mode
 - Updated and localized movie details' copy to clipboard command
 
 ## [1.1.14] - 2022-12-10

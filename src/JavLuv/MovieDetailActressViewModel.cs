@@ -16,7 +16,7 @@ namespace JavLuv
             foreach (ActorData actor in Parent.MovieData.Metadata.Actors)
                 SortList.Add(new MovieDetailActressItemViewModel(this, actor));
             int maxImageCount = 6;
-            if (SortList.Count >= 24)
+            if (SortList.Count >= 18)
                 maxImageCount = 0;
             else if (SortList.Count >= 15)
                 maxImageCount = 3;
