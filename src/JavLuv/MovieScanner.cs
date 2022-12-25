@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Threading;
 using WebScraper;
@@ -693,7 +694,18 @@ namespace JavLuv
             return MovieType.Feature;
         }
 
-        private void GenerateMetaData(MovieData movieData)
+        private async Task<Tuple<int, int>> GetMovieResolutionAsync(string fileName)
+        {
+            int width = 0; int height = 0;
+            await Task.Run(() => 
+            {
+                string resStr = MovieUtils.GetMovieResolution(fileName);
+                MovieUtils.ParseMovieResolution(resStr, out width, out height);
+            });
+            return new Tuple<int, int>(width, height);
+        }
+
+        private async void GenerateMetaData(MovieData movieData)
         {
             if (IsCancelled || m_dispatcher.HasShutdownStarted)
                 return;
@@ -719,6 +731,9 @@ namespace JavLuv
             MovieMetadata metadata = null;
             try
             {
+                // Begin retrieving the movie resolution asyncronously while the metadata is being scraped.
+                var resolutionTask = GetMovieResolutionAsync(Path.Combine(movieData.Path, movieData.MovieFileNames[0]));
+
                 // Check to see if we need to download a cover image
                 string coverImagePath = String.Empty;
                 if (String.IsNullOrEmpty(movieData.CoverFileName))
@@ -789,9 +804,12 @@ namespace JavLuv
                 // Store metadata with movie
                 movieData.Metadata = metadata;
 
+                // Wait for this task to be finished, and set resolution data for movie
+                Tuple<int, int> resResult = await resolutionTask;
+                MovieUtils.SetMovieResolution(movieData, resResult.Item1, resResult.Item2);
+
                 // Save metadata filename
                 movieData.MetadataFileName = Path.GetFileName(filename);
-
             }
             catch (Exception ex)
             {
@@ -910,7 +928,7 @@ namespace JavLuv
             public List<FileInfo> Files = new List<FileInfo>();
         }
 
-        private System.Windows.Threading.Dispatcher m_dispatcher;
+        private Dispatcher m_dispatcher;
         private MovieCollection m_movieCollection;
         private List<string> m_directoriesToScan;
         private Thread m_thread;

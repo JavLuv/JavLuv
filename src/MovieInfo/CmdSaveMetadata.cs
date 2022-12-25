@@ -20,7 +20,7 @@ namespace MovieInfo
         {
             lock (m_cacheData)
             {
-                // Save any metadata whose information has changed.  We check every minute for metadata
+                // Save any metadata whose information has changed.  We check periodically for metadata
                 // to save, and only save a few at a time, since there many be thousands of individual 
                 // files to save.
                 int saveCount = 0;

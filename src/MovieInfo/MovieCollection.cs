@@ -15,9 +15,10 @@ namespace MovieInfo
         {
             m_dispatcher = dispatcher;
             m_readOnlyMode = readOnlyMode;
-            CommandQueue.Command().CommandFinished += CommandQueue_CommandFinished;
+            CommandQueue.Command().CommandFinished += OnCommandFinished;
             if (m_readOnlyMode == false)
             {
+                // Timer fires off every fifteen seconds
                 m_timer = new System.Timers.Timer(15000);
                 m_timer.Start();
                 m_timer.Elapsed += OnTimerElapsed;
@@ -51,7 +52,7 @@ namespace MovieInfo
 
         #region Event Handlers
 
-        private void CommandQueue_CommandFinished(object sender, CommandEventArgs e)
+        private void OnCommandFinished(object sender, CommandEventArgs e)
         {
             if (e.CommandName == "MovieInfo.CmdLoad")
             {
@@ -90,6 +91,7 @@ namespace MovieInfo
 
         private void OnTimerElapsed(object sender, System.Timers.ElapsedEventArgs e)
         {
+            CommandQueue.Command().Execute(new CmdUpdateResolution(m_cacheData));
             CommandQueue.Command().Execute(new CmdSaveMetadata(m_cacheData));
         }
 
