@@ -52,7 +52,6 @@
     <system:String x:Key="Text.LicenseInformation">License information:</system:String>
     <system:String x:Key="Text.JavLuvDistributed">JavLuv is distributed under the MIT Open Source License:</system:String>
     <system:String x:Key="Text.ffmpeg">ffmpeg is distributed under the GNU General Public License::</system:String>
-    <system:String x:Key="Text.AndMore">and {0} more...</system:String>
 
     <!-- Version Check View -->
     <system:String x:Key="Text.VersionCheckTitle">Version Check</system:String>
@@ -140,6 +139,7 @@
     <system:String x:Key="Text.ConfirmDeleteMoviesMessage">JavLuv will delete all selected movies and associated files.  \nThis action cannot be undone.  Proceed?</system:String>
     <system:String x:Key="Text.DeletingMoviesTitle">Deleting Movies</system:String>
     <system:String x:Key="Text.DeletingMoviesMessage">Deleting movies and associated files:</system:String>
+    <system:String x:Key="Text.AndMore">and {0} more...</system:String>
 
     <!-- Side Panel View -->
     <system:String x:Key="Text.ConcatenateMovies">Concatenate movies...</system:String>
@@ -153,6 +153,7 @@
     <system:String x:Key="Text.SortByActress">Actress</system:String>
     <system:String x:Key="Text.SortByDateNewest">Date (newest)</system:String>
     <system:String x:Key="Text.SortByDateOldest">Date (oldest)</system:String>
+    <system:String x:Key="Text.SortByResolution">Resolution</system:String>
     <system:String x:Key="Text.SortByRecentlyAdded">Recently Added</system:String>
     <system:String x:Key="Text.SortByUserRating">User Rating</system:String>
     <system:String x:Key="Text.ShowID">Show ID</system:String>

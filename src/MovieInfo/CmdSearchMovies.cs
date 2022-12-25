@@ -12,6 +12,7 @@ namespace MovieInfo
         Actress,
         Date_Newest,
         Date_Oldest,
+        Resolution,
         RecentlyAdded,
         UserRating,
     }
@@ -60,6 +61,21 @@ namespace MovieInfo
             int cmpVal = Utilities.DataTimeCompare(left.Metadata.Premiered, (right.Metadata.Premiered));
             if (cmpVal == 0)
                 return left.Metadata.Title.CompareTo(right.Metadata.Title);
+            return cmpVal;
+        }
+    }
+
+    public class MovieResolutionComparer : IComparer<MovieData>
+    {
+        public int Compare(MovieData left, MovieData right)
+        {
+            int cmpVal = right.Metadata.FileInfo.StreamDetails.Video.Height.CompareTo(left.Metadata.FileInfo.StreamDetails.Video.Height);
+            if (cmpVal == 0)
+            {
+                cmpVal = right.Metadata.FileInfo.StreamDetails.Video.Width.CompareTo(left.Metadata.FileInfo.StreamDetails.Video.Width);
+                if (cmpVal == 0)
+                    return left.Metadata.Title.CompareTo(right.Metadata.Title);                
+            }
             return cmpVal;
         }
     }
@@ -280,6 +296,9 @@ namespace MovieInfo
                     break;
                 case SortMoviesBy.Date_Oldest:
                     m_filteredMovies.Sort(new MovieDateOldestComparer());
+                    break;
+                case SortMoviesBy.Resolution:
+                    m_filteredMovies.Sort(new MovieResolutionComparer());
                     break;
                 case SortMoviesBy.RecentlyAdded:
                     m_filteredMovies.Sort(new MovieRecentlyAddedComparer());

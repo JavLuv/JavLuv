@@ -3,7 +3,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:system="clr-namespace:System;assembly=mscorlib"
     >
-    
+
     <!-- Settings -->
     <system:String x:Key="Text.Settings">Settings</system:String>
     <system:String x:Key="Text.General">General</system:String>
@@ -153,6 +153,7 @@
     <system:String x:Key="Text.SortByActress">Actress</system:String>
     <system:String x:Key="Text.SortByDateNewest">Date (newest)</system:String>
     <system:String x:Key="Text.SortByDateOldest">Date (oldest)</system:String>
+    <system:String x:Key="Text.SortByResolution">Resolution</system:String>
     <system:String x:Key="Text.SortByRecentlyAdded">Recently Added</system:String>
     <system:String x:Key="Text.SortByUserRating">User Rating</system:String>
     <system:String x:Key="Text.ShowID">Show ID</system:String>
