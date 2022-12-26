@@ -492,6 +492,37 @@ namespace JavLuv
 
         #endregion
 
+        #region Copy Movie List Command
+
+        private void CopyMovieListExecute()
+        {
+            List<MovieData> movies = new List<MovieData>();
+            foreach (var item in SelectedItems)
+                movies.Add(item.MovieData);
+            movies.Sort((movie1, movie2) => movie1.Metadata.UniqueID.Value.CompareTo(movie2.Metadata.UniqueID.Value));
+            StringBuilder sb = new StringBuilder(100000);
+            foreach (MovieData movie in movies)
+            {
+                sb.Append("[");
+                sb.Append(movie.Metadata.UniqueID.Value);
+                sb.Append("] ");
+                sb.Append("(");
+                sb.Append(MovieUtils.GetMovieResolution(movie.Metadata));
+                sb.Append(") ");
+                sb.AppendLine(movie.Metadata.Title.Substring(0, Math.Min(movie.Metadata.Title.Length, 160)));
+            }
+            Clipboard.SetText(sb.ToString());
+        }
+
+        private bool CanCopyMovieListExecute()
+        {
+            return true;
+        }
+
+        public ICommand CopyMovieListCommand { get { return new RelayCommand(CopyMovieListExecute, CanCopyMovieListExecute); } }
+
+        #endregion
+
         #region Delete Metadata Command
 
         private void DeleteMetadataExecute()

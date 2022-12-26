@@ -185,6 +185,7 @@
     <system:String x:Key="Text.RescanFiles">Rescan files</system:String>
     <system:String x:Key="Text.FindSubtitles">Find subtitles...</system:String>
     <system:String x:Key="Text.FilterMetadata">Filter metadata</system:String>
+    <system:String x:Key="Text.CopyMovieList">Copy movie list</system:String>
     <system:String x:Key="Text.RegenerateMetadata">Regenerate metadata</system:String>
     <system:String x:Key="Text.DeleteMetadata">Delete metadata</system:String>
     <system:String x:Key="Text.DeleteMovie">Delete movie</system:String>
