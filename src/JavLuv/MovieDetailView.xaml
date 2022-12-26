@@ -48,7 +48,6 @@
             </ContextMenu>
         </Grid.ContextMenu>
 
-
         <Button
             IsEnabled="True"
             Command="{Binding Parent.Parent.CloseOverlayCommand}"
@@ -112,8 +111,9 @@
                 <KeyBinding Command="{Binding Parent.NavigateLeftCommand}" Key="Left" />
                 <KeyBinding Command="{Binding Parent.NavigateRightCommand}" Key="Right" />
             </Grid.InputBindings>
-            <DockPanel Margin="40,10,40,10" >
+            <DockPanel Margin="40,10,0,10">
                 <TextBox 
+                    Margin="0, 0, 40, 0"
                     DockPanel.Dock="Top" 
                     BorderThickness="0"
                     TextWrapping="WrapWithOverflow" 
@@ -126,7 +126,7 @@
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="2*" />
                         <ColumnDefinition Width="10" />
-                        <ColumnDefinition Width="1*" />
+                        <ColumnDefinition Width="1.2*" />
                     </Grid.ColumnDefinitions>
                     <Grid Grid.Column="0">
                         <Grid.RowDefinitions>
@@ -223,160 +223,162 @@
                                 </ListView.ItemContainerStyle>
                             </ListView>
                         </DockPanel>
-                        </Grid>
-                    <StackPanel Background="Transparent"  Grid.Column="2">
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="1*" MinWidth="95"/>
-                                <ColumnDefinition Width="10" />
-                                <ColumnDefinition Width="2*" />
-                            </Grid.ColumnDefinitions>
-                            <Label Style="{StaticResource DetailLabelStyle}" Content="{DynamicResource Text.ID}" />
-                            <TextBox Style="{StaticResource DetailTextBoxStyle}" Text="{Binding ID, UpdateSourceTrigger=LostFocus}" />
-                        </Grid>
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="1*" MinWidth="95"/>
-                                <ColumnDefinition Width="10" />
-                                <ColumnDefinition Width="2*" />
-                            </Grid.ColumnDefinitions>
-                            <Label Style="{StaticResource DetailLabelStyle}" Content="{DynamicResource Text.Released}" />
-                            <TextBox Style="{StaticResource DetailTextBoxStyle}" Text="{Binding Released, UpdateSourceTrigger=LostFocus}" />
-                        </Grid>
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="1*" MinWidth="95"/>
-                                <ColumnDefinition Width="10" />
-                                <ColumnDefinition Width="2*" />
-                            </Grid.ColumnDefinitions>
-                            <Label Style="{StaticResource DetailLabelStyle}" Content="{DynamicResource Text.Runtime}" />
-                            <TextBox Style="{StaticResource DetailTextBoxStyle}" Text="{Binding Runtime, UpdateSourceTrigger=LostFocus}" />
-                        </Grid>
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="1*" MinWidth="95"/>
-                                <ColumnDefinition Width="10" />
-                                <ColumnDefinition Width="2*" />
-                            </Grid.ColumnDefinitions>
-                            <Label Style="{StaticResource DetailLabelStyle}" Content="{DynamicResource Text.Studio}" />
-                            <TextBox Style="{StaticResource DetailTextBoxStyle}" Text="{Binding Studio, UpdateSourceTrigger=LostFocus}" />
-                        </Grid>
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="1*" MinWidth="95"/>
-                                <ColumnDefinition Width="10" />
-                                <ColumnDefinition Width="2*" />
-                            </Grid.ColumnDefinitions>
-                            <Label Style="{StaticResource DetailLabelStyle}" Content="{DynamicResource Text.Label}" />
-                            <TextBox Style="{StaticResource DetailTextBoxStyle}" Text="{Binding Label, UpdateSourceTrigger=LostFocus}" />
-                        </Grid>
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="1*" MinWidth="95"/>
-                                <ColumnDefinition Width="10" />
-                                <ColumnDefinition Width="2*" />
-                            </Grid.ColumnDefinitions>
-                            <Label Style="{StaticResource DetailLabelStyle}" Content="{DynamicResource Text.Director}" />
-                            <TextBox Style="{StaticResource DetailTextBoxStyle}" Text="{Binding Director, UpdateSourceTrigger=LostFocus}" />
-                        </Grid>
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="1*" MinWidth="95"/>
-                                <ColumnDefinition Width="10" />
-                                <ColumnDefinition Width="2*" />
-                            </Grid.ColumnDefinitions>
-                            <Label Style="{StaticResource DetailLabelStyle}" Content="{DynamicResource Text.Series}" />
-                            <TextBox Style="{StaticResource DetailTextBoxStyle}" Text="{Binding Series, UpdateSourceTrigger=LostFocus}" />
-                        </Grid>
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="1*" MinWidth="95"/>
-                                <ColumnDefinition Width="10" />
-                                <ColumnDefinition Width="2*" />
-                            </Grid.ColumnDefinitions>
-                            <Label Style="{StaticResource DetailLabelStyle}" Content="{DynamicResource Text.UserRating}" />
-                            <local:RatingControl Margin="0, 4, 0, 0" BorderBrush="Transparent" Grid.Column="2" Value="{Binding UserRating}" />
-                        </Grid>
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="1*" MinWidth="95"/>
-                                <ColumnDefinition Width="10" />
-                                <ColumnDefinition Width="2*" />
-                            </Grid.ColumnDefinitions>
-                            <Label Style="{StaticResource DetailLabelStyle}" Content="{DynamicResource Text.Genres}" />
-                            <TextBox Style="{StaticResource DetailTextBoxStyle}" Text="{Binding Genres, UpdateSourceTrigger=LostFocus}" />
-                        </Grid>
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="1*" MinWidth="95"/>
-                                <ColumnDefinition Width="10" />
-                                <ColumnDefinition Width="2*" />
-                            </Grid.ColumnDefinitions>
-                            <Label Style="{StaticResource DetailLabelStyle}" Content="{DynamicResource Text.Actresses}" />
-                            <Grid Grid.Column="2">
+                    </Grid>
+                    <ScrollViewer  Background="Transparent" Focusable="False" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto" Grid.Column="2" Grid.ColumnSpan="3">
+                        <StackPanel Margin="0, 0, 40, 0" Background="Transparent">
+                            <Grid>
                                 <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*"/>
-                                    <ColumnDefinition Width="30" />
+                                    <ColumnDefinition Width="1*" MinWidth="95"/>
+                                    <ColumnDefinition Width="10" />
+                                    <ColumnDefinition Width="2*" />
                                 </Grid.ColumnDefinitions>
-                                <TextBox 
-                                    Style="{StaticResource DetailActressTextBoxStyle}" 
-                                    Visibility="{Binding ActressTextBoxVisible}" 
-                                    Text="{Binding Actors, UpdateSourceTrigger=LostFocus}" 
-                                    />
-                                <local:MovieDetailActressView 
-                                    Grid.Column="0" 
-                                    Visibility="{Binding Parent.ActressViewerVisible}" 
-                                    DataContext="{Binding Actresses}" 
-                                    />
-                                <ToggleButton
-                                    Grid.Column="1"
-                                    Margin="1, 5, 1, 1"
-                                    HorizontalAlignment="Right"
-                                    VerticalAlignment="Top"
-                                    IsChecked="{Binding ActressEditing}"
-                                    Width="25"
-                                    Height="25"
-                                    ToolTip="{DynamicResource Text.EditActresses}"
-                                    >
-                                    <Rectangle Width="21" Height="21">
-                                        <Rectangle.Fill>
-                                            <SolidColorBrush Color="{DynamicResource Theme.Icon.Foreground}"/>
-                                        </Rectangle.Fill>
-                                        <Rectangle.OpacityMask>
-                                            <ImageBrush ImageSource="Resources/edit.png"/>
-                                        </Rectangle.OpacityMask>
-                                    </Rectangle>
-                                </ToggleButton>
+                                <Label Style="{StaticResource DetailLabelStyle}" Content="{DynamicResource Text.ID}" />
+                                <TextBox Style="{StaticResource DetailTextBoxStyle}" Text="{Binding ID, UpdateSourceTrigger=LostFocus}" />
                             </Grid>
-                        </Grid>
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="1*" MinWidth="95"/>
-                                <ColumnDefinition Width="10" />
-                                <ColumnDefinition Width="2*" />
-                            </Grid.ColumnDefinitions>
-                            <Label Style="{StaticResource DetailLabelStyle}" Content="{DynamicResource Text.Resolution}" />
-                            <Label Style="{StaticResource DetailLabelContentStyle}" Content="{Binding Resolution}" />
-                        </Grid>
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="1*" MinWidth="95"/>
-                                <ColumnDefinition Width="10" />
-                                <ColumnDefinition Width="2*" />
-                            </Grid.ColumnDefinitions>
-                            <Label Style="{StaticResource DetailLabelStyle}" Content="{DynamicResource Text.HardSubtitled}" />
-                            <CheckBox Grid.Column="2" VerticalAlignment="Center" IsChecked="{Binding HardSubtitled}" />
-                        </Grid>
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="1*" MinWidth="95"/>
-                                <ColumnDefinition Width="10" />
-                                <ColumnDefinition Width="2*" />
-                            </Grid.ColumnDefinitions>
-                            <Label Style="{StaticResource DetailLabelStyle}" Content="{DynamicResource Text.Notes}" />
-                            <TextBox Style="{StaticResource DetailTextBoxStyle}" TextWrapping="Wrap" AcceptsReturn="True" Text="{Binding Notes, UpdateSourceTrigger=LostFocus}" />
-                        </Grid>
-                    </StackPanel>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="1*" MinWidth="95"/>
+                                    <ColumnDefinition Width="10" />
+                                    <ColumnDefinition Width="2*" />
+                                </Grid.ColumnDefinitions>
+                                <Label Style="{StaticResource DetailLabelStyle}" Content="{DynamicResource Text.Released}" />
+                                <TextBox Style="{StaticResource DetailTextBoxStyle}" Text="{Binding Released, UpdateSourceTrigger=LostFocus}" />
+                            </Grid>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="1*" MinWidth="95"/>
+                                    <ColumnDefinition Width="10" />
+                                    <ColumnDefinition Width="2*" />
+                                </Grid.ColumnDefinitions>
+                                <Label Style="{StaticResource DetailLabelStyle}" Content="{DynamicResource Text.Runtime}" />
+                                <TextBox Style="{StaticResource DetailTextBoxStyle}" Text="{Binding Runtime, UpdateSourceTrigger=LostFocus}" />
+                            </Grid>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="1*" MinWidth="95"/>
+                                    <ColumnDefinition Width="10" />
+                                    <ColumnDefinition Width="2*" />
+                                </Grid.ColumnDefinitions>
+                                <Label Style="{StaticResource DetailLabelStyle}" Content="{DynamicResource Text.Studio}" />
+                                <TextBox Style="{StaticResource DetailTextBoxStyle}" Text="{Binding Studio, UpdateSourceTrigger=LostFocus}" />
+                            </Grid>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="1*" MinWidth="95"/>
+                                    <ColumnDefinition Width="10" />
+                                    <ColumnDefinition Width="2*" />
+                                </Grid.ColumnDefinitions>
+                                <Label Style="{StaticResource DetailLabelStyle}" Content="{DynamicResource Text.Label}" />
+                                <TextBox Style="{StaticResource DetailTextBoxStyle}" Text="{Binding Label, UpdateSourceTrigger=LostFocus}" />
+                            </Grid>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="1*" MinWidth="95"/>
+                                    <ColumnDefinition Width="10" />
+                                    <ColumnDefinition Width="2*" />
+                                </Grid.ColumnDefinitions>
+                                <Label Style="{StaticResource DetailLabelStyle}" Content="{DynamicResource Text.Director}" />
+                                <TextBox Style="{StaticResource DetailTextBoxStyle}" Text="{Binding Director, UpdateSourceTrigger=LostFocus}" />
+                            </Grid>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="1*" MinWidth="95"/>
+                                    <ColumnDefinition Width="10" />
+                                    <ColumnDefinition Width="2*" />
+                                </Grid.ColumnDefinitions>
+                                <Label Style="{StaticResource DetailLabelStyle}" Content="{DynamicResource Text.Series}" />
+                                <TextBox Style="{StaticResource DetailTextBoxStyle}" Text="{Binding Series, UpdateSourceTrigger=LostFocus}" />
+                            </Grid>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="1*" MinWidth="95"/>
+                                    <ColumnDefinition Width="10" />
+                                    <ColumnDefinition Width="2*" />
+                                </Grid.ColumnDefinitions>
+                                <Label Style="{StaticResource DetailLabelStyle}" Content="{DynamicResource Text.UserRating}" />
+                                <local:RatingControl Margin="0, 4, 0, 0" BorderBrush="Transparent" Grid.Column="2" Value="{Binding UserRating}" />
+                            </Grid>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="1*" MinWidth="95"/>
+                                    <ColumnDefinition Width="10" />
+                                    <ColumnDefinition Width="2*" />
+                                </Grid.ColumnDefinitions>
+                                <Label Style="{StaticResource DetailLabelStyle}" Content="{DynamicResource Text.Genres}" />
+                                <TextBox Style="{StaticResource DetailTextBoxStyle}" Text="{Binding Genres, UpdateSourceTrigger=LostFocus}" />
+                            </Grid>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="1*" MinWidth="95"/>
+                                    <ColumnDefinition Width="10" />
+                                    <ColumnDefinition Width="2*" />
+                                </Grid.ColumnDefinitions>
+                                <Label Style="{StaticResource DetailLabelStyle}" Content="{DynamicResource Text.Actresses}" />
+                                <Grid Grid.Column="2">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="30" />
+                                    </Grid.ColumnDefinitions>
+                                    <TextBox 
+                                        Style="{StaticResource DetailActressTextBoxStyle}" 
+                                        Visibility="{Binding ActressTextBoxVisible}" 
+                                        Text="{Binding Actors, UpdateSourceTrigger=LostFocus}" 
+                                        />
+                                    <local:MovieDetailActressView 
+                                        Grid.Column="0" 
+                                        Visibility="{Binding Parent.ActressViewerVisible}" 
+                                        DataContext="{Binding Actresses}" 
+                                        />
+                                    <ToggleButton
+                                        Grid.Column="1"
+                                        Margin="1, 5, 1, 1"
+                                        HorizontalAlignment="Right"
+                                        VerticalAlignment="Top"
+                                        IsChecked="{Binding ActressEditing}"
+                                        Width="25"
+                                        Height="25"
+                                        ToolTip="{DynamicResource Text.EditActresses}"
+                                        >
+                                        <Rectangle Width="21" Height="21">
+                                            <Rectangle.Fill>
+                                                <SolidColorBrush Color="{DynamicResource Theme.Icon.Foreground}"/>
+                                            </Rectangle.Fill>
+                                            <Rectangle.OpacityMask>
+                                                <ImageBrush ImageSource="Resources/edit.png"/>
+                                            </Rectangle.OpacityMask>
+                                        </Rectangle>
+                                    </ToggleButton>
+                                </Grid>
+                            </Grid>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="1*" MinWidth="95"/>
+                                    <ColumnDefinition Width="10" />
+                                    <ColumnDefinition Width="2*" />
+                                </Grid.ColumnDefinitions>
+                                <Label Style="{StaticResource DetailLabelStyle}" Content="{DynamicResource Text.Resolution}" />
+                                <Label Style="{StaticResource DetailLabelContentStyle}" Content="{Binding Resolution}" />
+                            </Grid>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="1*" MinWidth="95"/>
+                                    <ColumnDefinition Width="10" />
+                                    <ColumnDefinition Width="2*" />
+                                </Grid.ColumnDefinitions>
+                                <Label Style="{StaticResource DetailLabelStyle}" Content="{DynamicResource Text.HardSubtitled}" />
+                                <CheckBox Grid.Column="2" VerticalAlignment="Center" IsChecked="{Binding HardSubtitled}" />
+                            </Grid>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="1*" MinWidth="95"/>
+                                    <ColumnDefinition Width="10" />
+                                    <ColumnDefinition Width="2*" />
+                                </Grid.ColumnDefinitions>
+                                <Label Style="{StaticResource DetailLabelStyle}" Content="{DynamicResource Text.Notes}" />
+                                <TextBox Style="{StaticResource DetailTextBoxStyle}" TextWrapping="Wrap" AcceptsReturn="True" Text="{Binding Notes, UpdateSourceTrigger=LostFocus}" />
+                            </Grid>
+                        </StackPanel>
+                    </ScrollViewer>
                 </Grid>
             </DockPanel>
         </Grid>
