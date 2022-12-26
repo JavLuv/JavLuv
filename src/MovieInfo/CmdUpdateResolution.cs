@@ -11,6 +11,7 @@ namespace MovieInfo
         public CmdUpdateResolution(CacheData cacheData)
         {
             m_cacheData = cacheData;
+            m_startTime = DateTime.Now;
         }
 
         #endregion
@@ -19,6 +20,10 @@ namespace MovieInfo
 
         public void Execute()
         {
+            // Ensure we don't queue these tasks in case of heavy disk usage
+            if (DateTime.Now - m_startTime > new TimeSpan(0, 0, 2))
+                return;
+
             List<MovieData> movies = new List<MovieData>();
             lock (m_cacheData)
             {
@@ -63,6 +68,7 @@ namespace MovieInfo
         #region Private Members
 
         private CacheData m_cacheData;
+        private DateTime m_startTime;
 
         #endregion
     }
