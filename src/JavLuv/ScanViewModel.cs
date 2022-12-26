@@ -13,6 +13,7 @@ namespace JavLuv
             m_parent = parent;
             ScanFolder = Settings.Get().ScanFolder;
             ScanRecursively = Settings.Get().ScanRecursively;
+            AutoImportImprovedMovies = Settings.Get().AutoImportImprovedMovies;
             MoveRenameAfterScan = Settings.Get().MoveRenameAfterScan;
         }
 
@@ -34,6 +35,22 @@ namespace JavLuv
                 {
                     m_scanRecursively = value;
                     NotifyPropertyChanged("ScanRecursively");
+                }
+            }
+        }
+
+        public bool AutoImportImprovedMovies
+        {
+            get
+            {
+                return m_autoImportImprovedMovies;
+            }
+            set
+            {
+                if (value != m_autoImportImprovedMovies)
+                {
+                    m_autoImportImprovedMovies = value;
+                    NotifyPropertyChanged("AutoImportImprovedMovies");
                 }
             }
         }
@@ -115,6 +132,7 @@ namespace JavLuv
         {
             Settings.Get().ScanFolder = ScanFolder;
             Settings.Get().ScanRecursively = ScanRecursively;
+            Settings.Get().AutoImportImprovedMovies = AutoImportImprovedMovies;
             Settings.Get().MoveRenameAfterScan = MoveRenameAfterScan;
             Parent.Parent.StartScan(ScanFolder);
         }
@@ -134,6 +152,7 @@ namespace JavLuv
 
         private SidePanelViewModel m_parent;
         private bool m_scanRecursively;
+        private bool m_autoImportImprovedMovies;
         private bool m_moveRenameAfterScan;
         private string m_scanFolder;
 

@@ -68,6 +68,7 @@ namespace JavLuv
             SubtitleExportFolder = String.Empty;
 
             ScanRecursively = true;
+            AutoImportImprovedMovies = true;
             SearchViewWidth = new GridLength(300);
             SearchText = String.Empty;
             LastVersionRun = SemanticVersion.Current;
@@ -124,6 +125,7 @@ namespace JavLuv
         public int SelectedTabIndex { get; set; }
         public Organizer.Mode OrganizerMode { get; set; }
         public bool ScanRecursively { get; set; }
+        public bool AutoImportImprovedMovies { get; set; }
         public bool MoveRenameAfterScan { get; set; }
         public string SearchText { get; set; }
         public MovieInfo.SortMoviesBy SortMoviesBy { get; set; }
@@ -207,7 +209,8 @@ namespace JavLuv
                 // We're upgrading versions!  If we need to set a new default value, here is the place to do it.
                 if (s_settings.LastVersionRun != SemanticVersion.Current)
                 {
-
+                    if (SemanticVersion.Current == new SemanticVersion(1, 1, 16))
+                        s_settings.AutoImportImprovedMovies = true;
                 }
             }
         }

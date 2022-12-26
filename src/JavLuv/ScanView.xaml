@@ -11,7 +11,7 @@
     ResizeMode="NoResize"
     Style="{DynamicResource DefaultWindowStyle}"
     Initialized="Window_Initialized"
-    Height="230" 
+    Height="260" 
     Width="600"
     >
     <Grid>
@@ -36,7 +36,11 @@
                 IsChecked="{Binding ScanRecursively}"
                 Content="{DynamicResource Text.ScanSubfolders}" 
                 />
-
+            <CheckBox 
+                Margin="0, 2,0, 2" 
+                IsChecked="{Binding AutoImportImprovedMovies}"
+                Content="{DynamicResource Text.AutoImportImprovedMovies}" 
+                />
             <CheckBox 
                 Margin="0, 2,0, 2" 
                 IsChecked="{Binding MoveRenameAfterScan}"

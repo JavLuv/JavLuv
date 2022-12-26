@@ -116,6 +116,7 @@
     <system:String x:Key="Text.CancellingOperation">Cancelling operation.  Plese wait...</system:String>
     <system:String x:Key="Text.ImportCoverImage">Import cover image...</system:String>
     <system:String x:Key="Text.LoadingMetadata">Loading metadata {0}/{1}</system:String>
+    <system:String x:Key="Text.ImportingMovies">Importing movies {0}/{1}</system:String>
     <system:String x:Key="Text.DownloadingMetadata">Downloading metadata {0}/{1}</system:String>
     <system:String x:Key="Text.DownloadingActressData">Downloading actress data {0}/{1}</system:String>
     <system:String x:Key="Text.ScanningFolders">Scanning {0} folders</system:String>
@@ -130,6 +131,7 @@
     <system:String x:Key="Text.MoveRenameError">Move / Rename Error</system:String>
     <system:String x:Key="Text.ErrorMovingFolder">Error moving folder or files</system:String>
     <system:String x:Key="Text.ErrorDeletingMovie">Error deleting movie</system:String>
+    <system:String x:Key="Text.ErrorImportingMovie">Error importing movie</system:String>
     <system:String x:Key="Text.ErrorMovieScanner">Unexpected error in movie scanner</system:String>
     <system:String x:Key="Text.MovingMoviesTitle">Moving Movies</system:String>
     <system:String x:Key="Text.MovingMoviesMessage">Moving movies to new location:</system:String>
@@ -195,6 +197,7 @@
     <!-- Scan Movies View -->
     <system:String x:Key="Text.ScanMoviesTitle">Scan Movies</system:String>
     <system:String x:Key="Text.ScanSubfolders">Scan subfolders</system:String>
+    <system:String x:Key="Text.AutoImportImprovedMovies">Auto import movies of similar or better quality</system:String>
     <system:String x:Key="Text.MoveRenameAfterScan">Move / rename after scan</system:String>
     <system:String x:Key="Text.FolderToScan">Folder to scan</system:String>
     <system:String x:Key="Text.Scan">Scan</system:String>

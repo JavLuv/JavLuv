@@ -9,6 +9,7 @@ using System.Windows;
 using System.Windows.Input;
 using System.Windows.Shell;
 using System.Windows.Threading;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.TextBox;
 
 namespace JavLuv
 {
@@ -351,8 +352,22 @@ namespace JavLuv
             if (JavLuv.Settings.Get().EnableMoveRename && JavLuv.Settings.Get().MoveRenameAfterScan && m_movieScanner.IsCancelled == false)
                 m_movieBrowserViewModel.MoveRenameMovies(m_movieScanner.Movies);
 
+            // Add new actresses
             m_movieCollection.AddMovies(m_movieScanner.Movies);
+
+            // Copy imported list
+            List<MovieData> imported = new List<MovieData>(m_movieScanner.Imported);
             m_movieScanner.Clear();
+
+            // Rescan movies
+            if (imported.Count > 0)
+            {
+                Collection.RemoveMovies(imported);
+                HashSet<string> foldersToScan = new HashSet<string>();
+                foreach (var movieData in imported)
+                    foldersToScan.Add(movieData.Path);
+                StartRecan(foldersToScan.ToList());
+            }
         }
 
         private void OnMovieScannerUpdate(object sender, EventArgs e)
@@ -363,23 +378,18 @@ namespace JavLuv
                 PercentComplete = 0;
                 ScanStatus = string.Format(TextManager.GetString("Text.ScanningFolders"), m_movieScanner.ItemsProcessed);
             }
-            else if (m_movieScanner.Phase == ScanPhase.LoadingMetadata)
+            else
             {
                 ProgressState = TaskbarItemProgressState.Normal;
                 PercentComplete = (int)(((float)m_movieScanner.ItemsProcessed / (float)m_movieScanner.TotalItems) * 100.0);
-                ScanStatus = string.Format(TextManager.GetString("Text.LoadingMetadata"), m_movieScanner.ItemsProcessed, m_movieScanner.TotalItems);
-            }
-            else if (m_movieScanner.Phase == ScanPhase.DownloadMetadata)
-            {
-                ProgressState = TaskbarItemProgressState.Normal;
-                PercentComplete = (int)(((float)m_movieScanner.ItemsProcessed / (float)m_movieScanner.TotalItems) * 100.0);
-                ScanStatus = string.Format(TextManager.GetString("Text.DownloadingMetadata"), m_movieScanner.ItemsProcessed, m_movieScanner.TotalItems);
-            }
-            else if (m_movieScanner.Phase == ScanPhase.DownloadActressData)
-            {
-                ProgressState = TaskbarItemProgressState.Normal;
-                PercentComplete = (int)(((float)m_movieScanner.ItemsProcessed / (float)m_movieScanner.TotalItems) * 100.0);
-                ScanStatus = string.Format(TextManager.GetString("Text.DownloadingActressData"), m_movieScanner.ItemsProcessed, m_movieScanner.TotalItems);
+                if (m_movieScanner.Phase == ScanPhase.LoadingMetadata)
+                    ScanStatus = string.Format(TextManager.GetString("Text.LoadingMetadata"), m_movieScanner.ItemsProcessed, m_movieScanner.TotalItems);
+                else if (m_movieScanner.Phase == ScanPhase.ImportMovies)
+                    ScanStatus = string.Format(TextManager.GetString("Text.ImportingMovies"), m_movieScanner.ItemsProcessed, m_movieScanner.TotalItems);
+                else if (m_movieScanner.Phase == ScanPhase.DownloadMetadata)
+                    ScanStatus = string.Format(TextManager.GetString("Text.DownloadingMetadata"), m_movieScanner.ItemsProcessed, m_movieScanner.TotalItems);
+                else if (m_movieScanner.Phase == ScanPhase.DownloadActressData)
+                    ScanStatus = string.Format(TextManager.GetString("Text.DownloadingActressData"), m_movieScanner.ItemsProcessed, m_movieScanner.TotalItems);
             }
         }
 
@@ -481,9 +491,9 @@ namespace JavLuv
             NotifyPropertyChanged("ScanVisibility");
         }
 
-        public void StartScan(List<string> scanDirectories)
+        public void StartRecan(List<string> scanDirectories)
         {
-            m_movieScanner.Start(scanDirectories);
+            m_movieScanner.StartRescan(scanDirectories);
             SidePanel.SettingsIsEnabled = false;
             NotifyPropertyChanged("IsScanning");
             NotifyPropertyChanged("ScanVisibility");

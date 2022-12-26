@@ -360,7 +360,7 @@ namespace JavLuv
             HashSet<string> foldersToScan = new HashSet<string>();
             foreach (var item in SelectedItems)
                 foldersToScan.Add(item.MovieData.Path);
-            Parent.StartScan(foldersToScan.ToList());
+            Parent.StartRecan(foldersToScan.ToList());
         }
 
         private bool CanRescanFilesExecute()
@@ -459,7 +459,7 @@ namespace JavLuv
             bool restoreFromBackup = Settings.Get().AutoRestoreMetadata;
             Settings.Get().AutoRestoreMetadata = false;
             Parent.Collection.DeleteMetadata(movies);
-            Parent.StartScan(foldersToScan.ToList());
+            Parent.StartRecan(foldersToScan.ToList());
             Settings.Get().AutoRestoreMetadata = restoreFromBackup;
         }
 

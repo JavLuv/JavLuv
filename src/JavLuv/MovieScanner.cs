@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -17,6 +18,7 @@ namespace JavLuv
     {
         ScanningFolders,
         LoadingMetadata,
+        ImportMovies,
         DownloadMetadata,
         DownloadActressData,
         Finished,
@@ -33,6 +35,7 @@ namespace JavLuv
             m_dispatcher = Application.Current.Dispatcher;
             Phase = ScanPhase.Finished;
             Movies = new List<MovieData>();
+            Imported = new List<MovieData>();
             Actresses = new List<ActressData>();
         }
 
@@ -50,14 +53,10 @@ namespace JavLuv
         public ScanPhase Phase { get; private set; }
         public int ItemsProcessed { get; private set; }
         public int TotalItems { get; private set; }
-
         public bool IsCancelled { get; private set; }
-
         public List<MovieData> Movies { get; private set; }
-
+        public List<MovieData> Imported { get; private set; }
         public List<ActressData> Actresses { get; private set; }
-
-
         public string ErrorLog { get { return m_errorLog; } }
 
         #endregion
@@ -68,10 +67,11 @@ namespace JavLuv
         {
             m_directoriesToScan = new List<string>();
             m_directoriesToScan.Add(scanDirectory);
+            m_isRescan = false;
             Start();
         }
 
-        public void Start(List<string> scanDirectories)
+        public void StartRescan(List<string> scanDirectories)
         {
             // Log operation
             Logger.WriteInfo("Start scanner");
@@ -79,6 +79,7 @@ namespace JavLuv
                 Logger.WriteInfo("Scan directory: " + scanDirectory);
 
             m_directoriesToScan = scanDirectories;
+            m_isRescan = true;
             Start();
         }
 
@@ -86,6 +87,7 @@ namespace JavLuv
         {
             Actresses = actresses;
             m_directoriesToScan = new List<string>();
+            m_isRescan = false;
             Start();
         }
 
@@ -99,6 +101,7 @@ namespace JavLuv
         {
             Logger.WriteInfo("Clear scanner");
             Movies.Clear();
+            Imported.Clear();
             Actresses.Clear();
         }
 
@@ -132,6 +135,7 @@ namespace JavLuv
             m_hideMetadataAndCovers = Settings.Get().HideMetadataAndCovers;
             m_autoRestoreMetadata = Settings.Get().AutoRestoreMetadata;
             m_scanRecursively = Settings.Get().ScanRecursively;
+            m_autoImportImprovedMovies = Settings.Get().AutoImportImprovedMovies;
             m_language = Settings.Get().Language;
             m_subtitleExts = Utilities.ProcessSettingsList(Settings.Get().SubtitleExts);
             m_coverNames = Utilities.ProcessSettingsList(Settings.Get().CoverNames);
@@ -146,6 +150,7 @@ namespace JavLuv
             m_errorLog = String.Empty;
             m_moviesToProcess.Clear();
             Movies.Clear();
+            Imported.Clear();
             ItemsProcessed = 0;
             TotalItems = 0;
             m_thread = new Thread(new ThreadStart(ThreadRun));
@@ -266,8 +271,13 @@ namespace JavLuv
                             // only one successful file remains, the directory could be inadvertently be moved instead
                             // of selected files copied.
                             directoryInfo.IsSharedFolder = true;
-                            LogError(String.Format("Error scanning file {0}.  {1} already exists in collection.", fileInfo.FileName, fileInfo.ID), directoryToScan);
-                            continue;
+
+                            // Check to see if we want to import better movies, and if so, ignore the duplicate
+                            if (m_autoImportImprovedMovies == false && m_isRescan == false)
+                            {
+                                LogError(String.Format("Error scanning file {0}.  {1} already exists in collection.", fileInfo.FileName, fileInfo.ID), directoryToScan);
+                                continue;
+                            }
                         }
                     }
 
@@ -490,18 +500,35 @@ namespace JavLuv
                 return;
 
             List<MovieData> moviesToLoad = new List<MovieData>();
+            List<MovieData> moviesToImport = new List<MovieData>();
             List<MovieData> moviesToDownload = new List<MovieData>();
 
-            // Split movies into two lists
+            // Split movies into three lists
             foreach (MovieData movieData in m_moviesToProcess)
             {
-                if (String.IsNullOrEmpty(movieData.MetadataFileName))
-                    moviesToDownload.Add(movieData);         
-                else           
+                if (m_movieCollection.MovieExists(movieData.Metadata.UniqueID.Value))
+                    moviesToImport.Add(movieData);
+                else if (String.IsNullOrEmpty(movieData.MetadataFileName))
+                    moviesToDownload.Add(movieData);
+                else
                     moviesToLoad.Add(movieData);
             }
 
-            // First load all movies we already have on disk
+            // Load all movies we already have on disk
+            LoadMovies(moviesToLoad);
+
+            // Import all movies with similar or better quality
+            ImportMovies(moviesToImport);
+
+            // Download metadata as necessary
+            DownloadMovieMetadata(moviesToDownload);
+
+            // Remove any movies that don't have metadata or a valid UniqueID
+            Movies.RemoveAll(m => m.Metadata == null || String.IsNullOrEmpty(m.MetadataFileName) || String.IsNullOrEmpty(m.Metadata.UniqueID.Value));
+        }
+
+        private void LoadMovies(List<MovieData> moviesToLoad)
+        {
             Phase = ScanPhase.LoadingMetadata;
             ItemsProcessed = 0;
             TotalItems = moviesToLoad.Count;
@@ -521,22 +548,107 @@ namespace JavLuv
                     // Javinizer saves DVD-ID to the ID field instead of the UniqueID field, so we check that here.
                     if (String.IsNullOrEmpty(movieData.Metadata.UniqueID.Value) && String.IsNullOrEmpty(movieData.Metadata.ID) == false)
                         movieData.Metadata.UniqueID.Value = movieData.Metadata.ID;
-
                     Movies.Add(movieData);
                 }
                 catch (Exception ex)
                 {
                     LogError("Unable to load metadata", movieData.Path, ex);
-                }        
-                ItemsProcessed++;
+                }
 
+                // We should reset movie resolution on rescans in case movie file has been changed
+                if (m_isRescan)
+                {
+                    string resolution = MovieUtils.GetMovieResolution(Path.Combine(movieData.Path, movieData.MovieFileNames[0]));
+                    movieData.MovieResolution = resolution;
+                    MovieUtils.SetMovieResolution(movieData, resolution);
+                }
+
+                ItemsProcessed++;
                 if (m_dispatcher.HasShutdownStarted == false)
                     m_dispatcher.Invoke(DispatcherPriority.Normal, new Action(delegate () { ScanUpdate?.Invoke(this, new EventArgs()); }));
             }
+        }
 
+        private void ImportMovies(List<MovieData> moviesToImport)
+        {
+            Phase = ScanPhase.ImportMovies;
+            ItemsProcessed = 0;
+            TotalItems = moviesToImport.Count;
+            if (m_dispatcher.HasShutdownStarted == false)
+                m_dispatcher.Invoke(DispatcherPriority.Normal, new Action(delegate () { ScanUpdate?.Invoke(this, new EventArgs()); }));
+
+            foreach (MovieData movieData in moviesToImport)
+            {
+                if (IsCancelled || m_dispatcher.HasShutdownStarted)
+                    break;
+
+                // Validate that we're copying a movie that's as good or better resolution than destination, else it's an error to report
+                string sourceResolution = MovieUtils.GetMovieResolution(Path.Combine(movieData.Path, movieData.MovieFileNames[0]));
+                int sourceWidth, sourceHeight;
+                MovieUtils.ParseMovieResolution(sourceResolution, out sourceWidth, out sourceHeight);
+                if (sourceWidth == 0 || sourceHeight == 0)
+                {
+                    LogError(TextManager.GetString("Text.ErrorImportingMovie"), movieData.Path);
+                    continue;
+                }
+                var dest = m_movieCollection.GetMovie(movieData.Metadata.UniqueID.Value);
+                if (dest == null)
+                {
+                    LogError(TextManager.GetString("Text.ErrorImportingMovie"), movieData.Path);
+                    continue;
+                }
+                int destWidth, destHeight;
+                MovieUtils.GetMovieResolution(dest.Metadata, out destWidth, out destHeight);
+                if (destWidth == 0 || destHeight == 0)
+                {
+                    LogError(TextManager.GetString("Text.ErrorImportingMovie"), movieData.Path);
+                    continue;
+                }
+                if (sourceWidth < destWidth || sourceHeight < destHeight)
+                {
+                    LogError(TextManager.GetString("Text.ErrorImportingMovie"), movieData.Path);
+                    continue;
+                }
+
+                // Set new movie resolution
+                MovieUtils.SetMovieResolution(dest, sourceWidth, sourceHeight);
+                dest.MovieResolution = MovieUtils.GetMovieResolution(dest.Metadata);
+
+                // Delete the destination movies
+                foreach (string fn in dest.MovieFileNames)
+                {
+                    string fnPath = Path.Combine(dest.Path, fn);
+                    Utilities.DeleteFile(fnPath);
+                }
+
+                // Clear the desgination file list
+                dest.MovieFileNames.Clear();
+
+                // Move the new movie files to the destination path
+                foreach (string fn in movieData.MovieFileNames)
+                {
+                    string sourcePath = Path.Combine(movieData.Path, fn);
+                    string destPath = Path.Combine(dest.Path, fn);
+                    Utilities.MoveFile(sourcePath, destPath);
+                }
+
+                // Add source movie to the import list, so it can get rescanned afterwards
+                Imported.Add(dest);
+
+                ItemsProcessed++;
+                if (m_dispatcher.HasShutdownStarted == false)
+                    m_dispatcher.Invoke(DispatcherPriority.Normal, new Action(delegate () { ScanUpdate?.Invoke(this, new EventArgs()); }));
+            }
+        }
+
+        private void DownloadMovieMetadata(List<MovieData> moviesToDownload)
+        {
             Phase = ScanPhase.DownloadMetadata;
             ItemsProcessed = 0;
             TotalItems = moviesToDownload.Count;
+            if (m_dispatcher.HasShutdownStarted == false)
+                m_dispatcher.Invoke(DispatcherPriority.Normal, new Action(delegate () { ScanUpdate?.Invoke(this, new EventArgs()); }));
+
             foreach (MovieData movieData in moviesToDownload)
             {
                 if (IsCancelled || m_dispatcher.HasShutdownStarted)
@@ -544,17 +656,11 @@ namespace JavLuv
 
                 // If we don't have metadata, generate it now from the movie ID
                 GenerateMetaData(movieData);
-
                 ItemsProcessed++;
-
                 Movies.Add(movieData);
-
                 if (m_dispatcher.HasShutdownStarted == false)
                     m_dispatcher.Invoke(DispatcherPriority.Normal, new Action(delegate () { ScanUpdate?.Invoke(this, new EventArgs()); }));
             }
-
-            // Remove any movies that don't have metadata or a valid UniqueID
-            Movies.RemoveAll(m => m.Metadata == null || String.IsNullOrEmpty(m.MetadataFileName) || String.IsNullOrEmpty(m.Metadata.UniqueID.Value));
         }
 
         private void ProcessActors()
@@ -948,6 +1054,8 @@ namespace JavLuv
         private string m_settingsFolder = String.Empty;
         private LanguageType m_language;
         private bool m_scanRecursively = true;
+        private bool m_autoImportImprovedMovies = true;
+        private bool m_isRescan = false;
         private bool m_hideMetadataAndCovers = false;
         private bool m_autoRestoreMetadata = false;
         private string m_errorLog = String.Empty;
