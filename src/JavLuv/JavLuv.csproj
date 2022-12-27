@@ -205,6 +205,7 @@
       <DependentUpon>SubtitleOrganizeView.xaml</DependentUpon>
     </Compile>
     <Compile Include="SubtitleOrganizeViewModel.cs" />
+    <Compile Include="TextBoxBehavior.cs" />
     <Compile Include="TextManager.cs" />
     <Compile Include="SemenaticVersion.cs" />
     <Compile Include="ThemeManager.cs" />

@@ -7,8 +7,9 @@ All significant changes are listed in this file.
 - Movie detail info will now scroll if necessary
 - Add context menu command to copy list of selected movies to clipboard
 - Movie resolution is now stored in metadata
-- Can now sort movies by resolution
-- Can now import and replace movies during scanning if same or better resolution
+- Can sort movies by resolution
+- Can import and replace movies during scanning if same or better resolution
+- Triple-clicking in textboxes selects all text
 
 ## [1.1.15] - 2022-12-18
 - Optionally allow running multiple instances of JavLuv using read-only mode
