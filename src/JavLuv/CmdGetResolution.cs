@@ -1,7 +1,6 @@
 ﻿using MovieInfo;
 using System;
 using System.Windows;
-using System.Windows.Media;
 using System.Windows.Threading;
 
 namespace JavLuv
@@ -14,6 +13,7 @@ namespace JavLuv
         {
             m_fileName = fileName;
             m_startTime = DateTime.Now;
+            m_dispatcher = Dispatcher.CurrentDispatcher;
         }
 
         #endregion
@@ -38,9 +38,9 @@ namespace JavLuv
             if (now - m_startTime > TimeSpan.FromSeconds(30))
                 return;
             Resolution = MovieUtils.GetMovieResolution(m_fileName);
-            if (Application.Current == null ||Application.Current.Dispatcher == null)
+            if (Application.Current == null || m_dispatcher == null)
                 return;
-            Application.Current.Dispatcher.Invoke(DispatcherPriority.Normal, new Action(delegate () 
+            m_dispatcher.Invoke(DispatcherPriority.Normal, new Action(delegate () 
             {
                 FinishedScanning?.Invoke(this, new EventArgs());
             }));       
@@ -52,7 +52,7 @@ namespace JavLuv
 
         private string m_fileName;
         private DateTime m_startTime;
-
+        private Dispatcher m_dispatcher;
         #endregion
     }
 }

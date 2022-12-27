@@ -72,6 +72,7 @@
     <Compile Include="CmdUpdateActressMovieCount.cs" />
     <Compile Include="CmdUpdateActressNames.cs" />
     <Compile Include="CmdUpdateDateAdded.cs" />
+    <Compile Include="CmdUpdateResolution.cs" />
     <Compile Include="CommandQueue.cs" />
     <Compile Include="MovieCollection.cs" />
     <Compile Include="MovieData.cs" />

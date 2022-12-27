@@ -180,7 +180,6 @@ namespace MovieInfo
             return results;
         }
 
-
         public static int MovieTitleCompare(string leftTitle, string rightTitle)
         {
             return Utilities.TitleNormalize(leftTitle).CompareTo(Utilities.TitleNormalize(rightTitle));
@@ -566,6 +565,72 @@ namespace MovieInfo
             return true;
         }
 
+        public static void SetMovieResolution(MovieData movie, int width, int height)
+        {
+            if (movie == null)
+                return;
+            movie.MovieResolution = String.Format("{0}x{1}", width, height);
+            movie.Metadata.FileInfo.StreamDetails.Video.Width = width;
+            movie.Metadata.FileInfo.StreamDetails.Video.Height= height;
+            movie.MetadataChanged = true;
+        }
+
+        public static void SetMovieResolution(MovieData movie, string resolution)
+        {
+            if (movie == null)
+                return;
+            int width, height;
+            ParseMovieResolution(resolution, out width, out height);
+            SetMovieResolution(movie, width, height);
+        }
+
+        public static void ParseMovieResolution(string resolution, out int width, out int height)
+        {
+            width = 0;
+            height = 0;
+            if (String.IsNullOrEmpty(resolution))
+            {
+                Logger.WriteError("Movie resolution string is null or empty");
+                return;
+            }
+            string[] values = resolution.Split('x');
+            if (values.Length != 2)
+            {
+                Logger.WriteError("Error parsing movie resolution: " + resolution);
+                return;
+            }
+            if (int.TryParse(values[0], out width) == false || int.TryParse(values[1], out height) == false)
+                Logger.WriteError("Error parsing movie resolution: " + resolution);
+        }
+
+        public static bool HasMovieRevolution(MovieMetadata metadata)
+        {
+            return metadata.FileInfo.StreamDetails.Video.Width != 0 && metadata.FileInfo.StreamDetails.Video.Height!= 0;
+        }
+
+        public static void GetMovieResolution(MovieMetadata metadata, out int width, out int height)
+        {
+            width = 0;
+            height = 0;
+            if (metadata == null)
+                return;
+            width = metadata.FileInfo.StreamDetails.Video.Width;
+            height = metadata.FileInfo.StreamDetails.Video.Height;
+        }
+
+        public static string GetMovieResolution(MovieMetadata metadata)
+        {
+            int width = 0;
+            int height = 0;
+            if (metadata == null)
+                return String.Empty;
+            width = metadata.FileInfo.StreamDetails.Video.Width;
+            height = metadata.FileInfo.StreamDetails.Video.Height;
+            if (width == 0 || height == 0)
+                return String.Empty;
+            return String.Format("{0}x{1}", width, height);
+        }
+
         public static string GetMovieResolution(string filename)
         {
             string resolution = String.Empty;
@@ -603,13 +668,14 @@ namespace MovieInfo
                     string s = sb.ToString();
                     var matches = regex.Matches(s);
                     if (matches.Count > 0)
-                    {
                         resolution = matches[0].ToString();
-                    }
+                    else
+                        Logger.WriteError("Unable to extract movie resolution from file name " + filename);
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                Logger.WriteError("Unexpected error when extracting movie resolution from file name " + filename, ex);
             }
 
             return resolution;

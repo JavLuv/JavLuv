@@ -90,13 +90,15 @@ namespace JavLuv
             if (String.IsNullOrEmpty(m_movieData.CoverFileName) == false)
             {
                 m_loadImage = new CmdLoadImage(Path.Combine(m_movieData.Path, m_movieData.CoverFileName));
-                m_loadImage.FinishedLoading += LoadImage_FinishedLoading;
+                m_loadImage.FinishedLoading += OnImageFinishedLoading;
                 CommandQueue.ShortTask().Execute(m_loadImage, CommandOrder.First);
             }
-            if (String.IsNullOrEmpty(m_movieData.MovieResolution) && m_movieData.MovieFileNames.Count > 0)
+
+            // Check to see if we need to retrieve movie resolution.
+            if (MovieUtils.HasMovieRevolution(m_movieData.Metadata) == false && m_movieData.MovieFileNames.Count > 0)
             {
                 m_getResolution = new CmdGetResolution(Path.Combine(m_movieData.Path, m_movieData.MovieFileNames[0]));
-                m_getResolution.FinishedScanning += GetResolution_FinishedScanning;
+                m_getResolution.FinishedScanning += OnGetResolutionFinishedScanning;
                 CommandQueue.LongTask().Execute(m_getResolution, CommandOrder.First);
             }
 
@@ -106,7 +108,7 @@ namespace JavLuv
             if (Settings.Get().Language != LanguageType.Japanese && String.IsNullOrEmpty(m_movieData.Metadata.OriginalTitle))
             {
                 var getOrigTitle = new CmdGetOriginalTitle(ID, m_movieData);
-                getOrigTitle.FinishedScraping += GetOriginalTitle_Finished;
+                getOrigTitle.FinishedScraping += OnGetOriginalTitleFinished;
                 CommandQueue.LongTask().Execute(getOrigTitle, ShowOriginalTitle ? CommandOrder.First : CommandOrder.Last);
             }
 
@@ -119,22 +121,21 @@ namespace JavLuv
 
         #region Event Handlers
 
-        private void LoadImage_FinishedLoading(object sender, System.EventArgs e)
+        private void OnImageFinishedLoading(object sender, System.EventArgs e)
         {
             Image = m_loadImage.Image;
             if (Image == null)
                 Logger.WriteWarning("Unable to load image " + Path.Combine(m_movieData.Path, m_movieData.CoverFileName));
-            m_loadImage.FinishedLoading -= LoadImage_FinishedLoading;
+            m_loadImage.FinishedLoading -= OnImageFinishedLoading;
             m_loadImage = null;
         }
 
-        private void GetResolution_FinishedScanning(object sender, EventArgs e)
+        private void OnGetResolutionFinishedScanning(object sender, EventArgs e)
         {
-            m_movieData.MovieResolution = m_getResolution.Resolution;
-            NotifyPropertyChanged("Resolution");
+            Resolution = m_getResolution.Resolution;
         }
 
-        private void GetOriginalTitle_Finished(object sender, EventArgs e)
+        private void OnGetOriginalTitleFinished(object sender, EventArgs e)
         {
             NotifyPropertyChanged("Title");
         }
@@ -451,12 +452,17 @@ namespace JavLuv
 
         public string Resolution
         {
-            get { return m_movieData.MovieResolution; }
+            get 
+            { 
+                return MovieUtils.GetMovieResolution(m_movieData.Metadata); 
+            }
             set
             {
-                if (value != m_movieData.MovieResolution)
+                string prevResolution = MovieUtils.GetMovieResolution(m_movieData.Metadata);
+                if (value != prevResolution)
                 {
-                    m_movieData.MovieResolution = value;
+                    MovieUtils.SetMovieResolution(m_movieData, value);
+                    m_movieData.MetadataChanged = true;
                     NotifyPropertyChanged("Resolution");
                 }
             }
@@ -518,7 +524,7 @@ namespace JavLuv
             }
             m_movieData.CoverFileName = fileName;
             m_loadImage = new CmdLoadImage(Path.Combine(m_movieData.Path, m_movieData.CoverFileName));
-            m_loadImage.FinishedLoading += LoadImage_FinishedLoading;
+            m_loadImage.FinishedLoading += OnImageFinishedLoading;
             CommandQueue.ShortTask().Execute(m_loadImage, CommandOrder.First);
         }
 
@@ -593,7 +599,7 @@ namespace JavLuv
             if (Parent.ImportCoverImage(m_movieData))
             {
                 m_loadImage = new CmdLoadImage(Path.Combine(m_movieData.Path, m_movieData.CoverFileName));
-                m_loadImage.FinishedLoading += LoadImage_FinishedLoading;
+                m_loadImage.FinishedLoading += OnImageFinishedLoading;
                 CommandQueue.ShortTask().Execute(m_loadImage, CommandOrder.First);
             }
         }

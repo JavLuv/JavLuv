@@ -1,5 +1,4 @@
-﻿using Common;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Xml.Linq;
 using System.Xml.Serialization;
@@ -106,6 +105,139 @@ namespace MovieInfo
     }
 
     [Serializable]
+    [XmlRoot("fileinfo")]
+    public class FileInfoData
+    {
+        #region Constructors
+
+        public FileInfoData()
+        {
+            StreamDetails = new StreamDetailsData();
+        }
+
+        #endregion
+
+        #region Properties
+
+        [XmlElement("streamdetails")]
+        public StreamDetailsData StreamDetails { get; set; }
+
+        #endregion
+    }
+
+    [Serializable]
+    public class StreamDetailsData
+    {
+        #region Constructors
+
+        public StreamDetailsData()
+        {
+            Video = new VideoData();
+            Audio = new List<AudioData>();
+            Subtitles = new List<SubtitleData>();
+        }
+
+        #endregion
+
+        #region Properties
+
+        [XmlElement("video")]
+        public VideoData Video { get; set; }
+
+        [XmlElement("audio")]
+        public List<AudioData> Audio { get; set; }
+
+        [XmlElement("subtitle")]
+        public List<SubtitleData> Subtitles { get; set; }
+
+        #endregion
+    }
+
+    [Serializable]
+    public class VideoData
+    {
+        #region Constructors
+
+        public VideoData()
+        {
+            Codec = String.Empty;
+            Aspect = String.Empty;
+            StereoMode = String.Empty;
+        }
+
+        #endregion
+
+        #region Properties
+
+        [XmlElement("codec")]
+        public string Codec { get; set; }
+
+        [XmlElement("aspect")]
+        public string Aspect { get; set; }
+
+        [XmlElement("width")]
+        public int Width { get; set; }
+
+        [XmlElement("height")]
+        public int Height { get; set; }
+
+        [XmlElement("durationinseconds")]
+        public int DurationInSeconds { get; set; }
+
+        [XmlElement("stereomode")]
+        public string StereoMode { get; set; }
+
+        #endregion
+    }
+
+    [Serializable]
+    public class AudioData
+    {
+        #region Constructors
+
+        public AudioData()
+        {
+            Codec = String.Empty;
+            Language= String.Empty;
+        }
+
+        #endregion
+
+        #region Properties
+
+        [XmlElement("codec")]
+        public string Codec { get; set; }
+
+        [XmlElement("language")]
+        public string Language { get; set; }
+
+        [XmlElement("channels")]
+        public string Channels { get; set; }
+
+        #endregion
+    }
+
+    [Serializable]
+    public class SubtitleData
+    {
+        #region Constructors
+
+        public SubtitleData()
+        {
+            Language = String.Empty;
+        }
+
+        #endregion
+
+        #region Properties
+
+        [XmlElement("language")]
+        public string Language { get; set; }
+
+        #endregion
+    }
+
+    [Serializable]
     [XmlRoot("movie")]
     public class MovieMetadata : IEquatable<MovieMetadata>
     {
@@ -123,6 +255,7 @@ namespace MovieInfo
             Series = String.Empty;
             Genres = new List<string>();
             Actors = new List<ActorData>();
+            FileInfo = new FileInfoData();
             Rating = 0.0f;
             Ratings = new List<RatingData>();
             Plot = String.Empty;
@@ -232,6 +365,9 @@ namespace MovieInfo
 
         [XmlElement("actor")]
         public List<ActorData> Actors { get; set; }
+
+        [XmlElement("fileinfo")]
+        public FileInfoData FileInfo { get; set; }
 
         // Unused by Kodi but part of the spec.  Can put some extra data here
         [XmlElement("status")]

@@ -142,6 +142,12 @@ namespace JavLuv
                         datePremiered = "Unknown";
                     m_displayTitle = String.Format("({0}) {1}", datePremiered, GetOptionalIdAndTitle());
                     break;
+                case SortMoviesBy.Resolution:
+                    string resolution = MovieUtils.GetMovieResolution(m_movieData.Metadata);
+                    if (String.IsNullOrEmpty(resolution))
+                        resolution = "Unknown";
+                    m_displayTitle = String.Format("({0}) {1}", resolution, GetOptionalIdAndTitle());
+                    break;
                 case SortMoviesBy.RecentlyAdded:
                     string dateAdded = m_movieData.Metadata.DateAdded;
                     if (String.IsNullOrEmpty(dateAdded))

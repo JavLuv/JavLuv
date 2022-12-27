@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Threading;
 using WebScraper;
@@ -16,6 +17,7 @@ namespace JavLuv
     {
         ScanningFolders,
         LoadingMetadata,
+        ImportMovies,
         DownloadMetadata,
         DownloadActressData,
         Finished,
@@ -49,14 +51,9 @@ namespace JavLuv
         public ScanPhase Phase { get; private set; }
         public int ItemsProcessed { get; private set; }
         public int TotalItems { get; private set; }
-
         public bool IsCancelled { get; private set; }
-
         public List<MovieData> Movies { get; private set; }
-
         public List<ActressData> Actresses { get; private set; }
-
-
         public string ErrorLog { get { return m_errorLog; } }
 
         #endregion
@@ -131,6 +128,7 @@ namespace JavLuv
             m_hideMetadataAndCovers = Settings.Get().HideMetadataAndCovers;
             m_autoRestoreMetadata = Settings.Get().AutoRestoreMetadata;
             m_scanRecursively = Settings.Get().ScanRecursively;
+            m_autoImportImprovedMovies = Settings.Get().AutoImportImprovedMovies;
             m_language = Settings.Get().Language;
             m_subtitleExts = Utilities.ProcessSettingsList(Settings.Get().SubtitleExts);
             m_coverNames = Utilities.ProcessSettingsList(Settings.Get().CoverNames);
@@ -265,8 +263,13 @@ namespace JavLuv
                             // only one successful file remains, the directory could be inadvertently be moved instead
                             // of selected files copied.
                             directoryInfo.IsSharedFolder = true;
-                            LogError(String.Format("Error scanning file {0}.  {1} already exists in collection.", fileInfo.FileName, fileInfo.ID), directoryToScan);
-                            continue;
+
+                            // Check to see if we want to import better movies, and if so, ignore the duplicate
+                            if (m_autoImportImprovedMovies == false)
+                            {
+                                LogError(String.Format("Error scanning file {0}.  {1} already exists in collection.", fileInfo.FileName, fileInfo.ID), directoryToScan);
+                                continue;
+                            }
                         }
                     }
 
@@ -489,18 +492,35 @@ namespace JavLuv
                 return;
 
             List<MovieData> moviesToLoad = new List<MovieData>();
+            List<MovieData> moviesToImport = new List<MovieData>();
             List<MovieData> moviesToDownload = new List<MovieData>();
 
-            // Split movies into two lists
+            // Split movies into three lists
             foreach (MovieData movieData in m_moviesToProcess)
             {
-                if (String.IsNullOrEmpty(movieData.MetadataFileName))
-                    moviesToDownload.Add(movieData);         
-                else           
+                if (m_movieCollection.MovieExists(movieData.Metadata.UniqueID.Value))
+                    moviesToImport.Add(movieData);
+                else if (String.IsNullOrEmpty(movieData.MetadataFileName))
+                    moviesToDownload.Add(movieData);
+                else
                     moviesToLoad.Add(movieData);
             }
 
-            // First load all movies we already have on disk
+            // Load all movies we already have on disk
+            LoadMovies(moviesToLoad);
+
+            // Import all movies with similar or better quality
+            ImportMovies(moviesToImport);
+
+            // Download metadata as necessary
+            DownloadMovieMetadata(moviesToDownload);
+
+            // Remove any movies that don't have metadata or a valid UniqueID
+            Movies.RemoveAll(m => m.Metadata == null || String.IsNullOrEmpty(m.MetadataFileName) || String.IsNullOrEmpty(m.Metadata.UniqueID.Value));
+        }
+
+        private void LoadMovies(List<MovieData> moviesToLoad)
+        {
             Phase = ScanPhase.LoadingMetadata;
             ItemsProcessed = 0;
             TotalItems = moviesToLoad.Count;
@@ -520,22 +540,108 @@ namespace JavLuv
                     // Javinizer saves DVD-ID to the ID field instead of the UniqueID field, so we check that here.
                     if (String.IsNullOrEmpty(movieData.Metadata.UniqueID.Value) && String.IsNullOrEmpty(movieData.Metadata.ID) == false)
                         movieData.Metadata.UniqueID.Value = movieData.Metadata.ID;
-
                     Movies.Add(movieData);
                 }
                 catch (Exception ex)
                 {
                     LogError("Unable to load metadata", movieData.Path, ex);
-                }        
-                ItemsProcessed++;
+                }
 
+                ItemsProcessed++;
                 if (m_dispatcher.HasShutdownStarted == false)
                     m_dispatcher.Invoke(DispatcherPriority.Normal, new Action(delegate () { ScanUpdate?.Invoke(this, new EventArgs()); }));
             }
+        }
 
+        private void ImportMovies(List<MovieData> moviesToImport)
+        {
+            Phase = ScanPhase.ImportMovies;
+            ItemsProcessed = 0;
+            TotalItems = moviesToImport.Count;
+            if (m_dispatcher.HasShutdownStarted == false)
+                m_dispatcher.Invoke(DispatcherPriority.Normal, new Action(delegate () { ScanUpdate?.Invoke(this, new EventArgs()); }));
+
+            foreach (MovieData movieData in moviesToImport)
+            {
+                if (IsCancelled || m_dispatcher.HasShutdownStarted)
+                    break;
+
+                // Validate that we're copying a movie that's as good or better resolution than destination, else it's an error to report
+                string sourceResolution = MovieUtils.GetMovieResolution(Path.Combine(movieData.Path, movieData.MovieFileNames[0]));
+                int sourceWidth, sourceHeight;
+                MovieUtils.ParseMovieResolution(sourceResolution, out sourceWidth, out sourceHeight);
+                if (sourceWidth == 0 || sourceHeight == 0)
+                {
+                    LogError(TextManager.GetString("Text.ErrorImportingMovie"), movieData.Path);
+                    continue;
+                }
+                var dest = m_movieCollection.GetMovie(movieData.Metadata.UniqueID.Value);
+                if (dest == null)
+                {
+                    LogError(TextManager.GetString("Text.ErrorImportingMovie"), movieData.Path);
+                    continue;
+                }
+                int destWidth, destHeight;
+                MovieUtils.GetMovieResolution(dest.Metadata, out destWidth, out destHeight);
+                if (destWidth == 0 || destHeight == 0)
+                {
+                    LogError(TextManager.GetString("Text.ErrorImportingMovie"), movieData.Path);
+                    continue;
+                }
+                if (sourceWidth < destWidth || sourceHeight < destHeight)
+                {
+                    LogError(TextManager.GetString("Text.ErrorImportingMovie"), movieData.Path);
+                    continue;
+                }
+
+                // Set new movie resolution
+                MovieUtils.SetMovieResolution(dest, sourceWidth, sourceHeight);
+                dest.MovieResolution = MovieUtils.GetMovieResolution(dest.Metadata);
+
+                // Get root movie name
+                string rootMovieName = GetCommonMovieFilename(dest);
+
+                // Delete the destination movies
+                foreach (string fn in dest.MovieFileNames)
+                {
+                    string fnPath = Path.Combine(dest.Path, fn);
+                    Utilities.DeleteFile(fnPath);
+                }
+
+                // Clear the destination file list
+                dest.MovieFileNames.Clear();
+
+                // Move the new movie files to the destination path
+                for (int i = 0; i < movieData.MovieFileNames.Count; ++i)
+                {
+                    string sourceFn = movieData.MovieFileNames[i];
+                    string sourcePath = Path.Combine(movieData.Path, sourceFn);
+                    string destFileName = Path.GetFileNameWithoutExtension(rootMovieName);
+                    if (movieData.MovieFileNames.Count > 1)
+                        destFileName = rootMovieName + "-" + ((char)((int)'A' + i)).ToString();
+                    destFileName = Path.ChangeExtension(destFileName, Path.GetExtension(movieData.MovieFileNames[i]));
+                    string destPath = Path.Combine(dest.Path, destFileName);
+                    Utilities.MoveFile(sourcePath, destPath);
+                    dest.MovieFileNames.Add(destFileName);
+                }
+                
+                // Add to list of movies processed
+                Movies.Add(dest);
+
+                ItemsProcessed++;
+                if (m_dispatcher.HasShutdownStarted == false)
+                    m_dispatcher.Invoke(DispatcherPriority.Normal, new Action(delegate () { ScanUpdate?.Invoke(this, new EventArgs()); }));
+            }
+        }
+
+        private void DownloadMovieMetadata(List<MovieData> moviesToDownload)
+        {
             Phase = ScanPhase.DownloadMetadata;
             ItemsProcessed = 0;
             TotalItems = moviesToDownload.Count;
+            if (m_dispatcher.HasShutdownStarted == false)
+                m_dispatcher.Invoke(DispatcherPriority.Normal, new Action(delegate () { ScanUpdate?.Invoke(this, new EventArgs()); }));
+
             foreach (MovieData movieData in moviesToDownload)
             {
                 if (IsCancelled || m_dispatcher.HasShutdownStarted)
@@ -544,16 +650,13 @@ namespace JavLuv
                 // If we don't have metadata, generate it now from the movie ID
                 GenerateMetaData(movieData);
 
-                ItemsProcessed++;
-
+                // Add to list of movies processed
                 Movies.Add(movieData);
 
+                ItemsProcessed++;
                 if (m_dispatcher.HasShutdownStarted == false)
                     m_dispatcher.Invoke(DispatcherPriority.Normal, new Action(delegate () { ScanUpdate?.Invoke(this, new EventArgs()); }));
             }
-
-            // Remove any movies that don't have metadata or a valid UniqueID
-            Movies.RemoveAll(m => m.Metadata == null || String.IsNullOrEmpty(m.MetadataFileName) || String.IsNullOrEmpty(m.Metadata.UniqueID.Value));
         }
 
         private void ProcessActors()
@@ -693,7 +796,18 @@ namespace JavLuv
             return MovieType.Feature;
         }
 
-        private void GenerateMetaData(MovieData movieData)
+        private async Task<Tuple<int, int>> GetMovieResolutionAsync(string fileName)
+        {
+            int width = 0; int height = 0;
+            await Task.Run(() => 
+            {
+                string resStr = MovieUtils.GetMovieResolution(fileName);
+                MovieUtils.ParseMovieResolution(resStr, out width, out height);
+            });
+            return new Tuple<int, int>(width, height);
+        }
+
+        private async void GenerateMetaData(MovieData movieData)
         {
             if (IsCancelled || m_dispatcher.HasShutdownStarted)
                 return;
@@ -719,6 +833,9 @@ namespace JavLuv
             MovieMetadata metadata = null;
             try
             {
+                // Begin retrieving the movie resolution asyncronously while the metadata is being scraped.
+                var resolutionTask = GetMovieResolutionAsync(Path.Combine(movieData.Path, movieData.MovieFileNames[0]));
+
                 // Check to see if we need to download a cover image
                 string coverImagePath = String.Empty;
                 if (String.IsNullOrEmpty(movieData.CoverFileName))
@@ -789,9 +906,12 @@ namespace JavLuv
                 // Store metadata with movie
                 movieData.Metadata = metadata;
 
+                // Wait for this task to be finished, and set resolution data for movie
+                Tuple<int, int> resResult = await resolutionTask;
+                MovieUtils.SetMovieResolution(movieData, resResult.Item1, resResult.Item2);
+
                 // Save metadata filename
                 movieData.MetadataFileName = Path.GetFileName(filename);
-
             }
             catch (Exception ex)
             {
@@ -910,7 +1030,7 @@ namespace JavLuv
             public List<FileInfo> Files = new List<FileInfo>();
         }
 
-        private System.Windows.Threading.Dispatcher m_dispatcher;
+        private Dispatcher m_dispatcher;
         private MovieCollection m_movieCollection;
         private List<string> m_directoriesToScan;
         private Thread m_thread;
@@ -930,6 +1050,7 @@ namespace JavLuv
         private string m_settingsFolder = String.Empty;
         private LanguageType m_language;
         private bool m_scanRecursively = true;
+        private bool m_autoImportImprovedMovies = true;
         private bool m_hideMetadataAndCovers = false;
         private bool m_autoRestoreMetadata = false;
         private string m_errorLog = String.Empty;

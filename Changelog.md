@@ -2,8 +2,17 @@
 
 All significant changes are listed in this file.
 
+## [1.1.16] - 2022-12-26
+- Ajusted number of actress images shown in movie view to prevent overflow
+- Movie detail info will now scroll if necessary
+- Add context menu command to copy list of selected movies to clipboard
+- Movie resolution is now stored in metadata
+- Can sort movies by resolution
+- Can import and replace movies during scanning if same or better resolution
+- Triple-clicking in textboxes selects all text
+
 ## [1.1.15] - 2022-12-18
-- Optionaly allow running multiple instances of JavLuv using read-only mode
+- Optionally allow running multiple instances of JavLuv using read-only mode
 - Updated and localized movie details' copy to clipboard command
 
 ## [1.1.14] - 2022-12-10

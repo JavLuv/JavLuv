@@ -360,7 +360,7 @@ namespace JavLuv
             HashSet<string> foldersToScan = new HashSet<string>();
             foreach (var item in SelectedItems)
                 foldersToScan.Add(item.MovieData.Path);
-            Parent.StartScan(foldersToScan.ToList());
+            Parent.StartRecan(foldersToScan.ToList());
         }
 
         private bool CanRescanFilesExecute()
@@ -459,7 +459,7 @@ namespace JavLuv
             bool restoreFromBackup = Settings.Get().AutoRestoreMetadata;
             Settings.Get().AutoRestoreMetadata = false;
             Parent.Collection.DeleteMetadata(movies);
-            Parent.StartScan(foldersToScan.ToList());
+            Parent.StartRecan(foldersToScan.ToList());
             Settings.Get().AutoRestoreMetadata = restoreFromBackup;
         }
 
@@ -489,6 +489,37 @@ namespace JavLuv
         }
 
         public ICommand FilterMetadataCommand { get { return new RelayCommand(FilterMetadataExecute, CanFilterMetadataExecute); } }
+
+        #endregion
+
+        #region Copy Movie List Command
+
+        private void CopyMovieListExecute()
+        {
+            List<MovieData> movies = new List<MovieData>();
+            foreach (var item in SelectedItems)
+                movies.Add(item.MovieData);
+            movies.Sort((movie1, movie2) => movie1.Metadata.UniqueID.Value.CompareTo(movie2.Metadata.UniqueID.Value));
+            StringBuilder sb = new StringBuilder(100000);
+            foreach (MovieData movie in movies)
+            {
+                sb.Append("[");
+                sb.Append(movie.Metadata.UniqueID.Value);
+                sb.Append("] ");
+                sb.Append("(");
+                sb.Append(MovieUtils.GetMovieResolution(movie.Metadata));
+                sb.Append(") ");
+                sb.AppendLine(movie.Metadata.Title.Substring(0, Math.Min(movie.Metadata.Title.Length, 160)));
+            }
+            Clipboard.SetText(sb.ToString());
+        }
+
+        private bool CanCopyMovieListExecute()
+        {
+            return true;
+        }
+
+        public ICommand CopyMovieListCommand { get { return new RelayCommand(CopyMovieListExecute, CanCopyMovieListExecute); } }
 
         #endregion
 
