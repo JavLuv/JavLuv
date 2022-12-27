@@ -4,7 +4,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -35,7 +34,6 @@ namespace JavLuv
             m_dispatcher = Application.Current.Dispatcher;
             Phase = ScanPhase.Finished;
             Movies = new List<MovieData>();
-            Imported = new List<MovieData>();
             Actresses = new List<ActressData>();
         }
 
@@ -55,7 +53,6 @@ namespace JavLuv
         public int TotalItems { get; private set; }
         public bool IsCancelled { get; private set; }
         public List<MovieData> Movies { get; private set; }
-        public List<MovieData> Imported { get; private set; }
         public List<ActressData> Actresses { get; private set; }
         public string ErrorLog { get { return m_errorLog; } }
 
@@ -67,11 +64,10 @@ namespace JavLuv
         {
             m_directoriesToScan = new List<string>();
             m_directoriesToScan.Add(scanDirectory);
-            m_isRescan = false;
             Start();
         }
 
-        public void StartRescan(List<string> scanDirectories)
+        public void Start(List<string> scanDirectories)
         {
             // Log operation
             Logger.WriteInfo("Start scanner");
@@ -79,7 +75,6 @@ namespace JavLuv
                 Logger.WriteInfo("Scan directory: " + scanDirectory);
 
             m_directoriesToScan = scanDirectories;
-            m_isRescan = true;
             Start();
         }
 
@@ -87,7 +82,6 @@ namespace JavLuv
         {
             Actresses = actresses;
             m_directoriesToScan = new List<string>();
-            m_isRescan = false;
             Start();
         }
 
@@ -101,7 +95,6 @@ namespace JavLuv
         {
             Logger.WriteInfo("Clear scanner");
             Movies.Clear();
-            Imported.Clear();
             Actresses.Clear();
         }
 
@@ -150,7 +143,6 @@ namespace JavLuv
             m_errorLog = String.Empty;
             m_moviesToProcess.Clear();
             Movies.Clear();
-            Imported.Clear();
             ItemsProcessed = 0;
             TotalItems = 0;
             m_thread = new Thread(new ThreadStart(ThreadRun));
@@ -273,7 +265,7 @@ namespace JavLuv
                             directoryInfo.IsSharedFolder = true;
 
                             // Check to see if we want to import better movies, and if so, ignore the duplicate
-                            if (m_autoImportImprovedMovies == false && m_isRescan == false)
+                            if (m_autoImportImprovedMovies == false)
                             {
                                 LogError(String.Format("Error scanning file {0}.  {1} already exists in collection.", fileInfo.FileName, fileInfo.ID), directoryToScan);
                                 continue;
@@ -555,14 +547,6 @@ namespace JavLuv
                     LogError("Unable to load metadata", movieData.Path, ex);
                 }
 
-                // We should reset movie resolution on rescans in case movie file has been changed
-                if (m_isRescan)
-                {
-                    string resolution = MovieUtils.GetMovieResolution(Path.Combine(movieData.Path, movieData.MovieFileNames[0]));
-                    movieData.MovieResolution = resolution;
-                    MovieUtils.SetMovieResolution(movieData, resolution);
-                }
-
                 ItemsProcessed++;
                 if (m_dispatcher.HasShutdownStarted == false)
                     m_dispatcher.Invoke(DispatcherPriority.Normal, new Action(delegate () { ScanUpdate?.Invoke(this, new EventArgs()); }));
@@ -614,6 +598,9 @@ namespace JavLuv
                 MovieUtils.SetMovieResolution(dest, sourceWidth, sourceHeight);
                 dest.MovieResolution = MovieUtils.GetMovieResolution(dest.Metadata);
 
+                // Get root movie name
+                string rootMovieName = GetCommonMovieFilename(dest);
+
                 // Delete the destination movies
                 foreach (string fn in dest.MovieFileNames)
                 {
@@ -621,19 +608,25 @@ namespace JavLuv
                     Utilities.DeleteFile(fnPath);
                 }
 
-                // Clear the desgination file list
+                // Clear the destination file list
                 dest.MovieFileNames.Clear();
 
                 // Move the new movie files to the destination path
-                foreach (string fn in movieData.MovieFileNames)
+                for (int i = 0; i < movieData.MovieFileNames.Count; ++i)
                 {
-                    string sourcePath = Path.Combine(movieData.Path, fn);
-                    string destPath = Path.Combine(dest.Path, fn);
+                    string sourceFn = movieData.MovieFileNames[i];
+                    string sourcePath = Path.Combine(movieData.Path, sourceFn);
+                    string destFileName = Path.GetFileNameWithoutExtension(rootMovieName);
+                    if (movieData.MovieFileNames.Count > 1)
+                        destFileName = rootMovieName + "-" + ((char)((int)'A' + i)).ToString();
+                    destFileName = Path.ChangeExtension(destFileName, Path.GetExtension(movieData.MovieFileNames[i]));
+                    string destPath = Path.Combine(dest.Path, destFileName);
                     Utilities.MoveFile(sourcePath, destPath);
+                    dest.MovieFileNames.Add(destFileName);
                 }
-
-                // Add source movie to the import list, so it can get rescanned afterwards
-                Imported.Add(dest);
+                
+                // Add to list of movies processed
+                Movies.Add(dest);
 
                 ItemsProcessed++;
                 if (m_dispatcher.HasShutdownStarted == false)
@@ -656,8 +649,11 @@ namespace JavLuv
 
                 // If we don't have metadata, generate it now from the movie ID
                 GenerateMetaData(movieData);
-                ItemsProcessed++;
+
+                // Add to list of movies processed
                 Movies.Add(movieData);
+
+                ItemsProcessed++;
                 if (m_dispatcher.HasShutdownStarted == false)
                     m_dispatcher.Invoke(DispatcherPriority.Normal, new Action(delegate () { ScanUpdate?.Invoke(this, new EventArgs()); }));
             }
@@ -1055,7 +1051,6 @@ namespace JavLuv
         private LanguageType m_language;
         private bool m_scanRecursively = true;
         private bool m_autoImportImprovedMovies = true;
-        private bool m_isRescan = false;
         private bool m_hideMetadataAndCovers = false;
         private bool m_autoRestoreMetadata = false;
         private string m_errorLog = String.Empty;
