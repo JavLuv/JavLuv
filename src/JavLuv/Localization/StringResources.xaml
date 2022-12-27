@@ -142,6 +142,8 @@
     <system:String x:Key="Text.DeletingMoviesTitle">Deleting Movies</system:String>
     <system:String x:Key="Text.DeletingMoviesMessage">Deleting movies and associated files:</system:String>
     <system:String x:Key="Text.AndMore">and {0} more...</system:String>
+    <system:String x:Key="Text.OverrideMovieTitle">Confirm override movie(s)</system:String>
+    <system:String x:Key="Text.OverrideMovie">Override movie(s) at resolution {0} \n\n {1} \n\nwith movie(s) at resolution {2} \n\n {3}?</system:String>
 
     <!-- Side Panel View -->
     <system:String x:Key="Text.ConcatenateMovies">Concatenate movies...</system:String>

@@ -572,27 +572,53 @@ namespace JavLuv
                 MovieUtils.ParseMovieResolution(sourceResolution, out sourceWidth, out sourceHeight);
                 if (sourceWidth == 0 || sourceHeight == 0)
                 {
-                    LogError(TextManager.GetString("Text.ErrorImportingMovie"), movieData.Path);
+                    LogError(TextManager.GetString("Text.ErrorImportingMovie") + " " + movieData.MovieFileNames[0], movieData.Path);
                     continue;
                 }
                 var dest = m_movieCollection.GetMovie(movieData.Metadata.UniqueID.Value);
                 if (dest == null)
                 {
-                    LogError(TextManager.GetString("Text.ErrorImportingMovie"), movieData.Path);
+                    LogError(TextManager.GetString("Text.ErrorImportingMovie") + " " + movieData.MovieFileNames[0], movieData.Path);
                     continue;
                 }
                 int destWidth, destHeight;
                 MovieUtils.GetMovieResolution(dest.Metadata, out destWidth, out destHeight);
                 if (destWidth == 0 || destHeight == 0)
                 {
-                    LogError(TextManager.GetString("Text.ErrorImportingMovie"), movieData.Path);
+                    LogError(TextManager.GetString("Text.ErrorImportingMovie") + " " + movieData.MovieFileNames[0], movieData.Path);
                     continue;
                 }
                 if (sourceWidth < destWidth || sourceHeight < destHeight)
                 {
-                    LogError(TextManager.GetString("Text.ErrorImportingMovie"), movieData.Path);
+                    LogError(TextManager.GetString("Text.ErrorImportingMovie") + " " + movieData.MovieFileNames[0], movieData.Path);
                     continue;
                 }
+
+                // Confirm we wish to continue and overwrite the old movies with new ones
+                if (m_dispatcher.HasShutdownStarted == true)
+                    break;
+                bool confirmReplace = false;
+                m_dispatcher.Invoke(DispatcherPriority.Normal, new Action(delegate () 
+                {
+                    var filenames = new List<string>();
+                    foreach (var fn in dest.MovieFileNames)
+                        filenames.Add(Path.Combine(dest.Path, fn));
+                    string destFilenames = Utilities.StringListToString(filenames);
+                    filenames.Clear();
+                    foreach (var fn in movieData.MovieFileNames)
+                        filenames.Add(Path.Combine(movieData.Path, fn));
+                    string sourceFilenames = Utilities.StringListToString(filenames);
+                    string destResolution = MovieUtils.GetMovieResolution(dest.Metadata);
+                    string message = String.Format(TextManager.GetString("Text.OverrideMovie"), destResolution, destFilenames, sourceResolution, sourceFilenames);
+                    string caption = TextManager.GetString("Text.OverrideMovieTitle");
+                    MessageBoxResult result = MessageBox.Show(message, caption, MessageBoxButton.YesNo);
+                    if (result == MessageBoxResult.Yes)
+                        confirmReplace = true;
+                }));
+
+                // Don't replace unless we've verified with the user we want to replace the source file(s)
+                if (confirmReplace == false)
+                    continue;
 
                 // Set new movie resolution
                 MovieUtils.SetMovieResolution(dest, sourceWidth, sourceHeight);

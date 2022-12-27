@@ -2,8 +2,11 @@
 
 All significant changes are listed in this file.
 
+## [1.1.17] - 2022-12-27
+- Confirm automatic movie import with dialog
+
 ## [1.1.16] - 2022-12-26
-- Ajusted number of actress images shown in movie view to prevent overflow
+- Adjusted number of actress images shown in movie view to prevent overflow
 - Movie detail info will now scroll if necessary
 - Add context menu command to copy list of selected movies to clipboard
 - Movie resolution is now stored in metadata
