@@ -187,6 +187,48 @@ namespace JavLuv
             Assert.Equal("ABC-123", id);
         }
 
+        [Fact]
+        public void TestFalsePositive5()
+        {
+            string id = Utilities.ParseMovieID("askfjkl3234 jksdfjk23 abd234 abc-123");
+            Assert.Equal("ABC-123", id);
+        }
+
+        [Fact]
+        public void TestOddball1()
+        {
+            string id = Utilities.ParseMovieID("t28_494");
+            Assert.Equal("T28-494", id);
+        }
+
+        [Fact]
+        public void TestOddball2()
+        {
+            string id = Utilities.ParseMovieID("t28-494");
+            Assert.Equal("T28-494", id);
+        }
+
+        [Fact]
+        public void TestOddball3()
+        {
+            string id = Utilities.ParseMovieID("[T28-494]");
+            Assert.Equal("T28-494", id);
+        }
+
+        [Fact]
+        public void TestOddball4()
+        {
+            string id = Utilities.ParseMovieID("t28 494");
+            Assert.Equal("T28-494", id);
+        }
+
+        [Fact]
+        public void TestOddball5()
+        {
+            string id = Utilities.ParseMovieID("t28494");
+            Assert.Equal("T28-494", id);
+        }
+
         #endregion
     }
 }
