@@ -26,6 +26,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Subtitles", "Subtitles\Subt
 		{179020BE-9D2B-445C-8009-A6FD61359DA6} = {179020BE-9D2B-445C-8009-A6FD61359DA6}
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test", "Test\Test.csproj", "{5124C4EB-AA70-4452-BB12-D74BD23011CD}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -52,6 +54,10 @@ Global
 		{E1ADB136-983E-46D1-A41A-6A79079726A8}.Debug|x64.Build.0 = Debug|x64
 		{E1ADB136-983E-46D1-A41A-6A79079726A8}.Release|x64.ActiveCfg = Release|x64
 		{E1ADB136-983E-46D1-A41A-6A79079726A8}.Release|x64.Build.0 = Release|x64
+		{5124C4EB-AA70-4452-BB12-D74BD23011CD}.Debug|x64.ActiveCfg = Debug|x64
+		{5124C4EB-AA70-4452-BB12-D74BD23011CD}.Debug|x64.Build.0 = Debug|x64
+		{5124C4EB-AA70-4452-BB12-D74BD23011CD}.Release|x64.ActiveCfg = Release|x64
+		{5124C4EB-AA70-4452-BB12-D74BD23011CD}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
