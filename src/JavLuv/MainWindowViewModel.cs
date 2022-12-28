@@ -414,7 +414,13 @@ namespace JavLuv
                 versionCheck.Owner = Application.Current.MainWindow;
                 versionCheck.CurrentVersion.Text = String.Format(TextManager.GetString("Text.CurrentVersion"), SemanticVersion.Current);
                 versionCheck.NewVersion.Text = String.Format(TextManager.GetString("Text.NewVersion"), m_checkVersion.LatestVersion.ToString());
-                versionCheck.Details.Text = m_checkVersion.LatestRelease.body;
+                versionCheck.Details.Text = String.Empty;
+                foreach (var release in m_checkVersion.Releases)
+                {
+                    versionCheck.Details.Text += release.published_at.ToShortDateString() + " - ";
+                    versionCheck.Details.Text += release.name + "\n";
+                    versionCheck.Details.Text += release.body + "\n\n";
+                }
 
                 // Store new version so we don't bother notifying again
                 JavLuv.Settings.Get().LastVersionChecked = m_checkVersion.LatestVersion;

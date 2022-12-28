@@ -1,6 +1,7 @@
 ﻿using Common;
 using MovieInfo;
 using System;
+using System.Collections.Generic;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
@@ -20,6 +21,8 @@ namespace JavLuv
         public string html_url { get; set; }
 
         public string tag_name { get; set; }
+        public string name { get; set; }
+        public DateTime published_at { get; set; }
 
         public int id { get; set; }
         public string tarball_url { get; set; }
@@ -36,6 +39,7 @@ namespace JavLuv
         public CmdCheckVersion()
         {
             IsNewVersionAvailable = false;
+            Releases = new List<Release>();
         }
 
         #endregion
@@ -49,7 +53,7 @@ namespace JavLuv
         #region Properties
 
         public bool IsNewVersionAvailable { get; private set; }
-        public Release LatestRelease { get; private set; }
+        public List<Release> Releases { get; private set; }
         public SemanticVersion LatestVersion { get; private set; }
 
         #endregion
@@ -65,9 +69,9 @@ namespace JavLuv
             var task = GetLatestReleaseAsync();
             task.Wait();
 
-            if (LatestRelease != null)
+            if (Releases.Count > 0)
             {
-                LatestVersion = new SemanticVersion(LatestRelease.tag_name);
+                LatestVersion = new SemanticVersion(Releases[0].tag_name);
                 int compare = LatestVersion.CompareTo(SemanticVersion.Current);
                 if (compare > 0)
                 {
@@ -99,10 +103,12 @@ namespace JavLuv
 
         private async Task GetLatestReleaseAsync()
         {
-            string siteURL = "https://api.github.com/repos/JavLuv/JavLuv/releases/latest";
+            var releases = new List<Release>();
+
+            string siteURL = "https://api.github.com/repos/JavLuv/JavLuv/releases";
             try
             {
-                Logger.WriteInfo("Checking GitHub for latest version at: " + siteURL);
+                Logger.WriteInfo("Checking GitHub for JavLuv releases at: " + siteURL);
 
                 // Get latest release info from Github
                 HttpClient client = new HttpClient();
@@ -111,7 +117,16 @@ namespace JavLuv
                     new MediaTypeWithQualityHeaderValue("application/vnd.github.v3+json"));
                 client.DefaultRequestHeaders.Add("User-Agent", "JavLuv");
                 var streamTask = client.GetStreamAsync(siteURL);
-                LatestRelease = await System.Text.Json.JsonSerializer.DeserializeAsync<Release>(await streamTask);
+                releases = await System.Text.Json.JsonSerializer.DeserializeAsync<List<Release>> (await streamTask);
+                
+                // Add all releases newer than current to Releases
+                var currentVersion = SemanticVersion.Current;
+                foreach (var release in releases)
+                {
+                    var releaseVersion = new SemanticVersion(release.tag_name);
+                    if (releaseVersion > currentVersion)
+                        Releases.Add(release);
+                }
             }
             catch (Exception ex)
             {
