@@ -2,6 +2,9 @@
 
 All significant changes are listed in this file.
 
+## [1.1.18] - 2022-12-28
+- Rework ID parser to reduce chances of false positives
+
 ## [1.1.17] - 2022-12-27
 - Confirm automatic movie import with dialog
 

@@ -69,8 +69,17 @@ namespace Common
 
             string[] checks =
             {
-                @"([a-z,A-Z]{1,7}(-| |_){0,1}[0-9]{2,5}[d,D]{0,1})",
-                @"([a-z,A-Z]{1,7}[0-9]{0,2}(-| |_){0,1}[0-9]{1}[d,D]{0,1})",
+                // open square bracket, 1-7 characters, 0-2 numbers, one dash or underscore, 2-5 numbers, optional D, close square bracket
+                @"(?<=\[)([a-z,A-Z]{1,7}[0-9]{0,2}[-|_]{0,1}[0-9]{2,5}[d,D]{0,1})(?=])",
+
+                // open square bracket, 1-7 characters, one optional dash or underscore or space, 2-5 numbers, optional D, close square bracket
+                @"(?<=\[)([a-z,A-Z]{1,7}(-|_| ){0,1}[0-9]{2,5}[d,D]{0,1})(?=])",
+
+                // 1-7 characters, 0-2 numbers, one dash or underscore, 2-5 numbers, optional D
+                @"([a-z,A-Z]{1,7}[0-9]{0,2}[-|_]{0,1}[0-9]{2,5}[d,D]{0,1})",
+
+                // 1-7 characters, 0-2 numbers, one dash or underscore or space, 2-5 numbers, optional D
+                @"([a-z,A-Z]{1,7}[0-9]{0,2}[-|_| ]{0,1}[0-9]{2,5}[d,D]{0,1})",
             };
 
             Regex regex = null;
