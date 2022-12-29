@@ -12,6 +12,7 @@ namespace MovieInfo
         Actress,
         Date_Newest,
         Date_Oldest,
+        Random,
         Resolution,
         RecentlyAdded,
         UserRating,
@@ -297,6 +298,9 @@ namespace MovieInfo
                 case SortMoviesBy.Date_Oldest:
                     m_filteredMovies.Sort(new MovieDateOldestComparer());
                     break;
+                case SortMoviesBy.Random:
+                    Shuffle<MovieData>(m_filteredMovies);
+                    break;
                 case SortMoviesBy.Resolution:
                     m_filteredMovies.Sort(new MovieResolutionComparer());
                     break;
@@ -307,6 +311,19 @@ namespace MovieInfo
                     m_filteredMovies.Sort(new MovieUserRatingComparer());
                     break;
             };
+        }
+
+        private void Shuffle<T>(IList<T> list)
+        {
+            int n = list.Count;
+            while (n > 1)
+            {
+                n--;
+                int k = m_rng.Next(n + 1);
+                T value = list[k];
+                list[k] = list[n];
+                list[n] = value;
+            }
         }
 
         #endregion
@@ -322,6 +339,7 @@ namespace MovieInfo
         private bool m_showUnratedOnly;
         private bool m_showSubtitlesOnly;
         private ActressData m_searchActress;
+        private static Random m_rng = new Random();
 
         #endregion
     }

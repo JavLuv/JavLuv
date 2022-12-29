@@ -29,6 +29,7 @@ namespace JavLuv
             m_sortMovieByList.Add(new SortMoviesByPair("Text.SortByActress", SortMoviesBy.Actress));
             m_sortMovieByList.Add(new SortMoviesByPair("Text.SortByDateNewest", SortMoviesBy.Date_Newest));
             m_sortMovieByList.Add(new SortMoviesByPair("Text.SortByDateOldest", SortMoviesBy.Date_Oldest));
+            m_sortMovieByList.Add(new SortMoviesByPair("Text.SortByRandom", SortMoviesBy.Random));
             m_sortMovieByList.Add(new SortMoviesByPair("Text.SortByResolution", SortMoviesBy.Resolution));
             m_sortMovieByList.Add(new SortMoviesByPair("Text.SortByRecentlyAdded", SortMoviesBy.RecentlyAdded));
             m_sortMovieByList.Add(new SortMoviesByPair("Text.SortByUserRating", SortMoviesBy.UserRating));

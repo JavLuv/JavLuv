@@ -2,6 +2,11 @@
 
 All significant changes are listed in this file.
 
+## [1.1.18] - 2022-12-29
+- Add random movie sort
+- Rework ID parser to reduce chances of false positives
+- Version dialog can show multiple versions ahead of current
+
 ## [1.1.17] - 2022-12-27
 - Confirm automatic movie import with dialog
 

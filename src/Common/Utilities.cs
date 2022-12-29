@@ -69,8 +69,20 @@ namespace Common
 
             string[] checks =
             {
-                @"([a-z,A-Z]{1,7}(-| |_){0,1}[0-9]{2,5}[d,D]{0,1})",
-                @"([a-z,A-Z]{1,7}[0-9]{0,2}(-| |_){0,1}[0-9]{1}[d,D]{0,1})",
+                // Special rule for parsing T28-xxx files
+                @"([t,T]{1}28[0-9]{0,2}[-|_| ]{0,1}[0-9]{3,4})",
+
+                // open square bracket, 1-7 characters, 0-2 numbers, one dash or underscore, 2-5 numbers, optional D, close square bracket
+                @"(?<=\[)([a-z,A-Z]{1,7}[0-9]{0,2}[-|_]{1}[0-9]{2,5}[d,D]{0,1})(?=])",
+
+                // open square bracket, 1-7 characters, one optional dash or underscore or space, 2-5 numbers, optional D, close square bracket
+                @"(?<=\[)([a-z,A-Z]{1,7}[-|_| ]{0,1}[0-9]{2,5}[d,D]{0,1})(?=])",
+
+                // 1-7 characters, 0-2 numbers, one dash or underscore, 2-5 numbers, optional D
+                @"([a-z,A-Z]{1,7}[0-9]{0,2}[-|_]{1}[0-9]{2,5}[d,D]{0,1})",
+
+                // 1-7 characters, 0-2 numbers, one optional dash or underscore or space, 2-5 numbers, optional D
+                @"([a-z,A-Z]{1,7}[0-9]{0,2}[-|_| ]{0,1}[0-9]{2,5}[d,D]{0,1})",
             };
 
             Regex regex = null;
@@ -778,18 +790,22 @@ namespace Common
             if (String.IsNullOrEmpty(match))
                 return;
 
-            // Fix up for extraneous characters
-            var charsToRemove = new string[] { "[", "]", "(", ")", ".", "_" };
-            foreach (var c in charsToRemove)
-                match = match.Replace(c, string.Empty);
-            match = match.Trim();
-
-            char[] splits = { '-', ' ' };
+            // Many well-named files have a marker character on which we can split the match
+            char[] splits = { '-', '_', ' '};
             var parts = match.Split(splits);
             if (parts.Length == 2 && String.IsNullOrEmpty(parts[0]) == false && String.IsNullOrEmpty(parts[1]) == false)
             {
                 alpha = parts[0];
                 numeric = parts[1];
+                return;
+            }
+
+            // Have to use special-case rules for T28-### files, since files exist out in the
+            // world that make no attempt to insert a break of any sort between the two parts.
+            if (match.StartsWith("t28", StringComparison.OrdinalIgnoreCase))
+            {
+                alpha = match.Substring(0, 3);
+                numeric = match.Substring(3);
                 return;
             }
 
