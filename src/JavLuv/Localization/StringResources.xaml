@@ -7,9 +7,9 @@
     <!-- Settings -->
     <system:String x:Key="Text.Settings">Settings</system:String>
     <system:String x:Key="Text.General">General</system:String>
-    <system:String x:Key="Text.Language">Language</system:String>
-    <system:String x:Key="Text.English">English</system:String>
-    <system:String x:Key="Text.Japanese">Japanese</system:String>
+    <system:String x:Key="Text.Language">Language (言語)</system:String>
+    <system:String x:Key="Text.English">English (日本語)</system:String>
+    <system:String x:Key="Text.Japanese">Japanese (日本語)</system:String>
     <system:String x:Key="Text.Theme">Theme</system:String>
     <system:String x:Key="Text.Dark">Dark</system:String>
     <system:String x:Key="Text.Light">Light</system:String>
