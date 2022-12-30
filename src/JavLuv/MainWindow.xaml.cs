@@ -35,7 +35,7 @@ namespace JavLuv
             Width = Settings.Get().MainWindowWidth;
             Height = Settings.Get().MainWindowHeight;
             Left = Settings.Get().MainWindowLeft;
-            Top = Settings.Get().MainWindowTop;
+            Top = Settings.Get().MainWindowTop;      
 
             // Make sure the window is accessible
             SizeToFit();
@@ -63,13 +63,35 @@ namespace JavLuv
                     e.Cancel = true;
                 }
             }
+
+            // Save window state
+            if (WindowState == WindowState.Minimized || WindowState == WindowState.Normal)
+                Settings.Get().MainWindowState = WindowState.Normal;
+            else
+                Settings.Get().MainWindowState = WindowState.Maximized;
+
+            // Depending on whether we're showing a normal window or not, we store off different state data
+            if (WindowState == WindowState.Maximized && RestoreBounds.IsEmpty == false)
+            {
+                Settings.Get().MainWindowWidth = RestoreBounds.Width;
+                Settings.Get().MainWindowHeight = RestoreBounds.Height;
+                Settings.Get().MainWindowLeft = RestoreBounds.Left;
+                Settings.Get().MainWindowTop = RestoreBounds.Top;
+            }
+            else
+            {
+                Settings.Get().MainWindowWidth = Width;
+                Settings.Get().MainWindowHeight = Height;
+                Settings.Get().MainWindowLeft = Left;
+                Settings.Get().MainWindowTop = Top;
+            }
         }
 
         private void Window_Closed(object sender, EventArgs e)
         {
             Logger.WriteInfo("Main window closed");
             Settings.Get().LastVersionRun = SemanticVersion.Current;
-            
+
             var mainWindowModelView = DataContext as MainWindowViewModel;
             if (mainWindowModelView.IsReadOnlyMode == false)
             {
