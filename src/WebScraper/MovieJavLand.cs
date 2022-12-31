@@ -40,7 +40,7 @@ namespace WebScraper
             {
                 if (element.NodeName == "TITLE")
                 {
-                    if (element.TextContent.Contains("ID Search Result"))
+                    if (element.TextContent.Contains("ID Search Result") || element.TextContent.Contains("品番検索結果"))
                         return;
                     string title = element.TextContent;
                     int len = title.Length - 12 - m_metadata.UniqueID.Value.Length;
@@ -174,6 +174,5 @@ namespace WebScraper
         }
 
         #endregion
-
     }
 }
