@@ -22,10 +22,12 @@ namespace WebScraper
             if (downloadCoverImage)
                 Logger.WriteInfo("Attempting to download cover image to " + coverImagePath);
 
+            var mergedMetadata = new MovieMetadata(movieID);
+
             // We initially create two scrapers, since each site has
             // strengths and weaknesses, and so we prefer to take
             // specific information from each if possible.
-
+            
             // Create first scraper module and execute
             var javLibraryMetadata = new MovieMetadata();
             javLibraryMetadata.UniqueID.Value = movieID;
@@ -46,13 +48,13 @@ namespace WebScraper
 
             // Merge the two scrape results, combining them according to which
             // returns the best results from both.
-            var mergedMetadata = MergePrimary(javLibraryMetadata, javDatabaseMetadata);
+            mergedMetadata = MergePrimary(javLibraryMetadata, javDatabaseMetadata);           
 
             // Scrape secondary sources if required
-            ScrapeSecondaryMovie(new MovieJavRaveClub(new MovieMetadata(movieID), language), mergedMetadata, ref coverImagePath);
-            ScrapeSecondaryMovie(new MovieJavGuru(new MovieMetadata(movieID), language), mergedMetadata, ref coverImagePath);
+            //ScrapeSecondaryMovie(new MovieJavRaveClub(new MovieMetadata(movieID), language), mergedMetadata, ref coverImagePath);
+            //ScrapeSecondaryMovie(new MovieJavGuru(new MovieMetadata(movieID), language), mergedMetadata, ref coverImagePath);
             ScrapeSecondaryMovie(new MovieJavLand(new MovieMetadata(movieID), language), mergedMetadata, ref coverImagePath);
-            ScrapeSecondaryMovie(new MovieJavSeenTv(new MovieMetadata(movieID), language), mergedMetadata, ref coverImagePath);
+            //ScrapeSecondaryMovie(new MovieJavSeenTv(new MovieMetadata(movieID), language), mergedMetadata, ref coverImagePath);
             ScrapeSecondaryMovie(new MovieJavBus(new MovieMetadata(movieID), language), mergedMetadata, ref coverImagePath);
 
             // Is this minimally acceptable?

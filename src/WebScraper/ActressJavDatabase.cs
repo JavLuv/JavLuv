@@ -56,7 +56,7 @@ namespace WebScraper
 
                 if (element.TextContent == "Japanese Name")
                 {
-                    var nextSibling = element.NextSibling;
+                    var nextSibling = element.NextSibling?.NextSibling;
                     if (IsValidNode(nextSibling))
                     {
                         Actress.JapaneseName = nextSibling.TextContent.Trim();
@@ -64,7 +64,7 @@ namespace WebScraper
                 }
                 else if (element.TextContent == "Date of Birth")
                 {
-                    var nextSibling = element.NextSibling;
+                    var nextSibling = element.NextSibling?.NextSibling;
                     if (IsValidNode(nextSibling))
                     {
                         string[] dateParts = nextSibling.TextContent.Split('-');
@@ -79,7 +79,7 @@ namespace WebScraper
                 }
                 else if (element.TextContent == "Height")
                 {
-                    var nextSibling = element.NextSibling;
+                    var nextSibling = element.NextSibling?.NextSibling;
                     if (IsValidNode(nextSibling))
                     {
                         Actress.Height = Utilities.ParseInitialDigits(nextSibling.TextContent);
@@ -87,7 +87,7 @@ namespace WebScraper
                 }
                 else if (element.TextContent == "Cup")
                 {
-                    var nextSibling = element.NextSibling;
+                    var nextSibling = element.NextSibling?.NextSibling;
                     if (IsValidNode(nextSibling))
                     {
                         string cupText = nextSibling.TextContent.Trim();
@@ -98,7 +98,7 @@ namespace WebScraper
                 }
                 else if (element.TextContent == "Measurements")
                 {
-                    var nextSibling = element.NextSibling;
+                    var nextSibling = element.NextSibling?.NextSibling;
                     if (IsValidNode(nextSibling))
                     {
                         string[] dateParts = nextSibling.TextContent.Split('-');
@@ -114,7 +114,7 @@ namespace WebScraper
                 }
                 else if (element.TextContent == "Blood Type")
                 {
-                    var nextSibling = element.NextSibling;
+                    var nextSibling = element.NextSibling?.NextSibling;
                     if (IsValidNode(nextSibling))
                     {
                         Actress.BloodType = nextSibling.TextContent.Trim();
