@@ -57,7 +57,7 @@ namespace WebScraper
             {
                 if (element.NodeName == "TITLE")
                 {
-                    if (element.TextContent.Contains("ID Search Result"))
+                    if (element.TextContent.Contains("ID Search Result") || element.TextContent.Contains("品番検索結果"))
                         return;
                     string title = element.TextContent;
                     string id = Utilities.ParseMovieID(title);

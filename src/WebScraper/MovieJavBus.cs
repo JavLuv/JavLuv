@@ -168,11 +168,5 @@ namespace WebScraper
         }
 
         #endregion
-
-        #region Private Members
-
-        private string m_pageLink = String.Empty;
-
-        #endregion
     }
 }

@@ -88,7 +88,7 @@ namespace JavLuv
             ChangeState(null);
 
             // Check for new version if conditions are met
-            var timeToCheck = new TimeSpan(1, 0, 0, 0); // 1 day interval
+            var timeToCheck = new TimeSpan(0, 1, 0, 0); // 1 hour interval
             var interval = new TimeSpan(0, 0, 0, 0);
             if (JavLuv.Settings.Get().LastVersionCheckTime != null)
                 interval = DateTime.Now - JavLuv.Settings.Get().LastVersionCheckTime;

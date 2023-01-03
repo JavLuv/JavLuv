@@ -1,4 +1,5 @@
-﻿using AngleSharp.Html.Dom;
+﻿using AngleSharp.Dom;
+using AngleSharp.Html.Dom;
 using Common;
 using MovieInfo;
 using System;
@@ -56,15 +57,27 @@ namespace WebScraper
                 // Check for actress' parent
                 if (element.NodeName == "DIV") 
                 {
-                    // Look for idol name DIV element
-                    if (String.IsNullOrEmpty(element.ClassName) == false && element.ClassName == "idol-name")
+                    // Ensure this is the feature idols group
+                    var child = element.FirstElementChild;
+                    if (child?.NodeName == "H2" && child?.TextContent == "Featured Idols")
                     {
-                        var childElement = element.FirstChild;
-                        if (childElement != null && childElement.NodeName == "A")
+                        child = child.NextElementSibling;
+                        if (child?.NodeName == "DIV" && child?.ClassName == "row")
                         {
-                            var actor = new ActorData(childElement.TextContent);
-                            actor.Order = m_metadata.Actors.Count;
-                            m_metadata.Actors.Add(actor);
+                            // Loop over all actress elements
+                            var actressChild = child.FirstElementChild;
+                            while (actressChild != null)
+                            {
+                                // Find actress text
+                                var subchild = actressChild.FirstElementChild;
+                                do
+                                    subchild = subchild.FirstElementChild;
+                                while (subchild?.NodeName != "A");
+                                string actressName = subchild?.TextContent;
+                                if (String.IsNullOrEmpty(actressName) == false)
+                                    m_metadata.Actors.Add(new ActorData(actressName));
+                                actressChild = actressChild.NextElementSibling;
+                            }
                         }
                     }
                 }

@@ -22,10 +22,12 @@ namespace WebScraper
             if (downloadCoverImage)
                 Logger.WriteInfo("Attempting to download cover image to " + coverImagePath);
 
+            var mergedMetadata = new MovieMetadata(movieID);
+
             // We initially create two scrapers, since each site has
             // strengths and weaknesses, and so we prefer to take
             // specific information from each if possible.
-
+            
             // Create first scraper module and execute
             var javLibraryMetadata = new MovieMetadata();
             javLibraryMetadata.UniqueID.Value = movieID;
@@ -46,51 +48,25 @@ namespace WebScraper
 
             // Merge the two scrape results, combining them according to which
             // returns the best results from both.
-            var mergedMetadata = MergePrimary(javLibraryMetadata, javDatabaseMetadata);
-            
-            // Check to see if we have a complete set of metadata
-            if (IsMovieMetadataComplete(mergedMetadata) == false || downloadCoverImage)
-            {
-                // Try a secondary merge
-                mergedMetadata = MergeSecondary(mergedMetadata, javLibraryMetadata);
+            mergedMetadata = MergePrimary(javLibraryMetadata, javDatabaseMetadata);           
 
-                // If not complete, try additional JavLand scraper
-                if (IsMovieMetadataComplete(mergedMetadata) == false || downloadCoverImage)
-                {
-                    var javLandMetadata = new MovieMetadata();
-                    javLandMetadata.UniqueID.Value = movieID;
-                    var javLand = new MovieJavLand(javLandMetadata, language);
-                    javLand.Scrape();
-                    javLandMetadata = javLand.Metadata;
-                    if (downloadCoverImage)
-                        DownloadImage(ref coverImagePath, javLand.ImageSource);
-                    mergedMetadata = MergeSecondary(mergedMetadata, javLandMetadata);
+            // Scrape secondary sources if required
+            //ScrapeSecondaryMovie(new MovieJavRaveClub(new MovieMetadata(movieID), language), mergedMetadata, ref coverImagePath);
+            //ScrapeSecondaryMovie(new MovieJavGuru(new MovieMetadata(movieID), language), mergedMetadata, ref coverImagePath);
+            ScrapeSecondaryMovie(new MovieJavLand(new MovieMetadata(movieID), language), mergedMetadata, ref coverImagePath);
+            //ScrapeSecondaryMovie(new MovieJavSeenTv(new MovieMetadata(movieID), language), mergedMetadata, ref coverImagePath);
+            ScrapeSecondaryMovie(new MovieJavBus(new MovieMetadata(movieID), language), mergedMetadata, ref coverImagePath);
 
-                    // Try JavBus scraper
-                    if (IsMovieMetadataComplete(mergedMetadata) == false || downloadCoverImage)
-                    {
-                        var javBusMetadata = new MovieMetadata();
-                        javBusMetadata.UniqueID.Value = movieID;
-                        var javBus = new MovieJavBus(javBusMetadata, language);
-                        javBus.Scrape();
-                        javBusMetadata = javBus.Metadata;
-                        if (downloadCoverImage)
-                            DownloadImage(ref coverImagePath, javBus.ImageSource);
-                        mergedMetadata = MergeSecondary(mergedMetadata, javBusMetadata);
-                    }
-                }
-
-                // Is this minimally acceptable?
-                if (IsMovieMetadataAcceptable(mergedMetadata) == false)
-                    return null;
-            }
+            // Is this minimally acceptable?
+            if (IsMovieMetadataAcceptable(mergedMetadata) == false)
+                return null;
 
             // Clean up names as best we can
             foreach (ActorData actor in mergedMetadata.Actors)
                 MovieUtils.FilterActorName(actor);
 
             // If we're any language but Japanese, perform special Japanese-language scrape to get original title
-            if (language != LanguageType.Japanese)
+            if (language != LanguageType.Japanese && String.IsNullOrEmpty(mergedMetadata.OriginalTitle))
                 mergedMetadata.OriginalTitle = ScrapeOriginalTitle(movieID);
 
             // Return the best metadata we can
@@ -176,18 +152,46 @@ namespace WebScraper
 
             var javDatabase = new MovieJavDatabase(metadata, LanguageType.English);
             javDatabase.Scrape();
-            if (DownloadImage(ref coverImagePath, javLibrary.ImageSource))
+            if (DownloadImage(ref coverImagePath, javDatabase.ImageSource))
                 retVal = true;
 
-            var javLand = new MovieJavLand(metadata, LanguageType.English);
-            javLand.Scrape();
-            if (DownloadImage(ref coverImagePath, javLibrary.ImageSource))
+            var javGuru = new MovieJavGuru(metadata, LanguageType.English);
+            javGuru.Scrape();
+            if (DownloadImage(ref coverImagePath, javGuru.ImageSource))
                 retVal = true;
 
-            var javBus = new MovieJavBus(metadata, LanguageType.English);
-            javBus.Scrape();
-            if (DownloadImage(ref coverImagePath, javLibrary.ImageSource))
-                retVal = true;
+            // Only continue past this point if we haven't yet downloaded a file
+            if (retVal == false)
+            {
+                var javRaveClub = new MovieJavRaveClub(metadata, LanguageType.English);
+                javRaveClub.Scrape();
+                if (DownloadImage(ref coverImagePath, javRaveClub.ImageSource))
+                    retVal = true;
+            }
+
+            if (retVal == false)
+            {
+                var javLand = new MovieJavLand(metadata, LanguageType.English);
+                javLand.Scrape();
+                if (DownloadImage(ref coverImagePath, javLand.ImageSource))
+                    retVal = true;
+            }
+
+            if (retVal == false)
+            {
+                var javSeenTv = new MovieJavSeenTv(metadata, LanguageType.English);
+                javSeenTv.Scrape();
+                if (DownloadImage(ref coverImagePath, javSeenTv.ImageSource))
+                    retVal = true;
+            }
+
+            if (retVal == false)
+            {
+                var javBus = new MovieJavBus(metadata, LanguageType.English);
+                javBus.Scrape();
+                if (DownloadImage(ref coverImagePath, javBus.ImageSource))
+                    retVal = true;
+            }
 
             return retVal;
         }
@@ -196,41 +200,34 @@ namespace WebScraper
 
         #region Private Functions
 
+        private void ScrapeSecondaryMovie(ModuleMovie moduleMovie, MovieMetadata mergedMetadata, ref string coverImagePath)
+        {
+            bool downloadCoverImage = String.IsNullOrEmpty(coverImagePath) ? false : true;
+            if (IsMovieMetadataComplete(mergedMetadata) == true && downloadCoverImage == false)
+                return;
+            var scrapedMetadata = new MovieMetadata(mergedMetadata.UniqueID.Value);
+            moduleMovie.Scrape();
+            scrapedMetadata = moduleMovie.Metadata;
+            if (downloadCoverImage)
+                DownloadImage(ref coverImagePath, moduleMovie.ImageSource);
+            mergedMetadata = MergeSecondary(mergedMetadata, scrapedMetadata);
+        }
+
         private MovieMetadata ScrapeJapaneseMetadata(string movieID, CompletionLevel completion)
         {
             var combinedMetadata = new MovieMetadata();
             combinedMetadata.UniqueID.Value = movieID;
-
-            var javDatabase = new MovieJavDatabase(combinedMetadata, LanguageType.Japanese);
-            javDatabase.Scrape();
-            if (IsMovieMetadataCompleteOrAcceptable(combinedMetadata, completion) == false)
-            {
-                var newMetadata = new MovieMetadata();
-                newMetadata.UniqueID.Value = movieID;
-                var javLibrary = new MovieJavLibrary(newMetadata, LanguageType.Japanese);
-                javLibrary.Scrape();
-                combinedMetadata = MergeSecondary(combinedMetadata, newMetadata);
-                if (IsMovieMetadataCompleteOrAcceptable(combinedMetadata, completion) == false)
-                {
-                    newMetadata = new MovieMetadata();
-                    newMetadata.UniqueID.Value = movieID;
-                    var javLand = new MovieJavLand(newMetadata, LanguageType.Japanese);
-                    javLand.Scrape();
-                    combinedMetadata = MergeSecondary(combinedMetadata, newMetadata);
-                    if (IsMovieMetadataCompleteOrAcceptable(combinedMetadata, completion) == false)
-                    {
-                        newMetadata = new MovieMetadata();
-                        newMetadata.UniqueID.Value = movieID;
-                        var javBus = new MovieJavBus(newMetadata, LanguageType.Japanese);
-                        javBus.Scrape();
-                        combinedMetadata = MergeSecondary(combinedMetadata, newMetadata);
-                        if (IsMovieMetadataAcceptable(combinedMetadata) == false)
-                        {
-                            return null;
-                        }
-                    }
-                }
-            }
+            string coverImagePath = String.Empty;
+            ScrapeSecondaryMovie(new MovieJavDatabase(new MovieMetadata(movieID), LanguageType.Japanese), combinedMetadata, ref coverImagePath);
+            if (IsMovieMetadataCompleteOrAcceptable(combinedMetadata, completion))
+                return combinedMetadata;
+            ScrapeSecondaryMovie(new MovieJavLibrary(new MovieMetadata(movieID), LanguageType.Japanese), combinedMetadata, ref coverImagePath);
+            if (IsMovieMetadataCompleteOrAcceptable(combinedMetadata, completion))
+                return combinedMetadata;
+            ScrapeSecondaryMovie(new MovieJavLand(new MovieMetadata(movieID), LanguageType.Japanese), combinedMetadata, ref coverImagePath);
+            if (IsMovieMetadataCompleteOrAcceptable(combinedMetadata, completion))
+                return combinedMetadata;
+            ScrapeSecondaryMovie(new MovieJavBus(new MovieMetadata(movieID), LanguageType.Japanese), combinedMetadata, ref coverImagePath);
             return combinedMetadata;
         }
 
@@ -362,6 +359,7 @@ namespace WebScraper
             // Prefer JavDatabase for titles
             combined.Title = MergeStrings(javDatabase.Title, javLibrary.Title);
             // For all other info, prefer JavLibrary
+            combined.OriginalTitle = MergeStrings(javLibrary.OriginalTitle, javDatabase.OriginalTitle);
             combined.Premiered = MergeStrings(javLibrary.Premiered, javDatabase.Premiered);
             combined.Year = MergeNumbers(javLibrary.Year, javDatabase.Year);
             combined.Studio = MergeStrings(javLibrary.Studio, javDatabase.Studio);
@@ -381,6 +379,7 @@ namespace WebScraper
         private MovieMetadata MergeSecondary(MovieMetadata primary, MovieMetadata secondary)
         {
             primary.Title = MergeStrings(primary.Title, secondary.Title);
+            primary.OriginalTitle = MergeStrings(primary.OriginalTitle, secondary.OriginalTitle);
             primary.Premiered = MergeStrings(primary.Premiered, secondary.Premiered);
             primary.Year = MergeNumbers(primary.Year, secondary.Year);
             primary.Studio = MergeStrings(primary.Studio, secondary.Studio);
@@ -391,7 +390,7 @@ namespace WebScraper
             primary.Genres = MergeStringLists(primary.Genres, secondary.Genres);
 
             // For secondary sources, don't merge actors.  Just copy actors if none already exist.
-            if (primary.Actors.Count == 0 && primary.Actors.Count == secondary.Actors.Count)
+            if (primary.Actors.Count == 0 && secondary.Actors.Count != 0)
                 primary.Actors = secondary.Actors;
             return primary;
         }
@@ -491,6 +490,8 @@ namespace WebScraper
         {
             if (String.IsNullOrEmpty(metadata.Title))
                 return false;
+            if (String.IsNullOrEmpty(metadata.OriginalTitle))
+                return false;
             if (String.IsNullOrEmpty(metadata.Premiered))
                 return false;
             if (String.IsNullOrEmpty(metadata.Studio))
@@ -515,8 +516,6 @@ namespace WebScraper
         private bool IsMovieMetadataAcceptable(MovieMetadata metadata)
         {
             if (String.IsNullOrEmpty(metadata.Title))
-                return false;
-            if (String.IsNullOrEmpty(metadata.Studio))
                 return false;
             return true;
         }

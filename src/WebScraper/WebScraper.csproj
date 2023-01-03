@@ -65,14 +65,17 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ActressJavModel.cs" />
+    <Compile Include="MovieJavRaveClub.cs" />
     <Compile Include="ModuleActress.cs" />
     <Compile Include="ActressJavDatabase.cs" />
     <Compile Include="MovieJavBus.cs" />
+    <Compile Include="MovieJavGuru.cs" />
     <Compile Include="MovieJavDatabase.cs" />
     <Compile Include="ModuleBase.cs" />
     <Compile Include="MovieJavLand.cs" />
     <Compile Include="MovieJavLibrary.cs" />
     <Compile Include="ModuleMovie.cs" />
+    <Compile Include="MovieJavSeenTv.cs" />
     <Compile Include="Scraper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
