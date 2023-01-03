@@ -6,6 +6,7 @@ All significant changes are listed in this file.
 - Fixed actress scraping on JavDatabase.com for site redesign
 - Fix issue causing window width to occasionally be restored incorrectly
 - Language dropdown now lists both English and Japanese text in both languages
+- Reduced minimum interval for version checks
 
 ## [1.1.18] - 2022-12-29
 - Add random movie sort
