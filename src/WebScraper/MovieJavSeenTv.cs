@@ -82,8 +82,11 @@ namespace WebScraper
                     if (element.GetAttribute("property") == "og:title")
                     {
                         string title = element.GetAttribute("content").TrimStart();
-                        if (title.StartsWith(m_metadata.UniqueID.Value, StringComparison.OrdinalIgnoreCase))
-                            title = title.Substring(m_metadata.UniqueID.Value.Length).Trim();
+                        if (title.Length > 20)
+                        {
+                            if (title.StartsWith(m_metadata.UniqueID.Value, StringComparison.OrdinalIgnoreCase))
+                                title = title.Substring(m_metadata.UniqueID.Value.Length).Trim();
+                        }
                         m_metadata.Title = title;
                     }
                     else if (element.GetAttribute("property") == "og:image")
@@ -93,17 +96,7 @@ namespace WebScraper
                 }
                 else if (element.NodeName == "DIV" && element.ClassName == "col-xs-12 col-sm-6 col-md-7")
                 {
-                    if (element.TextContent.Contains("Genre:"))
-                    {
-                        var child = element.FirstElementChild;
-                        while (child != null)
-                        {
-                            if (child.NodeName == "A" && String.IsNullOrEmpty(child.TextContent) == false)
-                                m_metadata.Genres.Add(child.TextContent);
-                            child = child.NextElementSibling;
-                        }
-                    }
-                    else if (element.TextContent.Contains("Release Day:"))
+                    if (element.TextContent.Contains("Release Day:"))
                     {
                         string premiered = element.TextContent;
                         int index = premiered.IndexOf("Release Day:") + 12;

@@ -49,12 +49,12 @@ namespace WebScraper
             // Merge the two scrape results, combining them according to which
             // returns the best results from both.
             mergedMetadata = MergePrimary(javLibraryMetadata, javDatabaseMetadata);           
-
+            
             // Scrape secondary sources if required
-            //ScrapeSecondaryMovie(new MovieJavRaveClub(new MovieMetadata(movieID), language), mergedMetadata, ref coverImagePath);
-            //ScrapeSecondaryMovie(new MovieJavGuru(new MovieMetadata(movieID), language), mergedMetadata, ref coverImagePath);
+            ScrapeSecondaryMovie(new MovieJavRaveClub(new MovieMetadata(movieID), language), mergedMetadata, ref coverImagePath);
+            ScrapeSecondaryMovie(new MovieJavGuru(new MovieMetadata(movieID), language), mergedMetadata, ref coverImagePath);
             ScrapeSecondaryMovie(new MovieJavLand(new MovieMetadata(movieID), language), mergedMetadata, ref coverImagePath);
-            //ScrapeSecondaryMovie(new MovieJavSeenTv(new MovieMetadata(movieID), language), mergedMetadata, ref coverImagePath);
+            ScrapeSecondaryMovie(new MovieJavSeenTv(new MovieMetadata(movieID), language), mergedMetadata, ref coverImagePath);
             ScrapeSecondaryMovie(new MovieJavBus(new MovieMetadata(movieID), language), mergedMetadata, ref coverImagePath);
 
             // Is this minimally acceptable?
@@ -90,22 +90,10 @@ namespace WebScraper
         {
             Logger.WriteInfo("Attempting to scrape information for " + actressData.Name);
 
-            // Check JavDatabase actresses, merge new data, and attempt alts in required
-            var javDatabase = new ActressJavDatabase(actressData.Name, language);
-            javDatabase.Scrape();
-            MergeActressData(actressData, javDatabase.Actress);
-            ScrapeAltNamesIfNotAcceptable(actressData, javDatabase);
-            DownloadActressImage(actressData, javDatabase);
-
-            // If we don't have a complete set of data, try alternative sites
-            if (IsActressDataComplete(actressData) == false)
-            {
-                var javModel = new ActressJavModel(actressData.Name, language);
-                javModel.Scrape();
-                MergeActressData(actressData, javModel.Actress);
-                ScrapeAltNamesIfNotAcceptable(actressData, javModel);
-                DownloadActressImage(actressData, javModel);
-            }
+            // Check all possible sites for actress info
+            ScrapeActress(new ActressJavDatabase(actressData.Name, language), actressData);
+            ScrapeActress(new ActressJavModel(actressData.Name, language), actressData);
+            ScrapeActress(new ActressJavRaveClub(actressData.Name, language), actressData);
 
             // Check to make sure there are no duplicates images, and the index is still in range
             if (actressData.ImageFileNames.Count > 0)
@@ -120,6 +108,17 @@ namespace WebScraper
             else
                 Logger.WriteInfo("Found information for " + actressData.Name);
 
+            return actressData;
+        }
+
+        private ActressData ScrapeActress(ModuleActress module, ActressData actressData)
+        {
+            if (IsActressDataComplete(actressData))
+                return actressData;
+            module.Scrape();
+            MergeActressData(actressData, module.Actress);
+            ScrapeAltNamesIfNotAcceptable(actressData, module);
+            DownloadActressImage(actressData, module);
             return actressData;
         }
 

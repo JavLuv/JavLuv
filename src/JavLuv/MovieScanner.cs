@@ -265,7 +265,7 @@ namespace JavLuv
                             directoryInfo.IsSharedFolder = true;
 
                             // Check to see if we want to import better movies, and if so, ignore the duplicate
-                            if (m_autoImportImprovedMovies == false)
+                            if (fileInfo.FileType == FileType.Movie && m_autoImportImprovedMovies == false)
                             {
                                 LogError(String.Format("Error scanning file {0}.  {1} already exists in collection.", fileInfo.FileName, fileInfo.ID), directoryToScan);
                                 continue;
@@ -368,7 +368,8 @@ namespace JavLuv
                 // Add all movies to the processing list
                 foreach (var movie in movies)
                 {
-                    m_moviesToProcess.Add(movie);
+                    if (movie.MovieFileNames.Count > 0)
+                        m_moviesToProcess.Add(movie);
                 }
             }
             else
@@ -413,7 +414,7 @@ namespace JavLuv
                 }
 
                 // Add movie to the processing list if it's new
-                if (directoryInfo.ExistsInCollection == false)
+                if (directoryInfo.ExistsInCollection == false && movieData.MovieFileNames.Count > 0)
                     m_moviesToProcess.Add(movieData);
             }
         }
@@ -545,6 +546,7 @@ namespace JavLuv
                 catch (Exception ex)
                 {
                     LogError("Unable to load metadata", movieData.Path, ex);
+                    break;
                 }
 
                 ItemsProcessed++;
@@ -942,6 +944,7 @@ namespace JavLuv
             catch (Exception ex)
             {
                 LogError("Unexpected error when generating metadata", movieData.Path, ex);
+                Cancel();
             }
         }
 

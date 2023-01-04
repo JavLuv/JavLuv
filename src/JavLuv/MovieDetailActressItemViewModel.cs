@@ -126,7 +126,11 @@ namespace JavLuv
             Utilities.StringToDateTime(Parent.Parent.MovieData.Metadata.Premiered, out premierdYear, out premieredMonth, out premieredDay);
             if (premierdYear == 0 || m_actressData.DobYear == 0)
                 return 0;
-            return MovieUtils.GetAgeFromDateOfBirthAndDate(m_actressData.DobYear, m_actressData.DobMonth, m_actressData.DobDay, premierdYear, premieredMonth, premieredDay);
+            try
+            {
+                return MovieUtils.GetAgeFromDateOfBirthAndDate(m_actressData.DobYear, m_actressData.DobMonth, m_actressData.DobDay, premierdYear, premieredMonth, premieredDay);
+            }
+            catch (Exception) { return 0; }
         }
 
         #endregion

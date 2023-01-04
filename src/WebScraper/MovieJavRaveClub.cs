@@ -45,13 +45,21 @@ namespace WebScraper
             // Parse movie info page
             foreach (IElement element in document.All)
             {
-                if (element.NodeName == "H1" && element.ClassName == "entry-title1")
+                if (element.NodeName == "META" && element.GetAttribute("property") == "og:image")
+                {
+                    ImageSource = element.GetAttribute("content");
+                }
+                else if (element.NodeName == "H1" && element.ClassName == "entry-title1")
                 {
                     string title = element.TextContent;
-                    int index = title.IndexOf(m_metadata.UniqueID.Value);
-                    if (index == -1)
-                        continue;
-                    m_metadata.Title = title.Substring(index + m_metadata.UniqueID.Value.Length).Trim();
+                    if (title.Length > 20)
+                    {
+                        int index = title.IndexOf(m_metadata.UniqueID.Value);
+                        if (index == -1)
+                            continue;
+                        title = title.Substring(index + m_metadata.UniqueID.Value.Length).Trim();
+                    }
+                    m_metadata.Title = title;
                     var nextElement = element.NextElementSibling;
                     if (nextElement == null)
                         continue;

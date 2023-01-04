@@ -2,6 +2,11 @@
 
 All significant changes are listed in this file.
 
+## [1.1.20] - 2023-1-4
+- Fix crash bug attempting to auto-import an image as though a movie were available
+- Removed duplicate error on scan for everything but movie files
+- Added several new scrapers for movies and actresses
+
 ## [1.1.19] - 2023-1-3
 - Fixed actress scraping on JavDatabase.com for site redesign
 - Fix issue causing window width to occasionally be restored incorrectly

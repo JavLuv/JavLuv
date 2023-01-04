@@ -76,10 +76,13 @@ namespace WebScraper
             {
                 if (element.NodeName == "H1" && element.ClassName == "titl")
                 {
-                    if (Utilities.ParseMovieID(element.TextContent) == m_metadata.UniqueID.Value)
-                        m_metadata.Title = element.TextContent.Substring(m_metadata.UniqueID.Value.Length + 2).Trim();
-                    else
-                        m_metadata.Title = element.TextContent.Trim();
+                    if (element.TextContent.Length > 20)
+                    {
+                        if (Utilities.ParseMovieID(element.TextContent) == m_metadata.UniqueID.Value)
+                            m_metadata.Title = element.TextContent.Substring(m_metadata.UniqueID.Value.Length + 2).Trim();
+                        else
+                            m_metadata.Title = element.TextContent.Trim();
+                    }
                 }
                 else if (element.NodeName == "LI")
                 {
