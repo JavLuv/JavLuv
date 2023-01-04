@@ -7,7 +7,6 @@ using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.TextBox;
 
 namespace JavLuv
 {
@@ -260,14 +259,19 @@ namespace JavLuv
                 }      
             }
         }
+
         public string Age
         {
             get
             {
                 if (m_actressData.DobYear == 0)
                     return String.Empty;
-                int years = MovieUtils.GetAgeFromDateOfBirth(m_actressData.DobYear, m_actressData.DobMonth, m_actressData.DobDay);
-                return years.ToString();
+                try
+                {
+                    int years = MovieUtils.GetAgeFromDateOfBirth(m_actressData.DobYear, m_actressData.DobMonth, m_actressData.DobDay);
+                    return years.ToString();
+                }
+                catch {  return String.Empty; }
             }
         }
 

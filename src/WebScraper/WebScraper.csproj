@@ -65,6 +65,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ActressJavModel.cs" />
+    <Compile Include="ActressJavRaveClub.cs" />
     <Compile Include="MovieJavRaveClub.cs" />
     <Compile Include="ModuleActress.cs" />
     <Compile Include="ActressJavDatabase.cs" />
