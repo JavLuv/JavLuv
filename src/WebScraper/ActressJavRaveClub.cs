@@ -68,12 +68,13 @@ namespace WebScraper
                     {
                         // Check for birthday
                         string[] dob = element.NextElementSibling?.TextContent.Split('(')[0].Split('-');
-                        if (dob.Length > 0)
+                        if (dob.Length == 01)
                             Actress.DobYear = Utilities.ParseInitialDigits(dob[0]);
-                        if (dob.Length > 2)
+                        else if (dob.Length == 3)
                         {
+                            Actress.DobYear = Utilities.ParseInitialDigits(dob[2]);
                             Actress.DobMonth = Utilities.ParseInitialDigits(dob[1]);
-                            Actress.DobDay = Utilities.ParseInitialDigits(dob[2]);
+                            Actress.DobDay = Utilities.ParseInitialDigits(dob[0]);
                         }
                     }
                     else if (element.FirstElementChild?.TextContent == "Blood Type")
