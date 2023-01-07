@@ -334,6 +334,9 @@ namespace WebScraper
             // "Uknown actress" image from JavDatabase
             if (checksum == "69-BB-2B-57-50-7E-18-0F-91-DB-2A-03-06-79-39-AA-75-EB-05-F3")
                 return true;
+            // "Unknown actress" image from JavRave.club
+            else if (checksum == "EA-C4-BE-81-0E-EB-0A-56-C4-91-AF-BA-3E-41-FA-F6-06-64-F6-F2")
+                return true;
             return false;
         }
 
