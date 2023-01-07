@@ -4,6 +4,7 @@ All significant changes are listed in this file.
 
 ## [1.1.21] - 2023-1-7
 - Add new filter for "unknow actress" image
+- Random sort only changes on app start or when new movie sort type is selected
 
 ## [1.1.20] - 2023-1-4
 - Fix crash bug attempting to auto-import an image as though a movie were available
