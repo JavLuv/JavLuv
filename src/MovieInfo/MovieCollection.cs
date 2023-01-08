@@ -124,7 +124,8 @@ namespace MovieInfo
             {
                 if (value != m_sortMoviesBy)
                 {
-                    m_sortMoviesBy = value;
+                    RandomSeed = m_rng.Next();
+                    m_sortMoviesBy = value;          
                     SearchMovies();
                 }
             }
@@ -218,6 +219,8 @@ namespace MovieInfo
         }
 
         public ActressData MovieSearchActress { get; set; }
+
+        public int RandomSeed { get; private set; }
 
         #endregion
 
@@ -667,6 +670,7 @@ namespace MovieInfo
         private string m_backupFilename = String.Empty;
         private bool m_loaded = false;
         private bool m_readOnlyMode = false;
+        private Random m_rng = new Random();
 
         #endregion
     }

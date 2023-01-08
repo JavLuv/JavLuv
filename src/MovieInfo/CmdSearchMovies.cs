@@ -126,6 +126,7 @@ namespace MovieInfo
             m_sortMoviesBy = sortMoviesBy;
             m_showUnratedOnly = showUnratedOnly;
             m_showSubtitlesOnly = showSubtitlesOnly;
+            m_rng = new Random(m_movieCollection.RandomSeed);
         }
 
         #endregion;
@@ -339,7 +340,7 @@ namespace MovieInfo
         private bool m_showUnratedOnly;
         private bool m_showSubtitlesOnly;
         private ActressData m_searchActress;
-        private static Random m_rng = new Random();
+        private Random m_rng;
 
         #endregion
     }
