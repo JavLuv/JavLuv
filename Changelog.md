@@ -5,6 +5,7 @@ All significant changes are listed in this file.
 ## [1.1.22] - 2023-1-8
 - Fix crash on invalid movie date conversion when adding new actress to movie
 - Fix error when converting empty actress list in movie details
+- Fix JavBus scraper to recognize not-found IDs
 
 ## [1.1.21] - 2023-1-7
 - Add new filter for "unknown actress" image
