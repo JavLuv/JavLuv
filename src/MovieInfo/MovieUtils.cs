@@ -481,6 +481,13 @@ namespace MovieInfo
 
         public static bool StringToActors(string stringValue, ref List<ActorData> actors)
         {
+            // No string means an empty actor list
+            if (String.IsNullOrEmpty(stringValue))
+            {
+                actors = new List<ActorData>();
+                return true;
+            }
+
             // Split all strings by comma separator and insert into a set, trimming whitespace
             var stringNames = stringValue.Split(',');
             var nameSet = new HashSet<string>();
