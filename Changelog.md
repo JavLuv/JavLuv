@@ -2,8 +2,12 @@
 
 All significant changes are listed in this file.
 
+## [1.1.22] - 2023-1-8
+- Fix crash on invalid movie date conversion when adding new actress to movie
+- 
+
 ## [1.1.21] - 2023-1-7
-- Add new filter for "unknow actress" image
+- Add new filter for "unknown actress" image
 - Random sort only changes on app start or when new movie sort type is selected
 
 ## [1.1.20] - 2023-1-4
