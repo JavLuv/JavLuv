@@ -37,10 +37,9 @@ namespace WebScraper
             // Parse movie info page
             foreach (IElement element in document.All)
             {
-
                 if (element.NodeName == "TITLE")
                 {
-                    if (element.TextContent.Contains("ID Search Result"))
+                    if (element.TextContent.Contains("ID Search Result") || element.TextContent.Contains("404 Page Not Found"))
                         return;
                     string title = element.TextContent;
                     int len = title.Length - 10 - m_metadata.UniqueID.Value.Length;

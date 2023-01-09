@@ -248,7 +248,10 @@ namespace Common
 
         public static string DateTimeToString(int year, int month, int day)
         {
-            return String.Format("{0}-{1}-{2}", year == 0 ? "????" : year.ToString(), month == 0 ? "??" : month.ToString(), day == 0 ? "??" : day.ToString());
+            return String.Format("{0}-{1}-{2}", 
+                year < 1930 ? "????" : year.ToString(), 
+                (month < 1 || month > 12) ? "??" : month.ToString(), 
+                (day < 1 || day > 31) ? "??" : day.ToString());
         }
 
         public static void StringToDateTime(string date, out int year, out int month, out int day)
@@ -256,14 +259,23 @@ namespace Common
             year = 1;
             month = 1;
             day = 1;
-            string[] dateParts = date.Split('-');
-            int.TryParse(dateParts[0], out year);
-            if (dateParts.Length > 1)
-                int.TryParse(dateParts[1], out month);
-            if (dateParts.Length > 2)
-                int.TryParse(dateParts[2], out day);
-            // Validate that this is a legit date
-            new DateTime(year, month, day);
+            try
+            {
+                string[] dateParts = date.Split('-');
+                int.TryParse(dateParts[0], out year);
+                if (dateParts.Length > 1)
+                    int.TryParse(dateParts[1], out month);
+                if (dateParts.Length > 2)
+                    int.TryParse(dateParts[2], out day);
+                // Validate that this is a legit date
+                new DateTime(year, month, day);
+            }
+            catch
+            {
+                year = 0;
+                month = 0;
+                day = 0;
+            }
         }
 
         public static int DataTimeCompare(string dt1, string dt2)
