@@ -66,6 +66,20 @@ namespace MovieInfo
         }
     }
 
+    public class MovieRandomComparer : IComparer<MovieData>
+    {
+        public MovieRandomComparer(int seed) { m_seed = seed; }
+        public int Compare(MovieData left, MovieData right)
+        {
+            int cmp = (left.Metadata.Title.GetHashCode() ^ left.Metadata.UniqueID.Value.GetHashCode() ^ m_seed).CompareTo(
+                right.Metadata.Title.GetHashCode() ^ right.Metadata.UniqueID.Value.GetHashCode() ^ m_seed);
+            if (cmp != 0)
+                return cmp;
+            return MovieUtils.MovieTitleCompare(left.Metadata.Title, right.Metadata.Title);
+        }
+        private int m_seed;
+    }
+
     public class MovieResolutionComparer : IComparer<MovieData>
     {
         public int Compare(MovieData left, MovieData right)
@@ -300,7 +314,7 @@ namespace MovieInfo
                     m_filteredMovies.Sort(new MovieDateOldestComparer());
                     break;
                 case SortMoviesBy.Random:
-                    Shuffle<MovieData>(m_filteredMovies);
+                    m_filteredMovies.Sort(new MovieRandomComparer(m_movieCollection.RandomSeed));
                     break;
                 case SortMoviesBy.Resolution:
                     m_filteredMovies.Sort(new MovieResolutionComparer());
@@ -312,19 +326,6 @@ namespace MovieInfo
                     m_filteredMovies.Sort(new MovieUserRatingComparer());
                     break;
             };
-        }
-
-        private void Shuffle<T>(IList<T> list)
-        {
-            int n = list.Count;
-            while (n > 1)
-            {
-                n--;
-                int k = m_rng.Next(n + 1);
-                T value = list[k];
-                list[k] = list[n];
-                list[n] = value;
-            }
         }
 
         #endregion
