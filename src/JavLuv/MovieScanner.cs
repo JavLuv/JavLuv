@@ -522,6 +522,7 @@ namespace JavLuv
 
         private void LoadMovies(List<MovieData> moviesToLoad)
         {
+            Logger.WriteInfo(String.Format("Loading {0} movies", moviesToLoad.Count));
             Phase = ScanPhase.LoadingMetadata;
             ItemsProcessed = 0;
             TotalItems = moviesToLoad.Count;
@@ -545,8 +546,8 @@ namespace JavLuv
                 }
                 catch (Exception ex)
                 {
-                    LogError("Unable to load metadata", movieData.Path, ex);
-                    break;
+                    LogError("Unable to load metadata " + movieData.MetadataFileName, movieData.Path, ex);
+                    continue;
                 }
 
                 ItemsProcessed++;
@@ -557,6 +558,7 @@ namespace JavLuv
 
         private void ImportMovies(List<MovieData> moviesToImport)
         {
+            Logger.WriteInfo(String.Format("Importing {0} movies", moviesToImport.Count));
             Phase = ScanPhase.ImportMovies;
             ItemsProcessed = 0;
             TotalItems = moviesToImport.Count;
@@ -599,9 +601,11 @@ namespace JavLuv
                 // Confirm we wish to continue and overwrite the old movies with new ones
                 if (m_dispatcher.HasShutdownStarted == true)
                     break;
+
                 bool confirmReplace = false;
                 m_dispatcher.Invoke(DispatcherPriority.Normal, new Action(delegate () 
                 {
+                    // Prepare confirmation dialog message
                     var filenames = new List<string>();
                     foreach (var fn in dest.MovieFileNames)
                         filenames.Add(Path.Combine(dest.Path, fn));
@@ -613,12 +617,14 @@ namespace JavLuv
                     string destResolution = MovieUtils.GetMovieResolution(dest.Metadata);
                     string message = String.Format(TextManager.GetString("Text.OverrideMovie"), destResolution, destFilenames, sourceResolution, sourceFilenames);
                     string caption = TextManager.GetString("Text.OverrideMovieTitle");
+
+                    // Show messagebox and get response
                     MessageBoxResult result = MessageBox.Show(message, caption, MessageBoxButton.YesNo);
                     if (result == MessageBoxResult.Yes)
                         confirmReplace = true;
                 }));
 
-                // Don't replace unless we've verified with the user we want to replace the source file(s)
+                // Don't replace unless we've verified with the user we want to replace the desgination file(s) with source file(s)
                 if (confirmReplace == false)
                     continue;
 
@@ -664,6 +670,7 @@ namespace JavLuv
 
         private void DownloadMovieMetadata(List<MovieData> moviesToDownload)
         {
+            Logger.WriteInfo(String.Format("Downloading {0} movie metadata / covers", moviesToDownload.Count));
             Phase = ScanPhase.DownloadMetadata;
             ItemsProcessed = 0;
             TotalItems = moviesToDownload.Count;

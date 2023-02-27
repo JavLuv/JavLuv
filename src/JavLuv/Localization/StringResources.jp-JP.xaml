@@ -83,6 +83,7 @@
     <system:String x:Key="Text.JP">JP</system:String>
     <system:String x:Key="Text.ShowOriginalJpTitle">Show original Japanese title</system:String>
     <system:String x:Key="Text.EditActresses">Edit actresses</system:String>
+    <system:String x:Key="Text.UpdateActress">Update actress</system:String>
 
     <!-- Actress details -->
     <system:String x:Key="Text.ActressDetails">Actress Details</system:String>

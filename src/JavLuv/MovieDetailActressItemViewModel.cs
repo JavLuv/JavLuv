@@ -1,6 +1,7 @@
 ﻿using Common;
 using MovieInfo;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Windows;
 using System.Windows.Input;
@@ -113,6 +114,25 @@ namespace JavLuv
         }
 
         public ICommand ViewActressCommand { get { return new RelayCommand(ViewActressExecute, CanViewActressExecute); } }
+
+        #endregion
+
+        #region Update Actress Command
+
+        private void UpdateActressExecute()
+        {
+            List<ActressData> actresses = new List<ActressData>();
+            actresses.Add(m_actressData);
+            Parent.Parent.Parent.Parent.StartScan(actresses);
+            
+        }
+
+        private bool CanUpdateActressExecute()
+        {
+            return Parent.Parent.Parent.Parent.IsScanning == false;
+        }
+
+        public ICommand UpdateActressCommand { get { return new RelayCommand(UpdateActressExecute, CanUpdateActressExecute); } }
 
         #endregion
 

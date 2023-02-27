@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Xml;
 using System.Xml.Linq;
 using System.Xml.Serialization;
 
@@ -376,6 +377,9 @@ namespace MovieInfo
         [XmlElement("dateadded")]
         public string DateAdded { get; set; }
 
+        // Preserve any unknown elements
+        [XmlAnyElement]
+        public XmlElement[] Unknown { get; set; }
 
         #endregion
     }
