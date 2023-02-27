@@ -351,7 +351,7 @@ namespace JavLuv
             if (JavLuv.Settings.Get().EnableMoveRename && JavLuv.Settings.Get().MoveRenameAfterScan && m_movieScanner.IsCancelled == false)
                 m_movieBrowserViewModel.MoveRenameMovies(m_movieScanner.Movies);
 
-            // Add new actresses
+            // Add new movies to movie database
             m_movieCollection.AddMovies(m_movieScanner.Movies);
 
             m_movieScanner.Clear();

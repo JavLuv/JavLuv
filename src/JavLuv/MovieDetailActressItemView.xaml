@@ -16,6 +16,13 @@
             BorderBrush="{DynamicResource BrowserItem.Border}" 
             Background="{DynamicResource BrowserItem.Background}"
             >
+
+            <Border.ContextMenu>
+                <ContextMenu>
+                    <MenuItem Header="{DynamicResource Text.UpdateActress}" Command="{Binding UpdateActressCommand}"/>
+                </ContextMenu>
+            </Border.ContextMenu>
+
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="*" />
