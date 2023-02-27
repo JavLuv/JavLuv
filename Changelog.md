@@ -6,6 +6,7 @@ All significant changes are listed in this file.
 - Random movie list is now stable even when adding or removing movies
 - Added Update Actress context menu item in movie detail view
 - Fix issue in scanner if nfo (metadata) fails to load, and add logging
+- Should now preserve unknown nfo (metadata) XML elements
 
 ## [1.1.22] - 2023-1-8
 - Fix crash on invalid movie date conversion when adding new actress to movie
