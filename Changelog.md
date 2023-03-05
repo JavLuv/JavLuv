@@ -2,6 +2,9 @@
 
 All significant changes are listed in this file.
 
+## [1.1.24] - 2023-3-4
+- Upgrade ffmpeg from 4.4.1 to 6.0
+
 ## [1.1.23] - 2023-2-26
 - Random movie list is now stable even when adding or removing movies
 - Added Update Actress context menu item in movie detail view
