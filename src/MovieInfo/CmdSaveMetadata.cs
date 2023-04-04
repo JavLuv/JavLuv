@@ -29,11 +29,17 @@ namespace MovieInfo
                     if (movie.MetadataChanged)
                     {
                         string path = Path.Combine(movie.Path, movie.MetadataFileName);
-                        MovieSerializer<MovieMetadata>.Save(path, movie.Metadata);
-                        movie.MetadataChanged = false;
-                        saveCount++;
-                        if (saveCount >= 10)
-                            break;
+
+                        // Some users have movies (and hence metadata) stored on drives that might not always
+                        // be accessible.  Just skip over anything we can't currently access.
+                        if (File.Exists(path))
+                        {
+                            MovieSerializer<MovieMetadata>.Save(path, movie.Metadata);
+                            movie.MetadataChanged = false;
+                            saveCount++;
+                            if (saveCount >= 10)
+                                break;
+                        }
                     }
                 }
                 if (saveCount > 0)
