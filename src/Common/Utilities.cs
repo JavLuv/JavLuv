@@ -234,7 +234,7 @@ namespace Common
 
         public static string[] GetMovieFileExts()
         {
-            string[] exts = { "mp4", "mkv", "m4v", "avi", "wmv", "mpg", "mov", "ts" };
+            string[] exts = { "mp4", "mkv", "m4v", "avi", "wmv", "mpg", "mov", "ts", "iso" };
             return exts;
         }
 

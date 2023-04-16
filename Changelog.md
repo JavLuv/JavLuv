@@ -2,6 +2,9 @@
 
 All significant changes are listed in this file.
 
+## [1.1.25] - 2023-4-15
+- Add support for playing iso files as movies
+
 ## [1.1.24] - 2023-4-3
 - Upgrade ffmpeg from 4.4.1 to 6.0
 - Fix issue saving metadata when stored on removable drives
