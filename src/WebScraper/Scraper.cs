@@ -93,6 +93,7 @@ namespace WebScraper
             // Check all possible sites for actress info
             ScrapeActress(new ActressJavDatabase(actressData.Name, language), actressData);
             ScrapeActress(new ActressJavModel(actressData.Name, language), actressData);
+            ScrapeActress(new ActressJavBody(actressData.Name, language), actressData);
             ScrapeActress(new ActressJavRaveClub(actressData.Name, language), actressData);
 
             // Check to make sure there are no duplicates images, and the index is still in range
