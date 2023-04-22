@@ -586,6 +586,8 @@ namespace WebScraper
         {
             if (actressData == null)
                 return false;
+            if (actressData.ImageFileNames.Count == 0) 
+                return false;
             if (String.IsNullOrEmpty(actressData.Name))
                 return false;
             if (String.IsNullOrEmpty(actressData.JapaneseName))
