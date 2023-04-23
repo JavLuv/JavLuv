@@ -64,6 +64,7 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ActressJavBody.cs" />
     <Compile Include="ActressJavModel.cs" />
     <Compile Include="ActressJavRaveClub.cs" />
     <Compile Include="MovieJavRaveClub.cs" />
