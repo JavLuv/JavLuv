@@ -72,17 +72,20 @@ namespace Common
                 // Special rule for parsing T28-xxx files
                 @"([t,T]{1}28[0-9]{0,2}[-|_| ]{0,1}[0-9]{3,4})",
 
-                // open square bracket, 1-7 characters, 0-2 numbers, one dash or underscore, 2-5 numbers, optional D, close square bracket
-                @"(?<=\[)([a-z,A-Z]{1,7}[0-9]{0,2}[-|_]{1}[0-9]{2,5}[d,D]{0,1})(?=])",
+                // Special rule for parsing FC2-PPV-xxxxx files
+                @"([f,F][c,C]2-[p,P][p,P][v,V][-|_| ]{0,1}[0-9]{2,8})",
 
-                // open square bracket, 1-7 characters, one optional dash or underscore or space, 2-5 numbers, optional D, close square bracket
-                @"(?<=\[)([a-z,A-Z]{1,7}[-|_| ]{0,1}[0-9]{2,5}[d,D]{0,1})(?=])",
+                // open square bracket, 1-7 characters, 0-2 numbers, one dash or underscore, 1-5 numbers, optional D, close square bracket
+                @"(?<=\[)([a-z,A-Z]{1,7}[0-9]{0,2}[-|_]{1}[0-9]{1,5}[d,D]{0,1})(?=])",
 
-                // 1-7 characters, 0-2 numbers, one dash or underscore, 2-5 numbers, optional D
-                @"([a-z,A-Z]{1,7}[0-9]{0,2}[-|_]{1}[0-9]{2,5}[d,D]{0,1})",
+                // open square bracket, 1-7 characters, one optional dash or underscore or space, 1-5 numbers, optional D, close square bracket
+                @"(?<=\[)([a-z,A-Z]{1,7}[-|_| ]{0,1}[0-9]{1,5}[d,D]{0,1})(?=])",
 
-                // 1-7 characters, 0-2 numbers, one optional dash or underscore or space, 2-5 numbers, optional D
-                @"([a-z,A-Z]{1,7}[0-9]{0,2}[-|_| ]{0,1}[0-9]{2,5}[d,D]{0,1})",
+                // 1-7 characters, 0-2 numbers, one dash or underscore, 1-5 numbers, optional D
+                @"([a-z,A-Z]{1,7}[0-9]{0,2}[-|_]{1}[0-9]{1,5}[d,D]{0,1})",
+
+                // 1-7 characters, 0-2 numbers, one optional dash or underscore or space, 1-5 numbers, optional D
+                @"([a-z,A-Z]{1,7}[0-9]{0,2}[-|_| ]{0,1}[0-9]{1,5}[d,D]{0,1})",
             };
 
             Regex regex = null;
@@ -802,6 +805,18 @@ namespace Common
             if (String.IsNullOrEmpty(match))
                 return;
 
+            // Have to use special-case rules for FC2-PPV-### files, because there's an additional dash in the
+            // first part of the match.
+            if (match.StartsWith("FC2-PPV", StringComparison.OrdinalIgnoreCase) && match.Length > 8)
+            {
+                alpha = match.Substring(0, 7);
+                if (match.Length > 8 && Char.IsDigit(match[7]))
+                    numeric = match.Substring(7);
+                else
+                    numeric = match.Substring(8);
+                return;
+            }
+
             // Many well-named files have a marker character on which we can split the match
             char[] splits = { '-', '_', ' '};
             var parts = match.Split(splits);
@@ -820,6 +835,7 @@ namespace Common
                 numeric = match.Substring(3);
                 return;
             }
+
 
             // Fall back to splitting based on where alpha and numeric values appear (ABC123 pattern)
 

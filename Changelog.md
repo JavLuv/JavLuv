@@ -2,10 +2,11 @@
 
 All significant changes are listed in this file.
 
-## [1.1.25] - 2023-4-18
+## [1.1.25] - 2023-4-23
 - Add support for playing iso files as movies
 - Add actress scraping support from JavBody.com
 - Fix minor issue preventing updating of some actresses
+- Add additional capabilities to ID parser
 
 ## [1.1.24] - 2023-4-3
 - Upgrade ffmpeg from 4.4.1 to 6.0

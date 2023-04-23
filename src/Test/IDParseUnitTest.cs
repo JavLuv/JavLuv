@@ -51,9 +51,17 @@ namespace JavLuv
         [Fact]
         public void TestBasic7()
         {
+            string id = Utilities.ParseMovieID("abc-1");
+            Assert.Equal("ABC-1", id);
+        }
+
+        [Fact]
+        public void TestBasic8()
+        {
             string id = Utilities.ParseMovieID("abc 123");
             Assert.Equal("ABC-123", id);
         }
+
         [Fact]
         public void TestBrackets1()
         {
@@ -195,38 +203,80 @@ namespace JavLuv
         }
 
         [Fact]
-        public void TestOddball1()
+        public void TestT28_1()
         {
             string id = Utilities.ParseMovieID("t28_494");
             Assert.Equal("T28-494", id);
         }
 
         [Fact]
-        public void TestOddball2()
+        public void TestT28_2()
         {
             string id = Utilities.ParseMovieID("t28-494");
             Assert.Equal("T28-494", id);
         }
 
         [Fact]
-        public void TestOddball3()
+        public void TestT28_3()
         {
             string id = Utilities.ParseMovieID("[T28-494]");
             Assert.Equal("T28-494", id);
         }
 
         [Fact]
-        public void TestOddball4()
+        public void TestT28_4()
         {
             string id = Utilities.ParseMovieID("t28 494");
             Assert.Equal("T28-494", id);
         }
 
         [Fact]
-        public void TestOddball5()
+        public void TestT28_5()
         {
             string id = Utilities.ParseMovieID("t28494");
             Assert.Equal("T28-494", id);
+        }
+
+        [Fact]
+        public void TestT28_6()
+        {
+            string id = Utilities.ParseMovieID("FC2-PPV-1234567");
+            Assert.Equal("FC2-PPV-1234567", id);
+        }
+
+        [Fact]
+        public void TestFC2PPV_1()
+        {
+            string id = Utilities.ParseMovieID("FC2-PPV 12");
+            Assert.Equal("FC2-PPV-12", id);
+        }
+
+        [Fact]
+        public void TestFC2PPV_2()
+        {
+            string id = Utilities.ParseMovieID("FC2-PPV_12345");
+            Assert.Equal("FC2-PPV-12345", id);
+        }
+
+        [Fact]
+        public void TestFC2PPV_3()
+        {
+            string id = Utilities.ParseMovieID("FC2-PPV1234567");
+            Assert.Equal("FC2-PPV-1234567", id);
+        }
+
+        [Fact]
+        public void TestFC2PPV_4()
+        {
+            string id = Utilities.ParseMovieID("[Fc2-Ppv-12345678]");
+            Assert.Equal("FC2-PPV-12345678", id);
+        }
+
+        [Fact]
+        public void TestFC2PPV_5()
+        {
+            string id = Utilities.ParseMovieID("fasdf Fc2-Ppv-12345678 asdf");
+            Assert.Equal("FC2-PPV-12345678", id);
         }
 
         #endregion
