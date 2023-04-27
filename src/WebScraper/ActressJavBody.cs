@@ -39,6 +39,7 @@ namespace WebScraper
 
         protected override void ParseDocument(IHtmlDocument document)
         {
+
             // Scrape required information from page
             foreach (var element in document.All)
             {

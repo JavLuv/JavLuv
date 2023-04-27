@@ -40,7 +40,7 @@ namespace WebScraper
             {
                 // Check for actress image
                 if (element.NodeName == "META")
-                {              
+                {
                     var property = element.GetAttribute("property");
                     if (property != null && property == "og:image")
                     {
@@ -52,94 +52,84 @@ namespace WebScraper
                     }
                 }
 
-                // Check for Japanese name
-                else if (element.NodeName == "DIV")
+                // Check for various metadata
+                else if (element.NodeName == "H2" && element.ClassName == "h5 mb-4")
                 {
-                    if (element.ClassName == "geodir-category-location japannametext fl-wrap")
+                    Actress.JapaneseName = element.TextContent.Trim();
+                }
+                else if (element.NodeName == "TD" && element.ClassName == "flq-color-meta")
+                {
+                    if (element.TextContent == "Birthday")
                     {
-                        var child = element.FirstElementChild;
-                        if (child != null && child.NodeName == "A")
+                        var nextSibling = element.NextSibling;
+                        if (nextSibling != null)
                         {
-                            Actress.JapaneseName = child.TextContent;
+                            nextSibling = nextSibling.NextSibling;
+                            if (nextSibling != null)
+                            {
+                                try
+                                {
+                                    var birthday = DateTime.Parse(nextSibling.TextContent);
+                                    Actress.DobDay = birthday.Day;
+                                    Actress.DobMonth = birthday.Month;
+                                    Actress.DobYear = birthday.Year;
+                                }
+                                catch (Exception) { }
+                            }
                         }
                     }
-                }
-
-                if (element.TextContent == " Born : ")
-                {
-                    var nextSibling = element.NextSibling;
-                    if (IsValidNode(nextSibling))
+                    else if (element.TextContent == "Blood Type")
                     {
-                        nextSibling = nextSibling.NextSibling;
-                        if (IsValidNode(nextSibling))
+                        var nextSibling = element.NextSibling;
+                        if (nextSibling != null)
                         {
-                            string[] dateParts = nextSibling.TextContent.Split('/');
-                            int day = 0;
-                            int month = 0;
-                            int year = 0;
-                            int.TryParse(dateParts[0], out month);
-                            if (dateParts.Length > 1)
-                                int.TryParse(dateParts[1], out day);
-                            if (dateParts.Length > 2)
-                                int.TryParse(dateParts[2], out year);
-                            Actress.DobDay = day;
-                            Actress.DobMonth = month;
-                            Actress.DobYear = year;
+                            nextSibling = nextSibling.NextSibling;
+                            if (nextSibling != null)
+                                Actress.BloodType = nextSibling.TextContent.Trim();
                         }
                     }
-                }
-                else if (element.TextContent == " Height : ")
-                {
-                    var nextSibling = element.NextSibling;
-                    if (IsValidNode(nextSibling))
+                    else if (element.TextContent == "Breast")
                     {
-                        nextSibling = nextSibling.NextSibling;
-                        if (IsValidNode(nextSibling))
-                            Actress.Height = Utilities.ParseInitialDigits(nextSibling.TextContent, 0);
+                        var nextSibling = element.NextSibling;
+                        if (nextSibling != null)
+                        {
+                            nextSibling = nextSibling.NextSibling;
+                            if (nextSibling != null)
+                                Actress.Bust = Utilities.ParseInitialDigits(nextSibling.TextContent);
+                        }
                     }
-                }
-                else if (element.TextContent == " Breast : ")
-                {
-                    var nextSibling = element.NextSibling;
-                    if (IsValidNode(nextSibling))
+                    else if (element.TextContent == "Waist")
                     {
-                        nextSibling = nextSibling.NextSibling;
-                        if (IsValidNode(nextSibling))
-                            Actress.Bust = Utilities.ParseInitialDigits(nextSibling.TextContent, 0);
+                        var nextSibling = element.NextSibling;
+                        if (nextSibling != null)
+                        {
+                            nextSibling = nextSibling.NextSibling;
+                            if (nextSibling != null)
+                                Actress.Waist = Utilities.ParseInitialDigits(nextSibling.TextContent);
+                        }
                     }
-                }
-                else if (element.TextContent == " Waist : ")
-                {
-                    var nextSibling = element.NextSibling;
-                    if (IsValidNode(nextSibling))
+                    else if (element.TextContent == "Hips")
                     {
-                        nextSibling = nextSibling.NextSibling;
-                        if (IsValidNode(nextSibling))
-                            Actress.Waist = Utilities.ParseInitialDigits(nextSibling.TextContent, 0);
+                        var nextSibling = element.NextSibling;
+                        if (nextSibling != null)
+                        {
+                            nextSibling = nextSibling.NextSibling;
+                            if (nextSibling != null)
+                                Actress.Hips = Utilities.ParseInitialDigits(nextSibling.TextContent);
+                        }
                     }
-                }
-                else if (element.TextContent == " Hips : ")
-                {
-                    var nextSibling = element.NextSibling;
-                    if (IsValidNode(nextSibling))
+                    else if (element.TextContent == "Height")
                     {
-                        nextSibling = nextSibling.NextSibling;
-                        if (IsValidNode(nextSibling))
-                            Actress.Hips = Utilities.ParseInitialDigits(nextSibling.TextContent, 0);
-                    }
-                }
-                else if (element.TextContent == " Blood Type : ")
-                {
-                    var nextSibling = element.NextSibling;
-                    if (IsValidNode(nextSibling))
-                    {
-                        nextSibling = nextSibling.NextSibling;
-                        if (IsValidNode(nextSibling))
-                            Actress.BloodType = nextSibling.TextContent;
+                        var nextSibling = element.NextSibling;
+                        if (nextSibling != null)
+                        {
+                            nextSibling = nextSibling.NextSibling;
+                            if (nextSibling != null)
+                                Actress.Height = Utilities.ParseInitialDigits(nextSibling.TextContent);
+                        }
                     }
                 }
             }
-
         }
 
         protected override bool IsLanguageSupported()
