@@ -2,6 +2,10 @@
 
 All significant changes are listed in this file.
 
+## [1.1.26] - 2023-4-27
+- Fix multiple issues with actress scrapers
+- Add automated tests for actress scrapers for improved future reliability
+
 ## [1.1.25] - 2023-4-23
 - Add support for playing iso files as movies
 - Add actress scraping support from JavBody.com

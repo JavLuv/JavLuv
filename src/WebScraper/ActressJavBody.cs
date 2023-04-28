@@ -29,7 +29,7 @@ namespace WebScraper
 
             Actress = new ActressData(Name);
             string name = Actress.Name.Replace(' ', '-').ToLower();
-            var task = ScrapeAsync("https://www.javbody.com/jav/" + name + "/");
+            var task = ScrapeAsync("http://javbody.com/jav/" + name + "/");
             task.Wait();
         }
 
@@ -39,6 +39,7 @@ namespace WebScraper
 
         protected override void ParseDocument(IHtmlDocument document)
         {
+
             // Scrape required information from page
             foreach (var element in document.All)
             {

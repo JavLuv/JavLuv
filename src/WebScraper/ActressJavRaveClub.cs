@@ -53,7 +53,7 @@ namespace WebScraper
                     // Find Japanese names
                     string[] names = element.TextContent.Split('(')[0].Split('-');
                     if (names.Length > 1)
-                        Actress.JapaneseName = names[1].Trim();              
+                        Actress.JapaneseName = names[1].Trim();
                 }
                 else if (String.IsNullOrEmpty(ImageSource) && element.NodeName == "DIV" && element.ClassName == "the-img-content")
                 {
@@ -80,17 +80,55 @@ namespace WebScraper
                     else if (element.FirstElementChild?.TextContent == "Blood Type")
                     {
                         // Blood type
-                        Actress.BloodType = element.NextElementSibling?.TextContent;
+                        string bloodType = element.NextElementSibling?.TextContent;
+                        if (bloodType == "unknown")
+                            continue;
+                        Actress.BloodType = bloodType;
                     }
                     else if (element.FirstElementChild?.TextContent == "Cupsize")
                     {
                         // Cup size
                         Actress.Cup = element.NextElementSibling?.TextContent;
                     }
+                    else if (element.FirstElementChild?.TextContent == "Measurements")
+                    {
+                        string measurements = element.NextElementSibling?.TextContent;
+                        try
+                        {
+                            if (measurements.StartsWith("JP"))
+                            {
+                                measurements = measurements.Substring(3);
+                                string[] parts = measurements.Split('-');
+                                if (parts[0].StartsWith("B"))
+                                    parts[0] = parts[0].Substring(1);
+                                if (parts[1].StartsWith("W"))
+                                    parts[1] = parts[1].Substring(1);
+                                if (parts[2].StartsWith("H"))
+                                    parts[2] = parts[2].Substring(1);
+                                Actress.Bust = Utilities.ParseInitialDigits(parts[0]);
+                                Actress.Waist = Utilities.ParseInitialDigits(parts[1]);
+                                Actress.Hips = Utilities.ParseInitialDigits(parts[2]);
+                            }
+                            else
+                            {
+                                string[] parts = measurements.Split('/');
+                                Actress.Bust = Utilities.ParseInitialDigits(parts[1].Trim().Substring(1));
+                                Actress.Waist = Utilities.ParseInitialDigits(parts[2].Trim().Substring(1));
+                                Actress.Hips = Utilities.ParseInitialDigits(parts[3].Trim().Substring(1));
+                            }
+                        }
+                        catch (Exception)
+                        { }
+                    }
+                    else if (element.FirstElementChild?.TextContent == "Height")
+                    {
+                        int height = Utilities.ParseInitialDigits(element.NextElementSibling?.TextContent);
+                        if (height > 0)
+                            Actress.Height = height;
+                    }
                 }
             }
         }
         #endregion
-
     }
 }

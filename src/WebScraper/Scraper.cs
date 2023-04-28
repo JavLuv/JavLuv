@@ -112,7 +112,7 @@ namespace WebScraper
             return actressData;
         }
 
-        private ActressData ScrapeActress(ModuleActress module, ActressData actressData)
+        public ActressData ScrapeActress(ModuleActress module, ActressData actressData)
         {
             if (IsActressDataComplete(actressData))
                 return actressData;
