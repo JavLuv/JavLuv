@@ -140,8 +140,39 @@ namespace MovieInfo
             AltNames = new HashSet<NamePair>();
         }
 
+        #endregion
+
+        #region Public Functions
+
+        public static void Filter(XElement element)
+        {
+            foreach (var child in element.Elements())
+                Filter(child);
+
+            if (element.Name == "Cup")
+            {
+                // Japanese-style cup size is always single-value.  There are some cases
+                // where "Unknown" or "unknown" is stored.  We'll just clear these out.
+                if (element.Value.Length > 1)
+                    element.Value = String.Empty;
+            }
+            else if (element.Name == "Bust" || element.Name == "Waist" || element.Name == "Hips" || element.Name == "Height")
+            {
+                // There have been parsing errors where -1 was stored, instead of the empty value 0.
+                int value = 0;
+                if (Int32.TryParse(element.Value, out value))
+                {
+                    if (value == -1)
+                        element.Value = "0";
+                }
+            }
+        }
+
         public static void Filter(XDocument doc)
         {
+            var root = doc.Root;
+            foreach (var element in root.Elements())
+                Filter(element);
         }
 
         #endregion

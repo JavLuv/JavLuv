@@ -97,7 +97,8 @@ namespace WebScraper
                         string cupText = Parse(content, "Cup: ");
                         // Saw one example of multiple entries.
                         string[] cups = cupText.Split(' ');
-                        Actress.Cup = cups[0];
+                        if (String.Compare(cups[0], "Unknown", true) != 0)
+                            Actress.Cup = cups[0];
 
                         // Parse blood type
                         Actress.BloodType = Parse(content, "Blood: ");
@@ -128,22 +129,18 @@ namespace WebScraper
                 return retVal;
             int wsIndex = substr.IndexOf(' ');
             int nlIndex = substr.IndexOf('\n');
-            index = Math.Min(wsIndex, nlIndex);
+            if (wsIndex == -1 && nlIndex == -1)
+                index = substr.Length - 1;
+            else if (wsIndex == -1)
+                index = nlIndex;
+            else if (nlIndex == -1)
+                index = wsIndex;
+            else
+                index = Math.Min(wsIndex, nlIndex);
             retVal = substr.Substring(0, index);
             return retVal;
         }
-        /*
-        private bool IsValidNode(INode element)
-        {
-            if (element == null)
-                return false;
-            if (String.IsNullOrEmpty(element.TextContent))
-                return false;
-            if (element.TextContent.Trim() == "Unknown")
-                return false;
-            return true;
-        }
-        */
+
         #endregion
     }
 }

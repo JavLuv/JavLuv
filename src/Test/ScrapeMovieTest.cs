@@ -2,7 +2,7 @@
 using MovieInfo;
 using WebScraper;
 
-namespace Test
+namespace JavLuv
 {
     public class ScrapeMovieTest
     {
