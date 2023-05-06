@@ -135,7 +135,7 @@ namespace WebScraper
                     {
                         string s = StripOrigin(href);
                         TagType tagType = ParseTagType(s);
-                        string tagContent = element.TextContent;
+                        string tagContent = element.TextContent.Trim();
                         if (String.IsNullOrEmpty(tagContent))
                             continue;
                         if (tagType == TagType.Genre)

@@ -43,8 +43,9 @@ namespace WebScraper
 
         protected override bool IsLanguageSupported()
         {
-            if (m_language == LanguageType.English)
-                return true;
+            // Temporarily disable JavGuru, unless we can
+            //if (m_language == LanguageType.English)
+            //    return true;
             return false;
         }
 
