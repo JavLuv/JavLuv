@@ -87,7 +87,10 @@ namespace WebScraper
                     var nextElement = element.NextElementSibling;
                     if (nextElement != null)
                     {
-                        m_metadata.Title = FixCensored(nextElement.TextContent);
+                        string title = FixCensored(nextElement.TextContent);
+                        if (title.StartsWith(Metadata.UniqueID.Value))
+                            title = title.Substring(Metadata.UniqueID.Value.Length).Trim();
+                        Metadata.Title = title;
                     }
                 }
                 else if (element.TextContent == "DVD ID:")
@@ -132,7 +135,7 @@ namespace WebScraper
                     {
                         string s = StripOrigin(href);
                         TagType tagType = ParseTagType(s);
-                        string tagContent = element.TextContent;
+                        string tagContent = element.TextContent.Trim();
                         if (String.IsNullOrEmpty(tagContent))
                             continue;
                         if (tagType == TagType.Genre)

@@ -2,6 +2,11 @@
 
 All significant changes are listed in this file.
 
+## [1.1.27] - 2023-5-6
+- Add automated tests for movie scrapers for improved future reliability
+- Fix several issues in actress and movie scrapers
+- Add filter to correct bad data in Actress database
+
 ## [1.1.26] - 2023-4-27
 - Fix multiple issues with actress scrapers
 - Add automated tests for actress scrapers for improved future reliability

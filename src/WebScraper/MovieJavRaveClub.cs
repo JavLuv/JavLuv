@@ -35,8 +35,8 @@ namespace WebScraper
 
         protected override bool IsLanguageSupported()
         {
-            if (m_language == LanguageType.English)
-                return true;
+            //if (m_language == LanguageType.English)
+            //    return true;
             return false;
         }
 

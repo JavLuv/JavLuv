@@ -441,7 +441,7 @@ namespace Common
 
         public static string ReverseNames(string name)
         {
-            var splitNames = name.Split(' ');
+            var splitNames = name.Trim().Split(' ');
             if (splitNames.Count() == 2)
                 return splitNames[1] + " " + splitNames[0];
             return name;

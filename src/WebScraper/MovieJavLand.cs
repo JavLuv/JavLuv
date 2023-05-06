@@ -87,7 +87,7 @@ namespace WebScraper
                     if (next != null)
                     {
                         if (next.TextContent != "---")
-                            m_metadata.Director = next.TextContent;
+                            m_metadata.Director = next.TextContent.Trim();
                     }
                 }
                 else if (element.TextContent == GetToken(Token.Series))
@@ -96,7 +96,7 @@ namespace WebScraper
                     if (next != null)
                     {
                         if (next.TextContent != "---")
-                            m_metadata.Series = next.TextContent;
+                            m_metadata.Series = next.TextContent.Trim();
                     }
                 }
                 else if (element.TextContent == GetToken(Token.Maker))
@@ -109,7 +109,7 @@ namespace WebScraper
                         {
                             next = next.FirstElementChild;
                             if (next != null)
-                                m_metadata.Studio = next.TextContent;
+                                m_metadata.Studio = next.TextContent.Trim();
                         }
                     }
                 }
@@ -123,7 +123,7 @@ namespace WebScraper
                         {
                             next = next.FirstElementChild;
                             if (next != null)
-                                m_metadata.Label = next.TextContent;
+                                m_metadata.Label = next.TextContent.Trim();
                         }
                     }
                 }
@@ -167,7 +167,7 @@ namespace WebScraper
             var child = element.FirstElementChild;
             if (CheckAttribute(child, "class", "star"))
             {
-                actor.Name = child.TextContent;
+                actor.Name = Utilities.ReverseNames(child.TextContent);
                 if (String.IsNullOrEmpty(actor.Name) == false)
                     m_metadata.Actors.Add(actor);
             }
