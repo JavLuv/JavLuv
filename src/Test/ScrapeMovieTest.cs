@@ -76,5 +76,33 @@ namespace JavLuv
             Assert.NotEmpty(module.ImageSource);
         }
 
+        [Fact]
+        public void TestScrapeMovieJavSeenTv1()
+        {
+            var metadata = new MovieMetadata("HAVD-959");
+            var module = new MovieJavSeenTv(metadata, LanguageType.English);
+            module.Scrape();
+            Assert.Equal("- Kiss Kiss Of Ladies Lesbian Lesbian Lesbian Lesbian Secret Affair - Hibino", module.Metadata.Title);          
+            Assert.Empty(module.Metadata.Premiered);
+            Assert.Equal(0, module.Metadata.Runtime);
+            Assert.Equal("Dr.TORIHAMA", module.Metadata.Director);
+            Assert.Equal("Hibino", module.Metadata.Studio);
+            Assert.Empty(module.Metadata.Label);
+        }
+
+        [Fact]
+        public void TestScrapeMovieJavSeenTv2()
+        {
+            var metadata = new MovieMetadata("BBAN-333");
+            var module = new MovieJavSeenTv(metadata, LanguageType.English);
+            module.Scrape();
+            Assert.Equal("Who Is She...? A Barely Legal Suddenly Targeted And Fucked - Aoi Nakajo, Mio Ichijo", module.Metadata.Title);
+            Assert.Equal("2021-7-2", module.Metadata.Premiered);
+            Assert.Equal(0, module.Metadata.Runtime);
+            Assert.Empty(module.Metadata.Director);
+            Assert.Equal("bibian", module.Metadata.Studio);
+            Assert.Equal("bibian", module.Metadata.Label);
+        }
+
     }
 }

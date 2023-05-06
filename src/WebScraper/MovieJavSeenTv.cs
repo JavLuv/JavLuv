@@ -3,6 +3,7 @@ using AngleSharp.Dom;
 using MovieInfo;
 using System;
 using Common;
+using System.Reflection.Emit;
 
 namespace WebScraper
 {
@@ -94,25 +95,40 @@ namespace WebScraper
                         ImageSource = element.GetAttribute("content");
                     }
                 }
-                else if (element.NodeName == "DIV" && element.ClassName == "col-xs-12 col-sm-6 col-md-7")
+                else if (element.NodeName == "DIV" && element.ClassName == "col-xs-12 col-sm-6 col-md-8")
                 {
                     if (element.TextContent.Contains("Release Day:"))
                     {
                         string premiered = element.TextContent;
                         int index = premiered.IndexOf("Release Day:") + 12;
-                        m_metadata.Premiered = premiered.Substring(index).Trim();
+                        string dateString = premiered.Substring(index).Trim();
+                        DateTime date = new DateTime();
+                        if (DateTime.TryParse(dateString, out date))
+                            m_metadata.Premiered = date.ToString("yyyy-M-d");
                     }
                     else if (element.TextContent.Contains("Studio:"))
                     {
                         string studio = element.TextContent;
                         int index = studio.IndexOf("Studio:") + 7;
-                        m_metadata.Studio = studio.Substring(index).Trim();
+                        studio = studio.Substring(index).Trim();
+                        if (studio != "----" && String.IsNullOrEmpty(studio) == false)
+                            m_metadata.Studio = studio;
                     }
                     else if (element.TextContent.Contains("Label:"))
                     {
                         string label = element.TextContent;
                         int index = label.IndexOf("Label:") + 6;
-                        m_metadata.Label = label.Substring(index).Trim();
+                        label = label.Substring(index).Trim();
+                        if (label != "----" && String.IsNullOrEmpty(label) == false)
+                            m_metadata.Label = label;
+                    }
+                    else if (element.TextContent.Contains("Director:"))
+                    {
+                        string director = element.TextContent;
+                        int index = director.IndexOf("Director:") + 9;
+                        director = director.Substring(index).Trim();
+                        if (director != "----" && String.IsNullOrEmpty(director) == false)
+                            m_metadata.Director = director;
                     }
                 }
             }
