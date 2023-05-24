@@ -42,7 +42,7 @@ namespace WebScraper
                 // Check for cover image
                 if (element.NodeName == "IMG")
                 {
-                    if (m_metadata.UniqueID.Value == element.GetAttribute("alt"))
+                    if (element.GetAttribute("alt")?.StartsWith(m_metadata.UniqueID.Value) == true)
                     {
                         string srcAttr = element.GetAttribute("src");
                         if (String.IsNullOrEmpty(srcAttr) == false && srcAttr.StartsWith("http"))
@@ -59,7 +59,7 @@ namespace WebScraper
                 {
                     // Ensure this is the feature idols group
                     var child = element.FirstElementChild;
-                    if (child?.NodeName == "H2" && child?.TextContent == "Featured Idols")
+                    if (child?.NodeName == "H2" && child?.TextContent.EndsWith("Actress/Idols") == true)
                     {
                         child = child.NextElementSibling;
                         if (child?.NodeName == "DIV" && child?.ClassName == "row")
@@ -145,19 +145,23 @@ namespace WebScraper
                         }
                         else if (tagType == TagType.Studio)
                         {
-                            m_metadata.Studio = tagContent;
+                            if (String.IsNullOrEmpty(m_metadata.Studio))
+                                m_metadata.Studio = tagContent;
                         }
                         else if (tagType == TagType.Label)
                         {
-                            m_metadata.Label = tagContent;
+                            if (String.IsNullOrEmpty(m_metadata.Label))
+                                m_metadata.Label = tagContent;
                         }
                         else if (tagType == TagType.Director)
                         {
-                            m_metadata.Director = tagContent;
+                            if (String.IsNullOrEmpty(m_metadata.Director))
+                                m_metadata.Director = tagContent;
                         }
                         else if (tagType == TagType.Series)
                         {
-                            m_metadata.Series = FixCensored(tagContent);
+                            if (String.IsNullOrEmpty(m_metadata.Series))
+                                m_metadata.Series = FixCensored(tagContent);
                         }
                     }
                 }

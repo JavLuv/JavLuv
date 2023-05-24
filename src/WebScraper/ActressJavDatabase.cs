@@ -56,7 +56,7 @@ namespace WebScraper
                 }
                 if (element.NodeName == "H1")
                 {
-                    if (element.TextContent == Actress.Name)
+                    if (element.TextContent.StartsWith(Actress.Name))
                     {
                         if (element.Parent == null)
                             continue;
