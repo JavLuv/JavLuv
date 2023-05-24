@@ -2,6 +2,9 @@
 
 All significant changes are listed in this file.
 
+## [1.1.28] - 2023-5-24
+- Fix JavDatabase scrapers broken due to website changes
+
 ## [1.1.27] - 2023-5-6
 - Add automated tests for movie scrapers for improved future reliability
 - Fix several issues in actress and movie scrapers
