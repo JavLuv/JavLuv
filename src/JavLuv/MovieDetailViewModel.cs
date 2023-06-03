@@ -632,7 +632,7 @@ namespace JavLuv
             text += TextManager.GetString("Text.Genres") + " " + Genres + "\n";
             text += TextManager.GetString("Text.Actresses") + " " + Actors + "\n\n";
             text += TextManager.GetString("Text.Resolution") + " " + Resolution + "\n\n";
-            Clipboard.SetText(text);
+            Utilities.SetClipboardText(text);
         }
 
         private bool CanCopyTitleAndMetadataExecute()
