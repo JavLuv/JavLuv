@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
+using System.Windows;
 
 namespace Common
 {
@@ -792,6 +793,23 @@ namespace Common
             foreach (var fullPathFilename in fullPathFilenames)
                 result.Add(Path.GetFileName(fullPathFilename));
             return result;
+        }
+
+        public static void SetClipboardText(string text)
+        {
+            // Believe it or not, this is the recommended fix for a periodic issue of the
+            // clipboard being open by another application or the system, which should 
+            // clear up after a brief moment.  We try 10 times in succession.
+            for (int i = 0; i < 10; i++)
+            {
+                try
+                {
+                    Clipboard.SetText(text);
+                    return;
+                }
+                catch{}
+                System.Threading.Thread.Sleep(10);
+            }         
         }
 
         #endregion

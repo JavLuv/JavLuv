@@ -511,6 +511,7 @@ namespace JavLuv
                 sb.Append(") ");
                 sb.AppendLine(movie.Metadata.Title.Substring(0, Math.Min(movie.Metadata.Title.Length, 160)));
             }
+            Utilities.SetClipboardText(sb.ToString());
             Clipboard.SetText(sb.ToString());
         }
 
