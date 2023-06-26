@@ -2,6 +2,9 @@
 
 All significant changes are listed in this file.
 
+## [1.1.30] - 2023-6-25
+- Add reverse-filter entry to JavDatabase movie scraper
+
 ## [1.1.29] - 2023-6-2
 - Fix rare crash when copying movie list or details to clipboard
 
