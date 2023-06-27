@@ -623,16 +623,27 @@ namespace JavLuv
             if (Settings.Get().Language == LanguageType.English)
                 text += m_movieData.Metadata.OriginalTitle + "\n";
             text += "\n\n";
-            text += TextManager.GetString("Text.ID") + " " + ID + "\n";
-            text += TextManager.GetString("Text.Released") + " " + Released + "\n";
-            text += TextManager.GetString("Text.Runtime") + " " + Runtime + "\n";
-            text += TextManager.GetString("Text.Studio") + " " + Studio + "\n";
-            text += TextManager.GetString("Text.Label") + " " + Label + "\n";
-            text += TextManager.GetString("Text.Director") + " " + Director + "\n";
-            text += TextManager.GetString("Text.Genres") + " " + Genres + "\n";
-            text += TextManager.GetString("Text.Actresses") + " " + Actors + "\n\n";
-            text += TextManager.GetString("Text.Resolution") + " " + Resolution + "\n\n";
+            text += CopyLabel("Text.ID", ID);
+            text += CopyLabel("Text.Released", Released);
+            text += CopyLabel("Text.Runtime", Runtime);
+            text += CopyLabel("Text.Studio", Studio);
+            text += CopyLabel("Text.Label", Label);
+            text += CopyLabel("Text.Director", Director);
+            text += CopyLabel("Text.Genres", Genres);
+            text += CopyLabel("Text.Actresses", Actors) + "\n";
+            text += CopyLabel("Text.Resolution", Resolution) + "\n";
             Utilities.SetClipboardText(text);
+        }
+
+        private string CopyLabel(string textID, string text)
+        {
+            string returnValue = TextManager.GetString(textID) + " ";
+            if (String.IsNullOrEmpty(text))
+                returnValue += "N/A";
+            else
+                returnValue += text;
+            returnValue += "\n";
+            return returnValue;
         }
 
         private bool CanCopyTitleAndMetadataExecute()
