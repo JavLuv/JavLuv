@@ -311,8 +311,10 @@ namespace WebScraper
                  new SearchPair ("A****p", "Asleep"),
                  new SearchPair ("m************n", "mother and son"),
                  new SearchPair ("M************n", "Mother And Son"),
-                  new SearchPair ("k*d", "kid"),
+                 new SearchPair ("k*d", "kid"),
                  new SearchPair ("K*d", "Kid"),
+                 new SearchPair ("i****tuous", "incestuous"),
+                 new SearchPair ("I****tuous", "Incestuous"),
          });
         #endregion
     }
