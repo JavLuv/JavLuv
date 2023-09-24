@@ -2,6 +2,10 @@
 
 All significant changes are listed in this file.
 
+## [1.1.31] - 2023-9-23
+- Add support for {RELEASE_DATE} for move/rename functionality
+- Added 'Add to collection' option in Scan dialog
+
 ## [1.1.30] - 2023-6-26
 - Add reverse-filter entry to JavDatabase movie scraper
 - Copied movie detail text lists N/A in place of blank fields

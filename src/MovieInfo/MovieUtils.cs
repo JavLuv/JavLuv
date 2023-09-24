@@ -780,6 +780,14 @@ namespace MovieInfo
                 else
                     sb.Append(FilterFileName(movieData.Metadata.Year.ToString()));
             }
+            else if (token.StartsWith("RELEASE_DATE"))
+            {
+                token = token.Substring(4);
+                if (String.IsNullOrEmpty(movieData.Metadata.Premiered))
+                    sb.Append("(Unknown)");
+                else
+                    sb.Append(FilterFileName(movieData.Metadata.Premiered));
+            }
             else if (token.StartsWith("ACTRESS"))
             {
                 token = token.Substring(7).TrimStart();

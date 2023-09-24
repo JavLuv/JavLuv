@@ -67,6 +67,7 @@ namespace JavLuv
             SubtitleImportFolder = String.Empty;
             SubtitleExportFolder = String.Empty;
 
+            AddToCollection = true;
             ScanRecursively = true;
             AutoImportImprovedMovies = true;
             SearchViewWidth = new GridLength(300);
@@ -124,6 +125,7 @@ namespace JavLuv
         public string SubtitleExportFolder { get; set; }
         public int SelectedTabIndex { get; set; }
         public Organizer.Mode OrganizerMode { get; set; }
+        public bool AddToCollection { get; set; }
         public bool ScanRecursively { get; set; }
         public bool AutoImportImprovedMovies { get; set; }
         public bool MoveRenameAfterScan { get; set; }
@@ -211,6 +213,8 @@ namespace JavLuv
                 {
                     if (SemanticVersion.Current == new SemanticVersion(1, 1, 16))
                         s_settings.AutoImportImprovedMovies = true;
+                    if (SemanticVersion.Current == new SemanticVersion(1, 1, 31))
+                        s_settings.AddToCollection = true;
                 }
             }
         }
