@@ -352,7 +352,8 @@ namespace JavLuv
                 m_movieBrowserViewModel.MoveRenameMovies(m_movieScanner.Movies);
 
             // Add new movies to movie database
-            m_movieCollection.AddMovies(m_movieScanner.Movies);
+            if (JavLuv.Settings.Get().AddToCollection)
+                m_movieCollection.AddMovies(m_movieScanner.Movies);
 
             m_movieScanner.Clear();
         }

@@ -201,6 +201,7 @@
 
     <!-- Scan Movies View -->
     <system:String x:Key="Text.ScanMoviesTitle">Scan Movies</system:String>
+    <system:String x:Key="Text.AddToCollection">Add to collection</system:String>
     <system:String x:Key="Text.ScanSubfolders">Scan subfolders</system:String>
     <system:String x:Key="Text.AutoImportImprovedMovies">Auto import movies of similar or better quality</system:String>
     <system:String x:Key="Text.MoveRenameAfterScan">Move / rename after scan</system:String>
