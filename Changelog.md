@@ -2,8 +2,9 @@
 
 All significant changes are listed in this file.
 
-## [1.1.32] - 2023-11-25
+## [1.1.32] - 2023-12-20
 - Fix bug preventing displsy when invisible characters are copied into search bar
+- Add mpeg as recognized movie extensions
 
 ## [1.1.31] - 2023-9-23
 - Add support for {RELEASE_DATE} for move/rename functionality
