@@ -135,7 +135,7 @@ namespace MovieInfo
         {
             m_movieCollection = collection;
             m_cacheData = cacheData;
-            m_searchText = searchText;
+            m_searchText = searchText.Sanitize();
             m_searchActress = searchActress;
             m_sortMoviesBy = sortMoviesBy;
             m_showUnratedOnly = showUnratedOnly;

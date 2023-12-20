@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.Eventing.Reader;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -181,6 +182,28 @@ namespace Common
             var takeCount = s.TakeWhile(x => (n -= (x == c ? 1 : 0)) > 0).Count();
             return takeCount == s.Length ? -1 : takeCount;
         }   
+
+        public static string Sanitize(this string s)
+        {
+            StringBuilder sb = new StringBuilder(s.Length);
+            string excluded = "\u0009\u000A\u000D\u00A0\u200b";
+            foreach (char c in s)
+            {
+                bool skip = false;
+                foreach (char x in excluded)
+                {
+                    if (c == x)
+                    {
+                        skip = true;
+                        break;
+                    }
+                }
+                if (skip == true)
+                    continue;
+                sb.Append(c);
+            }
+            return sb.ToString();
+        }
 
         public static string GetValidSubFolder(string folderName)
         {
