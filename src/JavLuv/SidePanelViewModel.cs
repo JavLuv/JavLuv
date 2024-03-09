@@ -6,6 +6,7 @@ using SortMoviesByPair = JavLuv.ObservableStringValuePair<MovieInfo.SortMoviesBy
 using SortMoviesByPairList = System.Collections.ObjectModel.ObservableCollection<JavLuv.ObservableStringValuePair<MovieInfo.SortMoviesBy>>;
 using SortActressesByPair = JavLuv.ObservableStringValuePair<MovieInfo.SortActressesBy>;
 using SortActressesByPairList = System.Collections.ObjectModel.ObservableCollection<JavLuv.ObservableStringValuePair<MovieInfo.SortActressesBy>>;
+using Common;
 
 namespace JavLuv
 {
@@ -153,7 +154,7 @@ namespace JavLuv
                 if (value != Settings.Get().SearchText)
                 {
                     Parent.Collection.SearchText = value;
-                    Settings.Get().SearchText = value;
+                    Settings.Get().SearchText = value.Sanitize();
                     NotifyPropertyChanged("SearchText");
                 }
             }

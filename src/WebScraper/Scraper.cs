@@ -55,7 +55,6 @@ namespace WebScraper
             ScrapeSecondaryMovie(new MovieJavGuru(new MovieMetadata(movieID), language), mergedMetadata, ref coverImagePath);
             ScrapeSecondaryMovie(new MovieJavLand(new MovieMetadata(movieID), language), mergedMetadata, ref coverImagePath);
             ScrapeSecondaryMovie(new MovieJavSeenTv(new MovieMetadata(movieID), language), mergedMetadata, ref coverImagePath);
-            ScrapeSecondaryMovie(new MovieJavBus(new MovieMetadata(movieID), language), mergedMetadata, ref coverImagePath);
 
             // Is this minimally acceptable?
             if (IsMovieMetadataAcceptable(mergedMetadata) == false)
@@ -185,14 +184,6 @@ namespace WebScraper
                     retVal = true;
             }
 
-            if (retVal == false)
-            {
-                var javBus = new MovieJavBus(metadata, LanguageType.English);
-                javBus.Scrape();
-                if (DownloadImage(ref coverImagePath, javBus.ImageSource))
-                    retVal = true;
-            }
-
             return retVal;
         }
 
@@ -225,9 +216,6 @@ namespace WebScraper
             if (IsMovieMetadataCompleteOrAcceptable(combinedMetadata, completion))
                 return combinedMetadata;
             ScrapeSecondaryMovie(new MovieJavLand(new MovieMetadata(movieID), LanguageType.Japanese), combinedMetadata, ref coverImagePath);
-            if (IsMovieMetadataCompleteOrAcceptable(combinedMetadata, completion))
-                return combinedMetadata;
-            ScrapeSecondaryMovie(new MovieJavBus(new MovieMetadata(movieID), LanguageType.Japanese), combinedMetadata, ref coverImagePath);
             return combinedMetadata;
         }
 
