@@ -2,6 +2,9 @@
 
 All significant changes are listed in this file.
 
+## [1.1.33] - 2024-3-9
+- Remove now-unsupported JavBus scraper
+
 ## [1.1.32] - 2023-12-20
 - Fix bug preventing displsy when invisible characters are copied into search bar
 - Add mpeg as recognized movie extensions
