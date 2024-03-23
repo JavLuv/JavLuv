@@ -187,9 +187,26 @@ namespace JavLuv
             if (IsCancelled || m_dispatcher.HasShutdownStarted)
                 return;
 
-            // Check to see if the directory exists
-            if (Directory.Exists(directoryToScan) == false)
+            // Check to see if the directory doesn't exist or is
+            // a system folder, and if so, exit early
+            try
+            {
+                var directoryInfo = new DirectoryInfo(directoryToScan);
+                if (directoryInfo.Exists == false)
+                    return;
+                // Check to see if this is a root folder, and make an exception,
+                // since these are marked with a system attribute.
+                if (directoryInfo.Root.ToString() != directoryToScan)
+                {
+                    if (directoryInfo.Attributes.HasFlag(FileAttributes.System))
+                        return;
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.WriteError("Issue when checking folder for scanning", ex);
                 return;
+            }
 
             ItemsProcessed++;
             m_dispatcher.Invoke(DispatcherPriority.Normal, new Action(delegate () { ScanUpdate?.Invoke(this, new EventArgs()); }));
@@ -197,19 +214,19 @@ namespace JavLuv
             Logger.WriteInfo(String.Format("Processing folder: {0}", directoryToScan));
 
             // Gather information about this scanned directory
-            var directoryInfo = new DirectoryInfo();
-            directoryInfo.Path = directoryToScan;
-            directoryInfo.Folder = Path.GetFileName(directoryToScan);
-            directoryInfo.ID = Utilities.ParseMovieID(directoryInfo.Folder);
-            if (String.IsNullOrEmpty(directoryInfo.ID) == false)
-                Logger.WriteInfo(String.Format("Detected ID {0} in folder name", directoryInfo.ID));
+            var folderInfo = new FolderInfo();
+            folderInfo.Path = directoryToScan;
+            folderInfo.Folder = Path.GetFileName(directoryToScan);
+            folderInfo.ID = Utilities.ParseMovieID(folderInfo.Folder);
+            if (String.IsNullOrEmpty(folderInfo.ID) == false)
+                Logger.WriteInfo(String.Format("Detected ID {0} in folder name", folderInfo.ID));
 
             // Check if folder has previously been scanned (i.e. is already in collection), and if so, whether it's a shared folder
-            directoryInfo.ExistsInCollection = m_movieCollection.FolderInCollection(
-                directoryInfo.ID, 
-                directoryInfo.Path, 
-                out directoryInfo.IsSharedFolder, 
-                out directoryInfo.ID
+            folderInfo.ExistsInCollection = m_movieCollection.FolderInCollection(
+                folderInfo.ID, 
+                folderInfo.Path, 
+                out folderInfo.IsSharedFolder, 
+                out folderInfo.ID
                 );
 
             try
@@ -262,7 +279,7 @@ namespace JavLuv
                             // Mark this as a shared folder, since we may have extra files in it now.  Otherwise, if
                             // only one successful file remains, the directory could be inadvertently be moved instead
                             // of selected files copied.
-                            directoryInfo.IsSharedFolder = true;
+                            folderInfo.IsSharedFolder = true;
 
                             // Check to see if we want to import better movies, and if so, ignore the duplicate
                             if (fileInfo.FileType == FileType.Movie && m_autoImportImprovedMovies == false)
@@ -280,37 +297,54 @@ namespace JavLuv
                         Logger.WriteInfo(String.Format("No ID detected in file name {0}", fileInfo.FileName));
 
                     // Add this file to the directory info to analyze and scan
-                    directoryInfo.Files.Add(fileInfo);
+                    folderInfo.Files.Add(fileInfo);
                 }
             }
-            catch (UnauthorizedAccessException ex)
+            catch (System.UnauthorizedAccessException ex)
+            {
+                Logger.WriteError("Issue when iterating over filenames during scanning", ex);
+                return;
+            }
+            catch (System.Exception ex)
             {
                 Logger.WriteError("Issue when iterating over filenames during scanning", ex);
             }
 
             // Only process non-empty folders
-            if (directoryInfo.Files.Count > 0)
+            if (folderInfo.Files.Count > 0)
             {
                 // Fix some special-case IDs
-                FixMultiPartD(directoryInfo);
+                FixMultiPartD(folderInfo);
 
                 // Check to see if this folder has more than one movie in it
-                directoryInfo.IsSharedFolder = IsSharedFolder(directoryInfo);
+                folderInfo.IsSharedFolder = IsSharedFolder(folderInfo);
 
                 // Finish processing directory
-                ProcessDirectoryInfo(directoryInfo);
+                ProcessDirectoryInfo(folderInfo);
             }
 
             // Recursively process any subdirectories if required
             if (m_scanRecursively)
             {
-                string[] directories = Directory.GetDirectories(directoryToScan);
-                foreach (string directory in directories)
-                    ProcessDirectory(directory);
+                try
+                {
+                    string[] directories = Directory.GetDirectories(directoryToScan);
+                    foreach (string directory in directories)
+                        ProcessDirectory(directory);
+                }
+                catch (System.UnauthorizedAccessException ex)
+                {
+                    Logger.WriteError("Issue when getting folders during scanning", ex);
+                    return;
+                }
+                catch (System.Exception ex)
+                {
+                    Logger.WriteError("Issue when getting folders during scanning", ex);
+                }
             }
         }
 
-        private void FixMultiPartD(DirectoryInfo directoryInfo)
+        private void FixMultiPartD(FolderInfo directoryInfo)
         {
             // A file whose embedded ID ends in 'D' can either be a legit ID (in very rare cases)
             // or it can be the fourth in a series. Unfortunately, it can only be determine by
@@ -336,7 +370,7 @@ namespace JavLuv
             }
         }
 
-        private void ProcessDirectoryInfo(DirectoryInfo directoryInfo)
+        private void ProcessDirectoryInfo(FolderInfo directoryInfo)
         {
             if (directoryInfo.IsSharedFolder)
             {
@@ -419,7 +453,7 @@ namespace JavLuv
             }
         }
 
-        private MovieData CreateMovieData(DirectoryInfo directoryInfo)
+        private MovieData CreateMovieData(FolderInfo directoryInfo)
         {
             MovieData movieData = new MovieData();
             movieData.Metadata.UniqueID.Value = directoryInfo.ID;
@@ -458,7 +492,7 @@ namespace JavLuv
             }
         }
 
-        private bool IsSharedFolder(DirectoryInfo directoryInfo)
+        private bool IsSharedFolder(FolderInfo directoryInfo)
         {
             // Don't bother checking if we've marked this as a shared folder previously.
             if (directoryInfo.IsSharedFolder)
@@ -1056,7 +1090,7 @@ namespace JavLuv
             public ImageType ImageType = ImageType.Unknown;
         }
 
-        private class DirectoryInfo
+        private class FolderInfo
         {
             public string Path = String.Empty;
             public string Folder = String.Empty;
