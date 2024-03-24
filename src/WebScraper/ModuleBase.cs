@@ -1,4 +1,5 @@
-﻿using AngleSharp.Html.Dom;
+﻿using AngleSharp.Html;
+using AngleSharp.Html.Dom;
 using AngleSharp.Html.Parser;
 using Common;
 using System;
@@ -56,11 +57,28 @@ namespace WebScraper
                 HtmlParser parser = new HtmlParser();
                 IHtmlDocument document = parser.ParseDocument(response);
 
+                if (DebugHtml)
+                    DebugHTML(document);
+
                 ParseDocument(document);
             }
             catch (Exception ex)
             {
                 Logger.WriteError("Issue scraping website: " + siteURL, ex);
+            }
+        }
+
+        protected void DebugHTML(IHtmlDocument document)
+        {
+            var sw = new StringWriter();
+            document.ToHtml(sw, new PrettyMarkupFormatter());
+            var htmlPretty = sw.ToString();
+            string desktopPath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+            string className = this.GetType().Name;
+            string fullPath = Path.Combine(desktopPath, className + ".html");
+            using (StreamWriter writer = new StreamWriter(fullPath))
+            {
+                writer.Write(htmlPretty);
             }
         }
 
@@ -72,6 +90,9 @@ namespace WebScraper
         }
 
         #endregion
+
+        public bool DebugHtml { get; set; }
+
 
         #region Protected Members
 
