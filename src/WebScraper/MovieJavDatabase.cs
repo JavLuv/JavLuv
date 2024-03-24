@@ -82,7 +82,7 @@ namespace WebScraper
                     }
                 }
 
-                if (element.TextContent == "Translated Title:")
+                if (element.TextContent == "Title:")
                 {
                     var nextElement = element.NextElementSibling;
                     if (nextElement != null)
