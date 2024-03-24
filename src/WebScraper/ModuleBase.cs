@@ -25,6 +25,7 @@ namespace WebScraper
         #region Properties
 
         public string ImageSource { get; protected set; }
+        public bool DebugHtml { get; set; }
 
         #endregion
 
@@ -90,9 +91,6 @@ namespace WebScraper
         }
 
         #endregion
-
-        public bool DebugHtml { get; set; }
-
 
         #region Protected Members
 

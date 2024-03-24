@@ -25,7 +25,7 @@ namespace WebScraper
 
             Actress = new ActressData(Name);
             string name = Actress.Name.Replace(' ', '-').ToLower();
-            var task = ScrapeAsync("https://www.javmodel.com/jav/" + name + "/");
+            var task = ScrapeAsync("http://javmodel.com/jav/" + name + "/");
             task.Wait();
         }
 

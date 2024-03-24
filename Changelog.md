@@ -5,6 +5,8 @@ All significant changes are listed in this file.
 ## [1.1.34] - 2024-3-22
 - Fix string sanitizing test
 - Fix scanner errors for system folders
+- Fix JavDatabase movie scraper
+- Fix JavModel actress scraper
 
 ## [1.1.33] - 2024-3-9
 - Remove now-unsupported JavBus scraper
