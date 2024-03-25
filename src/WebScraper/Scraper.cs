@@ -160,14 +160,6 @@ namespace WebScraper
             // Only continue past this point if we haven't yet downloaded a file
             if (retVal == false)
             {
-                var javRaveClub = new MovieJavRaveClub(metadata, LanguageType.English);
-                javRaveClub.Scrape();
-                if (DownloadImage(ref coverImagePath, javRaveClub.ImageSource))
-                    retVal = true;
-            }
-
-            if (retVal == false)
-            {
                 var javLand = new MovieJavLand(metadata, LanguageType.English);
                 javLand.Scrape();
                 if (DownloadImage(ref coverImagePath, javLand.ImageSource))
