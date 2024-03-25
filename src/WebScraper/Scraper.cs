@@ -51,7 +51,6 @@ namespace WebScraper
             mergedMetadata = MergePrimary(javLibraryMetadata, javDatabaseMetadata);           
             
             // Scrape secondary sources if required
-            ScrapeSecondaryMovie(new MovieJavRaveClub(new MovieMetadata(movieID), language), mergedMetadata, ref coverImagePath);
             ScrapeSecondaryMovie(new MovieJavGuru(new MovieMetadata(movieID), language), mergedMetadata, ref coverImagePath);
             ScrapeSecondaryMovie(new MovieJavLand(new MovieMetadata(movieID), language), mergedMetadata, ref coverImagePath);
             ScrapeSecondaryMovie(new MovieJavSeenTv(new MovieMetadata(movieID), language), mergedMetadata, ref coverImagePath);
@@ -93,7 +92,6 @@ namespace WebScraper
             ScrapeActress(new ActressJavDatabase(actressData.Name, language), actressData);
             ScrapeActress(new ActressJavModel(actressData.Name, language), actressData);
             ScrapeActress(new ActressJavBody(actressData.Name, language), actressData);
-            ScrapeActress(new ActressJavRaveClub(actressData.Name, language), actressData);
 
             // Check to make sure there are no duplicates images, and the index is still in range
             if (actressData.ImageFileNames.Count > 0)

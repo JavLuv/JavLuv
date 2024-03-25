@@ -30,7 +30,7 @@ namespace JavLuv
         [Fact]
         public void TestCase1()
         {
-            String s1 = "abcdn\u200b";
+            String s1 = "abcd\u200b";
             String s2 = s1.Sanitize();
             Assert.Equal("abcd", s2);
         }
