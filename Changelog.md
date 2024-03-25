@@ -7,6 +7,7 @@ All significant changes are listed in this file.
 - Fix scanner errors for system folders
 - Fix JavDatabase movie scraper
 - Fix JavModel actress scraper
+- Removed JavRaveClub scrapers due to captcha protection
 
 ## [1.1.33] - 2024-3-9
 - Remove now-unsupported JavBus scraper
