@@ -2,6 +2,9 @@
 
 All significant changes are listed in this file.
 
+## [1.1.35] - 2024-5-30
+- Add new string to JavLibrary title filter
+
 ## [1.1.34] - 2024-3-22
 - Fix string sanitizing test
 - Fix scanner errors for system folders

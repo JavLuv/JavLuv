@@ -315,6 +315,8 @@ namespace WebScraper
                  new SearchPair ("K*d", "Kid"),
                  new SearchPair ("i****tuous", "incestuous"),
                  new SearchPair ("I****tuous", "Incestuous"),
+                 new SearchPair ("s******g", "sleeping"),
+                 new SearchPair ("S******g", "Sleeping"),
          });
         #endregion
     }
