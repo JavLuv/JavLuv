@@ -7,6 +7,8 @@ using SortMoviesByPairList = System.Collections.ObjectModel.ObservableCollection
 using SortActressesByPair = JavLuv.ObservableStringValuePair<MovieInfo.SortActressesBy>;
 using SortActressesByPairList = System.Collections.ObjectModel.ObservableCollection<JavLuv.ObservableStringValuePair<MovieInfo.SortActressesBy>>;
 using Common;
+using WebScraper;
+using System;
 
 namespace JavLuv
 {
@@ -281,6 +283,18 @@ namespace JavLuv
             }
         }
 
+        public Visibility DebugVisible
+        {
+            get
+            {
+                #if DEBUG
+                return Visibility.Visible;
+                #else
+                return Visibility.Collapsed;
+                #endif
+            }
+        }
+
         #endregion
 
         #region Commands
@@ -368,6 +382,39 @@ namespace JavLuv
         }
 
         public ICommand OrganizeSubtitlesCommand { get { return new RelayCommand(OrganizeSubtitlesExecute, CanOrganizeSubtitlesExecute); } }
+
+        #endregion
+
+        #region Test Scrapers Command
+
+        private void TestScrapersExecute()
+        {
+            if (Parent.IsScanning)
+                return;
+            var mainWindow = Application.Current.MainWindow as MainWindow;
+            try
+            {
+                //mainWindow.webViewControl.Visibility = Visibility.Visible;
+                TestScraper.RunTests(Application.Current.Dispatcher, mainWindow.webView);
+
+            }
+            catch(Exception ex)
+            {
+                var msgRes = System.Windows.Forms.MessageBox.Show(
+                    ex.ToString(),
+                    "Test Scrapers",
+                    System.Windows.Forms.MessageBoxButtons.OK);
+
+                return;
+            }
+        }
+
+        private bool CanTestScrapersEExecute()
+        {
+            return Parent.IsScanning == false;
+        }
+
+        public ICommand TestScrapersECommand { get { return new RelayCommand(TestScrapersExecute, CanTestScrapersEExecute); } }
 
         #endregion
 

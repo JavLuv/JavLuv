@@ -7,11 +7,18 @@ using System.Linq;
 using System.Net;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Windows.Threading;
 
 namespace WebScraper
 {
     public class Scraper
     {
+        public Scraper(Dispatcher dispatcher, WebBrowser webBrowser) 
+        { 
+            m_dispatcher = dispatcher;
+            m_webBrowser = webBrowser;
+        }
+
         #region Public Functions
 
         public MovieMetadata ScrapeMovie(string movieID, ref string coverImagePath, LanguageType language)
@@ -31,7 +38,7 @@ namespace WebScraper
             // Create first scraper module and execute
             var javLibraryMetadata = new MovieMetadata();
             javLibraryMetadata.UniqueID.Value = movieID;
-            var javLibrary = new MovieJavLibrary(javLibraryMetadata, language);
+            var javLibrary = new MovieJavLibrary(javLibraryMetadata, m_dispatcher, m_webBrowser, language);
             javLibrary.Scrape();
             javLibraryMetadata = javLibrary.Metadata;
             if (downloadCoverImage)
@@ -40,7 +47,7 @@ namespace WebScraper
             // Create second scraper module and execute
             var javDatabaseMetadata = new MovieMetadata();
             javDatabaseMetadata.UniqueID.Value = movieID;
-            var javDatabase = new MovieJavDatabase(javDatabaseMetadata, language);
+            var javDatabase = new MovieJavDatabase(javDatabaseMetadata, m_dispatcher, m_webBrowser, language);
             javDatabase.Scrape();
             javDatabaseMetadata = javDatabase.Metadata;
             if (downloadCoverImage)
@@ -51,9 +58,9 @@ namespace WebScraper
             mergedMetadata = MergePrimary(javLibraryMetadata, javDatabaseMetadata);           
             
             // Scrape secondary sources if required
-            ScrapeSecondaryMovie(new MovieJavGuru(new MovieMetadata(movieID), language), mergedMetadata, ref coverImagePath);
-            ScrapeSecondaryMovie(new MovieJavLand(new MovieMetadata(movieID), language), mergedMetadata, ref coverImagePath);
-            ScrapeSecondaryMovie(new MovieJavSeenTv(new MovieMetadata(movieID), language), mergedMetadata, ref coverImagePath);
+            ScrapeSecondaryMovie(new MovieJavGuru(new MovieMetadata(movieID), m_dispatcher, m_webBrowser, language), mergedMetadata, ref coverImagePath);
+            ScrapeSecondaryMovie(new MovieJavLand(new MovieMetadata(movieID), m_dispatcher, m_webBrowser, language), mergedMetadata, ref coverImagePath);
+            ScrapeSecondaryMovie(new MovieJavSeenTv(new MovieMetadata(movieID), m_dispatcher, m_webBrowser, language), mergedMetadata, ref coverImagePath);
 
             // Is this minimally acceptable?
             if (IsMovieMetadataAcceptable(mergedMetadata) == false)
@@ -89,9 +96,9 @@ namespace WebScraper
             Logger.WriteInfo("Attempting to scrape information for " + actressData.Name);
 
             // Check all possible sites for actress info
-            ScrapeActress(new ActressJavDatabase(actressData.Name, language), actressData);
-            ScrapeActress(new ActressJavModel(actressData.Name, language), actressData);
-            ScrapeActress(new ActressJavBody(actressData.Name, language), actressData);
+            ScrapeActress(new ActressJavDatabase(actressData.Name, m_dispatcher, m_webBrowser, language), actressData);
+            ScrapeActress(new ActressJavModel(actressData.Name, m_dispatcher, m_webBrowser, language), actressData);
+            ScrapeActress(new ActressJavBody(actressData.Name, m_dispatcher, m_webBrowser, language), actressData);
 
             // Check to make sure there are no duplicates images, and the index is still in range
             if (actressData.ImageFileNames.Count > 0)
@@ -142,17 +149,17 @@ namespace WebScraper
             // all the sites JavLuv scrapes.
 
             // Download images from all sites and determine the best quality
-            var javLibrary = new MovieJavLibrary(metadata, LanguageType.English);
+            var javLibrary = new MovieJavLibrary(metadata, m_dispatcher, m_webBrowser, LanguageType.English);
             javLibrary.Scrape();
             if (DownloadImage(ref coverImagePath, javLibrary.ImageSource))
                 retVal = true;
 
-            var javDatabase = new MovieJavDatabase(metadata, LanguageType.English);
+            var javDatabase = new MovieJavDatabase(metadata, m_dispatcher, m_webBrowser, LanguageType.English);
             javDatabase.Scrape();
             if (DownloadImage(ref coverImagePath, javDatabase.ImageSource))
                 retVal = true;
 
-            var javGuru = new MovieJavGuru(metadata, LanguageType.English);
+            var javGuru = new MovieJavGuru(metadata, m_dispatcher, m_webBrowser, LanguageType.English);
             javGuru.Scrape();
             if (DownloadImage(ref coverImagePath, javGuru.ImageSource))
                 retVal = true;
@@ -160,7 +167,7 @@ namespace WebScraper
             // Only continue past this point if we haven't yet downloaded a file
             if (retVal == false)
             {
-                var javLand = new MovieJavLand(metadata, LanguageType.English);
+                var javLand = new MovieJavLand(metadata, m_dispatcher, m_webBrowser, LanguageType.English);
                 javLand.Scrape();
                 if (DownloadImage(ref coverImagePath, javLand.ImageSource))
                     retVal = true;
@@ -168,7 +175,7 @@ namespace WebScraper
 
             if (retVal == false)
             {
-                var javSeenTv = new MovieJavSeenTv(metadata, LanguageType.English);
+                var javSeenTv = new MovieJavSeenTv(metadata, m_dispatcher, m_webBrowser, LanguageType.English);
                 javSeenTv.Scrape();
                 if (DownloadImage(ref coverImagePath, javSeenTv.ImageSource))
                     retVal = true;
@@ -199,13 +206,13 @@ namespace WebScraper
             var combinedMetadata = new MovieMetadata();
             combinedMetadata.UniqueID.Value = movieID;
             string coverImagePath = String.Empty;
-            ScrapeSecondaryMovie(new MovieJavDatabase(new MovieMetadata(movieID), LanguageType.Japanese), combinedMetadata, ref coverImagePath);
+            ScrapeSecondaryMovie(new MovieJavDatabase(new MovieMetadata(movieID), m_dispatcher, m_webBrowser, LanguageType.Japanese), combinedMetadata, ref coverImagePath);
             if (IsMovieMetadataCompleteOrAcceptable(combinedMetadata, completion))
                 return combinedMetadata;
-            ScrapeSecondaryMovie(new MovieJavLibrary(new MovieMetadata(movieID), LanguageType.Japanese), combinedMetadata, ref coverImagePath);
+            ScrapeSecondaryMovie(new MovieJavLibrary(new MovieMetadata(movieID), m_dispatcher, m_webBrowser, LanguageType.Japanese), combinedMetadata, ref coverImagePath);
             if (IsMovieMetadataCompleteOrAcceptable(combinedMetadata, completion))
                 return combinedMetadata;
-            ScrapeSecondaryMovie(new MovieJavLand(new MovieMetadata(movieID), LanguageType.Japanese), combinedMetadata, ref coverImagePath);
+            ScrapeSecondaryMovie(new MovieJavLand(new MovieMetadata(movieID), m_dispatcher, m_webBrowser, LanguageType.Japanese), combinedMetadata, ref coverImagePath);
             return combinedMetadata;
         }
 
@@ -619,6 +626,9 @@ namespace WebScraper
             Minimal,
             Complete
         }
+
+        private Dispatcher m_dispatcher;
+        private WebBrowser m_webBrowser;
 
         #endregion
     }

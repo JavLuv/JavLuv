@@ -4,6 +4,7 @@ using Common;
 using MovieInfo;
 using System;
 using System.Runtime.Remoting.Contexts;
+using System.Windows.Threading;
 
 namespace WebScraper
 {
@@ -11,7 +12,7 @@ namespace WebScraper
     {
         #region Constructor
 
-        public ActressJavDatabase(string name, LanguageType language) : base(name, language)
+        public ActressJavDatabase(string name, Dispatcher dispatcher, WebBrowser webBrowser, LanguageType language) : base(name, dispatcher, webBrowser, language)
         {
         }
 
@@ -26,8 +27,7 @@ namespace WebScraper
 
             Actress = new ActressData(Name);
             string name = Actress.Name.Replace(' ', '-').ToLower();
-            var task = ScrapeAsync("https://www.javdatabase.com/idols/" + name + "/");
-            task.Wait();
+            ScrapeWebsite("javdatabase.com", "https://www.javdatabase.com/idols/" + name + "/");
         }
 
         #endregion

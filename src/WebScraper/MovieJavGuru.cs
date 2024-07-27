@@ -3,6 +3,7 @@ using AngleSharp.Dom;
 using MovieInfo;
 using System;
 using Common;
+using System.Windows.Threading;
 
 namespace WebScraper
 {
@@ -10,7 +11,7 @@ namespace WebScraper
     {
         #region Constructors
 
-        public MovieJavGuru(MovieMetadata metadata, LanguageType language) : base(metadata, language)
+        public MovieJavGuru(MovieMetadata metadata, Dispatcher dispatcher, WebBrowser webBrowser, LanguageType language) : base(metadata, dispatcher, webBrowser, language)
         {
         }
 
@@ -25,16 +26,14 @@ namespace WebScraper
 
             // First search the site
             string movieID = m_metadata.UniqueID.Value;
-            var task = ScrapeAsync("https://jav.guru/?s=" + movieID);
-            task.Wait();
+            ScrapeWebsite("jav.guru", "https://jav.guru/?s=" + movieID);
 
             // Did we find a match?
             if (String.IsNullOrEmpty(m_searchResults))
                 return;
 
             // If so, scrape that address
-            task = ScrapeAsync(m_searchResults);
-            task.Wait();
+            ScrapeWebsite("jav.guru", m_searchResults);
         }
 
         #endregion

@@ -175,6 +175,7 @@
     <system:String x:Key="Text.SortByBirthday">Birthday</system:String>
     <system:String x:Key="Text.SortByMovieCount">Movie count</system:String>
     <system:String x:Key="Text.ShowAllActresses">Show all actresses</system:String>
+    <system:String x:Key="Text.TestScrapers">Test Scrapers...</system:String>
     <system:String x:Key="Text.JavLuvWiki">JavLuv Wiki:</system:String>
 
     <!-- Shared Browser Item View -->
