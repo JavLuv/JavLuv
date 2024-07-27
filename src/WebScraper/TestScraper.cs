@@ -28,23 +28,21 @@ namespace WebScraper
         {
             // Test movie scrapers
             TestScrapeMovieJavLibrary();
-            //TestScrapeMovieJavDatabase();
-            //TestScrapeMovieJavLand();
-            //TestScrapeMovieJavSeenTv1();
-            //TestScrapeMovieJavSeenTv2();
+            TestScrapeMovieJavDatabase();
+            TestScrapeMovieJavLand();
+            TestScrapeMovieJavSeenTv1();
+            TestScrapeMovieJavSeenTv2();
 
             // Test actress scrapers
-            //TestScrapeActressJavDatabase();
-            //TestScrapeActressJavModel();
-            //TestScrapeActressJavBody();
-
+            TestScrapeActressJavDatabase();
+            TestScrapeActressJavModel();
+            TestScrapeActressJavBody();
         }
 
         private static void TestScrapeMovieJavLibrary()
         {
             var metadata = new MovieMetadata("IESP-711");
             var module = new MovieJavLibrary(metadata, m_dispatcher, m_webBrowser, LanguageType.English);
-            module.DebugHtml = true;
             module.Scrape();
             
             CheckEqual("Minami Iroha Lesbian Ban - I Was Dragged Into A Lesbian Swamp By My Sister-In-Law -", module.Metadata.Title);
@@ -83,7 +81,7 @@ namespace WebScraper
             CheckEqual(2, module.Metadata.Actors.Count);
             CheckEqual("Iroha Minami", module.Metadata.Actors[0].Name);
             CheckEqual("Rika Omi", module.Metadata.Actors[1].Name);
-            CheckEmpty(module.ImageSource);
+            CheckNotEmpty(module.ImageSource);
         }
 
         private static void TestScrapeMovieJavLand()
@@ -106,7 +104,7 @@ namespace WebScraper
             CheckEqual(2, module.Metadata.Actors.Count);
             CheckEqual("Iroha Minami", module.Metadata.Actors[0].Name);
             CheckEqual("Tadami Rumi", module.Metadata.Actors[1].Name);
-            CheckEmpty(module.ImageSource);
+            CheckNotEmpty(module.ImageSource);
         }
 
         private static void TestScrapeMovieJavSeenTv1()
@@ -137,10 +135,10 @@ namespace WebScraper
 
         public static void TestScrapeActressJavDatabase()
         {
-            var scraper = new Scraper(m_dispatcher, m_webBrowser);
             var actressData = new ActressData("Yui Hatano");
             var module = new ActressJavDatabase(actressData.Name, m_dispatcher, m_webBrowser, LanguageType.English);
-            actressData = scraper.ScrapeActress(module, actressData);
+            module.Scrape();
+            actressData = module.Actress;
             CheckEqual("Yui Hatano", actressData.Name);
             CheckEqual("波多野結衣", actressData.JapaneseName);
             CheckEqual(1988, actressData.DobYear);
@@ -157,10 +155,10 @@ namespace WebScraper
 
         public static void TestScrapeActressJavModel()
         {
-            var scraper = new Scraper(m_dispatcher, m_webBrowser);
             var actressData = new ActressData("Yui Hatano");
             var module = new ActressJavModel(actressData.Name, m_dispatcher, m_webBrowser, LanguageType.English);
-            actressData = scraper.ScrapeActress(module, actressData);
+            module.Scrape();
+            actressData = module.Actress;
             CheckEqual("Yui Hatano", actressData.Name);
             CheckEqual("波多野結衣", actressData.JapaneseName);
             CheckEqual(1988, actressData.DobYear);
@@ -176,10 +174,10 @@ namespace WebScraper
 
         public static void TestScrapeActressJavBody()
         {
-            var scraper = new Scraper(m_dispatcher, m_webBrowser);
             var actressData = new ActressData("Yui Hatano");
             var module = new ActressJavBody(actressData.Name, m_dispatcher, m_webBrowser, LanguageType.English);
-            actressData = scraper.ScrapeActress(module, actressData);
+            module.Scrape();
+            actressData = module.Actress;
             CheckEqual("Yui Hatano", actressData.Name);
             CheckEqual("波多野結衣", actressData.JapaneseName);
             CheckEqual(1988, actressData.DobYear);

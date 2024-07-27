@@ -115,7 +115,8 @@ namespace WebScraper
                 }
                 else if (CheckAttribute(element, "class", "genre"))
                 {
-                    m_metadata.Genres.Add(element.TextContent);
+                    if (m_metadata.Genres.Contains(element.TextContent) == false)
+                        m_metadata.Genres.Add(element.TextContent);
                 }
                 else if (CheckAttribute(element, "class", "cast"))
                 {

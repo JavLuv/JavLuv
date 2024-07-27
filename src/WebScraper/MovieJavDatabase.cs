@@ -5,6 +5,7 @@ using MovieInfo;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Windows.Documents;
 using System.Windows.Threading;
 
 namespace WebScraper
@@ -75,23 +76,29 @@ namespace WebScraper
                                 while (subchild?.NodeName != "A");
                                 string actressName = subchild?.TextContent;
                                 if (String.IsNullOrEmpty(actressName) == false)
-                                    m_metadata.Actors.Add(new ActorData(actressName));
+                                {
+                                    bool unique = true;
+                                    foreach( var actress in m_metadata.Actors)
+                                    {
+                                        if (actress.Name == actressName)
+                                            unique = false;
+                                    }
+                                    if (unique)
+                                        m_metadata.Actors.Add(new ActorData(actressName));
+                                }
                                 actressChild = actressChild.NextElementSibling;
                             }
                         }
                     }
                 }
 
-                if (element.TextContent == "Title:")
+                if (element.TextContent.StartsWith("Title:") && element.ClassName == "mb-1")
                 {
-                    var nextElement = element.NextElementSibling;
-                    if (nextElement != null)
-                    {
-                        string title = FixCensored(nextElement.TextContent);
-                        if (title.StartsWith(Metadata.UniqueID.Value))
-                            title = title.Substring(Metadata.UniqueID.Value.Length).Trim();
-                        Metadata.Title = title;
-                    }
+                    string title = element.TextContent.Substring(7);
+                    title = FixCensored(title).Trim();
+                    if (title.StartsWith(Metadata.UniqueID.Value))
+                        title = title.Substring(Metadata.UniqueID.Value.Length).Trim();
+                    Metadata.Title = title;
                 }
                 else if (element.TextContent == "DVD ID:")
                 {
@@ -107,26 +114,20 @@ namespace WebScraper
                         }
                     }
                 }
-                else if (element.TextContent == "Release Date:")
+                else if (element.NodeName == "P" && element.TextContent.StartsWith("Release Date:"))
                 {
-                    var nextElement = element.NextElementSibling;
-                    if (nextElement != null)
-                    {
-                        m_metadata.Premiered = nextElement.TextContent;
-                        int year = Utilities.ParseInitialDigits(m_metadata.Premiered);
-                        if (year != -1)
-                            m_metadata.Year = year;
-                    }
+                    string dateText = element.TextContent.Substring(14);
+                    m_metadata.Premiered = dateText;
+                    int year = Utilities.ParseInitialDigits(m_metadata.Premiered);
+                    if (year != -1)
+                        m_metadata.Year = year;
                 }
-                else if (element.TextContent == "Runtime:")
+                else if (element.NodeName == "P" && element.TextContent.StartsWith("Runtime:"))
                 {
-                    var nextElement = element.NextElementSibling;
-                    if (nextElement != null)
-                    {
-                        int val = Utilities.ParseInitialDigits(nextElement.TextContent);
-                        if (val != -1)
-                            m_metadata.Runtime = val;
-                    }
+                    string runtimeText = element.TextContent.Substring(9);
+                    int val = Utilities.ParseInitialDigits(runtimeText);
+                    if (val != -1)
+                        m_metadata.Runtime = val;
                 }
                 else if (element.Attributes["href"] != null && element.Attributes["rel"] != null)
                 {
@@ -140,8 +141,9 @@ namespace WebScraper
                             continue;
                         if (tagType == TagType.Genre)
                         {
-                            if (m_metadata.Genres.Contains(tagContent) == false)
-                                m_metadata.Genres.Add(FixCensored(tagContent));
+                            string genreText = FixCensored(tagContent).Trim();
+                            if (m_metadata.Genres.Contains(genreText) == false)
+                                m_metadata.Genres.Add(genreText);
                         }
                         else if (tagType == TagType.Studio)
                         {

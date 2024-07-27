@@ -39,19 +39,14 @@ namespace WebScraper
             foreach (var element in document.All)
             {
                 // Check for actress image
-                if (element.NodeName == "META")
+                if (element.NodeName == "SPAN" && element.ClassName == "rounded flq-image flq-responsive flq-responsive-3x4 flq-responsive-lg-3x4")
                 {
-                    var property = element.GetAttribute("property");
-                    if (property != null && property == "og:image")
+                    var childElement = element.FirstElementChild;
+                    if (childElement != null)
                     {
-                        var content = element.GetAttribute("content");
-                        if (content != null)
-                        {
-                            ImageSource = content.Trim();
-                        }
+                        ImageSource = childElement.GetAttribute("src");
                     }
                 }
-
                 // Check for various metadata
                 else if (element.NodeName == "H2" && element.ClassName == "h5 mb-4")
                 {

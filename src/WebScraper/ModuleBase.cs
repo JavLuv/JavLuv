@@ -2,6 +2,7 @@
 using AngleSharp.Html.Dom;
 using AngleSharp.Html.Parser;
 using Common;
+using MovieInfo;
 using System;
 using System.IO;
 using System.Net.Http;
@@ -64,24 +65,26 @@ namespace WebScraper
 
         abstract protected void ParseDocument(IHtmlDocument document);
 
-        async protected void ScrapeWebsite(string rootURL, string siteURL)
+        protected void ScrapeWebsite(string rootURL, string siteURL)
         {
             try
             {
                 Logger.WriteInfo("Scraping website for data: " + siteURL);
 
+                m_finished = false;
                 if (m_dispatcher.HasShutdownStarted == false)
                     m_dispatcher.Invoke(DispatcherPriority.Normal, new Action(async delegate () 
                     {
                         m_webBrowser.RootSite = rootURL;
                         m_webBrowser.Address = siteURL;
-                        var w = m_webBrowser.LoadSite();
+                        m_webBrowser.LoadSite();
                     }));
 
                 while (m_finished == false)
                 {
                     Thread.Sleep(100);
                 }
+                Thread.Sleep(200);
             }
             catch (Exception ex)
             {
