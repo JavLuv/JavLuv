@@ -27,10 +27,11 @@ namespace JavLuv
     {
         #region Constructors
 
-        public MovieScanner(MovieCollection movieCollection)
+        public MovieScanner(MovieCollection movieCollection, WebBrowser webBrowser)
         {
             m_directoriesToScan = new List<string>();
             m_movieCollection = movieCollection;
+            m_webBrowser = webBrowser;
             m_dispatcher = Application.Current.Dispatcher;
             Phase = ScanPhase.Finished;
             Movies = new List<MovieData>();
@@ -768,7 +769,7 @@ namespace JavLuv
                 if (IsCancelled)
                     break;
 
-                var scraper = new Scraper();
+                var scraper = new Scraper(m_dispatcher, m_webBrowser);
                 var actressData = scraper.ScrapeActress(actor, m_language);
 
                 // Check to see if we want to restore from backup instead of using scraped metadata
@@ -823,7 +824,7 @@ namespace JavLuv
             {
                 if (IsCancelled)
                     break;
-                var scraper = new Scraper();
+                var scraper = new Scraper(m_dispatcher, m_webBrowser);
                 scraper.ScrapeActress(actress, m_language);
 
                 ItemsProcessed++;
@@ -898,7 +899,7 @@ namespace JavLuv
             }
 
             // Scrape metadata from websites
-            Scraper scraper = new Scraper();
+            Scraper scraper = new Scraper(m_dispatcher, m_webBrowser);
             MovieMetadata metadata = null;
             try
             {
@@ -1102,6 +1103,7 @@ namespace JavLuv
 
         private Dispatcher m_dispatcher;
         private MovieCollection m_movieCollection;
+        private WebBrowser m_webBrowser;
         private List<string> m_directoriesToScan;
         private Thread m_thread;
         private string[] m_subtitleExts;

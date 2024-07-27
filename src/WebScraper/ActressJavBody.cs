@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Threading;
 
 namespace WebScraper
 {
@@ -14,7 +15,7 @@ namespace WebScraper
     {
         #region Constructor
 
-        public ActressJavBody(string name, LanguageType language) : base(name, language)
+        public ActressJavBody(string name, Dispatcher dispatcher, WebBrowser webBrowser, LanguageType language) : base(name, dispatcher, webBrowser, language)
         {
         }
 
@@ -29,8 +30,7 @@ namespace WebScraper
 
             Actress = new ActressData(Name);
             string name = Actress.Name.Replace(' ', '-').ToLower();
-            var task = ScrapeAsync("http://javbody.com/jav/" + name + "/");
-            task.Wait();
+            ScrapeWebsite("javbody.com", "http://javbody.com/jav/" + name + "/");
         }
 
         #endregion

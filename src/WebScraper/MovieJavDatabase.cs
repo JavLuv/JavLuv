@@ -5,6 +5,7 @@ using MovieInfo;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Windows.Threading;
 
 namespace WebScraper
 {
@@ -12,7 +13,7 @@ namespace WebScraper
     {
         #region Constructors
 
-        public MovieJavDatabase(MovieMetadata metadata, LanguageType language) : base(metadata, language)
+        public MovieJavDatabase(MovieMetadata metadata, Dispatcher dispatcher, WebBrowser webBrowser, LanguageType language) : base(metadata, dispatcher, webBrowser, language)
         {
         }
 
@@ -26,8 +27,7 @@ namespace WebScraper
                 return;
 
             string movieID = m_metadata.UniqueID.Value;
-            var task = ScrapeAsync("https://www.javdatabase.com/movies/" + movieID.ToLower() + "/");
-            task.Wait();
+            ScrapeWebsite("javdatabase.com", "https://www.javdatabase.com/movies/" + movieID.ToLower() + "/");
         }
 
         #endregion

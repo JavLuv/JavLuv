@@ -113,5 +113,15 @@
                 IsChecked="{Binding ShowSubtitlesOnly}"
                 />
         </StackPanel>
+
+        <Button
+            Command="{Binding TestScrapersECommand}"
+            Margin="5, 45, 5, 5"
+            HorizontalAlignment="Stretch"
+            Height="24"
+            Visibility="{Binding DebugVisible}"
+            Content="{DynamicResource Text.TestScrapers}"
+            />
+
     </StackPanel>   
 </UserControl>

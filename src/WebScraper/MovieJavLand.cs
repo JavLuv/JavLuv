@@ -3,6 +3,7 @@ using AngleSharp.Dom;
 using MovieInfo;
 using System;
 using Common;
+using System.Windows.Threading;
 
 namespace WebScraper
 {
@@ -10,7 +11,7 @@ namespace WebScraper
     {
         #region Constructors
 
-        public MovieJavLand(MovieMetadata metadata, LanguageType language) : base(metadata, language)
+        public MovieJavLand(MovieMetadata metadata, Dispatcher dispatcher, WebBrowser webBrowser, LanguageType language) : base(metadata, dispatcher, webBrowser, language)
         {
         }
 
@@ -24,8 +25,7 @@ namespace WebScraper
                 return;
 
             string movieID = m_metadata.UniqueID.Value;
-            var task = ScrapeAsync("https://www.jav.land/" + GetLanguageString() + "/id_search.php?keys=" + movieID);
-            task.Wait();
+            ScrapeWebsite("jav.land", "https://www.jav.land/" + GetLanguageString() + "/id_search.php?keys=" + movieID);
         }
 
         #endregion

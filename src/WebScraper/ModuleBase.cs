@@ -7,6 +7,7 @@ using System.IO;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Threading;
 
 namespace WebScraper
 {
@@ -14,13 +15,35 @@ namespace WebScraper
     {
         #region Constructors
 
-        public ModuleBase(LanguageType language)
+        public ModuleBase(Dispatcher dispatcher, WebBrowser webBrowser, LanguageType language)
         {
+            m_dispatcher = dispatcher;
+            m_webBrowser = webBrowser;
+            m_webBrowser.ParsingCompleted += OnParsingCompleted;
             m_language = language;
             ImageSource = String.Empty;
         }
 
         #endregion
+
+        private void OnParsingCompleted(object sender, EventArgs e)
+        {
+            try
+            {
+                var document = m_webBrowser.HtmlDocument;
+
+                if (DebugHtml)
+                    DebugHTML(document);
+
+                ParseDocument(document);
+
+                m_finished = true;
+            }
+            catch (Exception ex)
+            {
+                Logger.WriteError("Issue parsing website HTML " + ex);
+            }
+        }
 
         #region Properties
 
@@ -41,27 +64,24 @@ namespace WebScraper
 
         abstract protected void ParseDocument(IHtmlDocument document);
 
-        protected async Task ScrapeAsync(string siteURL)
+        async protected void ScrapeWebsite(string rootURL, string siteURL)
         {
             try
             {
                 Logger.WriteInfo("Scraping website for data: " + siteURL);
 
-                CancellationTokenSource cancellationToken = new CancellationTokenSource();
-                HttpClient httpClient = new HttpClient();
-                HttpResponseMessage request = await httpClient.GetAsync(siteURL);
-                cancellationToken.Token.ThrowIfCancellationRequested();
+                if (m_dispatcher.HasShutdownStarted == false)
+                    m_dispatcher.Invoke(DispatcherPriority.Normal, new Action(async delegate () 
+                    {
+                        m_webBrowser.RootSite = rootURL;
+                        m_webBrowser.Address = siteURL;
+                        var w = m_webBrowser.LoadSite();
+                    }));
 
-                Stream response = await request.Content.ReadAsStreamAsync();
-                cancellationToken.Token.ThrowIfCancellationRequested();
-
-                HtmlParser parser = new HtmlParser();
-                IHtmlDocument document = parser.ParseDocument(response);
-
-                if (DebugHtml)
-                    DebugHTML(document);
-
-                ParseDocument(document);
+                while (m_finished == false)
+                {
+                    Thread.Sleep(100);
+                }
             }
             catch (Exception ex)
             {
@@ -94,8 +114,10 @@ namespace WebScraper
 
         #region Protected Members
 
+        private Dispatcher m_dispatcher;
+        private WebBrowser m_webBrowser;
         protected LanguageType m_language;
-
+        private bool m_finished = false;
         #endregion
     }
 }

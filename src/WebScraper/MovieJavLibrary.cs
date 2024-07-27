@@ -3,6 +3,8 @@ using AngleSharp.Dom;
 using MovieInfo;
 using System;
 using Common;
+using System.Windows.Threading;
+using System.Threading.Tasks;
 
 namespace WebScraper
 {
@@ -10,7 +12,7 @@ namespace WebScraper
     {
         #region Constructors
 
-        public MovieJavLibrary(MovieMetadata metadata, LanguageType language) : base(metadata, language)
+        public MovieJavLibrary(MovieMetadata metadata, Dispatcher dispatcher, WebBrowser webBrowser, LanguageType language) : base(metadata, dispatcher, webBrowser, language)
         {
         }
 
@@ -24,8 +26,7 @@ namespace WebScraper
                 return;
 
             string movieID = m_metadata.UniqueID.Value;
-            var task = ScrapeAsync("https://www.javlibrary.com/" + GetLanguageString() + "/vl_searchbyid.php?keyword=" + movieID);
-            task.Wait();
+            ScrapeWebsite("javlibrary.com", "https://www.javlibrary.com/" + GetLanguageString() + "/vl_searchbyid.php?keyword=" + movieID);
 
             // Due to a bug in JAVLibrary's search function, even searching by exact ID doesn't
             // always work for IDs beginning with zeroes in the numeric section.  In this
@@ -35,8 +36,7 @@ namespace WebScraper
             // the page in m_pageLink.  Now we scrape that exact page, then try again.
             if (String.IsNullOrEmpty(m_pageLink) == false)
             {
-                var secondTask = ScrapeAsync(m_pageLink);
-                secondTask.Wait();
+                ScrapeWebsite("javlibrary.com", m_pageLink);
             }
         }
 
@@ -55,20 +55,27 @@ namespace WebScraper
             // Parse movie info page
             foreach (IElement element in document.All)
             {
-                if (element.NodeName == "TITLE")
+                if (element.NodeName == "DIV")
                 {
-                    if (element.TextContent.Contains("ID Search Result") || element.TextContent.Contains("品番検索結果"))
-                        return;
-                    string title = element.TextContent;
-                    string id = Utilities.ParseMovieID(title);
-                    if (String.IsNullOrEmpty(id) == false)
+                    if (element.Id == "video_title")
                     {
-                        int len = title.Length - 14 - id.Length;
-                        if (len > 0)
+                        var childElement = element.FirstElementChild;
+                        if (childElement != null)
                         {
-                            // We're stripping off off ID string at beginning and "- JAVLibrary" at end, plus two spaces.
-                            m_metadata.Title = title.Substring(id.Length + 1, len);
+                            m_metadata.Title = childElement.TextContent;
+                            string id = Utilities.ParseMovieID(m_metadata.Title);
+                            if (String.IsNullOrEmpty(id) == false)
+                            {
+                                int len = m_metadata.Title.Length - id.Length - 1;
+                                if (len > 0)
+                                {
+                                    // We're stripping off off ID string at beginning and "- JAVLibrary" at end, plus two spaces.
+                                    m_metadata.Title = m_metadata.Title.Substring(id.Length + 1, len);
+                                }
+                            }
+
                         }
+
                     }
                 }
                 else if (element.NodeName == "IMG")

@@ -62,8 +62,9 @@ namespace JavLuv
                 upgradeVersion = true;
             }
 
+            var mainView = Application.Current.MainWindow as MainWindow;
             m_movieCollection = new MovieCollection(Application.Current.Dispatcher, IsReadOnlyMode);
-            m_movieScanner = new MovieScanner(m_movieCollection);
+            m_movieScanner = new MovieScanner(m_movieCollection, mainView.webView);
             m_settingsViewModel = new SettingsViewModel(this);
             m_reportViewModel = new ReportViewModel(this);
             m_movieBrowserViewModel = new MovieBrowserViewModel(this);

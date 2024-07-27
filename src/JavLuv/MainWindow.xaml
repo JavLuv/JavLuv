@@ -4,6 +4,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:web="clr-namespace:WebScraper;assembly=WebScraper"
     xmlns:p="clr-namespace:JavLuv.Properties"
     xmlns:local="clr-namespace:JavLuv"
     mc:Ignorable="d"
@@ -64,6 +65,7 @@
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
 
+
             <!-- Search view -->
             <Grid Grid.Column="0">
                 <Grid.RowDefinitions>
@@ -102,7 +104,13 @@
                     />
             </Grid>
         </Grid>
-        
+
+        <UserControl x:Name="webViewControl" Background="Transparent" Grid.ColumnSpan="3" Visibility="Hidden">
+            <web:WebBrowser
+                x:Name="webView"
+                />
+        </UserControl>
+
         <Grid Grid.Row="1">
             <StatusBar>
                 <StatusBar.ItemsPanel>

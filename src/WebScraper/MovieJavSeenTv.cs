@@ -4,6 +4,7 @@ using MovieInfo;
 using System;
 using Common;
 using System.Reflection.Emit;
+using System.Windows.Threading;
 
 namespace WebScraper
 {
@@ -11,7 +12,7 @@ namespace WebScraper
     {
         #region Constructors
 
-        public MovieJavSeenTv(MovieMetadata metadata, LanguageType language) : base(metadata, language)
+        public MovieJavSeenTv(MovieMetadata metadata, Dispatcher dispatcher, WebBrowser webBrowser, LanguageType language) : base(metadata, dispatcher, webBrowser, language)
         {
         }
 
@@ -26,16 +27,14 @@ namespace WebScraper
 
             // First search the site
             string movieID = m_metadata.UniqueID.Value;
-            var task = ScrapeAsync("https://javseen.tv/search/video/?s=" + movieID);
-            task.Wait();
+            ScrapeWebsite("javseen.tv", "https://javseen.tv/search/video/?s=" + movieID);
 
             // Did we find a match?
             if (String.IsNullOrEmpty(m_searchResults))
                 return;
 
             // If so, scrape that address
-            task = ScrapeAsync(m_searchResults);
-            task.Wait();
+            ScrapeWebsite("javseen.tv", m_searchResults);
         }
 
         #endregion
