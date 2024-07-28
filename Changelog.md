@@ -4,6 +4,7 @@ All significant changes are listed in this file.
 
 ## [1.2.0] - 2024-7-28
 - Replaced internal web scraper technology for better robustness
+- Fix issue with cover image replacement not updating cached image
 
 ## [1.1.35] - 2024-5-30
 - Add new string to JavLibrary title filter
