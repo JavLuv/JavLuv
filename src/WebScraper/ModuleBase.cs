@@ -73,11 +73,11 @@ namespace WebScraper
 
                 m_finished = false;
                 if (m_dispatcher.HasShutdownStarted == false)
-                    m_dispatcher.Invoke(DispatcherPriority.Normal, new Action(async delegate () 
+                    _ = m_dispatcher.Invoke(DispatcherPriority.Normal, new Action(delegate ()
                     {
                         m_webBrowser.RootSite = rootURL;
                         m_webBrowser.Address = siteURL;
-                        m_webBrowser.LoadSite();
+                        _ = m_webBrowser.LoadSite();
                     }));
 
                 while (m_finished == false)
