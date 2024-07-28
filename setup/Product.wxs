@@ -67,7 +67,13 @@
             </Component>     
             <Component Id="Cmp.Microsoft.Bcl.AsyncInterfaces.dll" Guid="{C87A518D-2D7D-4C1F-8E86-261350BD9FDD}" Win64="yes" >
                 <File Id="File.Microsoft.Bcl.AsyncInterfaces.dll" Source="../src/JavLuv/bin/x64/Release/Microsoft.Bcl.AsyncInterfaces.dll" KeyPath="yes" Checksum="yes" />
-            </Component>           
+            </Component>
+            <Component Id="Cmp.Microsoft.Web.WebView2.Core.dll" Guid="{463BCA0F-7B96-4D12-B5B6-9BEFEEA1E642}" Win64="yes" >
+                <File Id="File.Microsoft.Web.WebView2.Core.dll" Source="../src/JavLuv/bin/x64/Release/Microsoft.Web.WebView2.Core.dll" KeyPath="yes" Checksum="yes" />
+            </Component>
+            <Component Id="Cmp.Microsoft.Web.WebView2.Wpf.dll" Guid="{646CAB6E-53F8-42DA-83DF-C30FC6E327AC}" Win64="yes" >
+                <File Id="File.Microsoft.Web.WebView2.Wpf.dll" Source="../src/JavLuv/bin/x64/Release/Microsoft.Web.WebView2.Wpf.dll" KeyPath="yes" Checksum="yes" />
+            </Component>
             <Component Id="Cmp.Microsoft.WindowsAPICodePack.dll" Guid="{F71AD554-4CBB-4075-B849-58140B887CE2}" Win64="yes" >
                 <File Id="File.Microsoft.WindowsAPICodePack.dll" Source="../src/JavLuv/bin/x64/Release/Microsoft.WindowsAPICodePack.dll" KeyPath="yes" Checksum="yes" />
             </Component>        
