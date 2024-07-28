@@ -396,15 +396,13 @@ namespace JavLuv
             {
                 //mainWindow.webViewControl.Visibility = Visibility.Visible;
                 TestScraper.RunTests(Application.Current.Dispatcher, mainWindow.webView);
-
             }
             catch(Exception ex)
             {
-                var msgRes = System.Windows.Forms.MessageBox.Show(
+                System.Windows.Forms.MessageBox.Show(
                     ex.ToString(),
                     "Test Scrapers",
                     System.Windows.Forms.MessageBoxButtons.OK);
-
                 return;
             }
         }
