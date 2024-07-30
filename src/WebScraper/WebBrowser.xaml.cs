@@ -19,15 +19,16 @@ using System.Windows.Shapes;
 
 namespace WebScraper
 {
-    /// <summary>
-    /// Interaction logic for WebBrowser.xaml
-    /// </summary>
     public partial class WebBrowser : UserControl
     {
+        #region Constructors
+
         public WebBrowser()
         {
             InitializeComponent();
         }
+
+        #endregion
 
         #region Dependency Properties
 
@@ -60,19 +61,39 @@ namespace WebScraper
 
         #endregion
 
+        #region Events
 
         public event EventHandler<EventArgs> ParsingCompleted;
 
+        #endregion
 
         #region Public Functions
 
         async public Task LoadSite()
         {
-            webView.Source = new Uri(Address);
-            await webView.EnsureCoreWebView2Async();
-            webView.CoreWebView2.NewWindowRequested += webView_NewWindowRequested;
-            webView.NavigationCompleted += WebView_NavigationCompleted;
-            //webView.Visibility = Visibility.Hidden;
+            if (m_initialized == false)
+            {
+                await webView.EnsureCoreWebView2Async();
+                webView.CoreWebView2.NewWindowRequested += webView_NewWindowRequested;
+                webView.NavigationCompleted += WebView_NavigationCompleted;
+                m_initialized = true;
+            }
+            var uri = new Uri(Address);
+            if (uri == webView.Source)
+                webView.Reload();
+            else
+                webView.Source = new Uri(Address);
+        }
+
+        async public Task ParseSite()
+        {
+            HtmlDocument = null;
+            string html = await webView.CoreWebView2.ExecuteScriptAsync("document.body.outerHTML");
+            html = Regex.Unescape(html);
+            html = html.Remove(0, 1);
+            html = html.Remove(html.Length - 1, 1);
+            HtmlParser parser = new HtmlParser();
+            HtmlDocument = parser.ParseDocument(html);
         }
 
         #endregion
@@ -89,15 +110,8 @@ namespace WebScraper
             e.Handled = true;
         }
 
-        async private void WebView_NavigationCompleted(object sender, CoreWebView2NavigationCompletedEventArgs e)
+        private void WebView_NavigationCompleted(object sender, CoreWebView2NavigationCompletedEventArgs e)
         {
-            string html = await webView.CoreWebView2.ExecuteScriptAsync("document.body.outerHTML");
-            html = Regex.Unescape(html);
-            html = html.Remove(0, 1);
-            html = html.Remove(html.Length - 1, 1);
-            //webView.Visibility = Visibility.Visible;
-            HtmlParser parser = new HtmlParser();
-            HtmlDocument = parser.ParseDocument(html);
             if (ParsingCompleted != null)
                 ParsingCompleted(this, new EventArgs());
         }
@@ -105,13 +119,18 @@ namespace WebScraper
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             bool designTime = System.ComponentModel.DesignerProperties.GetIsInDesignMode(new DependencyObject());
-            if (designTime || mLoaded)
+            if (designTime || m_loaded)
                 return;
-            mLoaded = true;
+            m_loaded = true;
         }
 
         #endregion
 
-        private bool mLoaded = false;
+        #region Private Members
+
+        private bool m_loaded = false;
+        private bool m_initialized = false;
+
+        #endregion
     }
 }

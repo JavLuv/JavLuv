@@ -27,24 +27,14 @@ namespace WebScraper
 
         #endregion
 
+        #region Event Handlers
+
         private void OnParsingCompleted(object sender, EventArgs e)
         {
-            try
-            {
-                var document = m_webBrowser.HtmlDocument;
-
-                if (DebugHtml)
-                    DebugHTML(document);
-
-                ParseDocument(document);
-
-                m_finished = true;
-            }
-            catch (Exception ex)
-            {
-                Logger.WriteError("Issue parsing website HTML " + ex);
-            }
+            m_parsingComplete = true;
         }
+
+        #endregion
 
         #region Properties
 
@@ -63,6 +53,8 @@ namespace WebScraper
 
         abstract protected bool IsLanguageSupported();
 
+        abstract protected bool IsValidDataParsed();
+
         abstract protected void ParseDocument(IHtmlDocument document);
 
         protected void ScrapeWebsite(string rootURL, string siteURL)
@@ -71,7 +63,6 @@ namespace WebScraper
             {
                 Logger.WriteInfo("Scraping website for data: " + siteURL);
 
-                m_finished = false;
                 if (m_dispatcher.HasShutdownStarted == false)
                     _ = m_dispatcher.Invoke(DispatcherPriority.Normal, new Action(delegate ()
                     {
@@ -80,11 +71,53 @@ namespace WebScraper
                         _ = m_webBrowser.LoadSite();
                     }));
 
-                while (m_finished == false)
+                // Pause until parsing is complete or timeout
+                int timeoutCount = 0;
+                while (m_parsingComplete == false && timeoutCount <= 50)
                 {
+                    ++timeoutCount;
                     Thread.Sleep(100);
                 }
-                Thread.Sleep(200);
+
+                if (m_parsingComplete)
+                {
+                    try
+                    {
+                        int parseTryCount = 0;
+                        while (IsValidDataParsed() == false)
+                        {
+                            IHtmlDocument document = null;
+                            if (m_dispatcher.HasShutdownStarted == false)
+                                m_dispatcher.Invoke(DispatcherPriority.Normal, new Action(async delegate ()
+                                {
+                                    await m_webBrowser.ParseSite();
+                                    document = m_webBrowser.HtmlDocument;
+                                }));
+                            int waitTimeCount = 0;
+                            while (document == null && waitTimeCount <= 50)
+                            {
+                                ++waitTimeCount;
+                                Thread.Sleep(100);
+                            }
+                            if (document != null)
+                            {
+                                if (DebugHtml)
+                                    DebugHTML(document);
+                                ParseDocument(document);
+                                Thread.Sleep(100);
+                            }
+                            parseTryCount++;
+                            if (parseTryCount == 20)
+                                break;
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Logger.WriteError("Issue parsing website HTML " + ex);
+                    }
+                }
+
+                timeoutCount = 0;
             }
             catch (Exception ex)
             {
@@ -115,12 +148,12 @@ namespace WebScraper
 
         #endregion
 
-        #region Protected Members
+        #region Protected and Private Members
 
         private Dispatcher m_dispatcher;
         private WebBrowser m_webBrowser;
         protected LanguageType m_language;
-        private bool m_finished = false;
+        private bool m_parsingComplete = false;
         #endregion
     }
 }

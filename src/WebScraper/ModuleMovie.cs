@@ -33,6 +33,16 @@ namespace WebScraper
 
         #region Protected Functions
 
+        override protected bool IsValidDataParsed()
+        {
+            if (Metadata != null)
+            {
+                if (String.IsNullOrEmpty(Metadata.Title) == false)
+                    return true;
+            }
+            return false;
+        }
+
         protected string GetToken(Token token)
         {
             if (m_language == LanguageType.English)

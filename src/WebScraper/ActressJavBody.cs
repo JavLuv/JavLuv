@@ -28,7 +28,6 @@ namespace WebScraper
             if (IsLanguageSupported() == false)
                 return;
 
-            Actress = new ActressData(Name);
             string name = Actress.Name.Replace(' ', '-').ToLower();
             ScrapeWebsite("javbody.com", "http://javbody.com/jav/" + name + "/");
         }

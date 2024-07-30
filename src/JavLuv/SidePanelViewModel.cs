@@ -22,6 +22,8 @@ namespace JavLuv
 
             ShowSubtitlesOnly = Settings.Get().ShowSubtitlesOnly;
 
+            TestScraper.m_testsFinished += OnScraperTestsFinished;
+
             Parent.Collection.SearchText = SearchText;
             Parent.Collection.ShowUnratedOnly = ShowUnratedOnly;
             Parent.Collection.ShowSubtitlesOnly = ShowSubtitlesOnly;
@@ -392,19 +394,8 @@ namespace JavLuv
             if (Parent.IsScanning)
                 return;
             var mainWindow = Application.Current.MainWindow as MainWindow;
-            try
-            {
-                //mainWindow.webViewControl.Visibility = Visibility.Visible;
-                TestScraper.RunTests(Application.Current.Dispatcher, mainWindow.webView);
-            }
-            catch(Exception ex)
-            {
-                System.Windows.Forms.MessageBox.Show(
-                    ex.ToString(),
-                    "Test Scrapers",
-                    System.Windows.Forms.MessageBoxButtons.OK);
-                return;
-            }
+            //mainWindow.webViewControl.Visibility = Visibility.Visible;
+            TestScraper.RunTests(Application.Current.Dispatcher, mainWindow.webView);
         }
 
         private bool CanTestScrapersEExecute()
@@ -415,6 +406,21 @@ namespace JavLuv
         public ICommand TestScrapersECommand { get { return new RelayCommand(TestScrapersExecute, CanTestScrapersEExecute); } }
 
         #endregion
+
+        #endregion
+
+        #region Event Handlers
+
+        private void OnScraperTestsFinished(object sender, EventArgs e)
+        {
+            string message = "Finished running all scraper tests";
+            if (TestScraper.m_exception != null)
+                message = TestScraper.m_exception.ToString();
+            System.Windows.Forms.MessageBox.Show(
+                message,
+                "Test Scrapers",
+                System.Windows.Forms.MessageBoxButtons.OK);
+        }
 
         #endregion
 

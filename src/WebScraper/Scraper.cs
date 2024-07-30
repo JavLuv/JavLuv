@@ -515,7 +515,7 @@ namespace WebScraper
             {
                 foreach (string altName in actressData.AltNames)
                 {
-                    module.Name = altName;
+                    module.Actress.Name = altName;
                     module.Scrape();
                     MergeActressData(actressData, module.Actress);
                     if (IsActressDataAcceptable(actressData))

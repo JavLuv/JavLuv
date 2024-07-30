@@ -10,14 +10,23 @@ namespace WebScraper
 
         public ModuleActress(string name, Dispatcher dispatcher, WebBrowser webBrowser, LanguageType language) : base(dispatcher, webBrowser, language)
         {
-            Name = name;
+            //Name = name;
+            Actress = new ActressData(name);
         }
+       
+        #endregion
 
         public ActressData Actress { get; protected set; }
 
-        public string Name { get; set; }
-
-        #endregion
+        override protected bool IsValidDataParsed()
+        {
+            if (Actress != null)
+            {
+                if (Actress.Waist != 0 || Actress.DobYear != 0)
+                    return true;
+            }
+            return false;
+        }
 
     }
 }

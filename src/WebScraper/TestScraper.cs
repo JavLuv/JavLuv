@@ -1,15 +1,7 @@
 ﻿using Common;
 using MovieInfo;
 using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Runtime.InteropServices;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Threading;
 
 namespace WebScraper
@@ -26,17 +18,28 @@ namespace WebScraper
 
         public static void StartThread()
         {
-            // Test movie scrapers
-            TestScrapeMovieJavLibrary();
-            TestScrapeMovieJavDatabase();
-            TestScrapeMovieJavLand();
-            TestScrapeMovieJavSeenTv1();
-            TestScrapeMovieJavSeenTv2();
+            try
+            {
+                // Test movie scrapers
+                TestScrapeMovieJavLibrary();
+                TestScrapeMovieJavDatabase();
+                TestScrapeMovieJavLand();
+                TestScrapeMovieJavSeenTv1();
+                TestScrapeMovieJavSeenTv2();
 
-            // Test actress scrapers
-            TestScrapeActressJavDatabase();
-            TestScrapeActressJavModel();
-            TestScrapeActressJavBody();
+                // Test actress scrapers
+                TestScrapeActressJavDatabase();
+                TestScrapeActressJavModel();
+                TestScrapeActressJavBody();
+            }
+            catch (Exception ex)
+            {
+                m_exception = ex;
+            }
+
+            // Invoke event on main thread when finished with tests
+            if (m_dispatcher.HasShutdownStarted == false)
+                m_dispatcher.Invoke(DispatcherPriority.Normal, new Action(delegate () { m_testsFinished?.Invoke(null, new EventArgs()); }));
         }
 
         private static void TestScrapeMovieJavLibrary()
@@ -215,8 +218,13 @@ namespace WebScraper
                 throw new Exception("Web scraping error");
         }
 
+        // Delegate to signal when commands are finished executing
+        public delegate void FinishTestsEventHandler(object sender, EventArgs e);
+        public static event FinishTestsEventHandler m_testsFinished;
+
         private static Thread m_thread;
         private static Dispatcher m_dispatcher;
         private static WebBrowser m_webBrowser;
+        public static Exception m_exception = null;
     }
 }

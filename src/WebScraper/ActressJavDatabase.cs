@@ -25,7 +25,6 @@ namespace WebScraper
             if (IsLanguageSupported() == false)
                 return;
 
-            Actress = new ActressData(Name);
             string name = Actress.Name.Replace(' ', '-').ToLower();
             ScrapeWebsite("javdatabase.com", "https://www.javdatabase.com/idols/" + name + "/");
         }

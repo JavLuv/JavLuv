@@ -102,14 +102,16 @@
                     DataContext="{Binding Overlay}"
                     Content="{Binding}"
                     />
+
+                <UserControl x:Name="webViewControl" Background="Transparent" Grid.ColumnSpan="3" Visibility="Hidden">
+                    <web:WebBrowser
+                        x:Name="webView"
+                        />
+                </UserControl>
+
+
             </Grid>
         </Grid>
-
-        <UserControl x:Name="webViewControl" Background="Transparent" Grid.ColumnSpan="3" Visibility="Hidden">
-            <web:WebBrowser
-                x:Name="webView"
-                />
-        </UserControl>
 
         <Grid Grid.Row="1">
             <StatusBar>
