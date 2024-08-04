@@ -1,13 +1,9 @@
 ﻿using AngleSharp.Html;
 using AngleSharp.Html.Dom;
-using AngleSharp.Html.Parser;
 using Common;
-using MovieInfo;
 using System;
 using System.IO;
-using System.Net.Http;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Windows.Threading;
 
 namespace WebScraper

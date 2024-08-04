@@ -70,6 +70,21 @@ namespace JavLuv
             {
                 foreach (MovieData movieData in m_movies)
                 {
+                    foreach (var movieFileName in movieData.MovieFileNames)
+                    {
+                        string fn = Path.Combine(movieData.Path, movieFileName);
+                        if (Utilities.IsFileLocked(fn))
+                        {
+                            string s = String.Format(TextManager.GetString("Text.ErrorMovieFileLocked"), fn);
+                            Logger.WriteWarning(s);
+                            Application.Current.Dispatcher.Invoke(DispatcherPriority.Normal, new Action(delegate ()
+                            {
+                                MessageBox.Show(s, TextManager.GetString("Text.MoveRenameError"));
+                            }));
+                            continue;
+                        }
+                    }
+
                     // Perform move / rename
                     MovieData newMovieData = MovieUtils.MoveRenameMovieData(
                         movieData,
@@ -119,8 +134,8 @@ namespace JavLuv
                     m_progressWindow.IsFinished = true;
                     m_progressWindow.Close();
                 }));
-                MessageBox.Show(ex.Message, TextManager.GetString("Text.MoveRenameError"));
                 Logger.WriteError("Unexpected error moving/renaming movies - operation aborted.", ex);
+                MessageBox.Show(ex.Message, TextManager.GetString("Text.MoveRenameError"));
             }
         }
 

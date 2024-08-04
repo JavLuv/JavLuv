@@ -2,6 +2,9 @@
 
 All significant changes are listed in this file.
 
+## [1.2.1] - 2024-8-4
+- Add check for locked movie files before moving or renaming
+
 ## [1.2.0] - 2024-8-3
 - Replaced internal web scraper technology for better robustness
 - Fix issue with cover image replacement not updating cached image
