@@ -1,9 +1,12 @@
 ﻿using AngleSharp.Html.Dom;
 using AngleSharp.Html.Parser;
+using Common;
 using Microsoft.Web.WebView2.Core;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -15,7 +18,6 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace WebScraper
 {
@@ -73,9 +75,21 @@ namespace WebScraper
         {
             if (m_initialized == false)
             {
-                await webView.EnsureCoreWebView2Async();
-                webView.CoreWebView2.NewWindowRequested += webView_NewWindowRequested;
-                webView.NavigationCompleted += WebView_NavigationCompleted;
+                var webView2Path = Path.Combine(Utilities.GetJavLuvSettingsFolder(), "webview2");
+                if (Directory.Exists(webView2Path) == false)
+                    Directory.CreateDirectory(webView2Path);
+                try
+                {
+                    CoreWebView2Environment env = await CoreWebView2Environment.CreateAsync(null, webView2Path);
+                    await webView.EnsureCoreWebView2Async(env);
+                }
+                catch(Exception ex)
+                {
+                    Logger.WriteError("Unable to initialize WebView2 control.", ex);
+                    return;
+                }
+                webView.CoreWebView2.NewWindowRequested += OnNewWindowRequested;
+                webView.NavigationCompleted += OnNavigationCompleted;
                 m_initialized = true;
             }
             var uri = new Uri(Address);
@@ -100,7 +114,7 @@ namespace WebScraper
 
         #region Handlers
 
-        private void webView_NewWindowRequested(object sender, CoreWebView2NewWindowRequestedEventArgs e)
+        private void OnNewWindowRequested(object sender, CoreWebView2NewWindowRequestedEventArgs e)
         {
             // Block window if it's a different domain than expected
             if (e.Uri.Contains(RootSite))
@@ -110,13 +124,12 @@ namespace WebScraper
             e.Handled = true;
         }
 
-        private void WebView_NavigationCompleted(object sender, CoreWebView2NavigationCompletedEventArgs e)
+        private void OnNavigationCompleted(object sender, CoreWebView2NavigationCompletedEventArgs e)
         {
-            if (ParsingCompleted != null)
-                ParsingCompleted(this, new EventArgs());
+            ParsingCompleted?.Invoke(this, new EventArgs());
         }
 
-        private void Window_Loaded(object sender, RoutedEventArgs e)
+        private void OnWindowLoaded(object sender, RoutedEventArgs e)
         {
             bool designTime = System.ComponentModel.DesignerProperties.GetIsInDesignMode(new DependencyObject());
             if (designTime || m_loaded)

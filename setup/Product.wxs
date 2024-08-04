@@ -8,7 +8,6 @@
         <!-- Define Product Features -->
         <Feature Id="ProductFeature" Title="JavLuv Setup" Level="1">
             <ComponentGroupRef Id="ProductComponents" />
-            <ComponentGroupRef Id="WebView2Components" />
             <ComponentRef Id="JavLuvShortcut"/>
         </Feature>
 
@@ -30,12 +29,6 @@
         <Directory Id="TARGETDIR" Name="SourceDir">
             <Directory Id="ProgramFiles64Folder">
                 <Directory Id="INSTALLFOLDER" Name="JavLuv">
-                    <Directory Id="RuntimeFolder" Name="runtime">
-                        <Directory Id="Win64Folder" Name="win-64">
-                            <Directory Id="NativeFolder" Name="native">
-                            </Directory>
-                        </Directory>
-                    </Directory>
                 </Directory>
             </Directory>
             <Directory Id="ProgramMenuFolder">
@@ -53,14 +46,7 @@
             </Component>
         </DirectoryRef>
 
-        <!-- Components to install -->
-        <ComponentGroup Id="WebView2Components" Directory="NativeFolder">
-            <Component Id="Cmp.WebView2Loader.dll" Guid="{2617DC84-3F52-48D1-824E-7C29CB7E921A}" Win64="yes" >
-                <CreateFolder/>
-                <File Id="File.WebView2Loader.dll" Source="../src/JavLuv/bin/x64/Release/runtimes/win-x64/native/WebView2Loader.dll" KeyPath="no" Checksum="yes" />
-            </Component>
-        </ComponentGroup>
-        
+        <!-- Components to install -->  
         <ComponentGroup Id="ProductComponents" Directory="INSTALLFOLDER">
             <Component Id="Cmp.AngleSharp.dll" Guid="{32CF82D9-7B39-405B-B4F3-6398CC38110D}" Win64="yes" >
                 <File Id="File.AngleSharp.dll" Source="../src/JavLuv/bin/x64/Release/AngleSharp.dll" KeyPath="yes" Checksum="yes" />
@@ -142,6 +128,9 @@
             </Component>
             <Component Id="Cmp.WebScraper.dll" Guid="{F392AD0F-3664-4014-8078-B80EFB254348}" Win64="yes" >
                 <File Id="File.WebScraper.dll" Source="../src/JavLuv/bin/x64/Release/WebScraper.dll" KeyPath="yes" Checksum="yes" />
+            </Component>
+            <Component Id="Cmp.WebView2Loader.dll" Guid="{2617DC84-3F52-48D1-824E-7C29CB7E921A}" Win64="yes" >
+                <File Id="File.WebView2Loader.dll" Source="../src/JavLuv/bin/x64/Release/runtimes/win-x64/native/WebView2Loader.dll" KeyPath="yes" Checksum="yes" />
             </Component>
         </ComponentGroup>
 
