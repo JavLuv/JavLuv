@@ -53,7 +53,8 @@ namespace JavLuv
                 return;
 
             // Scrape the web for Japanese language title
-            var scraper = new Scraper();
+            var mainWindow = Application.Current.MainWindow as MainWindow;
+            var scraper = new Scraper(Application.Current.Dispatcher, mainWindow.webView);
             originalTitle = scraper.ScrapeOriginalTitle(m_movieID);
 
             // If we've failed to get an original title, just add a space.  This will prevent

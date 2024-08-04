@@ -598,7 +598,9 @@ namespace JavLuv
         {
             if (Parent.ImportCoverImage(m_movieData))
             {
-                m_loadImage = new CmdLoadImage(Path.Combine(m_movieData.Path, m_movieData.CoverFileName));
+                string fullImageFileName = Path.Combine(m_movieData.Path, m_movieData.CoverFileName);
+                ImageCache.Get().Delete(fullImageFileName);
+                m_loadImage = new CmdLoadImage(fullImageFileName);
                 m_loadImage.FinishedLoading += OnImageFinishedLoading;
                 CommandQueue.ShortTask().Execute(m_loadImage, CommandOrder.First);
             }

@@ -10,6 +10,7 @@ using System.Net.Http;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Threading;
 
 namespace WebScraper
 {
@@ -17,7 +18,7 @@ namespace WebScraper
     {
         #region Constructors
 
-        public ModuleMovie(MovieMetadata metadata, LanguageType language) : base(language)
+        public ModuleMovie(MovieMetadata metadata, Dispatcher dispatcher, WebBrowser webBrowser, LanguageType language) : base(dispatcher, webBrowser, language)
         {
             m_metadata = metadata;
         }
@@ -31,6 +32,16 @@ namespace WebScraper
         #endregion
 
         #region Protected Functions
+
+        override protected bool IsValidDataParsed()
+        {
+            if (Metadata != null)
+            {
+                if (String.IsNullOrEmpty(Metadata.Title) == false)
+                    return true;
+            }
+            return false;
+        }
 
         protected string GetToken(Token token)
         {

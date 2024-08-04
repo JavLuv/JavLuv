@@ -3,6 +3,7 @@ using AngleSharp.Dom;
 using MovieInfo;
 using System;
 using Common;
+using System.Windows.Threading;
 
 namespace WebScraper
 {
@@ -10,7 +11,7 @@ namespace WebScraper
     {
         #region Constructors
 
-        public MovieJavLand(MovieMetadata metadata, LanguageType language) : base(metadata, language)
+        public MovieJavLand(MovieMetadata metadata, Dispatcher dispatcher, WebBrowser webBrowser, LanguageType language) : base(metadata, dispatcher, webBrowser, language)
         {
         }
 
@@ -24,8 +25,7 @@ namespace WebScraper
                 return;
 
             string movieID = m_metadata.UniqueID.Value;
-            var task = ScrapeAsync("https://www.jav.land/" + GetLanguageString() + "/id_search.php?keys=" + movieID);
-            task.Wait();
+            ScrapeWebsite("jav.land", "https://www.jav.land/" + GetLanguageString() + "/id_search.php?keys=" + movieID);
         }
 
         #endregion
@@ -38,16 +38,14 @@ namespace WebScraper
             // Parse movie info page
             foreach (IElement element in document.All)
             {
-                if (element.NodeName == "TITLE")
+                if (element.NodeName == "DIV" && element.ClassName == "col-xs-12")
                 {
-                    if (element.TextContent.Contains("ID Search Result") || element.TextContent.Contains("品番検索結果"))
-                        return;
-                    string title = element.TextContent;
-                    int len = title.Length - 12 - m_metadata.UniqueID.Value.Length;
+                    string title = element.TextContent.Trim();
+                    int len = m_metadata.UniqueID.Value.Length;
                     if (len > 0)
                     {
                         // We're stripping off off ID string at beginning and "- JAV.land" at end, plus two spaces.
-                        m_metadata.Title = title.Substring(m_metadata.UniqueID.Value.Length + 1, len);
+                        m_metadata.Title = title.Substring(len).Trim();
                     }
                 }
 
@@ -129,7 +127,8 @@ namespace WebScraper
                 }
                 else if (CheckAttribute(element, "class", "genre"))
                 {
-                    m_metadata.Genres.Add(element.TextContent);
+                    if (m_metadata.Genres.Contains(element.TextContent) == false)
+                        m_metadata.Genres.Add(element.TextContent);
                 }
                 else if (CheckAttribute(element, "class", "cast"))
                 {
@@ -169,7 +168,19 @@ namespace WebScraper
             {
                 actor.Name = Utilities.ReverseNames(child.TextContent);
                 if (String.IsNullOrEmpty(actor.Name) == false)
-                    m_metadata.Actors.Add(actor);
+                {
+                    bool unique = true;
+                    foreach (var actress in m_metadata.Actors)
+                    {
+                        if (actress.Name == actor.Name)
+                        {
+                            unique = false;
+                            break;
+                        }
+                    }
+                    if (unique)
+                        m_metadata.Actors.Add(actor);
+                }
             }
         }
 

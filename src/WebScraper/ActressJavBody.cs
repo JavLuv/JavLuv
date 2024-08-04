@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Threading;
 
 namespace WebScraper
 {
@@ -14,7 +15,7 @@ namespace WebScraper
     {
         #region Constructor
 
-        public ActressJavBody(string name, LanguageType language) : base(name, language)
+        public ActressJavBody(string name, Dispatcher dispatcher, WebBrowser webBrowser, LanguageType language) : base(name, dispatcher, webBrowser, language)
         {
         }
 
@@ -27,10 +28,8 @@ namespace WebScraper
             if (IsLanguageSupported() == false)
                 return;
 
-            Actress = new ActressData(Name);
             string name = Actress.Name.Replace(' ', '-').ToLower();
-            var task = ScrapeAsync("http://javbody.com/jav/" + name + "/");
-            task.Wait();
+            ScrapeWebsite("javbody.com", "http://javbody.com/jav/" + name + "/");
         }
 
         #endregion
@@ -44,16 +43,12 @@ namespace WebScraper
             foreach (var element in document.All)
             {
                 // Check for actress image
-                if (element.NodeName == "META")
+                if (element.NodeName == "DIV" && element.ClassName == "col-lg-4 custom-sm-margin-bottom-1")
                 {
-                    var property = element.GetAttribute("property");
-                    if (property != null && property == "og:image")
+                    var childElement = element.FirstElementChild;
+                    if (childElement != null)
                     {
-                        var content = element.GetAttribute("content");
-                        if (content != null)
-                        {
-                            ImageSource = content.Trim();
-                        }
+                        ImageSource = childElement.GetAttribute("src");
                     }
                 }
                 else if (element.NodeName == "H1")

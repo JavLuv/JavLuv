@@ -7,6 +7,8 @@ using SortMoviesByPairList = System.Collections.ObjectModel.ObservableCollection
 using SortActressesByPair = JavLuv.ObservableStringValuePair<MovieInfo.SortActressesBy>;
 using SortActressesByPairList = System.Collections.ObjectModel.ObservableCollection<JavLuv.ObservableStringValuePair<MovieInfo.SortActressesBy>>;
 using Common;
+using WebScraper;
+using System;
 
 namespace JavLuv
 {
@@ -19,6 +21,8 @@ namespace JavLuv
             m_parent = parent;
 
             ShowSubtitlesOnly = Settings.Get().ShowSubtitlesOnly;
+
+            TestScraper.m_testsFinished += OnScraperTestsFinished;
 
             Parent.Collection.SearchText = SearchText;
             Parent.Collection.ShowUnratedOnly = ShowUnratedOnly;
@@ -281,6 +285,18 @@ namespace JavLuv
             }
         }
 
+        public Visibility DebugVisible
+        {
+            get
+            {
+                #if DEBUG
+                return Visibility.Visible;
+                #else
+                return Visibility.Collapsed;
+                #endif
+            }
+        }
+
         #endregion
 
         #region Commands
@@ -370,6 +386,41 @@ namespace JavLuv
         public ICommand OrganizeSubtitlesCommand { get { return new RelayCommand(OrganizeSubtitlesExecute, CanOrganizeSubtitlesExecute); } }
 
         #endregion
+
+        #region Test Scrapers Command
+
+        private void TestScrapersExecute()
+        {
+            if (Parent.IsScanning)
+                return;
+            var mainWindow = Application.Current.MainWindow as MainWindow;
+            //mainWindow.webViewControl.Visibility = Visibility.Visible;
+            TestScraper.RunTests(Application.Current.Dispatcher, mainWindow.webView);
+        }
+
+        private bool CanTestScrapersEExecute()
+        {
+            return Parent.IsScanning == false;
+        }
+
+        public ICommand TestScrapersECommand { get { return new RelayCommand(TestScrapersExecute, CanTestScrapersEExecute); } }
+
+        #endregion
+
+        #endregion
+
+        #region Event Handlers
+
+        private void OnScraperTestsFinished(object sender, EventArgs e)
+        {
+            string message = "Finished running all scraper tests";
+            if (TestScraper.m_exception != null)
+                message = TestScraper.m_exception.ToString();
+            System.Windows.Forms.MessageBox.Show(
+                message,
+                "Test Scrapers",
+                System.Windows.Forms.MessageBoxButtons.OK);
+        }
 
         #endregion
 

@@ -28,7 +28,8 @@
         <!-- Directory Structure -->
         <Directory Id="TARGETDIR" Name="SourceDir">
             <Directory Id="ProgramFiles64Folder">
-                <Directory Id="INSTALLFOLDER" Name="JavLuv" />
+                <Directory Id="INSTALLFOLDER" Name="JavLuv">
+                </Directory>
             </Directory>
             <Directory Id="ProgramMenuFolder">
                 <Directory Id="MyShortcutsDir"  Name="JavLuv" />
@@ -45,7 +46,7 @@
             </Component>
         </DirectoryRef>
 
-        <!-- Components to install -->
+        <!-- Components to install -->  
         <ComponentGroup Id="ProductComponents" Directory="INSTALLFOLDER">
             <Component Id="Cmp.AngleSharp.dll" Guid="{32CF82D9-7B39-405B-B4F3-6398CC38110D}" Win64="yes" >
                 <File Id="File.AngleSharp.dll" Source="../src/JavLuv/bin/x64/Release/AngleSharp.dll" KeyPath="yes" Checksum="yes" />
@@ -67,7 +68,13 @@
             </Component>     
             <Component Id="Cmp.Microsoft.Bcl.AsyncInterfaces.dll" Guid="{C87A518D-2D7D-4C1F-8E86-261350BD9FDD}" Win64="yes" >
                 <File Id="File.Microsoft.Bcl.AsyncInterfaces.dll" Source="../src/JavLuv/bin/x64/Release/Microsoft.Bcl.AsyncInterfaces.dll" KeyPath="yes" Checksum="yes" />
-            </Component>           
+            </Component>
+            <Component Id="Cmp.Microsoft.Web.WebView2.Core.dll" Guid="{463BCA0F-7B96-4D12-B5B6-9BEFEEA1E642}" Win64="yes" >
+                <File Id="File.Microsoft.Web.WebView2.Core.dll" Source="../src/JavLuv/bin/x64/Release/Microsoft.Web.WebView2.Core.dll" KeyPath="yes" Checksum="yes" />
+            </Component>
+            <Component Id="Cmp.Microsoft.Web.WebView2.Wpf.dll" Guid="{646CAB6E-53F8-42DA-83DF-C30FC6E327AC}" Win64="yes" >
+                <File Id="File.Microsoft.Web.WebView2.Wpf.dll" Source="../src/JavLuv/bin/x64/Release/Microsoft.Web.WebView2.Wpf.dll" KeyPath="yes" Checksum="yes" />
+            </Component>
             <Component Id="Cmp.Microsoft.WindowsAPICodePack.dll" Guid="{F71AD554-4CBB-4075-B849-58140B887CE2}" Win64="yes" >
                 <File Id="File.Microsoft.WindowsAPICodePack.dll" Source="../src/JavLuv/bin/x64/Release/Microsoft.WindowsAPICodePack.dll" KeyPath="yes" Checksum="yes" />
             </Component>        
@@ -121,6 +128,9 @@
             </Component>
             <Component Id="Cmp.WebScraper.dll" Guid="{F392AD0F-3664-4014-8078-B80EFB254348}" Win64="yes" >
                 <File Id="File.WebScraper.dll" Source="../src/JavLuv/bin/x64/Release/WebScraper.dll" KeyPath="yes" Checksum="yes" />
+            </Component>
+            <Component Id="Cmp.WebView2Loader.dll" Guid="{2617DC84-3F52-48D1-824E-7C29CB7E921A}" Win64="yes" >
+                <File Id="File.WebView2Loader.dll" Source="../src/JavLuv/bin/x64/Release/runtimes/win-x64/native/WebView2Loader.dll" KeyPath="yes" Checksum="yes" />
             </Component>
         </ComponentGroup>
 

@@ -2,7 +2,7 @@
 
 IF NOT EXIST build (
 echo Creating build folder
-mkdir build 
+mkdir build
 )
 
 cd build
@@ -11,7 +11,7 @@ del /Q *.zip
 
 IF NOT EXIST JavLuv (
 echo Creating JavLuv folder
-mkdir JavLuv 
+mkdir JavLuv
 )
 
 cd ../src/
@@ -44,6 +44,7 @@ copy /y "src\JavLuv\bin\x64\Release\*.dll" "build\JavLuv\"
 copy /y "src\JavLuv\bin\x64\Release\*.exe" "build\JavLuv\"
 copy /y "src\JavLuv\bin\x64\Release\JavLuv.exe.config" "build\JavLuv\"
 copy /y "src\JavLuv\bin\x64\Release\Core14.profile.xml" "build\JavLuv\"
+copy /y "src\JavLuv\bin\x64\Release\runtimes\win-x64\native\WebView2Loader.dll" "build\JavLuv\WebView2Loader.dll"
 
 cd build
 
@@ -61,8 +62,8 @@ tar -a -c -f %JavLuv%.zip %JavLuv%  && (
   EXIT /B 1
 )
 
-del /q %JavLuv%
-rmdir /q %JavLuv%
+del /s /q %JavLuv%
+rmdir /s /q %JavLuv%
 
 cd ..
 
