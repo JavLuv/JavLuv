@@ -45,15 +45,16 @@ namespace JavLuv
 
             // Retrieve on the main thread to ensure thread-safety
             string originalTitle = String.Empty;
+            MainWindow mainWindow = null;
             Application.Current.Dispatcher.Invoke(DispatcherPriority.Normal, new Action(delegate ()
             {
                 originalTitle = m_movieData.Metadata.OriginalTitle;
+                mainWindow = Application.Current.MainWindow as MainWindow;
             }));
             if (String.IsNullOrEmpty(m_movieData.Metadata.OriginalTitle) == false)
                 return;
 
             // Scrape the web for Japanese language title
-            var mainWindow = Application.Current.MainWindow as MainWindow;
             var scraper = new Scraper(Application.Current.Dispatcher, mainWindow.webView);
             originalTitle = scraper.ScrapeOriginalTitle(m_movieID);
 
