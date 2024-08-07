@@ -82,6 +82,7 @@ namespace WebScraper
                 webView.NavigationCompleted += OnNavigationCompleted;
                 m_initialized = true;
             }
+            HtmlDocument = null;
             var uri = new Uri(Address);
             if (uri == webView.Source)
                 webView.Reload();

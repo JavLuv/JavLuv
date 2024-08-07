@@ -28,6 +28,7 @@ namespace WebScraper
             // First search the site
             string movieID = m_metadata.UniqueID.Value;
             ScrapeWebsite("javseen.tv", "https://javseen.tv/search/video/?s=" + movieID);
+            m_parsingSuccessful = false;
 
             // Did we find a match?
             if (String.IsNullOrEmpty(m_searchResults))
@@ -55,8 +56,7 @@ namespace WebScraper
             {
                 // Parse movie info page
                 foreach (IElement element in document.All)
-                {
-                    
+                {       
                     if (element.NodeName != "DIV" || element.ClassName != "video")
                         continue;
                     var child = element.FirstElementChild;
