@@ -27,6 +27,7 @@ namespace WebScraper
 
             string movieID = m_metadata.UniqueID.Value;
             ScrapeWebsite("javlibrary.com", "https://www.javlibrary.com/" + GetLanguageString() + "/vl_searchbyid.php?keyword=" + movieID);
+            m_parsingSuccessful = false;
 
             // Due to a bug in JAVLibrary's search function, even searching by exact ID doesn't
             // always work for IDs beginning with zeroes in the numeric section.  In this

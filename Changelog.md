@@ -2,6 +2,9 @@
 
 All significant changes are listed in this file.
 
+## [1.2.2] - 2024-8-67
+- Allow web scraper to retry failed attempts
+
 ## [1.2.1] - 2024-8-6
 - Webscraper reliability, performance, and logging improvements
 - Add check for locked movie files before moving or renaming

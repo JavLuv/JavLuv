@@ -59,17 +59,18 @@ namespace WebScraper
             Logger.WriteInfo("Scraping website for data: " + siteURL);
 
             bool parseError = false;
+            const int browserRetries = 3;
 
             // Load-retry loop
             int loadCounter = 0;
             do
             {
-
                 try
                 {
                     if (m_dispatcher.HasShutdownStarted == false)
                         _ = m_dispatcher.Invoke(DispatcherPriority.Normal, new Action(delegate ()
                         {
+                            Logger.WriteInfo("Loading site");
                             m_webBrowser.RootSite = rootURL;
                             m_webBrowser.Address = siteURL;
                             _ = m_webBrowser.LoadSite();
@@ -84,7 +85,7 @@ namespace WebScraper
 
                 // Pause until parsing is complete or timeout
                 int timeoutCount = 0;
-                while (m_parsingComplete == false && timeoutCount <= 50)
+                while (m_parsingComplete == false && timeoutCount <= 60)
                 {
                     ++timeoutCount;
                     Thread.Sleep(100);
@@ -112,7 +113,7 @@ namespace WebScraper
                             break;
                         }
                         int waitTimeCount = 0;
-                        while (document == null && waitTimeCount <= 50)
+                        while (document == null && waitTimeCount <= 60)
                         {
                             ++waitTimeCount;
                             Thread.Sleep(100);
@@ -148,15 +149,16 @@ namespace WebScraper
                 // to see if we've succeessfully parsed an HTML document.
                 if (IsValidDataParsed() == false)
                 {
-                    if (loadCounter <= 3)
+                    if (loadCounter <= browserRetries)
                         Logger.WriteWarning("Internal browser parsing timeout.  Retrying.");
                 }
                 loadCounter++;
-            }
-            while (parseError == false && m_parsingComplete == false && IsValidDataParsed() == false && loadCounter <= 3);
 
-            // Reset parsing complete flag
-            m_parsingComplete = false;
+                // Reset parsing complete flag
+                m_parsingComplete = false;
+            }
+            while (parseError == false && m_parsingComplete == false && IsValidDataParsed() == false && loadCounter <= browserRetries);
+
 
             if (IsValidDataParsed() && parseError == false)
                 Logger.WriteInfo("Successfully finished parsing site");

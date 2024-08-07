@@ -27,6 +27,7 @@ namespace WebScraper
             // First search the site
             string movieID = m_metadata.UniqueID.Value;
             ScrapeWebsite("jav.guru", "https://jav.guru/?s=" + movieID);
+            m_parsingSuccessful = false;
 
             // Did we find a match?
             if (String.IsNullOrEmpty(m_searchResults))
