@@ -21,7 +21,8 @@ namespace WebScraper
             try
             {
                 // Test movie scrapers
-                TestScrapeMovieJavLibrary();
+                TestScrapeMovieJavLibrary1();
+                TestScrapeMovieJavLibrary2();
                 TestScrapeMovieJavDatabase();
                 TestScrapeMovieJavLand();
                 TestScrapeMovieJavSeenTv1();
@@ -42,7 +43,7 @@ namespace WebScraper
                 m_dispatcher.Invoke(DispatcherPriority.Normal, new Action(delegate () { m_testsFinished?.Invoke(null, new EventArgs()); }));
         }
 
-        private static void TestScrapeMovieJavLibrary()
+        private static void TestScrapeMovieJavLibrary1()
         {
             var metadata = new MovieMetadata("IESP-711");
             var module = new MovieJavLibrary(metadata, m_dispatcher, m_webBrowser, LanguageType.English);
@@ -63,6 +64,31 @@ namespace WebScraper
             CheckEqual("Rika Aimi", module.Metadata.Actors[0].Name);
             CheckEqual("Iroha Minami", module.Metadata.Actors[1].Name);
             CheckNotEmpty(module.ImageSource);        
+        }
+
+        private static void TestScrapeMovieJavLibrary2()
+        {
+            var metadata = new MovieMetadata("BBAN-008");
+            var module = new MovieJavLibrary(metadata, m_dispatcher, m_webBrowser, LanguageType.English);
+            module.Scrape();
+
+            CheckEqual("Lesbian Journey Sakurai Ayu Yuna Shiina", module.Metadata.Title);
+            CheckEqual("2014-07-07", module.Metadata.Premiered);
+            CheckEqual(180, module.Metadata.Runtime);
+            CheckEqual("", module.Metadata.Director);
+            CheckEqual("Bibian", module.Metadata.Studio);
+            CheckEqual("Bibian", module.Metadata.Label);
+            CheckEqual(6, module.Metadata.Genres.Count);
+            CheckEqual("Lesbian", module.Metadata.Genres[0]);
+            CheckEqual("Outdoors", module.Metadata.Genres[1]);
+            CheckEqual("Slender", module.Metadata.Genres[2]);
+            CheckEqual("Documentary", module.Metadata.Genres[3]);
+            CheckEqual("Lesbian Kiss", module.Metadata.Genres[4]);
+            CheckEqual("Travel", module.Metadata.Genres[5]);
+            CheckEqual(2, module.Metadata.Actors.Count);
+            CheckEqual("Yuna Shiina", module.Metadata.Actors[0].Name);
+            CheckEqual("Ayu Sakurai", module.Metadata.Actors[1].Name);
+            CheckNotEmpty(module.ImageSource);
         }
 
         private static void TestScrapeMovieJavDatabase()

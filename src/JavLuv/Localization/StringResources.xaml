@@ -129,6 +129,7 @@
     <system:String x:Key="Text.CancelScan">Cancel scan?</system:String>
     <system:String x:Key="Text.ErrorPlayingMovie">Error playing movie</system:String>
     <system:String x:Key="Text.LibraryFolderInSettings">Library folder in settings must be valid to perform move/rename operation.</system:String>
+    <system:String x:Key="Text.ErrorMovieFileLocked">The movie {0} is locked, so can't be moved or renamed.</system:String>
     <system:String x:Key="Text.MoveRenameError">Move / Rename Error</system:String>
     <system:String x:Key="Text.ErrorMovingFolder">Error moving folder or files</system:String>
     <system:String x:Key="Text.ErrorDeletingMovie">Error deleting movie</system:String>

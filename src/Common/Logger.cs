@@ -121,7 +121,7 @@ namespace Common
             // Append exception details to text if available
             if (ex != null)
             {
-                text += ": ";
+                text += ":\n";
                 text += ex.ToString();
                 text += "\n";
                 if (ex.InnerException != null)

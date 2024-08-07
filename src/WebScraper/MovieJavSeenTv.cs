@@ -68,6 +68,7 @@ namespace WebScraper
                     if (href.ContainsCaseless(m_metadata.UniqueID.Value))
                     {
                         m_searchResults = "https://javseen.tv" + href;
+                        m_parsingSuccessful = true;
                         break;
                     }               
                 }

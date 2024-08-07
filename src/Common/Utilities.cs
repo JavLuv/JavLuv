@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics.Eventing.Reader;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
@@ -691,6 +692,23 @@ namespace Common
         public static void DeleteFile(string fileName)
         {
             FileDeleteRetry(fileName);
+        }
+
+        public static bool IsFileLocked(string fileName)
+        {
+            try
+            {
+                using (FileStream fs = File.OpenWrite(fileName))
+                {
+                    fs.Close();
+                }
+            }
+            catch (IOException ex)
+            {
+                int errorCode = Marshal.GetHRForException(ex) & ((1 << 16) - 1);
+                return errorCode == 32 || errorCode == 33;
+            }
+            return false;
         }
 
         public static void MoveFile(string sourceFile, string destFile)

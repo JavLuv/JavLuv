@@ -35,6 +35,8 @@ namespace WebScraper
 
         override protected bool IsValidDataParsed()
         {
+            if (m_parsingSuccessful) 
+                return true;
             if (Metadata != null)
             {
                 if (String.IsNullOrEmpty(Metadata.Title) == false)
@@ -104,6 +106,7 @@ namespace WebScraper
         }
 
         protected MovieMetadata m_metadata;
+        protected bool m_parsingSuccessful;
 
         #endregion
     }

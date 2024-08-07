@@ -64,6 +64,7 @@ namespace WebScraper
                     if (href.StartsWith("https://jav.guru/") && href.ContainsCaseless(m_metadata.UniqueID.Value))
                     {
                         m_searchResults = href;
+                        m_parsingSuccessful = true;
                         break;
                     }
                 }
