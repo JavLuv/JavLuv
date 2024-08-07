@@ -3,6 +3,7 @@ using AngleSharp.Html.Dom;
 using Common;
 using System;
 using System.IO;
+using System.Text;
 using System.Threading;
 using System.Windows.Threading;
 
@@ -63,7 +64,6 @@ namespace WebScraper
             int loadCounter = 0;
             do
             {
-                loadCounter++;
 
                 try
                 {
@@ -131,24 +131,32 @@ namespace WebScraper
                                 parseError = true;
                                 break;
                             }
-                            Thread.Sleep(100);
+                            if (IsValidDataParsed() == false)
+                                Thread.Sleep(100);
                         }
                         parseTryCount++;
                         if (parseTryCount >= 20)
                         {
-                            Logger.WriteWarning("HTML parsing timeout.  Retrying");
+                            Logger.WriteWarning("HTML parsing timeout.  Retrying.");
                             break;
                         }
                     }
                     while (parseError == false && IsValidDataParsed() == false);
                 }
-                else
+                
+                // Since we might have broken out of the loop on timeout, check again
+                // to see if we've succeessfully parsed an HTML document.
+                if (IsValidDataParsed() == false)
                 {
                     if (loadCounter <= 3)
                         Logger.WriteWarning("Internal browser parsing timeout.  Retrying.");
                 }
+                loadCounter++;
             }
             while (parseError == false && m_parsingComplete == false && IsValidDataParsed() == false && loadCounter <= 3);
+
+            // Reset parsing complete flag
+            m_parsingComplete = false;
 
             if (IsValidDataParsed() && parseError == false)
                 Logger.WriteInfo("Successfully finished parsing site");

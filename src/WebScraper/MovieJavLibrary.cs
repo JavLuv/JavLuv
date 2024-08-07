@@ -214,6 +214,7 @@ namespace WebScraper
                     {
                         string href = element.Attributes["href"].Value;
                         m_pageLink = "https://www.javlibrary.com/" + GetLanguageString() + "/" + href;
+                        m_parsingSuccessful = true;
                         return true;            
                     }
                 }

@@ -2,9 +2,8 @@
 
 All significant changes are listed in this file.
 
-## [1.2.1] - 2024-8-4
-- Webscraper reliability improvement
-- Add additional logging to webscraper
+## [1.2.1] - 2024-8-6
+- Webscraper reliability, performance, and logging improvements
 - Add check for locked movie files before moving or renaming
 - Fix exception in Japanese language title scanner
 
