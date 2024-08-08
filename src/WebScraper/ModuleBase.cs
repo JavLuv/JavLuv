@@ -159,7 +159,7 @@ namespace WebScraper
             }
             while (parseError == false && m_parsingComplete == false && IsValidDataParsed() == false && loadCounter <= browserRetries);
 
-
+            // Log parsing results
             if (IsValidDataParsed() && parseError == false)
                 Logger.WriteInfo("Successfully finished parsing site");
             else
