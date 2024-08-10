@@ -349,8 +349,13 @@ namespace JavLuv
             }
 
             // Optionally move/rename post-scan
-            if (JavLuv.Settings.Get().EnableMoveRename && JavLuv.Settings.Get().MoveRenameAfterScan && m_movieScanner.IsCancelled == false)
+            if (m_movieScanner.IsRescanFiles == false && 
+                JavLuv.Settings.Get().EnableMoveRename && 
+                JavLuv.Settings.Get().MoveRenameAfterScan && 
+                m_movieScanner.IsCancelled == false)
+            {
                 m_movieBrowserViewModel.MoveRenameMovies(m_movieScanner.Movies);
+            }
 
             // Add new movies to movie database
             if (JavLuv.Settings.Get().AddToCollection)
@@ -488,6 +493,7 @@ namespace JavLuv
 
         public void StartRecan(List<string> scanDirectories)
         {
+            m_movieScanner.IsRescanFiles = true;
             m_movieScanner.Start(scanDirectories);
             SidePanel.SettingsIsEnabled = false;
             NotifyPropertyChanged("IsScanning");

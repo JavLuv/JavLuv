@@ -53,6 +53,7 @@ namespace JavLuv
         public int ItemsProcessed { get; private set; }
         public int TotalItems { get; private set; }
         public bool IsCancelled { get; private set; }
+        public bool IsRescanFiles { get; set; }
         public List<MovieData> Movies { get; private set; }
         public List<ActressData> Actresses { get; private set; }
         public string ErrorLog { get { return m_errorLog; } }
@@ -95,6 +96,7 @@ namespace JavLuv
         public void Clear()
         {
             Logger.WriteInfo("Clear scanner");
+            IsRescanFiles = false;
             Movies.Clear();
             Actresses.Clear();
         }
