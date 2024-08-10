@@ -2,7 +2,13 @@
 
 All significant changes are listed in this file.
 
-## [1.2.2] - 2024-8-67
+## [1.2.3] - 2024-8-8
+- Add option to display Japanese name order
+- Fix issues with move / rename error handling
+- Move / rename has a starting numeric index of 1 instead of 0
+- Rescan files no longer automatically calls move / rename after
+
+## [1.2.2] - 2024-8-7
 - Allow web scraper to retry failed attempts
 
 ## [1.2.1] - 2024-8-6

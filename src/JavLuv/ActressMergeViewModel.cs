@@ -5,6 +5,7 @@ using Common;
 using System.IO;
 using System.Windows.Media;
 using System.Text;
+using System.Xml.Linq;
 
 namespace JavLuv
 {
@@ -81,9 +82,12 @@ namespace JavLuv
             get
             {
                 StringBuilder sb = new StringBuilder(200);
-                sb.AppendLine(String.Format("{0} {1}", TextManager.GetString("Text.MergeActressesName"), m_actressData.Name));
+                var displayName = MovieUtils.GetDisplayActressName(m_actressData.Name, Settings.Get().UseJapaneseNameOrder);
+                var displayAltNames = MovieUtils.GetDisplayActressNames(m_actressData.AltNames, Settings.Get().UseJapaneseNameOrder);
+                string displayAltNamesStr = Common.Utilities.StringListToString(displayAltNames);
+                sb.AppendLine(String.Format("{0} {1}", TextManager.GetString("Text.MergeActressesName"), displayName));
                 sb.AppendLine(String.Format("{0} {1}", TextManager.GetString("Text.ActressJapaneseName"), m_actressData.JapaneseName));
-                sb.AppendLine(String.Format("{0} {1}", TextManager.GetString("Text.ActressAlternateNames"), Common.Utilities.StringListToString(m_actressData.AltNames)));
+                sb.AppendLine(String.Format("{0} {1}", TextManager.GetString("Text.ActressAlternateNames"), displayAltNamesStr));
                 return sb.ToString();
             }
         }

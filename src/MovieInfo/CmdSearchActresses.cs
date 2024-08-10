@@ -8,6 +8,7 @@ namespace MovieInfo
     public enum SortActressesBy
     {
         Name,
+        Name_JapaneseOrder,
         Age_Youngest,
         Age_Oldest,
         Height_Shortest,
@@ -26,6 +27,16 @@ namespace MovieInfo
         public int Compare(ActressData left, ActressData right)
         {
             return String.Compare(left.Name, right.Name);
+        }
+    }
+
+    public class ActressNameJapaneseOrderComparer : IComparer<ActressData>
+    {
+        public int Compare(ActressData left, ActressData right)
+        {
+            string leftName = MovieUtils.GetDisplayActressName(left.Name, true);
+            string rightName = MovieUtils.GetDisplayActressName(right.Name, true);
+            return String.Compare(leftName, rightName);
         }
     }
 
@@ -153,12 +164,13 @@ namespace MovieInfo
     {
         #region Constructors
 
-        public CmdSearchActresses(ActressesDatabase actressesData, string searchText, SortActressesBy sortActressesBy, bool showAllActresses)
+        public CmdSearchActresses(ActressesDatabase actressesData, string searchText, SortActressesBy sortActressesBy, bool showAllActresses, bool useJapaneseNameOrder)
         {
             m_actressesData = actressesData;
             m_searchText = searchText;
             m_sortActressesBy = sortActressesBy;
             m_showAllActresses = showAllActresses;
+            m_useJapaneseNameOrder = useJapaneseNameOrder;
         }
 
         #endregion;
@@ -279,7 +291,10 @@ namespace MovieInfo
             switch (m_sortActressesBy)
             {
                 case SortActressesBy.Name:
-                    m_filteredActresses.Sort(new ActressNameComparer());
+                    if (m_useJapaneseNameOrder == true)
+                        m_filteredActresses.Sort(new ActressNameJapaneseOrderComparer());
+                    else
+                        m_filteredActresses.Sort(new ActressNameComparer());
                     break;
                 case SortActressesBy.Age_Youngest:
                     m_filteredActresses.Sort(new ActressAgeYoungestComparer());
@@ -325,6 +340,7 @@ namespace MovieInfo
         private string m_searchText = String.Empty;
         private SortActressesBy m_sortActressesBy = SortActressesBy.Name;
         private bool m_showAllActresses;
+        private bool m_useJapaneseNameOrder;
 
         #endregion
     }

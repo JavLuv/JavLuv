@@ -6,6 +6,7 @@ using System.Text;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
+using static Microsoft.WindowsAPICodePack.Shell.PropertySystem.SystemProperties.System;
 
 namespace JavLuv
 {
@@ -112,7 +113,7 @@ namespace JavLuv
 
         private void CreateDisplayTitle()
         {
-            m_displayTitle = m_actressData.Name;
+            m_displayTitle = MovieUtils.GetDisplayActressName(m_actressData.Name, Settings.Get().UseJapaneseNameOrder);
             switch (Settings.Get().SortActressesBy)
             {
                 case SortActressesBy.Name:

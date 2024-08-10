@@ -179,6 +179,20 @@ namespace JavLuv
             }
         }
 
+        public bool UseJapaneseNameOrder
+        {
+            get { return Settings.Get().UseJapaneseNameOrder; }
+            set
+            {
+                if (value != Settings.Get().UseJapaneseNameOrder)
+                {
+                    Settings.Get().UseJapaneseNameOrder = value;
+                    Parent.Collection.UseJapaneseNameOrder = value;
+                    NotifyPropertyChanged("UseJapaneseNameOrder");
+                }
+            }
+        }
+
         public string Subtitles
         {
             get { return Settings.Get().Subtitles; }

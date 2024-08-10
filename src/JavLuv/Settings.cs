@@ -151,6 +151,7 @@ namespace JavLuv
         public ThemeType Theme { get; set; }
         public bool ShowAdvancedOptions { get; set; }
         public bool ShowActressAgeAtPremier { get; set; }
+        public bool UseJapaneseNameOrder { get; set; }
         public string Subtitles { get; set; }
         public bool GenerateLocalMetadata { get; set; }
         public bool UseFolderAsTitle { get; set; }

@@ -142,13 +142,15 @@ namespace JavLuv
         {
             get
             {
-                 return m_actressData.Name;
+                 return MovieUtils.GetDisplayActressName(m_actressData.Name, Settings.Get().UseJapaneseNameOrder);
             }
             set
             {
-                if (value != m_actressData.Name)
+                string displayName = MovieUtils.GetDisplayActressName(value, Settings.Get().UseJapaneseNameOrder);
+                string normalName = MovieUtils.GetDisplayActressName(value, false);
+                if (normalName != m_actressData.Name)
                 {
-                    if (String.IsNullOrEmpty(value))
+                    if (String.IsNullOrEmpty(displayName))
                     {
                         MessageBox.Show(
                             TextManager.GetString("Text.ActressEmptyNameMessage"),
@@ -156,11 +158,11 @@ namespace JavLuv
                             );
                         return;
                     }
-                    ActressData actress = m_collection.FindActress(value);
-                    if (actress != null && Name != actress.Name)
+                    ActressData actress = m_collection.FindActress(normalName);
+                    if (actress != null && Name != normalName)
                     {
                         MessageBox.Show(
-                            String.Format(TextManager.GetString("Text.ActressRenameMessage"), actress.Name),
+                            String.Format(TextManager.GetString("Text.ActressRenameMessage"), displayName),
                             TextManager.GetString("Text.ActressRenameError")
                             );
                         return;
@@ -168,10 +170,10 @@ namespace JavLuv
                     m_collection.RemoveActress(m_actressData, false);
                     if (Utilities.Equals(m_actressData.Name, m_actressData.AltNames) == false)
                         m_actressData.AltNames.Add(m_actressData.Name);
-                    var index = m_actressData.AltNames.FindIndex(x => x == value);
+                    var index = m_actressData.AltNames.FindIndex(x => x == normalName);
                     if (index != -1)
                         m_actressData.AltNames.RemoveAt(index);
-                    m_actressData.Name = value;
+                    m_actressData.Name = normalName;
                     NotifyPropertyChanged("Name");
                     NotifyPropertyChanged("AlternateNames");
                     m_collection.AddActress(m_actressData);
@@ -199,19 +201,27 @@ namespace JavLuv
 
         public string AlternateNames
         {
-            get { return Utilities.StringListToString(m_actressData.AltNames); }
+            get 
+            {
+                var displayNames = MovieUtils.GetDisplayActressNames(m_actressData.AltNames, Settings.Get().UseJapaneseNameOrder);
+                return Utilities.StringListToString(displayNames); 
+            }
             set
             {
-                var names = value;
-                var currentNames = Utilities.StringListToString(m_actressData.AltNames);
-                if (value != currentNames)
+                var altNames = Utilities.StringToStringList(value);
+                var currAltNames = Utilities.StringListToString(m_actressData.AltNames);
+                var displayNames = MovieUtils.GetDisplayActressNames(altNames, Settings.Get().UseJapaneseNameOrder);
+                var normalNames = MovieUtils.GetDisplayActressNames(altNames, false);
+                string normalNamesStr = Utilities.StringListToString(normalNames);
+                if (value != currAltNames)
                 {
-                    var altNames = Utilities.StringToStringList(value);
                     foreach (var name in altNames)
                     {
-                        ActressData actress = m_collection.FindActress(value);
+                        ActressData actress = m_collection.FindActress(name);
                         if (actress != null && Name != actress.Name)
                         {
+                            string displayName = MovieUtils.GetDisplayActressName(name, Settings.Get().UseJapaneseNameOrder);
+
                             MessageBox.Show(
                                 String.Format(TextManager.GetString("Text.ActressRenameMessage"), actress.Name), 
                                 TextManager.GetString("Text.ActressRenameError")
