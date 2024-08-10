@@ -143,6 +143,7 @@ namespace JavLuv
                 if (errorCount > 0)
                 {
                     Logger.WriteError(errorCount.ToString() + " errors moving / renaming movies");
+                    throw new Exception("Unexpected error moving / renaming movies");
                 }
             }
             catch (Exception ex)
