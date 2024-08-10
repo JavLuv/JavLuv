@@ -40,7 +40,15 @@ namespace MovieInfo
     {
         public int Compare(MovieData left, MovieData right)
         {
-            return MovieUtils.MovieActressCompare(left.Metadata.Actors, right.Metadata.Actors);
+            return MovieUtils.MovieActressCompare(left.Metadata.Actors, right.Metadata.Actors, false);
+        }
+    }
+
+    public class MovieActressJapaneseOrderComparer : IComparer<MovieData>
+    {
+        public int Compare(MovieData left, MovieData right)
+        {
+            return MovieUtils.MovieActressCompare(left.Metadata.Actors, right.Metadata.Actors, true);
         }
     }
 
@@ -130,7 +138,8 @@ namespace MovieInfo
             ActressData searchActress,
             SortMoviesBy sortMoviesBy, 
             bool showUnratedOnly, 
-            bool showSubtitlesOnly
+            bool showSubtitlesOnly,
+            bool useJapaneseNameOrder
             )
         {
             m_movieCollection = collection;
@@ -140,6 +149,7 @@ namespace MovieInfo
             m_sortMoviesBy = sortMoviesBy;
             m_showUnratedOnly = showUnratedOnly;
             m_showSubtitlesOnly = showSubtitlesOnly;
+            m_useJapaneseNameOrder = useJapaneseNameOrder;
             m_rng = new Random(m_movieCollection.RandomSeed);
         }
 
@@ -305,7 +315,10 @@ namespace MovieInfo
                     m_filteredMovies.Sort(new MovieIDComparer());
                     break;
                 case SortMoviesBy.Actress:
-                    m_filteredMovies.Sort(new MovieActressComparer());
+                    if (m_useJapaneseNameOrder)
+                        m_filteredMovies.Sort(new MovieActressJapaneseOrderComparer());
+                    else
+                        m_filteredMovies.Sort(new MovieActressComparer());
                     break;
                 case SortMoviesBy.Date_Newest:
                     m_filteredMovies.Sort(new MovieDateNewestComparer());
@@ -340,6 +353,7 @@ namespace MovieInfo
         private SortMoviesBy m_sortMoviesBy = SortMoviesBy.Title;
         private bool m_showUnratedOnly;
         private bool m_showSubtitlesOnly;
+        private bool m_useJapaneseNameOrder;
         private ActressData m_searchActress;
         private Random m_rng;
 

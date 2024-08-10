@@ -126,13 +126,29 @@ namespace JavLuv
                     break;
                 case SortMoviesBy.Actress:
                     if (m_movieData.Metadata.Actors.Count == 0)
+                    {
                         m_displayTitle = String.Format("({0}) {1}", "???", GetOptionalIdAndTitle());
+                    }
                     else if (m_movieData.Metadata.Actors.Count == 1)
-                        m_displayTitle = String.Format("({0}) {1}", m_movieData.Metadata.Actors[0].Name, GetOptionalIdAndTitle());
+                    {
+                        bool useJpNameOrder = Settings.Get().UseJapaneseNameOrder;
+                        string displayName = MovieUtils.GetDisplayActressName(m_movieData.Metadata.Actors[0].Name, useJpNameOrder);
+                        m_displayTitle = String.Format("({0}) {1}", displayName, GetOptionalIdAndTitle());
+                    }
                     else if (m_movieData.Metadata.Actors.Count == 2)
-                        m_displayTitle = String.Format("({0} & {1}) {2}", m_movieData.Metadata.Actors[0].Name, m_movieData.Metadata.Actors[1].Name, GetOptionalIdAndTitle());
+                    {
+                        bool useJpNameOrder = Settings.Get().UseJapaneseNameOrder;
+                        string displayName1 = MovieUtils.GetDisplayActressName(m_movieData.Metadata.Actors[0].Name, useJpNameOrder);
+                        string displayName2 = MovieUtils.GetDisplayActressName(m_movieData.Metadata.Actors[1].Name, useJpNameOrder);
+                        m_displayTitle = String.Format("({0} & {1}) {2}", displayName1, displayName2, GetOptionalIdAndTitle());
+                    }
                     else
-                        m_displayTitle = String.Format("({0}, {1}, & more...) {2}", m_movieData.Metadata.Actors[0].Name, m_movieData.Metadata.Actors[1].Name, GetOptionalIdAndTitle());
+                    {
+                        bool useJpNameOrder = Settings.Get().UseJapaneseNameOrder;
+                        string displayName1 = MovieUtils.GetDisplayActressName(m_movieData.Metadata.Actors[0].Name, useJpNameOrder);
+                        string displayName2 = MovieUtils.GetDisplayActressName(m_movieData.Metadata.Actors[1].Name, useJpNameOrder);
+                        m_displayTitle = String.Format("({0}, {1}, & more...) {2}", displayName1, displayName2, GetOptionalIdAndTitle());
+                    }
                     break;
                 case SortMoviesBy.Date_Newest:
                     goto case SortMoviesBy.Date_Oldest;

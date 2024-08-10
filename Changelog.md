@@ -3,6 +3,7 @@
 All significant changes are listed in this file.
 
 ## [1.2.3] - 2024-8-8
+- Add option to display Japanese name order
 - Fix issues with move / rename error handling
 - Move / rename has a starting numeric index of 1 instead of 0
 - Rescan files no longer automatically calls move / rename after

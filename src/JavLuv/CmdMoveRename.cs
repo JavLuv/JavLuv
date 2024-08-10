@@ -100,7 +100,8 @@ namespace JavLuv
                             Settings.Get().Movie,
                             Settings.Get().Cover,
                             Settings.Get().Preview,
-                            Settings.Get().Metadata
+                            Settings.Get().Metadata,
+                            Settings.Get().UseJapaneseNameOrder
                         );
                         newMovies.Add(newMovieData);
                     }

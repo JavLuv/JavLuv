@@ -63,7 +63,8 @@ namespace JavLuv
             }
 
             var mainView = Application.Current.MainWindow as MainWindow;
-            m_movieCollection = new MovieCollection(Application.Current.Dispatcher, IsReadOnlyMode);
+            m_movieCollection = new MovieCollection(
+                Application.Current.Dispatcher, IsReadOnlyMode, JavLuv.Settings.Get().UseJapaneseNameOrder);
             m_movieScanner = new MovieScanner(m_movieCollection, mainView.webView);
             m_settingsViewModel = new SettingsViewModel(this);
             m_reportViewModel = new ReportViewModel(this);

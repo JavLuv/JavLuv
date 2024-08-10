@@ -6,6 +6,7 @@ using System.IO;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
+using static Microsoft.WindowsAPICodePack.Shell.PropertySystem.SystemProperties.System;
 
 namespace JavLuv
 {
@@ -23,7 +24,7 @@ namespace JavLuv
                 m_actressData.Name = actor.Name;
                 Parent.Parent.Parent.Parent.Collection.AddActress(m_actressData);
             }
-            Name = m_actressData.Name;
+            Name = MovieUtils.GetDisplayActressName(m_actressData.Name, Settings.Get().UseJapaneseNameOrder);
             if (Settings.Get().ShowActressAgeAtPremier)
             {
                 int age = GetActressAgeAtPremier();

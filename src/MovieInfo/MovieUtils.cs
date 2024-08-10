@@ -14,7 +14,7 @@ namespace MovieInfo
     {
         #region Public Functions
 
-        public static MovieData MoveRenameMovieData(MovieData movieData, string library, string folder, string movie, string cover, string preview, string metadata)
+        public static MovieData MoveRenameMovieData(MovieData movieData, string library, string folder, string movie, string cover, string preview, string metadata, bool useJapaneseNameOrder)
         {
             if (String.IsNullOrEmpty(library))
                 return movieData;
@@ -24,7 +24,7 @@ namespace MovieInfo
 
             // Create new paths and filenames based on rename / move strings and embedded tokens 
             // associated with specific types of metadata.
-            string newFolder = MoveRenameGetFolder(movieData, folder);
+            string newFolder = MoveRenameGetFolder(movieData, folder, useJapaneseNameOrder);
             if (String.IsNullOrEmpty(newFolder) == false)
                 newMovieData.Path = Path.Combine(library, newFolder);
             else
@@ -34,7 +34,7 @@ namespace MovieInfo
 
             for (int i = 0; i < movieData.MovieFileNames.Count; ++i)
             {
-                string newMovie = MoveRenameGetFilename(movieData, movie, movieData.MovieFileNames.Count == 1 ? -1 : i);
+                string newMovie = MoveRenameGetFilename(movieData, movie, useJapaneseNameOrder, movieData.MovieFileNames.Count == 1 ? -1 : i);
                 if (String.IsNullOrEmpty(newMovie) == false)
                 {
                     newMovieData.MovieFileNames[i] = Path.ChangeExtension(newMovie, Path.GetExtension(movieData.MovieFileNames[i]));
@@ -44,16 +44,16 @@ namespace MovieInfo
                         newMovieData.SubtitleFileNames[i] = Path.ChangeExtension(newMovieData.MovieFileNames[i], Path.GetExtension(movieData.SubtitleFileNames[i]));
                 }
             }
-            string newCover = MoveRenameGetFilename(movieData, cover);
+            string newCover = MoveRenameGetFilename(movieData, cover, useJapaneseNameOrder);
             if (String.IsNullOrEmpty(newCover) == false)
                 newMovieData.CoverFileName = Path.ChangeExtension(newCover, Path.GetExtension(movieData.CoverFileName));
             for (int i = 0; i < movieData.ThumbnailsFileNames.Count; ++i)
             {
-                string newPreview = MoveRenameGetFilename(movieData, preview, movieData.ThumbnailsFileNames.Count == 1 ? -1 : i);
+                string newPreview = MoveRenameGetFilename(movieData, preview, useJapaneseNameOrder, movieData.ThumbnailsFileNames.Count == 1 ? -1 : i);
                 if (String.IsNullOrEmpty(newPreview) == false)
                     newMovieData.ThumbnailsFileNames[i] = Path.ChangeExtension(newPreview, Path.GetExtension(movieData.ThumbnailsFileNames[i]));
             }
-            string newMetadata = MoveRenameGetFilename(movieData, metadata);
+            string newMetadata = MoveRenameGetFilename(movieData, metadata, useJapaneseNameOrder);
             if (String.IsNullOrEmpty(newMetadata) == false)
                 newMovieData.MetadataFileName = Path.ChangeExtension(newMetadata, Path.GetExtension(movieData.MetadataFileName));
 
@@ -193,11 +193,13 @@ namespace MovieInfo
             return MovieIDCompareNumeric(leftID.Value, rightID.Value);
         }
 
-        public static int MovieActressCompare(List<ActorData> leftActors, List<ActorData> rightActors)
+        public static int MovieActressCompare(List<ActorData> leftActors, List<ActorData> rightActors, bool useJapaneseNameOrder)
         {
             for (int i = 0; i < Math.Min(leftActors.Count, rightActors.Count); ++i)
             {
-                int retVal = String.Compare(leftActors[i].Name, rightActors[i].Name);
+                string leftName = GetDisplayActressName(leftActors[i].Name, useJapaneseNameOrder);
+                string rightName = GetDisplayActressName(rightActors[i].Name, useJapaneseNameOrder);
+                int retVal = String.Compare(leftName, rightName);
                 if (retVal != 0)
                     return retVal;
             }
@@ -259,6 +261,28 @@ namespace MovieInfo
                 movieData.MetadataChanged = true;
             }
             return genresChanged;
+        }
+
+        public static string GetDisplayActressName(string name, bool useJapaneseNameOrder)
+        {
+            if (string.IsNullOrEmpty(name))
+                return string.Empty;
+            if (useJapaneseNameOrder == false)
+                return name;
+            string[] nameSplit = name.Split(' ');
+            if (nameSplit.Count() != 2)
+                return name;
+            return nameSplit[1] + " " + nameSplit[0];
+        }
+
+        public static List<string> GetDisplayActressNames(List<string> names, bool useJapaneseNameOrder)
+        {
+            if (useJapaneseNameOrder == false)
+                return names;
+            List<string> japaneseNames = new List<string>();
+            foreach (string name in names)
+                japaneseNames.Add(GetDisplayActressName(name, true));
+            return japaneseNames;
         }
 
         public static bool ActressHasName(ActressData actress, string name)
@@ -353,6 +377,7 @@ namespace MovieInfo
                 return true;
             return false;
         }
+
         public static int GetAgeFromDateOfBirthAndDate(int dobYear, int dobMonth, int dobDay, int dateYear, int dateMonth, int dateDay)
         {
             if (dobYear == 0)
@@ -692,7 +717,7 @@ namespace MovieInfo
 
         #region Private Functions    
 
-        private static string MoveRenameGetFilename(MovieData movieData, string filename, int sequenceIndex = -1)
+        private static string MoveRenameGetFilename(MovieData movieData, string filename, bool useJapaneseNameOrder, int sequenceIndex = -1)
         {
             if (String.IsNullOrEmpty(filename))
                 return String.Empty;
@@ -706,14 +731,14 @@ namespace MovieInfo
 
             // Getting a filename is identical to getting a folder, with the exception that
             // directory delimiters are not allowed.
-            string fn = MoveRenameGetFolder(movieData, filename, sequenceIndex);
+            string fn = MoveRenameGetFolder(movieData, filename, useJapaneseNameOrder, sequenceIndex);
             if (fn.Contains('\\') || fn.Contains('/'))
                 throw new Exception("Filename fields cannot contain directory delimiters");
 
             return fn;
         }
 
-        private static string MoveRenameGetFolder(MovieData movieData, string folder, int sequenceIndex = -1)
+        private static string MoveRenameGetFolder(MovieData movieData, string folder, bool useJapaneseNameOrder, int sequenceIndex = -1)
         {
             if (String.IsNullOrEmpty(folder))
                 return String.Empty;
@@ -737,7 +762,7 @@ namespace MovieInfo
                 tokens.RemoveAt(0);
                 if (tokens.Count > 0)
                 {
-                    sb.Append(MoveRenameParseToken(movieData, sequenceIndex, tokens.First()));
+                    sb.Append(MoveRenameParseToken(movieData, sequenceIndex, useJapaneseNameOrder, tokens.First()));
                     tokens.RemoveAt(0);
                 }
             }
@@ -745,7 +770,7 @@ namespace MovieInfo
             return sb.ToString();
         }
 
-        private static string MoveRenameParseToken(MovieData movieData, int sequenceIndex, string token)
+        private static string MoveRenameParseToken(MovieData movieData, int sequenceIndex, bool useJapaneseNameOrder, string token)
         {
             StringBuilder sb = new StringBuilder(200);
             string originalToken = token;
@@ -794,7 +819,10 @@ namespace MovieInfo
                 int num = Math.Min(4, Math.Max(1, Utilities.ParseInitialDigits(token)));
                 List<string> names = new List<string>();
                 foreach (var actor in movieData.Metadata.Actors)
-                    names.Add(actor.Name);
+                {
+                    string displayName = MovieUtils.GetDisplayActressName(actor.Name, useJapaneseNameOrder);
+                    names.Add(displayName);
+                }
                 names.Sort();
                 if (names.Count == 0)
                 {

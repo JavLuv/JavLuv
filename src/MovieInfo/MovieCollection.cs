@@ -11,10 +11,11 @@ namespace MovieInfo
     {
         #region Constructors
 
-        public MovieCollection(Dispatcher dispatcher, bool readOnlyMode)
+        public MovieCollection(Dispatcher dispatcher, bool readOnlyMode, bool useJapaneseNameOrder)
         {
             m_dispatcher = dispatcher;
             m_readOnlyMode = readOnlyMode;
+            m_useJapaneseNameOrder = useJapaneseNameOrder;
             CommandQueue.Command().CommandFinished += OnCommandFinished;
             if (m_readOnlyMode == false)
             {
@@ -143,6 +144,20 @@ namespace MovieInfo
                 }
             }
         }
+
+        public bool UseJapaneseNameOrder
+        {
+            private get { return m_useJapaneseNameOrder; }
+            set
+            {
+                if (value != m_useJapaneseNameOrder)
+                {
+                    m_useJapaneseNameOrder = value;
+                    SearchActresses();
+                }
+            }
+        }
+
 
         public bool ShowID
         {
@@ -530,7 +545,7 @@ namespace MovieInfo
         {
             if (m_loaded == false)
                 return;
-            m_searchMovies = new CmdSearchMovies(this, m_cacheData, m_searchText, MovieSearchActress, m_sortMoviesBy, ShowUnratedOnly, ShowSubtitlesOnly);
+            m_searchMovies = new CmdSearchMovies(this, m_cacheData, m_searchText, MovieSearchActress, m_sortMoviesBy, ShowUnratedOnly, ShowSubtitlesOnly, UseJapaneseNameOrder);
             CommandQueue.Command().Execute(m_searchMovies);            
         }
 
@@ -540,7 +555,7 @@ namespace MovieInfo
                 return;
             if (SortActressesBy == SortActressesBy.MovieCount)
                 CommandQueue.Command().Execute(new CmdUpdateActressMovieCount(this, m_cacheData, m_actressesDatabase));
-            m_searchActresses = new CmdSearchActresses(m_actressesDatabase, m_searchText, m_sortActressesBy, m_showUnknownActresses);
+            m_searchActresses = new CmdSearchActresses(m_actressesDatabase, m_searchText, m_sortActressesBy, m_showUnknownActresses, m_useJapaneseNameOrder);
             CommandQueue.Command().Execute(m_searchActresses);
         }
 
@@ -646,6 +661,7 @@ namespace MovieInfo
         // Actress search
         private CmdSearchActresses m_searchActresses;
         private SortActressesBy m_sortActressesBy;
+        private bool m_useJapaneseNameOrder;
 
         // Show ID with title
         private bool m_showID;

@@ -18,6 +18,7 @@
     <system:String x:Key="Text.CheckForUpdates">Automatically check for updates</system:String>
     <system:String x:Key="Text.AutoSyncActresses">Automatically synchronize movie metadata to actress database</system:String>
     <system:String x:Key="Text.ShowActressAgeAtPremier">Show actress' age at movie premier</system:String>
+    <system:String x:Key="Text.UseJapaneseNameOrder">Use Japanese name order</system:String>
     <system:String x:Key="Text.Subtitles">Subtitles</system:String>
     <system:String x:Key="Text.HideMetadata">Hide metadata and cover files</system:String>
     <system:String x:Key="Text.Scanning">Scanning</system:String>
