@@ -872,7 +872,7 @@ namespace MovieInfo
                     else if (subtoken.Contains("ALPHA"))
                         sb.Append((char)((int)('A') + sequenceIndex));
                     else if (subtoken.Contains("NUMBER"))
-                        sb.Append(sequenceIndex.ToString());
+                        sb.Append((sequenceIndex + 1).ToString());
                     else
                         sb.Append(subtoken);
                 }
@@ -1051,14 +1051,16 @@ namespace MovieInfo
                 }
             }
 
-            // Move/rename individual files as needed
-            for (int i = 0; i < movieData.MovieFileNames.Count; ++i)
+            // Move/rename individual files as needed.  Note: we count from highest to lowest because
+            // we changed starting numeric index from 0 to 1.  This ensures we don't collide with
+            // previously named files with numeric index starting at 0.
+            for (int i = movieData.MovieFileNames.Count - 1; i >= 0; --i)
                 Utilities.MoveFile(Path.Combine(sourceFolder, movieData.MovieFileNames[i]), Path.Combine(newMovieData.Path, newMovieData.MovieFileNames[i]));
             Utilities.MoveFile(Path.Combine(sourceFolder, movieData.CoverFileName), Path.Combine(newMovieData.Path, newMovieData.CoverFileName));
-            for (int i = 0; i < movieData.ThumbnailsFileNames.Count; ++i)
+            for (int i = movieData.ThumbnailsFileNames.Count - 1; i >= 0; --i)
                 Utilities.MoveFile(Path.Combine(sourceFolder, movieData.ThumbnailsFileNames[i]), Path.Combine(newMovieData.Path, newMovieData.ThumbnailsFileNames[i]));
             Utilities.MoveFile(Path.Combine(sourceFolder, movieData.MetadataFileName), Path.Combine(newMovieData.Path, newMovieData.MetadataFileName));
-            for (int i = 0; i < movieData.SubtitleFileNames.Count; ++i)
+            for (int i = movieData.SubtitleFileNames.Count - 1; i >= 0; --i)
                 Utilities.MoveFile(Path.Combine(sourceFolder, movieData.SubtitleFileNames[i]), Path.Combine(newMovieData.Path, newMovieData.SubtitleFileNames[i]));
         }
 

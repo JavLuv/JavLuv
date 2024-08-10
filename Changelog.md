@@ -4,6 +4,7 @@ All significant changes are listed in this file.
 
 ## [1.2.3] - 2024-8-8
 - Fix issues with move / rename error handling
+- Move / rename has a starting numeric index of 1 instead of 0
 
 ## [1.2.2] - 2024-8-7
 - Allow web scraper to retry failed attempts
