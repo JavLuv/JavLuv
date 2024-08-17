@@ -32,6 +32,7 @@ namespace WebScraper
                 TestScrapeActressJavDatabase();
                 TestScrapeActressJavModel();
                 TestScrapeActressJavBody();
+                TestScrapeActressAsianScreens();
             }
             catch (Exception ex)
             {
@@ -217,6 +218,25 @@ namespace WebScraper
             CheckEqual(59, actressData.Waist);
             CheckEqual(85, actressData.Hips);
             CheckEqual("A", actressData.BloodType);
+            CheckNotEmpty(module.ImageSource);
+        }
+
+        public static void TestScrapeActressAsianScreens()
+        {
+            var actressData = new ActressData("Yui Hatano");
+            var module = new ActressAsianScreens(actressData.Name, m_dispatcher, m_webBrowser, LanguageType.English);
+            module.Scrape();
+            actressData = module.Actress;
+            CheckEqual("Yui Hatano", actressData.Name);
+            CheckEqual(1988, actressData.DobYear);
+            CheckEqual(5, actressData.DobMonth);
+            CheckEqual(24, actressData.DobDay);
+            CheckEqual(163, actressData.Height);
+            CheckEqual(88, actressData.Bust);
+            CheckEqual(59, actressData.Waist);
+            CheckEqual(85, actressData.Hips);
+            CheckEqual("E", actressData.Cup);
+            //CheckEqual("A", actressData.BloodType);
             CheckNotEmpty(module.ImageSource);
         }
 

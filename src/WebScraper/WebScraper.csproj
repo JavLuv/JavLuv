@@ -78,6 +78,7 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ActressAsianScreens.cs" />
     <Compile Include="ActressJavBody.cs" />
     <Compile Include="ActressJavModel.cs" />
     <Compile Include="ModuleActress.cs" />
