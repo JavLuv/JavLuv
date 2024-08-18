@@ -4,6 +4,7 @@ All significant changes are listed in this file.
 
 ## [1.2.4] - 2024-8-17
 - Add actress scraper for AsianScreens.com
+- Improve scraper speed
 
 ## [1.2.3] - 2024-8-8
 - Add option to display Japanese name order

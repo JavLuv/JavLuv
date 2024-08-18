@@ -38,6 +38,13 @@ namespace WebScraper
             // Scrape required information from page
             foreach (var element in document.All)
             {
+                // Check for actress not found
+                if (element.TextContent.Contains("Page not found."))
+                {
+                    SearchNotFound = true;
+                    m_parsingSuccessful = true;
+                    return;
+                }
 
                 // Check for actress image
                 if (element.NodeName == "IMG")

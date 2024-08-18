@@ -23,16 +23,24 @@ namespace WebScraper
                 // Test movie scrapers
                 TestScrapeMovieJavLibrary1();
                 TestScrapeMovieJavLibrary2();
-                TestScrapeMovieJavDatabase();
-                TestScrapeMovieJavLand();
+                TestScrapeMovieJavLibrary3();
+                TestScrapeMovieJavDatabase1();
+                TestScrapeMovieJavDatabase2();
+                TestScrapeMovieJavLand1();
+                TestScrapeMovieJavLand2();
                 TestScrapeMovieJavSeenTv1();
                 TestScrapeMovieJavSeenTv2();
+                TestScrapeMovieJavSeenTv3();
 
                 // Test actress scrapers
-                TestScrapeActressJavDatabase();
-                TestScrapeActressJavModel();
-                TestScrapeActressJavBody();
-                TestScrapeActressAsianScreens();
+                TestScrapeActressJavDatabase1();
+                TestScrapeActressJavDatabase2();
+                TestScrapeActressJavModel1();
+                TestScrapeActressJavModel2();
+                TestScrapeActressJavBody1();
+                TestScrapeActressJavBody2();
+                TestScrapeActressAsianScreens1();
+                TestScrapeActressAsianScreens2();
             }
             catch (Exception ex)
             {
@@ -48,8 +56,7 @@ namespace WebScraper
         {
             var metadata = new MovieMetadata("IESP-711");
             var module = new MovieJavLibrary(metadata, m_dispatcher, m_webBrowser, LanguageType.English);
-            module.Scrape();
-            
+            module.Scrape();      
             CheckEqual("Minami Iroha Lesbian Ban - I Was Dragged Into A Lesbian Swamp By My Sister-In-Law -", module.Metadata.Title);
             CheckEqual("2022-12-22", module.Metadata.Premiered);
             CheckEqual(140, module.Metadata.Runtime);
@@ -72,7 +79,6 @@ namespace WebScraper
             var metadata = new MovieMetadata("BBAN-008");
             var module = new MovieJavLibrary(metadata, m_dispatcher, m_webBrowser, LanguageType.English);
             module.Scrape();
-
             CheckEqual("Lesbian Journey Sakurai Ayu Yuna Shiina", module.Metadata.Title);
             CheckEqual("2014-07-07", module.Metadata.Premiered);
             CheckEqual(180, module.Metadata.Runtime);
@@ -92,7 +98,15 @@ namespace WebScraper
             CheckNotEmpty(module.ImageSource);
         }
 
-        private static void TestScrapeMovieJavDatabase()
+        private static void TestScrapeMovieJavLibrary3()
+        {
+            var metadata = new MovieMetadata("FAKE-999");
+            var module = new MovieJavLibrary(metadata, m_dispatcher, m_webBrowser, LanguageType.English);
+            module.Scrape();
+            CheckEqual(true, module.SearchNotFound);
+        }
+
+        private static void TestScrapeMovieJavDatabase1()
         {
             var metadata = new MovieMetadata("IESP-711");
             var module = new MovieJavDatabase(metadata, m_dispatcher, m_webBrowser, LanguageType.English);
@@ -114,7 +128,15 @@ namespace WebScraper
             CheckNotEmpty(module.ImageSource);
         }
 
-        private static void TestScrapeMovieJavLand()
+        private static void TestScrapeMovieJavDatabase2()
+        {
+            var metadata = new MovieMetadata("FAKE-999");
+            var module = new MovieJavDatabase(metadata, m_dispatcher, m_webBrowser, LanguageType.English);
+            module.Scrape();
+            CheckEqual(true, module.SearchNotFound);
+        }
+
+        private static void TestScrapeMovieJavLand1()
         {
             var metadata = new MovieMetadata("IESP-711");
             var module = new MovieJavLand(metadata, m_dispatcher, m_webBrowser, LanguageType.English);
@@ -135,6 +157,15 @@ namespace WebScraper
             CheckEqual("Iroha Minami", module.Metadata.Actors[0].Name);
             CheckEqual("Tadami Rumi", module.Metadata.Actors[1].Name);
             CheckNotEmpty(module.ImageSource);
+        }
+
+        private static void TestScrapeMovieJavLand2()
+        {
+            var metadata = new MovieMetadata("FAKE-999");
+            var module = new MovieJavLand(metadata, m_dispatcher, m_webBrowser, LanguageType.English);
+            module.DebugHtml = true;
+            module.Scrape();
+            CheckEqual(true, module.SearchNotFound);
         }
 
         private static void TestScrapeMovieJavSeenTv1()
@@ -163,7 +194,15 @@ namespace WebScraper
             CheckEqual("bibian", module.Metadata.Label);
         }
 
-        public static void TestScrapeActressJavDatabase()
+        private static void TestScrapeMovieJavSeenTv3()
+        {
+            var metadata = new MovieMetadata("FAKE-999");
+            var module = new MovieJavSeenTv(metadata, m_dispatcher, m_webBrowser, LanguageType.English);
+            module.Scrape();
+            CheckEqual(true, module.SearchNotFound);
+        }
+
+        public static void TestScrapeActressJavDatabase1()
         {
             var actressData = new ActressData("Yui Hatano");
             var module = new ActressJavDatabase(actressData.Name, m_dispatcher, m_webBrowser, LanguageType.English);
@@ -183,7 +222,16 @@ namespace WebScraper
             CheckNotEmpty(module.ImageSource);
         }
 
-        public static void TestScrapeActressJavModel()
+        public static void TestScrapeActressJavDatabase2()
+        {
+            var actressData = new ActressData("Notta Realperson");
+            var module = new ActressJavDatabase(actressData.Name, m_dispatcher, m_webBrowser, LanguageType.English);
+            module.DebugHtml = true;
+            module.Scrape();
+            CheckEqual(true, module.SearchNotFound);
+        }
+
+        public static void TestScrapeActressJavModel1()
         {
             var actressData = new ActressData("Yui Hatano");
             var module = new ActressJavModel(actressData.Name, m_dispatcher, m_webBrowser, LanguageType.English);
@@ -202,7 +250,15 @@ namespace WebScraper
             CheckNotEmpty(module.ImageSource);
         }
 
-        public static void TestScrapeActressJavBody()
+        public static void TestScrapeActressJavModel2()
+        {
+            var actressData = new ActressData("Notta Realperson");
+            var module = new ActressJavModel(actressData.Name, m_dispatcher, m_webBrowser, LanguageType.English);
+            module.Scrape();
+            CheckEqual(true, module.SearchNotFound);
+        }
+
+        public static void TestScrapeActressJavBody1()
         {
             var actressData = new ActressData("Yui Hatano");
             var module = new ActressJavBody(actressData.Name, m_dispatcher, m_webBrowser, LanguageType.English);
@@ -221,7 +277,15 @@ namespace WebScraper
             CheckNotEmpty(module.ImageSource);
         }
 
-        public static void TestScrapeActressAsianScreens()
+        public static void TestScrapeActressJavBody2()
+        {
+            var actressData = new ActressData("Notta Realperson");
+            var module = new ActressJavBody(actressData.Name, m_dispatcher, m_webBrowser, LanguageType.English);
+            module.Scrape();
+            CheckEqual(true, module.SearchNotFound);
+        }
+
+        public static void TestScrapeActressAsianScreens1()
         {
             var actressData = new ActressData("Yui Hatano");
             var module = new ActressAsianScreens(actressData.Name, m_dispatcher, m_webBrowser, LanguageType.English);
@@ -236,8 +300,15 @@ namespace WebScraper
             CheckEqual(59, actressData.Waist);
             CheckEqual(85, actressData.Hips);
             CheckEqual("E", actressData.Cup);
-            //CheckEqual("A", actressData.BloodType);
             CheckNotEmpty(module.ImageSource);
+        }
+
+        public static void TestScrapeActressAsianScreens2()
+        {
+            var actressData = new ActressData("Notta Realperson");
+            var module = new ActressAsianScreens(actressData.Name, m_dispatcher, m_webBrowser, LanguageType.English);
+            module.Scrape();
+            CheckEqual(true, module.SearchNotFound);
         }
 
         private static void CheckEqual(string expected, string actual)
@@ -247,6 +318,12 @@ namespace WebScraper
         }
 
         private static void CheckEqual(int expected, int actual)
+        {
+            if (expected != actual)
+                throw new Exception("Web scraping error");
+        }
+
+        private static void CheckEqual(bool expected, bool actual)
         {
             if (expected != actual)
                 throw new Exception("Web scraping error");

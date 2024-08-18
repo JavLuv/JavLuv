@@ -39,6 +39,13 @@ namespace WebScraper
         {
             foreach (var element in document.All)
             {
+                // Check for no search results
+                if (element.TextContent.Contains("Page not found."))
+                {
+                    SearchNotFound = true;
+                    m_parsingSuccessful = true;
+                    return;
+                }
 
                 // Check for cover image
                 if (element.NodeName == "IMG")

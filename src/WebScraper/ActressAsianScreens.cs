@@ -36,7 +36,13 @@ namespace WebScraper
             // Scrape required information from page
             foreach (var element in document.All)
             {
-                if (element.NodeName == "TD")
+                if (element.TextContent == "This page either doesn't exist, or it moved somewhere else.")
+                {
+                    SearchNotFound = true;
+                    m_parsingSuccessful = true;
+                    return;
+                }
+                else if (element.NodeName == "TD")
                 {
                     var child = element.FirstChild;
                     if (child != null && child.NodeName == "FONT")
