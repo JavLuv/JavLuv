@@ -37,6 +37,14 @@ namespace WebScraper
             // Scrape required information from page
             foreach (var element in document.All)
             {
+                // Check for no search results
+                if (element.TextContent.Contains("Page not found"))
+                {
+                    SearchNotFound = true;
+                    m_parsingSuccessful = true;
+                    return;
+                }
+
                 // Check for actress image
                 if (element.NodeName == "SPAN" && element.ClassName == "rounded flq-image flq-responsive flq-responsive-3x4 flq-responsive-lg-3x4")
                 {

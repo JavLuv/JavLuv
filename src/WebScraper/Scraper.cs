@@ -99,6 +99,7 @@ namespace WebScraper
             ScrapeActress(new ActressJavDatabase(actressData.Name, m_dispatcher, m_webBrowser, language), actressData);
             ScrapeActress(new ActressJavModel(actressData.Name, m_dispatcher, m_webBrowser, language), actressData);
             ScrapeActress(new ActressJavBody(actressData.Name, m_dispatcher, m_webBrowser, language), actressData);
+            ScrapeActress(new ActressAsianScreens(actressData.Name, m_dispatcher, m_webBrowser, language), actressData);
 
             // Check to make sure there are no duplicates images, and the index is still in range
             if (actressData.ImageFileNames.Count > 0)
@@ -535,6 +536,8 @@ namespace WebScraper
 
         private void MergeActressData(ActressData a, ActressData b)
         {
+            if (a.Cup == "?")
+                a.Cup = "";
             if (b == null)
                 return;
             a.ImageFileNames.Concat(b.ImageFileNames);

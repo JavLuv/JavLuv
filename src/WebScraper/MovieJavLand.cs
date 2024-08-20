@@ -38,6 +38,14 @@ namespace WebScraper
             // Parse movie info page
             foreach (IElement element in document.All)
             {
+                // Check for negative search results
+                if (element.TextContent.Contains("Not Found!"))
+                {
+                    m_parsingSuccessful = true;
+                    SearchNotFound = true;
+                    return;
+                }
+
                 if (element.NodeName == "DIV" && element.ClassName == "col-xs-12")
                 {
                     string title = element.TextContent.Trim();

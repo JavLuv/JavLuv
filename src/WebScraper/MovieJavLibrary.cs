@@ -219,6 +219,11 @@ namespace WebScraper
                         return true;            
                     }
                 }
+                else if (element.TextContent.Contains("Search returned no result."))
+                {
+                    m_parsingSuccessful = true;
+                    SearchNotFound = true;
+                }
             }
 
             return false;

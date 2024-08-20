@@ -72,6 +72,23 @@ namespace WebScraper
                         break;
                     }               
                 }
+
+                // Check for null search results
+                foreach (IElement element in document.All)
+                {
+                    if (element.NodeName == "A")
+                    {
+                        if (element.GetAttribute("class") == "search-in-video")
+                        {
+                            if (element.TextContent.Contains("Videos"))
+                            {
+                                SearchNotFound = true;
+                                m_parsingSuccessful = true;
+                            }
+                        }
+                    }
+                }
+
                 return;
             }
 

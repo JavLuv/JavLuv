@@ -106,7 +106,6 @@ namespace WebScraper
         }
 
         protected MovieMetadata m_metadata;
-        protected bool m_parsingSuccessful;
 
         #endregion
     }

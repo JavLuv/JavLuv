@@ -38,6 +38,8 @@ namespace WebScraper
         public string ImageSource { get; protected set; }
         public bool DebugHtml { get; set; }
 
+        public bool SearchNotFound { get; protected set; }
+
         #endregion
 
         #region Public Functions
@@ -195,6 +197,8 @@ namespace WebScraper
         private WebBrowser m_webBrowser;
         protected LanguageType m_language;
         private bool m_parsingComplete = false;
+        protected bool m_parsingSuccessful = false;
+
         #endregion
     }
 }
