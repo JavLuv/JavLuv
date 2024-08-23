@@ -78,6 +78,12 @@ namespace Common
                 // Special rule for parsing FC2-PPV-xxxxx files
                 @"([f,F][c,C]2-[p,P][p,P][v,V][-|_| ]{0,1}[0-9]{2,8})",
 
+                // 1-7 characters, 00 (two zeroes) 2-5 numbers (DMM format)
+                @"(?<=\[)([a-z,A-Z]{1,7}00[0-9]{2,5})(?=])",
+
+                // 1-7 characters, 00 (two zeroes) 2-5 numbers (DMM format)
+                @"([a-z,A-Z]{1,7}00[0-9]{2,5})",
+
                 // open square bracket, 1-7 characters, 0-2 numbers, one dash or underscore, 1-5 numbers, optional D, close square bracket
                 @"(?<=\[)([a-z,A-Z]{1,7}[0-9]{0,2}[-|_]{1}[0-9]{1,5}[d,D]{0,1})(?=])",
 
@@ -93,13 +99,18 @@ namespace Common
 
             Regex regex = null;
             MatchCollection matches = null;
+            int count = 0;
             foreach (string check in checks)
             {
                 regex = new Regex(check);
                 matches = regex.Matches(fileName);
                 if (matches.Count != 0)
                     break;
+                count++;
             }
+
+            // Check if we matched on DMM format
+            bool DMMFormat = count == 2 || count == 3;
 
             // Have we finallly found a match?
             if (matches.Count == 0)
@@ -108,7 +119,7 @@ namespace Common
             // After match is found, split apart components for additional processing
             string alpha = String.Empty;
             string numeric = String.Empty;
-            SplitIDMatch(matches[0].Value, out alpha, out numeric);
+            SplitIDMatch(matches[0].Value, DMMFormat, out alpha, out numeric);
 
             // Return normalized ID
             return alpha.ToUpper() + "-" + numeric.ToUpper();
@@ -857,7 +868,7 @@ namespace Common
 
         #region Private Functions
 
-        private static void SplitIDMatch(string match, out string alpha, out string numeric)
+        private static void SplitIDMatch(string match, bool DMMFormat, out string alpha, out string numeric)
         {
             alpha = String.Empty;
             numeric = String.Empty;
@@ -910,6 +921,10 @@ namespace Common
             // Split based on the number of alpha characters
             alpha = match.Substring(0, alphaCount);
             numeric = match.Substring(alphaCount, match.Length - alphaCount);
+
+            // Check for DMM format
+            if (DMMFormat && numeric.StartsWith("00"))
+                numeric = numeric.Substring(2);
         }
 
         private static string CopyDeleteFolderRecursive(string sourceDir, string destinationDir, bool deleteThisFolder)
