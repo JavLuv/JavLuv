@@ -106,12 +106,15 @@ namespace JavLuv
 
         #region Private Functions
 
-        private string GetOptionalIdAndTitle()
+        private string GetTitleWithOptions()
         {
+            StringBuilder sb = new StringBuilder(200);
             if (Settings.Get().ShowID)
-                return String.Format("[{0}] {1}", m_movieData.Metadata.UniqueID.Value, m_movieData.Metadata.Title);
-            else
-                return m_movieData.Metadata.Title;
+                sb.AppendFormat("[{0}] ", m_movieData.Metadata.UniqueID.Value);
+            if (Settings.Get().ShowUserRating)
+                sb.AppendFormat("({0}) ", MovieUtils.UserRatingToStars(m_movieData.Metadata.UserRating));
+            sb.Append(m_movieData.Metadata.Title);
+            return sb.ToString();
         }
 
         private void CreateDisplayTitle()
@@ -119,35 +122,38 @@ namespace JavLuv
             switch (Settings.Get().SortMoviesBy)
             {
                 case SortMoviesBy.Title:
-                    m_displayTitle = GetOptionalIdAndTitle();
+                    m_displayTitle = GetTitleWithOptions();
                     break;
                 case SortMoviesBy.ID:
-                    m_displayTitle = String.Format("[{0}] {1}", m_movieData.Metadata.UniqueID.Value, m_movieData.Metadata.Title);
+                    if (Settings.Get().ShowID)
+                        m_displayTitle = GetTitleWithOptions();
+                    else
+                        m_displayTitle = String.Format("[{0}] {1}", m_movieData.Metadata.UniqueID.Value, GetTitleWithOptions());
                     break;
                 case SortMoviesBy.Actress:
                     if (m_movieData.Metadata.Actors.Count == 0)
                     {
-                        m_displayTitle = String.Format("({0}) {1}", "???", GetOptionalIdAndTitle());
+                        m_displayTitle = String.Format("({0}) {1}", "???", GetTitleWithOptions());
                     }
                     else if (m_movieData.Metadata.Actors.Count == 1)
                     {
                         bool useJpNameOrder = Settings.Get().UseJapaneseNameOrder;
                         string displayName = MovieUtils.GetDisplayActressName(m_movieData.Metadata.Actors[0].Name, useJpNameOrder);
-                        m_displayTitle = String.Format("({0}) {1}", displayName, GetOptionalIdAndTitle());
+                        m_displayTitle = String.Format("({0}) {1}", displayName, GetTitleWithOptions());
                     }
                     else if (m_movieData.Metadata.Actors.Count == 2)
                     {
                         bool useJpNameOrder = Settings.Get().UseJapaneseNameOrder;
                         string displayName1 = MovieUtils.GetDisplayActressName(m_movieData.Metadata.Actors[0].Name, useJpNameOrder);
                         string displayName2 = MovieUtils.GetDisplayActressName(m_movieData.Metadata.Actors[1].Name, useJpNameOrder);
-                        m_displayTitle = String.Format("({0} & {1}) {2}", displayName1, displayName2, GetOptionalIdAndTitle());
+                        m_displayTitle = String.Format("({0} & {1}) {2}", displayName1, displayName2, GetTitleWithOptions());
                     }
                     else
                     {
                         bool useJpNameOrder = Settings.Get().UseJapaneseNameOrder;
                         string displayName1 = MovieUtils.GetDisplayActressName(m_movieData.Metadata.Actors[0].Name, useJpNameOrder);
                         string displayName2 = MovieUtils.GetDisplayActressName(m_movieData.Metadata.Actors[1].Name, useJpNameOrder);
-                        m_displayTitle = String.Format("({0}, {1}, & more...) {2}", displayName1, displayName2, GetOptionalIdAndTitle());
+                        m_displayTitle = String.Format("({0}, {1}, & more...) {2}", displayName1, displayName2, GetTitleWithOptions());
                     }
                     break;
                 case SortMoviesBy.Date_Newest:
@@ -156,25 +162,28 @@ namespace JavLuv
                     string datePremiered = m_movieData.Metadata.Premiered;
                     if (String.IsNullOrEmpty(datePremiered))
                         datePremiered = "Unknown";
-                    m_displayTitle = String.Format("({0}) {1}", datePremiered, GetOptionalIdAndTitle());
+                    m_displayTitle = String.Format("({0}) {1}", datePremiered, GetTitleWithOptions());
                     break;
                 case SortMoviesBy.Random:
-                    m_displayTitle = GetOptionalIdAndTitle();
+                    m_displayTitle = GetTitleWithOptions();
                     break;
                 case SortMoviesBy.Resolution:
                     string resolution = MovieUtils.GetMovieResolution(m_movieData.Metadata);
                     if (String.IsNullOrEmpty(resolution))
                         resolution = "Unknown";
-                    m_displayTitle = String.Format("({0}) {1}", resolution, GetOptionalIdAndTitle());
+                    m_displayTitle = String.Format("({0}) {1}", resolution, GetTitleWithOptions());
                     break;
                 case SortMoviesBy.RecentlyAdded:
                     string dateAdded = m_movieData.Metadata.DateAdded;
                     if (String.IsNullOrEmpty(dateAdded))
                         dateAdded = "Unknown";
-                    m_displayTitle = String.Format("({0}) {1}", dateAdded, GetOptionalIdAndTitle());
+                    m_displayTitle = String.Format("({0}) {1}", dateAdded, GetTitleWithOptions());
                     break;
                 case SortMoviesBy.UserRating:
-                    m_displayTitle = String.Format("({0}) {1}", MovieUtils.UserRatingToStars(m_movieData.Metadata.UserRating), GetOptionalIdAndTitle());
+                    if (Settings.Get().ShowUserRating)
+                        m_displayTitle = GetTitleWithOptions();
+                    else
+                        m_displayTitle = String.Format("({0}) {1}", MovieUtils.UserRatingToStars(m_movieData.Metadata.UserRating), GetTitleWithOptions());
                     break;
             }
         }

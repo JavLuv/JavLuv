@@ -92,6 +92,13 @@
                 IsChecked="{Binding ShowID}"
                 />
             <CheckBox 
+                Margin="5, 2, 5, 2"
+                VerticalAlignment="Center"
+                    Visibility="{Binding MovieControlsVisibility}"
+                Content="{DynamicResource Text.ShowUserRating}"
+                IsChecked="{Binding ShowUserRating}"
+                />
+            <CheckBox 
                 Margin="5, 10, 5, 2"
                 VerticalAlignment="Center"
                     Visibility="{Binding ActressControlsVisibility}"

@@ -165,6 +165,7 @@
     <system:String x:Key="Text.SortByRecentlyAdded">Recently Added</system:String>
     <system:String x:Key="Text.SortByUserRating">User Rating</system:String>
     <system:String x:Key="Text.ShowID">Show ID</system:String>
+    <system:String x:Key="Text.ShowUserRating">Show user rating</system:String>
     <system:String x:Key="Text.ShowUnratedOnly">Show unrated only</system:String>
     <system:String x:Key="Text.ShowSubtitlesOnly">Show subtitles only</system:String>
     <system:String x:Key="Text.SortByName">Name</system:String>

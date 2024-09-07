@@ -133,6 +133,7 @@ namespace JavLuv
         public MovieInfo.SortMoviesBy SortMoviesBy { get; set; }
         public MovieInfo.SortActressesBy SortActressesBy { get; set; }
         public bool ShowID { get; set; }
+        public bool ShowUserRating { get; set; }
         public bool ShowUnratedOnly { get; set; }
         public bool ShowSubtitlesOnly { get; set; }
         public bool ShowAllActresses { get; set; }
