@@ -178,6 +178,20 @@ namespace JavLuv
             }
         }
 
+        public bool ShowUserRating
+        {
+            get { return Settings.Get().ShowUserRating; }
+            set
+            {
+                if (value != Settings.Get().ShowUserRating)
+                {
+                    Settings.Get().ShowUserRating = value;
+                    Parent.Collection.ShowUserRating = value;
+                    NotifyPropertyChanged("ShowUserRating");
+                }
+            }
+        }
+
         public bool ShowUnratedOnly
         {
             get { return Settings.Get().ShowUnratedOnly; }

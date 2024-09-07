@@ -279,6 +279,48 @@ namespace JavLuv
             Assert.Equal("FC2-PPV-12345678", id);
         }
 
+        [Fact]
+        public void TestDMM_1()
+        {
+            string id = Utilities.ParseMovieID("ABC00123");
+            Assert.Equal("ABC-123", id);
+        }
+
+        [Fact]
+        public void TestDMM_2()
+        {
+            string id = Utilities.ParseMovieID("[ABC00123]");
+            Assert.Equal("ABC-123", id);
+        }
+
+        [Fact]
+        public void TestDMM_3()
+        {
+            string id = Utilities.ParseMovieID("00ABC00123xx");
+            Assert.Equal("ABC-123", id);
+        }
+
+        [Fact]
+        public void TestDMM_4()
+        {
+            string id = Utilities.ParseMovieID("00[ABC00123]xx");
+            Assert.Equal("ABC-123", id);
+        }
+
+        [Fact]
+        public void TestDMM_5()
+        {
+            string id = Utilities.ParseMovieID("  ABC00123  ");
+            Assert.Equal("ABC-123", id);
+        }
+
+        [Fact]
+        public void TestDMM_6()
+        {
+            string id = Utilities.ParseMovieID("abc00123 askfjkl3234 jksdfjk23 abd234");
+            Assert.Equal("ABC-123", id);
+        }
+
         #endregion
     }
 }

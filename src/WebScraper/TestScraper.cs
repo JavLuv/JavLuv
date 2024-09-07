@@ -163,7 +163,6 @@ namespace WebScraper
         {
             var metadata = new MovieMetadata("FAKE-999");
             var module = new MovieJavLand(metadata, m_dispatcher, m_webBrowser, LanguageType.English);
-            module.DebugHtml = true;
             module.Scrape();
             CheckEqual(true, module.SearchNotFound);
         }
@@ -226,7 +225,6 @@ namespace WebScraper
         {
             var actressData = new ActressData("Notta Realperson");
             var module = new ActressJavDatabase(actressData.Name, m_dispatcher, m_webBrowser, LanguageType.English);
-            module.DebugHtml = true;
             module.Scrape();
             CheckEqual(true, module.SearchNotFound);
         }

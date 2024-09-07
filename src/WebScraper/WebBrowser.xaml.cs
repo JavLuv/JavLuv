@@ -79,6 +79,7 @@ namespace WebScraper
                     return;
                 }
                 webView.CoreWebView2.NewWindowRequested += OnNewWindowRequested;
+                webView.NavigationStarting += OnNavigationStarting;
                 webView.NavigationCompleted += OnNavigationCompleted;
                 m_initialized = true;
             }
@@ -105,10 +106,16 @@ namespace WebScraper
 
         #region Handlers
 
+        private void OnNavigationStarting(object sender, CoreWebView2NavigationStartingEventArgs e)
+        {
+            if (e.Uri.ContainsCaseless(RootSite) == false)
+                e.Cancel = true;
+        }
+
         private void OnNewWindowRequested(object sender, CoreWebView2NewWindowRequestedEventArgs e)
         {
             // Block window if it's a different domain than expected
-            if (e.Uri.Contains(RootSite))
+            if (e.Uri.ContainsCaseless(RootSite))
             {
                 e.NewWindow = (CoreWebView2)sender;
             }

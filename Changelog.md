@@ -2,6 +2,10 @@
 
 All significant changes are listed in this file.
 
+## [1.2.5] - 2024-9-6
+- Add support for DMM ID format (e.g. ABC00123)
+- Add option to always display rating in browser view
+
 ## [1.2.4] - 2024-8-17
 - Add actress scraper for AsianScreens.com
 - Improve scraper speed

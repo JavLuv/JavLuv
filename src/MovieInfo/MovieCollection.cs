@@ -175,6 +175,22 @@ namespace MovieInfo
             }
         }
 
+        public bool ShowUserRating
+        {
+            private get
+            {
+                return m_showID;
+            }
+            set
+            {
+                if (value != m_showID)
+                {
+                    m_showID = value;
+                    SearchMovies();
+                }
+            }
+        }
+
         public bool ShowUnratedOnly 
         {
             private get
@@ -665,6 +681,9 @@ namespace MovieInfo
 
         // Show ID with title
         private bool m_showID;
+
+        // Show user rating with title
+        private bool m_showUserRating;
 
         // Show only unrated movies
         private bool m_showUnratedOnly;
