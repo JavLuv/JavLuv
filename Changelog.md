@@ -2,6 +2,9 @@
 
 All significant changes are listed in this file.
 
+## [1.2.6] - 2024-9-10
+- Import cover no longer deletes selected source file
+
 ## [1.2.5] - 2024-9-6
 - Add support for DMM ID format (e.g. ABC00123)
 - Add option to always display rating in browser view
