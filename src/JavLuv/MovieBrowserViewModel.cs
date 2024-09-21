@@ -688,7 +688,14 @@ namespace JavLuv
                         destFileName = Path.Combine(movieData.Path, movieData.MovieFileNames[0]);
                     }
                     destFileName = Path.ChangeExtension(destFileName, Path.GetExtension(openFileDlg.FileName));
-                    Utilities.MoveFile(openFileDlg.FileName, destFileName);
+                    try
+                    {
+                        File.Copy(openFileDlg.FileName, destFileName);
+                    }
+                    catch (Exception ex)
+                    {
+                        Logger.WriteError(String.Format("Error copying file from {0} to {1}", openFileDlg.FileName, destFileName), ex);
+                    }
                     movieData.CoverFileName = Path.GetFileName(destFileName);
                 }
             }
