@@ -2,8 +2,9 @@
 
 All significant changes are listed in this file.
 
-## [1.2.6] - 2024-9-10
+## [1.2.6] - 2024-9-21
 - Import cover no longer deletes selected source file
+- Fix error in Move / Rename when cover image is missing
 
 ## [1.2.5] - 2024-9-6
 - Add support for DMM ID format (e.g. ABC00123)

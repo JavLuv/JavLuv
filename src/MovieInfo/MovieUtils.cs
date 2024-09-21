@@ -1084,10 +1084,12 @@ namespace MovieInfo
             // previously named files with numeric index starting at 0.
             for (int i = movieData.MovieFileNames.Count - 1; i >= 0; --i)
                 Utilities.MoveFile(Path.Combine(sourceFolder, movieData.MovieFileNames[i]), Path.Combine(newMovieData.Path, newMovieData.MovieFileNames[i]));
-            Utilities.MoveFile(Path.Combine(sourceFolder, movieData.CoverFileName), Path.Combine(newMovieData.Path, newMovieData.CoverFileName));
+            if (String.IsNullOrEmpty(movieData.CoverFileName) == false)
+                Utilities.MoveFile(Path.Combine(sourceFolder, movieData.CoverFileName), Path.Combine(newMovieData.Path, newMovieData.CoverFileName));
             for (int i = movieData.ThumbnailsFileNames.Count - 1; i >= 0; --i)
                 Utilities.MoveFile(Path.Combine(sourceFolder, movieData.ThumbnailsFileNames[i]), Path.Combine(newMovieData.Path, newMovieData.ThumbnailsFileNames[i]));
-            Utilities.MoveFile(Path.Combine(sourceFolder, movieData.MetadataFileName), Path.Combine(newMovieData.Path, newMovieData.MetadataFileName));
+            if (String.IsNullOrEmpty(movieData.MetadataFileName) == false)
+                Utilities.MoveFile(Path.Combine(sourceFolder, movieData.MetadataFileName), Path.Combine(newMovieData.Path, newMovieData.MetadataFileName));
             for (int i = movieData.SubtitleFileNames.Count - 1; i >= 0; --i)
                 Utilities.MoveFile(Path.Combine(sourceFolder, movieData.SubtitleFileNames[i]), Path.Combine(newMovieData.Path, newMovieData.SubtitleFileNames[i]));
         }
