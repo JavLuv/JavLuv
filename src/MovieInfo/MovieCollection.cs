@@ -257,6 +257,18 @@ namespace MovieInfo
 
         #region Public Functions
 
+        public void AddMovie(MovieData movie)
+        {
+            var err = new StringBuilder(1024);
+            lock (m_cacheData)
+            {
+                m_cacheData.Movies.Add(movie);
+            }
+            SearchMovies();
+            SearchActresses();
+            Save();
+        }
+
         public void AddMovies(List<MovieData> movies)
         {
             var err = new StringBuilder(1024);

@@ -254,7 +254,13 @@ namespace JavLuv
             {
                 if (value != m_movieData.Metadata.UniqueID.Value)
                 {
+                    if (m_parent.Parent.Collection.MovieExists(value))
+                    {
+                        return;
+                    }
                     m_movieData.Metadata.UniqueID.Value = value;
+                    m_parent.Parent.Collection.RemoveMovie(m_movieData);
+                    m_parent.Parent.Collection.AddMovie(m_movieData);
                     m_movieData.MetadataChanged = true;
                     NotifyPropertyChanged("ID");
                 }
