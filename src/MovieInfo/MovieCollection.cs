@@ -19,8 +19,8 @@ namespace MovieInfo
             CommandQueue.Command().CommandFinished += OnCommandFinished;
             if (m_readOnlyMode == false)
             {
-                // Timer fires off every fifteen seconds
-                m_timer = new System.Timers.Timer(15000);
+                // Timer fires off every sixty seconds
+                m_timer = new System.Timers.Timer(60000);
                 m_timer.Start();
                 m_timer.Elapsed += OnTimerElapsed;
             }
@@ -256,6 +256,18 @@ namespace MovieInfo
         #endregion
 
         #region Public Functions
+
+        public void AddMovie(MovieData movie)
+        {
+            var err = new StringBuilder(1024);
+            lock (m_cacheData)
+            {
+                m_cacheData.Movies.Add(movie);
+            }
+            SearchMovies();
+            SearchActresses();
+            Save();
+        }
 
         public void AddMovies(List<MovieData> movies)
         {

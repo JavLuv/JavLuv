@@ -2,6 +2,10 @@
 
 All significant changes are listed in this file.
 
+## [1.2.7] - 2024-10-28
+- Fix ability to change ID in movie detail page
+- Fix issue with bad movie files causing repeated saving of nfo files
+
 ## [1.2.6] - 2024-9-21
 - Import cover no longer deletes selected source file
 - Fix error in Move / Rename when cover image is missing
