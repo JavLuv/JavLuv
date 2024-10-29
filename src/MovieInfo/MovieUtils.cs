@@ -602,9 +602,13 @@ namespace MovieInfo
             if (movie == null)
                 return;
             movie.MovieResolution = String.Format("{0}x{1}", width, height);
-            movie.Metadata.FileInfo.StreamDetails.Video.Width = width;
-            movie.Metadata.FileInfo.StreamDetails.Video.Height= height;
-            movie.MetadataChanged = true;
+            if (movie.Metadata.FileInfo.StreamDetails.Video.Width != width ||
+                movie.Metadata.FileInfo.StreamDetails.Video.Height != height)
+            {
+                movie.Metadata.FileInfo.StreamDetails.Video.Width = width;
+                movie.Metadata.FileInfo.StreamDetails.Video.Height= height;
+                movie.MetadataChanged = true;
+            }
         }
 
         public static void SetMovieResolution(MovieData movie, string resolution)
