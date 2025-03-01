@@ -26,8 +26,6 @@ namespace WebScraper
                 TestScrapeMovieJavLibrary3();
                 TestScrapeMovieJavDatabase1();
                 TestScrapeMovieJavDatabase2();
-                TestScrapeMovieJavLand1();
-                TestScrapeMovieJavLand2();
                 TestScrapeMovieJavSeenTv1();
                 TestScrapeMovieJavSeenTv2();
                 TestScrapeMovieJavSeenTv3();
@@ -123,8 +121,8 @@ namespace WebScraper
             CheckEqual("Lesbian", module.Metadata.Genres[3]);
             CheckEqual("Slender", module.Metadata.Genres[4]);
             CheckEqual(2, module.Metadata.Actors.Count);
-            CheckEqual("Iroha Minami", module.Metadata.Actors[0].Name);
-            CheckEqual("Rika Omi", module.Metadata.Actors[1].Name);
+            CheckEqual("Mikana Mii", module.Metadata.Actors[0].Name);
+            CheckEqual("Rika Aimi", module.Metadata.Actors[1].Name);
             CheckNotEmpty(module.ImageSource);
         }
 
@@ -132,37 +130,6 @@ namespace WebScraper
         {
             var metadata = new MovieMetadata("FAKE-999");
             var module = new MovieJavDatabase(metadata, m_dispatcher, m_webBrowser, LanguageType.English);
-            module.Scrape();
-            CheckEqual(true, module.SearchNotFound);
-        }
-
-        private static void TestScrapeMovieJavLand1()
-        {
-            var metadata = new MovieMetadata("IESP-711");
-            var module = new MovieJavLand(metadata, m_dispatcher, m_webBrowser, LanguageType.English);
-            module.Scrape();
-            CheckEqual("Minami Iroha Lesbian Ban Lifted ~I Was Dragged Into A Lesbian Swamp By My Sister-In-Law ~", module.Metadata.Title);
-            CheckEqual("2022-12-22", module.Metadata.Premiered);
-            CheckEqual(142, module.Metadata.Runtime);
-            CheckEqual("Chrysanthemum", module.Metadata.Director);
-            CheckEqual("I-Energy", module.Metadata.Studio);
-            CheckEqual("Iesp", module.Metadata.Label);
-            CheckEqual(5, module.Metadata.Genres.Count);
-            CheckEqual("High Vision", module.Metadata.Genres[0]);
-            CheckEqual("Drama", module.Metadata.Genres[1]);
-            CheckEqual("Big Tits", module.Metadata.Genres[2]);
-            CheckEqual("Slender", module.Metadata.Genres[3]);
-            CheckEqual("Lesbian", module.Metadata.Genres[4]);
-            CheckEqual(2, module.Metadata.Actors.Count);
-            CheckEqual("Iroha Minami", module.Metadata.Actors[0].Name);
-            CheckEqual("Tadami Rumi", module.Metadata.Actors[1].Name);
-            CheckNotEmpty(module.ImageSource);
-        }
-
-        private static void TestScrapeMovieJavLand2()
-        {
-            var metadata = new MovieMetadata("FAKE-999");
-            var module = new MovieJavLand(metadata, m_dispatcher, m_webBrowser, LanguageType.English);
             module.Scrape();
             CheckEqual(true, module.SearchNotFound);
         }

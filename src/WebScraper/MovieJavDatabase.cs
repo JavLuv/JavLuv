@@ -67,7 +67,7 @@ namespace WebScraper
                 {
                     // Ensure this is the feature idols group
                     var child = element.FirstElementChild;
-                    if (child?.NodeName == "H2" && child?.TextContent.EndsWith("Actress/Idols") == true)
+                    if (child?.NodeName == "H4" && child?.TextContent.EndsWith("Actress/Idols") == true)
                     {
                         child = child.NextElementSibling;
                         if (child?.NodeName == "DIV" && child?.ClassName == "row")

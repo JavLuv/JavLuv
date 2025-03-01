@@ -104,7 +104,7 @@ namespace WebScraper
                         // Saw one example of multiple entries.
                         string[] cups = cupText.Split(' ');
                         if (String.Compare(cups[0], "Unknown", true) != 0)
-                            Actress.Cup = cups[0];
+                            Actress.Cup = cups[0][0].ToString();
 
                         // Parse blood type
                         Actress.BloodType = Parse(content, "Blood: ");
