@@ -86,7 +86,6 @@
     <Compile Include="MovieJavGuru.cs" />
     <Compile Include="MovieJavDatabase.cs" />
     <Compile Include="ModuleBase.cs" />
-    <Compile Include="MovieJavLand.cs" />
     <Compile Include="MovieJavLibrary.cs" />
     <Compile Include="ModuleMovie.cs" />
     <Compile Include="MovieJavSeenTv.cs" />

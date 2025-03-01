@@ -2,6 +2,10 @@
 
 All significant changes are listed in this file.
 
+## [1.2.8] - 2025-2-28
+- Move to folder command no longer requires an existing cover file
+- Fixed issue in movie scapers
+
 ## [1.2.7] - 2024-10-28
 - Fix ability to change ID in movie detail page
 - Fix issue with bad movie files causing repeated saving of nfo files

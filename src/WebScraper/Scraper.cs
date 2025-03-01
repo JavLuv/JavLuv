@@ -59,7 +59,6 @@ namespace WebScraper
             
             // Scrape secondary sources if required
             ScrapeSecondaryMovie(new MovieJavGuru(new MovieMetadata(movieID), m_dispatcher, m_webBrowser, language), mergedMetadata, ref coverImagePath);
-            ScrapeSecondaryMovie(new MovieJavLand(new MovieMetadata(movieID), m_dispatcher, m_webBrowser, language), mergedMetadata, ref coverImagePath);
             ScrapeSecondaryMovie(new MovieJavSeenTv(new MovieMetadata(movieID), m_dispatcher, m_webBrowser, language), mergedMetadata, ref coverImagePath);
 
             // Is this minimally acceptable?
@@ -168,14 +167,6 @@ namespace WebScraper
             // Only continue past this point if we haven't yet downloaded a file
             if (retVal == false)
             {
-                var javLand = new MovieJavLand(metadata, m_dispatcher, m_webBrowser, LanguageType.English);
-                javLand.Scrape();
-                if (DownloadImage(ref coverImagePath, javLand.ImageSource))
-                    retVal = true;
-            }
-
-            if (retVal == false)
-            {
                 var javSeenTv = new MovieJavSeenTv(metadata, m_dispatcher, m_webBrowser, LanguageType.English);
                 javSeenTv.Scrape();
                 if (DownloadImage(ref coverImagePath, javSeenTv.ImageSource))
@@ -213,7 +204,6 @@ namespace WebScraper
             ScrapeSecondaryMovie(new MovieJavLibrary(new MovieMetadata(movieID), m_dispatcher, m_webBrowser, LanguageType.Japanese), combinedMetadata, ref coverImagePath);
             if (IsMovieMetadataCompleteOrAcceptable(combinedMetadata, completion))
                 return combinedMetadata;
-            ScrapeSecondaryMovie(new MovieJavLand(new MovieMetadata(movieID), m_dispatcher, m_webBrowser, LanguageType.Japanese), combinedMetadata, ref coverImagePath);
             return combinedMetadata;
         }
 
