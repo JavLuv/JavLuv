@@ -28,8 +28,8 @@ namespace WebScraper
             if (IsLanguageSupported() == false)
                 return;
 
-            string name = Actress.Name.Replace(' ', '-').ToLower();
-            ScrapeWebsite("javbody.com", "http://javbody.com/jav/" + name + "/");
+            //string name = Actress.Name.Replace(' ', '-').ToLower();
+            //ScrapeWebsite("javbody.com", "http://javbody.com/jav/" + name + "/");
         }
 
         #endregion

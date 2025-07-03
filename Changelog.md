@@ -4,6 +4,7 @@ All significant changes are listed in this file.
 
 ## [1.2.10] - 2025-6-28
 - Improved auto scaling of actress detail view
+- Minor fixes for scrapers
 
 ## [1.2.9] - 2025-6-25
 - Add title auto-capitalization

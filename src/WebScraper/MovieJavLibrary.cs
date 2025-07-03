@@ -108,11 +108,13 @@ namespace WebScraper
                 }
                 else if (ParseInfoPair(element, GetToken(Token.Maker), out value))
                 {
-                    m_metadata.Studio = value.Trim();
+                    if (value != "----")
+                        m_metadata.Studio = value.Trim();
                 }
                 else if (ParseInfoPair(element, GetToken(Token.Label), out value))
                 {
-                    m_metadata.Label = value.Trim();
+                    if (value != "----")
+                        m_metadata.Label = value.Trim();
                 }
                 else if (CheckAttribute(element, "class", "genre"))
                 {
