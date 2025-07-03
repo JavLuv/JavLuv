@@ -2,7 +2,10 @@
 
 All significant changes are listed in this file.
 
-## [1.2.9] - 2025-3-14
+## [1.2.10] - 2025-6-28
+- Improved auto scaling of actress detail view
+
+## [1.2.9] - 2025-6-25
 - Add title auto-capitalization
 - Updated all dependent packages
 - Removed Japanese language support
