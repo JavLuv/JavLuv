@@ -2,8 +2,9 @@
 
 All significant changes are listed in this file.
 
-## [1.2.10] - 2025-6-28
+## [1.2.10] - 2025-7-3
 - Improved auto scaling of actress detail view
+- Mapped browse back button
 - Minor fixes for scrapers
 
 ## [1.2.9] - 2025-6-25

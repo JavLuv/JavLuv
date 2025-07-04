@@ -42,6 +42,7 @@
     </Window.Resources>
 
     <Window.InputBindings>
+        <KeyBinding Command="{Binding CloseOverlayCommand}" Key="BrowserBack" />
         <KeyBinding Command="{Binding CloseOverlayCommand}" Key="Esc" />
         <KeyBinding Command="{Binding MovieBrowser.NavigateLeftCommand}" Key="Left" />
         <KeyBinding Command="{Binding MovieBrowser.NavigateRightCommand}" Key="Right" />
