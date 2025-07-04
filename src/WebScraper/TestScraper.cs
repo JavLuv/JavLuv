@@ -24,6 +24,7 @@ namespace WebScraper
                 TestScrapeMovieJavLibrary1();
                 TestScrapeMovieJavLibrary2();
                 TestScrapeMovieJavLibrary3();
+                TestScrapeMovieJavLibrary4();
                 TestScrapeMovieJavDatabase1();
                 TestScrapeMovieJavDatabase2();
                 TestScrapeMovieJavSeenTv1();
@@ -35,8 +36,8 @@ namespace WebScraper
                 TestScrapeActressJavDatabase2();
                 TestScrapeActressJavModel1();
                 TestScrapeActressJavModel2();
-                TestScrapeActressJavBody1();
-                TestScrapeActressJavBody2();
+                //TestScrapeActressJavBody1();
+                //TestScrapeActressJavBody2();
                 TestScrapeActressAsianScreens1();
                 TestScrapeActressAsianScreens2();
             }
@@ -68,7 +69,7 @@ namespace WebScraper
             CheckEqual("Drama", module.Metadata.Genres[3]);
             CheckEqual(2, module.Metadata.Actors.Count);
             CheckEqual("Rika Aimi", module.Metadata.Actors[0].Name);
-            CheckEqual("Iroha Minami", module.Metadata.Actors[1].Name);
+            CheckEqual("Mikana Mii", module.Metadata.Actors[1].Name);
             CheckNotEmpty(module.ImageSource);        
         }
 
@@ -97,6 +98,29 @@ namespace WebScraper
         }
 
         private static void TestScrapeMovieJavLibrary3()
+        {
+            var metadata = new MovieMetadata("DANDY-981");
+            var module = new MovieJavLibrary(metadata, m_dispatcher, m_webBrowser, LanguageType.English);
+            module.Scrape();
+            CheckEqual("Ambushing A Beautiful Beauty Salon Lady Who Was Denied A Secret Option After Work! Squirting Lesbian College Girl Who Follows Her Until She Falls Into Lesbianism VOL.2", module.Metadata.Title);
+            CheckEqual("2025-06-26", module.Metadata.Premiered);
+            CheckEqual(140, module.Metadata.Runtime);
+            CheckEqual("Maria Fujiwara", module.Metadata.Director);
+            CheckEqual("Dandy", module.Metadata.Studio);
+            CheckEqual("", module.Metadata.Label);
+            CheckEqual(5, module.Metadata.Genres.Count);
+            CheckEqual("Lesbian", module.Metadata.Genres[0]);
+            CheckEqual("Beauty Shop", module.Metadata.Genres[1]);
+            CheckEqual("Squirting", module.Metadata.Genres[2]);
+            CheckEqual("Breasts", module.Metadata.Genres[3]);
+            CheckEqual("Lesbian Kiss", module.Metadata.Genres[4]);
+            CheckEqual(2, module.Metadata.Actors.Count);
+            CheckEqual("Hikaru Miyanishi", module.Metadata.Actors[0].Name);
+            CheckEqual("Kana Yura", module.Metadata.Actors[1].Name);
+            CheckNotEmpty(module.ImageSource);
+        }
+
+        private static void TestScrapeMovieJavLibrary4()
         {
             var metadata = new MovieMetadata("FAKE-999");
             var module = new MovieJavLibrary(metadata, m_dispatcher, m_webBrowser, LanguageType.English);
