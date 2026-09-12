@@ -2,6 +2,10 @@
 
 All significant changes are listed in this file.
 
+## [1.2.11] - 2026-9-12
+- Update ID parser for longer ID names
+- Update library for security update
+
 ## [1.2.10] - 2025-7-3
 - Improved auto scaling of actress detail view
 - Mapped browse back button
