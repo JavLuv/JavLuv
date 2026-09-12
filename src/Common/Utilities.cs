@@ -90,11 +90,11 @@ namespace Common
                 // open square bracket, 1-7 characters, one optional dash or underscore or space, 1-5 numbers, optional D, close square bracket
                 @"(?<=\[)([a-z,A-Z]{1,7}[-|_| ]{0,1}[0-9]{1,5}[d,D]{0,1})(?=])",
 
-                // 1-7 characters, 0-2 numbers, one dash or underscore, 1-5 numbers, optional D
-                @"([a-z,A-Z]{1,7}[0-9]{0,2}[-|_]{1}[0-9]{1,5}[d,D]{0,1})",
+                // 1-8 characters, 0-2 numbers, one dash or underscore, 1-5 numbers, optional D
+                @"([a-z,A-Z]{1,8}[0-9]{0,2}[-|_]{1}[0-9]{1,5}[d,D]{0,1})",
 
-                // 1-7 characters, 0-2 numbers, one optional dash or underscore or space, 1-5 numbers, optional D
-                @"([a-z,A-Z]{1,7}[0-9]{0,2}[-|_| ]{0,1}[0-9]{1,5}[d,D]{0,1})",
+                // 1-8 characters, 0-2 numbers, one optional dash or underscore or space, 1-5 numbers, optional D
+                @"([a-z,A-Z]{1,8}[0-9]{0,2}[-|_| ]{0,1}[0-9]{1,5}[d,D]{0,1})",
             };
 
             Regex regex = null;

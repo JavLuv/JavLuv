@@ -321,6 +321,13 @@ namespace JavLuv
             Assert.Equal("ABC-123", id);
         }
 
+        [Fact]
+        public void TestLong_1()
+        {
+            string id = Utilities.ParseMovieID("ABCDEFGH-123");
+            Assert.Equal("ABCDEFGH-123", id);
+        }
+
         #endregion
     }
 }

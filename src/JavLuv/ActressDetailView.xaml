@@ -34,9 +34,9 @@
     <Grid x:Name="MainGrid" Focusable="True" MouseDown="MainGrid_MouseDown" >
         <Grid.RowDefinitions>
             <RowDefinition Height="36" />
-            <RowDefinition Height="440" />
+            <RowDefinition Height="440*" MaxHeight="440"/>
             <RowDefinition Height="15" />
-            <RowDefinition Height="*" />
+            <RowDefinition Height="340*" />
         </Grid.RowDefinitions>
 
         <Grid.InputBindings>
